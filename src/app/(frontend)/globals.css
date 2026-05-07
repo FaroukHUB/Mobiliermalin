@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ivory text-ink font-sans;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-serif text-ink;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  ::selection {
+    background: theme('colors.gold.DEFAULT');
+    color: theme('colors.ink.DEFAULT');
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium tracking-wide
+           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply btn bg-ink text-ivory hover:bg-gold hover:text-ink;
+  }
+
+  .btn-gold {
+    @apply btn bg-gold text-ink hover:bg-gold-dark;
+  }
+
+  .btn-outline {
+    @apply btn border border-ink text-ink hover:bg-ink hover:text-ivory;
+  }
+
+  .btn-outline-light {
+    @apply btn border border-ivory text-ivory hover:bg-ivory hover:text-ink;
+  }
+
+  .container-tight {
+    @apply container max-w-6xl;
+  }
+
+  .eyebrow {
+    @apply text-xs uppercase tracking-widest text-gold-dark font-medium;
+  }
+
+  .gold-divider {
+    @apply h-px w-12 bg-gold mx-auto;
+  }
+}

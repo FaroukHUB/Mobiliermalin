@@ -1,0 +1,16 @@
+/* Customisation admin Mobilier Malin
+   Surcharge des couleurs Payload pour matcher la charte */
+
+:root {
+  --theme-elevation-0: #FAF9F6;
+  --theme-elevation-50: #F4F1EA;
+  --theme-elevation-100: #EDEAE3;
+  --theme-elevation-150: #E5E3DE;
+  --color-success-500: #C9A961;
+}
+
+[data-theme=light] {
+  --theme-text: #1A1A1A;
+  --theme-bg: #FAF9F6;
+  --theme-success-500: #C9A961;
+}
