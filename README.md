@@ -123,9 +123,9 @@ Typo : **Playfair Display** (titres serif) + **Inter** (corps sans-serif).
 
 ## Mode "Coming Soon" / Maintenance
 
-Tu peux mettre le site public en mode "bientôt en ligne" tout en travaillant dessus en coulisse.
+Désactivé par défaut pendant le développement. À réactiver juste avant le lancement officiel pour faire la surprise au client.
 
-### Activation
+### Activation (le jour J)
 
 Sur Vercel (ou en local dans `.env`) :
 
