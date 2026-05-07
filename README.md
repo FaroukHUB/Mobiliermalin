@@ -121,6 +121,33 @@ Typo : **Playfair Display** (titres serif) + **Inter** (corps sans-serif).
 - Champs SEO dédiés sur chaque collection (titre meta, description meta, OG image)
 - Collection Redirects pour conserver le jus SEO lors des changements d'URL
 
+## Mode "Coming Soon" / Maintenance
+
+Tu peux mettre le site public en mode "bientôt en ligne" tout en travaillant dessus en coulisse.
+
+### Activation
+
+Sur Vercel (ou en local dans `.env`) :
+
+```
+MAINTENANCE_MODE=true
+MAINTENANCE_BYPASS_TOKEN=ton-token-secret-aleatoire
+```
+
+### Comportement
+- **Public** : tout `/`, `/boutique`, `/categorie/...` → affiche `/maintenance` (503)
+- **Toi** : visite `https://ton-site.com/?bypass=ton-token-secret-aleatoire` une seule fois
+  → un cookie est posé pour **30 jours** → tu vois le vrai site librement
+- **Admin Payload** : `/admin` reste **toujours accessible** (jamais bloqué)
+- **API** : `/api/*` reste toujours accessible
+- **SEO** : la page maintenance est `noindex, nofollow` → pas d'impact référencement
+
+### Reverrouiller / déconnecter le preview
+Visite `https://ton-site.com/?lock=1` → cookie supprimé, tu retombes en maintenance.
+
+### Désactiver le mode maintenance pour le grand public
+Mets `MAINTENANCE_MODE=false` (ou supprime la variable) sur Vercel et redéploie.
+
 ## Roadmap
 
 ### V1 (en cours)
