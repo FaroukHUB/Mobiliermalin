@@ -121,6 +121,44 @@ Typo : **Playfair Display** (titres serif) + **Inter** (corps sans-serif).
 - Champs SEO dédiés sur chaque collection (titre meta, description meta, OG image)
 - Collection Redirects pour conserver le jus SEO lors des changements d'URL
 
+## Performance & infrastructure
+
+### DATABASE_URI : utiliser le Transaction Pooler sur Vercel
+Pour des temps de réponse rapides en serverless, utiliser le **Transaction Pooler** Supabase (port **6543**) et **non** le Session Pooler (port 5432).
+
+Sur Supabase : `Connect` → onglet **"Transaction pooler"** → copier l'URI.
+
+Format :
+```
+postgresql://postgres.PROJECTREF:PASSWORD@aws-0-eu-west-3.pooler.supabase.com:6543/postgres
+```
+
+### Supabase Storage (uploads de photos)
+Sur Vercel, le filesystem est éphémère : les images uploadées via l'admin disparaissent à chaque redéploiement. **Obligation** de brancher Supabase Storage.
+
+Setup en 5 min :
+1. Supabase → **Storage** → **Create bucket** → nom : `mobilier-malin-media` → **Public**
+2. Supabase → **Project Settings** → **Storage** → **S3 Connection** → activer l'accès S3 → copier *Access Key* et *Secret Access Key*
+3. Sur Vercel, ajouter ces variables d'environnement :
+   - `SUPABASE_STORAGE_ENDPOINT` = `https://PROJECTREF.supabase.co/storage/v1/s3`
+   - `SUPABASE_STORAGE_REGION` = `eu-west-3` (ou ta région Supabase)
+   - `SUPABASE_STORAGE_BUCKET` = `mobilier-malin-media`
+   - `SUPABASE_STORAGE_ACCESS_KEY_ID` = (Access Key copiée)
+   - `SUPABASE_STORAGE_SECRET_ACCESS_KEY` = (Secret copié)
+4. Redeploy → Payload écrira directement dans Supabase Storage.
+
+### Email transactionnel (Resend) — optionnel
+Sans `RESEND_API_KEY`, les emails sont juste loggués en console. Pour activer :
+1. Compte gratuit sur https://resend.com (3000 emails/mois gratuits)
+2. Créer une API key
+3. Ajouter sur Vercel :
+   - `RESEND_API_KEY=re_...`
+   - `EMAIL_FROM_ADDRESS=contact@mobiliermalin.com`
+   - `EMAIL_FROM_NAME=Mobilier Malin`
+
+### push:false en production
+Une fois les tables Postgres créées (au premier `pnpm dev` connecté à la DB), Payload n'a plus besoin de "push" le schéma à chaque démarrage en production. Le code détecte automatiquement `NODE_ENV=production` et désactive le push, ce qui rend l'admin nettement plus rapide. En dev, `push: true` reste actif pour synchro auto à chaque modif de collection.
+
 ## Mode "Coming Soon" / Maintenance
 
 Désactivé par défaut pendant le développement. À réactiver juste avant le lancement officiel pour faire la surprise au client.
