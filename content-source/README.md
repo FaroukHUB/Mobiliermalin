@@ -10,3 +10,5 @@ Une fois la migration de contenu terminée, ce dossier peut être conservé comm
 
 - [x] `01-home.md` — Page d'accueil
 - [x] `02-notre-demarche.md` — Notre démarche (anciennement "Notre histoire")
+- [x] `03-categories-produits.md` — 7 pages catégories produits
+- [x] `04-sitemap.md` — Sitemap complet ancien site + plan URL nouveau site
