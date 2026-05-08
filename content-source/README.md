@@ -9,3 +9,4 @@ Une fois la migration de contenu terminée, ce dossier peut être conservé comm
 ## Pages reçues
 
 - [x] `01-home.md` — Page d'accueil
+- [x] `02-notre-demarche.md` — Notre démarche (anciennement "Notre histoire")
