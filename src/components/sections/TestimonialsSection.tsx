@@ -31,6 +31,14 @@ const TESTIMONIALS: Testimonial[] = [
       'Très satisfaite de mon achat : excellent rapport qualité/prix et matériel en très bon état. Équipe accueillante et professionnelle, livraison rapide et efficace. Je recommande !',
   },
   {
+    author: 'Nono',
+    role: 'Local Guide · Google',
+    date: 'Février 2025',
+    rating: 5,
+    text:
+      "J'ai acheté un caisson avec dossiers suspendus. Il est en bon état en métal blanc comme je voulais. 30€, pas cher du tout ! Très satisfait.",
+  },
+  {
     author: 'Nelia L.',
     date: 'Mai 2025',
     rating: 5,
@@ -50,7 +58,7 @@ const TESTIMONIALS: Testimonial[] = [
     date: '2025',
     rating: 5,
     text:
-      'Matériel professionnel juste incroyable, les prix sont très attractifs et le vendeur vraiment au top. Petit message aussi pour les livreurs qui ont été au top.',
+      'Matériel professionnel juste incroyable, les prix sont très attractifs et le vendeur vraiment au top. Petit message aussi pour les livreurs qui ont été au top 🥇',
   },
   {
     author: 'Carlos P.',
@@ -105,7 +113,7 @@ export function TestimonialsSection() {
             <Star key={i} className="h-5 w-5 fill-gold text-gold" />
           ))}
           <span className="ml-2 text-sm text-ink-mute">
-            <strong className="text-ink">5,0</strong> sur Google · Plus de 9 avis
+            <strong className="text-ink">5,0</strong> sur Google · 9 avis vérifiés
           </span>
         </div>
       </div>
