@@ -8,4 +8,4 @@ Une fois la migration de contenu terminée, ce dossier peut être conservé comm
 
 ## Pages reçues
 
-(Mises à jour au fur et à mesure)
+- [x] `01-home.md` — Page d'accueil
