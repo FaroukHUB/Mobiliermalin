@@ -1,8 +1,20 @@
-import Link from 'next/link'
+import type { Metadata } from 'next'
 import { HeroSlider, type HeroSlide } from '@/components/HeroSlider'
+import { ReassuranceBar } from '@/components/sections/ReassuranceBar'
+import { CategoriesGrid } from '@/components/sections/CategoriesGrid'
+import { ServicesSection } from '@/components/sections/ServicesSection'
+import { ImpactSection } from '@/components/sections/ImpactSection'
+import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { getPayloadClient } from '@/lib/payload'
 
-export const revalidate = 60 // ISR : régénération toutes les 60s
+export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'Mobilier de bureau d\'exception, à −60 % du prix neuf',
+  description:
+    'Steelcase, Herman Miller, Haworth, Vitra. Mobilier de bureau reconditionné premium, garanti 6 mois. Livraison Marseille, Aubagne, Aix-en-Provence et toute la France.',
+  alternates: { canonical: '/' },
+}
 
 async function getHeroSlides(): Promise<HeroSlide[]> {
   try {
@@ -68,7 +80,6 @@ async function getHeroSlides(): Promise<HeroSlide[]> {
       })
       .filter((s): s is HeroSlide => s !== null)
   } catch (err) {
-    // Pas de DB connectée en dev / env preview : fallback gracieux
     console.warn('[hero] fallback demo slides:', err)
     return []
   }
@@ -77,20 +88,20 @@ async function getHeroSlides(): Promise<HeroSlide[]> {
 const FALLBACK_SLIDES: HeroSlide[] = [
   {
     id: 'demo-1',
-    title: "Le mobilier de bureau, autrement",
+    title: "Du mobilier de bureau d'exception, à −60 %",
     subtitle:
-      'Sélection rigoureuse de mobilier professionnel d\'occasion. Économique, écologique, sans compromis sur la qualité.',
+      'Steelcase, Herman Miller, Haworth, Vitra. Pièces signées, restaurées avec exigence et garanties 6 mois.',
     image: {
       url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80',
-      alt: 'Bureau moderne aménagé avec mobilier de qualité',
+      alt: 'Open-space moderne avec mobilier de bureau premium',
     },
-    ctaPrimaryLabel: 'Découvrir la boutique',
+    ctaPrimaryLabel: 'Voir le catalogue',
     ctaPrimaryHref: '/boutique',
-    ctaSecondaryLabel: 'Notre démarche',
-    ctaSecondaryHref: '/a-propos',
+    ctaSecondaryLabel: 'Vidage de locaux',
+    ctaSecondaryHref: '/vidage-de-locaux',
     textPosition: 'left',
     textColor: 'light',
-    overlayOpacity: 35,
+    overlayOpacity: 40,
   },
 ]
 
@@ -101,87 +112,35 @@ export default async function HomePage() {
   return (
     <>
       <HeroSlider slides={slides} />
+      <ReassuranceBar />
+      <ServicesSection />
+      <CategoriesGrid />
+      <ImpactSection />
+      <TestimonialsSection />
 
-      {/* Bandeau de réassurance */}
-      <section className="border-y border-line bg-ivory-dark">
-        <div className="container py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { t: 'Garantie 12 mois', s: 'Sur tout le mobilier' },
-            { t: 'Livraison & installation', s: 'Partout en France' },
-            { t: 'Économie circulaire', s: 'Jusqu\'à -70% vs neuf' },
-            { t: 'Sélection exigeante', s: 'Contrôle qualité 7 points' },
-          ].map((item) => (
-            <div key={item.t}>
-              <p className="font-serif text-lg text-ink">{item.t}</p>
-              <p className="text-xs text-ink-mute mt-1 uppercase tracking-widest">{item.s}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Catégories phares */}
-      <section className="container py-20">
-        <div className="text-center mb-12">
-          <p className="eyebrow">Catalogue</p>
-          <h2 className="text-display mt-3">Explorer par catégorie</h2>
-          <div className="gold-divider mt-6" />
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {[
-            { label: 'Bureaux', href: '/categorie/bureaux' },
-            { label: 'Fauteuils', href: '/categorie/fauteuils' },
-            { label: 'Rangements', href: '/categorie/rangements' },
-            { label: 'Salles de réunion', href: '/categorie/salles-de-reunion' },
-            { label: 'Tables basses', href: '/categorie/tables-basses' },
-            { label: 'Cloisons & acoustique', href: '/categorie/cloisons' },
-            { label: 'Accessoires', href: '/categorie/accessoires' },
-            { label: 'Lots & open-spaces', href: '/categorie/lots' },
-          ].map((c) => (
-            <Link
-              key={c.href}
-              href={c.href}
-              className="group aspect-[4/5] bg-ivory-light border border-line p-6 flex flex-col justify-end hover:border-gold transition"
-            >
-              <p className="font-serif text-xl text-ink group-hover:text-gold-dark transition">
-                {c.label}
-              </p>
-              <p className="text-xs uppercase tracking-widest text-ink-mute mt-2">Découvrir →</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA Vendre votre mobilier */}
+      {/* CTA final */}
       <section className="bg-ink text-ivory">
-        <div className="container py-20 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="eyebrow text-gold">Service entreprises</p>
-            <h2 className="text-display font-serif text-ivory mt-3">
-              Nous rachetons votre mobilier de bureau
-            </h2>
-            <p className="text-ivory/70 mt-4">
-              Liquidation, déménagement, renouvellement de parc, déstockage : nous reprenons votre mobilier en une intervention rapide et professionnelle. Estimation gratuite sous 48h.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-8">
-              <Link href="/vendre" className="btn-gold">
-                Demander une estimation
-              </Link>
-              <Link href="/debarras" className="btn-outline-light">
-                Service débarras
-              </Link>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            {[
-              { v: '48h', l: 'Réponse devis' },
-              { v: '7 j/7', l: 'Intervention' },
-              { v: 'France', l: 'Couverture' },
-            ].map((s) => (
-              <div key={s.l} className="border border-ivory/20 p-6">
-                <p className="font-serif text-3xl text-gold">{s.v}</p>
-                <p className="text-xs uppercase tracking-widest text-ivory/60 mt-2">{s.l}</p>
-              </div>
-            ))}
+        <div className="container py-20 md:py-28 text-center max-w-3xl mx-auto">
+          <p className="eyebrow text-gold">Parlons de votre projet</p>
+          <h2 className="text-display mt-3 font-serif text-ivory">
+            Acheter, vider, ou les deux ?
+          </h2>
+          <div className="h-px w-12 bg-gold mx-auto mt-6" />
+          <p className="mt-6 text-ivory/70 leading-relaxed">
+            Décrivez-nous votre besoin : équipement de bureaux, vidage de
+            locaux, conseil sur un projet d&apos;aménagement. Réponse sous 24 h
+            par un humain, pas par un robot.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <a href="/contact" className="btn-gold">
+              Demander un devis
+            </a>
+            <a
+              href="tel:+33676617053"
+              className="btn-outline-light"
+            >
+              06 76 61 70 53
+            </a>
           </div>
         </div>
       </section>
