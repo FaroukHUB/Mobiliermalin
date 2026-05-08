@@ -53,7 +53,16 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      // Supabase impose SSL ; on l'active si l'URI pointe vers Supabase.
+      ssl:
+        process.env.DATABASE_URI?.includes('supabase.')
+          ? { rejectUnauthorized: false }
+          : undefined,
     },
+    // Auto-push du schéma : les tables sont créées/mises à jour
+    // automatiquement à chaque déploiement. Pratique pour démarrer
+    // sans avoir à gérer les migrations à la main.
+    push: true,
   }),
   upload: {
     limits: {
