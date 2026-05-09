@@ -1,5 +1,4 @@
 import type { AdminViewServerProps } from 'payload'
-import { DefaultTemplate } from '@payloadcms/next/templates'
 import { Gutter } from '@payloadcms/ui'
 import Link from 'next/link'
 
@@ -135,19 +134,14 @@ export default async function Dashboard({
     refunded: 'Remboursée',
   }
 
+  // NB : on ne wrappe pas dans DefaultTemplate, Payload le fait déjà autour
+  // du composant de vue dashboard. Sinon on aurait une nav dupliquée.
+  void params
+  void searchParams
+
   return (
-    <DefaultTemplate
-      i18n={req.i18n}
-      locale={initPageResult.locale}
-      params={params}
-      payload={payload}
-      permissions={initPageResult.permissions}
-      searchParams={searchParams}
-      user={user || undefined}
-      visibleEntities={initPageResult.visibleEntities}
-    >
-      <Gutter className="mm-dashboard">
-        {/* Welcome banner */}
+    <Gutter className="mm-dashboard">
+      {/* Welcome banner */}
         <section className="mm-dashboard__hero">
           <div>
             <p className="mm-dashboard__eyebrow">Mobilier Malin · Espace de gestion</p>
@@ -294,14 +288,13 @@ export default async function Dashboard({
           </div>
         </section>
 
-        {/* Footer stats */}
-        <section className="mm-footer-stats">
-          <span>{customersTotal} client{customersTotal > 1 ? 's' : ''}</span>
-          <span aria-hidden>·</span>
-          <span>{ordersTotal} commande{ordersTotal > 1 ? 's' : ''} au total</span>
-        </section>
-      </Gutter>
-    </DefaultTemplate>
+      {/* Footer stats */}
+      <section className="mm-footer-stats">
+        <span>{customersTotal} client{customersTotal > 1 ? 's' : ''}</span>
+        <span aria-hidden>·</span>
+        <span>{ordersTotal} commande{ordersTotal > 1 ? 's' : ''} au total</span>
+      </section>
+    </Gutter>
   )
 }
 

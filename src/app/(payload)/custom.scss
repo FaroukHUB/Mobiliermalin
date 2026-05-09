@@ -229,29 +229,101 @@ select {
 .nav {
   background: var(--mm-ivory-light);
   border-right: 1px solid var(--mm-line);
+  padding-top: 1rem !important;
 }
 
+/* Items de menu */
 .nav__link {
+  position: relative;
   border-radius: 0 !important;
+  padding: 0.65rem 1.25rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  color: var(--mm-ink) !important;
+  transition: all 0.18s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+
+  /* Indicateur de gauche, fin et discret */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: transparent;
+    transition: background 0.18s ease;
+  }
 
   &:hover {
     background: var(--mm-ivory-dark) !important;
     color: var(--mm-gold-dark) !important;
+
+    &::before {
+      background: var(--mm-gold);
+    }
   }
 
+  /* Item actif : fond ivoire dark + filet or à gauche, pas un noir agressif */
   &.active,
-  &--active {
-    background: var(--mm-ink) !important;
-    color: var(--mm-ivory) !important;
+  &--active,
+  &[aria-current='page'] {
+    background: var(--mm-ivory-dark) !important;
+    color: var(--mm-ink) !important;
+    font-weight: 500 !important;
+
+    &::before {
+      background: var(--mm-gold);
+    }
   }
 }
 
-.nav-group__label {
-  font-size: 0.7rem !important;
-  letter-spacing: 0.18em !important;
+/* Labels de groupes ("ADMINISTRATION", "CONTENUS"...) */
+.nav-group__label,
+.nav-group__toggle,
+.nav-group__toggle-label {
+  font-size: 0.65rem !important;
+  letter-spacing: 0.22em !important;
   text-transform: uppercase !important;
   color: var(--mm-ink-mute) !important;
   font-weight: 500 !important;
+  padding: 1.5rem 1.25rem 0.5rem !important;
+}
+
+/* Icônes des groupes (chevrons) */
+.nav-group__indicator {
+  color: var(--mm-ink-mute) !important;
+  opacity: 0.5;
+}
+
+/* Toggle hamburger en haut */
+.nav-toggler {
+  border-radius: 0 !important;
+  border: 1px solid var(--mm-line) !important;
+  background: var(--mm-ivory-light) !important;
+
+  &:hover {
+    border-color: var(--mm-gold) !important;
+    color: var(--mm-gold-dark) !important;
+  }
+}
+
+/* Footer de la nav (logout, account) */
+.account-controls,
+.nav-account-controls {
+  border-top: 1px solid var(--mm-line);
+  padding: 1rem 1.25rem;
+
+  .btn,
+  a {
+    color: var(--mm-ink-mute) !important;
+
+    &:hover {
+      color: var(--mm-gold-dark) !important;
+    }
+  }
 }
 
 /* ---------- 7. Dashboard sur-mesure ---------- */
