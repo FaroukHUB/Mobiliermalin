@@ -69,4 +69,14 @@
   .gold-divider {
     @apply h-px w-12 bg-gold mx-auto;
   }
+
+  .mm-label {
+    @apply block text-xs uppercase tracking-widest text-ink-mute font-medium mb-2;
+  }
+
+  .mm-input {
+    @apply block w-full bg-ivory-light border border-line px-4 py-3 text-sm text-ink
+           focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/15
+           placeholder:text-ink-mute/60 transition;
+  }
 }
