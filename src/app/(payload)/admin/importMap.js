@@ -27,6 +27,8 @@ import {
   SlugField,
 } from '@payloadcms/next/client'
 
+import { S3ClientUploadHandler } from '@payloadcms/storage-s3/client'
+
 export const importMap = {
   // RSC (Server Components)
   '@payloadcms/next/rsc#CollectionCards': CollectionCards,
@@ -49,4 +51,7 @@ export const importMap = {
   '@payloadcms/next/client#QueryPresetsWhereCell': QueryPresetsWhereCell,
   '@payloadcms/next/client#QueryPresetsWhereField': QueryPresetsWhereField,
   '@payloadcms/next/client#SlugField': SlugField,
+
+  // Plugin S3 / Supabase Storage — handler d'upload cote client
+  '@payloadcms/storage-s3/client#S3ClientUploadHandler': S3ClientUploadHandler,
 }

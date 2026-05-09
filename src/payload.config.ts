@@ -5,6 +5,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { resendAdapter } from '@payloadcms/email-resend'
+import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -83,6 +84,10 @@ export default buildConfig({
     Redirects,
   ],
   editor: lexicalEditor(),
+  // Sharp doit etre passe explicitement pour activer le redimensionnement
+  // d'images des collections upload (Media). Sans ca, les sizes definies
+  // dans Media.upload.imageSizes ne sont pas generees.
+  sharp,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
