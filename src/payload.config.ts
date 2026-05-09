@@ -69,6 +69,18 @@ export default buildConfig({
     meta: {
       titleSuffix: ' — Mobilier Malin',
     },
+    components: {
+      graphics: {
+        Logo: '@/components/admin/Logo',
+        Icon: '@/components/admin/Icon',
+      },
+      beforeLogin: ['@/components/admin/BeforeLogin'],
+      views: {
+        dashboard: {
+          Component: '@/components/admin/Dashboard',
+        },
+      },
+    },
   },
   collections: [
     Users,
@@ -109,6 +121,27 @@ export default buildConfig({
   upload: {
     limits: {
       fileSize: 10000000, // 10 Mo
+    },
+  },
+  // Force le francais en langue par defaut + ajout de traductions custom
+  // pour les libelles que Payload n'a pas encore traduits.
+  i18n: {
+    fallbackLanguage: 'fr',
+    translations: {
+      fr: {
+        general: {
+          dashboard: 'Tableau de bord',
+          createNew: 'Créer',
+          createNewLabel: 'Créer {{label}}',
+          save: 'Enregistrer',
+          saving: 'Enregistrement…',
+          delete: 'Supprimer',
+          edit: 'Modifier',
+          cancel: 'Annuler',
+          confirm: 'Confirmer',
+          close: 'Fermer',
+        },
+      },
     },
   },
   email: emailAdapter,

@@ -29,6 +29,12 @@ import {
 
 import { S3ClientUploadHandler } from '@payloadcms/storage-s3/client'
 
+// Composants custom Mobilier Malin
+import MMLogo from '@/components/admin/Logo'
+import MMIcon from '@/components/admin/Icon'
+import MMBeforeLogin from '@/components/admin/BeforeLogin'
+import MMDashboard from '@/components/admin/Dashboard'
+
 export const importMap = {
   // RSC (Server Components)
   '@payloadcms/next/rsc#CollectionCards': CollectionCards,
@@ -54,4 +60,10 @@ export const importMap = {
 
   // Plugin S3 / Supabase Storage — handler d'upload cote client
   '@payloadcms/storage-s3/client#S3ClientUploadHandler': S3ClientUploadHandler,
+
+  // Composants custom Mobilier Malin
+  '@/components/admin/Logo#default': MMLogo,
+  '@/components/admin/Icon#default': MMIcon,
+  '@/components/admin/BeforeLogin#default': MMBeforeLogin,
+  '@/components/admin/Dashboard#default': MMDashboard,
 }
