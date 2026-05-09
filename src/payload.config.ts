@@ -22,8 +22,6 @@ import { Redirects } from './collections/Redirects'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const isProd = process.env.NODE_ENV === 'production'
-
 // ───────────────────────── Storage (Supabase) ─────────────────────────
 // Supabase Storage est compatible S3. On le branche si les variables sont
 // renseignees, sinon on tombe sur le stockage local (dev uniquement).
@@ -113,10 +111,12 @@ export default buildConfig({
           ? { rejectUnauthorized: false }
           : undefined,
     },
-    // En production : push:false. Le schema est deja en place et on evite
-    // que chaque requete recheck le schema (gain de perf significatif).
-    // En dev : push:true pour auto-syncer le schema quand on change les collections.
-    push: !isProd,
+    // Auto-push du schema : Payload synchronise les tables a chaque cold start.
+    // L'overhead est negligeable et ca nous evite de devoir gerer les migrations
+    // manuellement quand on ajoute un plugin (Storage, Email...) qui ajoute des
+    // colonnes. Pour des projets a fort trafic on basculera sur de vraies
+    // migrations Drizzle plus tard.
+    push: true,
   }),
   upload: {
     limits: {
