@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
+import { getSiteSettings } from '@/lib/site-settings'
 import './globals.css'
 
 const inter = Inter({
@@ -94,11 +95,19 @@ export const viewport: Viewport = {
   themeColor: '#FAF9F6',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const settings = await getSiteSettings()
+  const logoOnLight = settings.logoOnLight?.url
+    ? { url: settings.logoOnLight.url, alt: settings.logoOnLight.alt }
+    : undefined
+  const logoOnDark = settings.logoOnDark?.url
+    ? { url: settings.logoOnDark.url, alt: settings.logoOnDark.alt }
+    : undefined
+
   return (
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
       <body>
@@ -108,9 +117,9 @@ export default function RootLayout({
         >
           Aller au contenu
         </a>
-        <Header />
+        <Header logo={logoOnLight} />
         <main id="main">{children}</main>
-        <Footer />
+        <Footer logo={logoOnDark} />
         <OrganizationSchema />
       </body>
     </html>

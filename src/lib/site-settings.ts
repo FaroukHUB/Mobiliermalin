@@ -8,6 +8,8 @@ export type MediaImage = {
 }
 
 export type SiteSettings = {
+  logoOnLight?: MediaImage
+  logoOnDark?: MediaImage
   manifesteImage?: MediaImage
   lldSectionImage?: MediaImage
   showroomImage?: MediaImage

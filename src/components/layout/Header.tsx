@@ -1,9 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { ShoppingBag, Search, User, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+interface HeaderProps {
+  logo?: { url: string; alt?: string }
+}
 
 const NAV = [
   { label: 'Accueil', href: '/' },
@@ -14,7 +19,7 @@ const NAV = [
   { label: 'Contact', href: '/contact' },
 ]
 
-export function Header() {
+export function Header({ logo }: HeaderProps = {}) {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
@@ -25,9 +30,20 @@ export function Header() {
           className="flex items-center gap-3 shrink-0"
           aria-label="Mobilier Malin — accueil"
         >
-          <span className="font-serif text-2xl tracking-tight text-ink">
-            Mobilier <span className="text-gold-dark">Malin</span>
-          </span>
+          {logo ? (
+            <Image
+              src={logo.url}
+              alt={logo.alt || 'Mobilier Malin'}
+              width={200}
+              height={56}
+              priority
+              className="h-12 w-auto object-contain"
+            />
+          ) : (
+            <span className="font-serif text-2xl tracking-tight text-ink">
+              Mobilier <span className="text-gold-dark">Malin</span>
+            </span>
+          )}
         </Link>
 
         <nav

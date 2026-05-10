@@ -23,6 +23,31 @@ export const SiteSettings: GlobalConfig = {
       type: 'tabs',
       tabs: [
         {
+          label: 'Identité visuelle',
+          fields: [
+            {
+              name: 'logoOnLight',
+              label: 'Logo — pour fonds clairs (header)',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description:
+                  'Version sombre du logo, à utiliser dans le header (fond ivoire). Format conseillé : PNG ou SVG transparent, hauteur 80–120 px. Si vide, le wordmark texte « Mobilier Malin » est affiché.',
+              },
+            },
+            {
+              name: 'logoOnDark',
+              label: 'Logo — pour fonds sombres (footer)',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description:
+                  'Version claire / or du logo, à utiliser dans le footer (fond noir). Format conseillé : PNG ou SVG transparent, hauteur 80–120 px. Si vide, le wordmark texte « Mobilier Malin » est affiché.',
+              },
+            },
+          ],
+        },
+        {
           label: 'Page d’accueil',
           fields: [
             {
