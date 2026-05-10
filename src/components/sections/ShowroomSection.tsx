@@ -2,8 +2,20 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { MapPin, Clock, Phone } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
+import type { MediaImage } from '@/lib/site-settings'
 
-export function ShowroomSection() {
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80'
+const FALLBACK_ALT = 'Showroom Mobilier Malin à Aubagne'
+
+interface ShowroomSectionProps {
+  image?: MediaImage
+}
+
+export function ShowroomSection({ image }: ShowroomSectionProps = {}) {
+  const src = image?.url || FALLBACK_IMAGE
+  const alt = image?.alt || FALLBACK_ALT
+
   return (
     <section className="bg-ivory-dark border-y border-line">
       <div className="container py-20 md:py-32 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -59,8 +71,8 @@ export function ShowroomSection() {
         <Reveal delay={150}>
           <div className="relative aspect-[4/3] bg-ivory-light overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&q=80"
-              alt="Showroom Mobilier Malin à Aubagne"
+              src={src}
+              alt={alt}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover"

@@ -2,6 +2,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Wallet, ShieldCheck, Repeat, ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
+import type { MediaImage } from '@/lib/site-settings'
+
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1542435503-956c469947f6?w=1000&q=80'
+const FALLBACK_ALT = 'Open-space moderne équipé en location longue durée'
 
 const PILIERS = [
   {
@@ -21,7 +26,14 @@ const PILIERS = [
   },
 ]
 
-export function LLDSection() {
+interface LLDSectionProps {
+  image?: MediaImage
+}
+
+export function LLDSection({ image }: LLDSectionProps = {}) {
+  const src = image?.url || FALLBACK_IMAGE
+  const alt = image?.alt || FALLBACK_ALT
+
   return (
     <section className="relative bg-ivory-light overflow-hidden">
       {/* Décor or discret en haut */}
@@ -33,8 +45,8 @@ export function LLDSection() {
           <Reveal className="lg:col-span-5 order-2 lg:order-1">
             <div className="relative aspect-[4/5] bg-ivory-dark overflow-hidden">
               <Image
-                src="https://images.unsplash.com/photo-1542435503-956c469947f6?w=1000&q=80"
-                alt="Open-space moderne équipé en location longue durée"
+                src={src}
+                alt={alt}
                 fill
                 sizes="(min-width: 1024px) 40vw, 100vw"
                 className="object-cover"

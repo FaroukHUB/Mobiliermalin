@@ -3,7 +3,7 @@ import { HeroSlider, type HeroSlide } from '@/components/HeroSlider'
 import { ReassuranceBar } from '@/components/sections/ReassuranceBar'
 import { ManifesteSection } from '@/components/sections/ManifesteSection'
 import { BrandsSection } from '@/components/sections/BrandsSection'
-import { CategoriesGrid } from '@/components/sections/CategoriesGrid'
+import { CategoriesGrid, type CategoryImageMap } from '@/components/sections/CategoriesGrid'
 import { LLDSection } from '@/components/sections/LLDSection'
 import { RSESection } from '@/components/sections/RSESection'
 import { ServicesSection } from '@/components/sections/ServicesSection'
@@ -13,6 +13,7 @@ import { ImpactSection } from '@/components/sections/ImpactSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
 import { getPayloadClient } from '@/lib/payload'
+import { getSiteSettings } from '@/lib/site-settings'
 
 export const revalidate = 60
 
@@ -147,22 +148,49 @@ const FALLBACK_SLIDES: HeroSlide[] = [
   },
 ]
 
+async function getCategoryImageMap(): Promise<CategoryImageMap> {
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.find({
+      collection: 'categories',
+      limit: 50,
+      depth: 2,
+    })
+    const map: CategoryImageMap = {}
+    for (const cat of result.docs as Array<{
+      slug?: string
+      image?: { url?: string; alt?: string } | null
+    }>) {
+      if (cat.slug && cat.image?.url) {
+        map[cat.slug] = { url: cat.image.url, alt: cat.image.alt }
+      }
+    }
+    return map
+  } catch {
+    return {}
+  }
+}
+
 export default async function HomePage() {
-  const fromDb = await getHeroSlides()
-  const slides = fromDb.length > 0 ? fromDb : FALLBACK_SLIDES
+  const [slidesFromDb, siteSettings, categoryImageMap] = await Promise.all([
+    getHeroSlides(),
+    getSiteSettings(),
+    getCategoryImageMap(),
+  ])
+  const slides = slidesFromDb.length > 0 ? slidesFromDb : FALLBACK_SLIDES
 
   return (
     <>
       <HeroSlider slides={slides} />
       <ReassuranceBar />
-      <ManifesteSection />
+      <ManifesteSection image={siteSettings.manifesteImage} />
       <BrandsSection />
-      <CategoriesGrid />
-      <LLDSection />
+      <CategoriesGrid imageMap={categoryImageMap} />
+      <LLDSection image={siteSettings.lldSectionImage} />
       <RSESection />
       <ServicesSection />
       <ProcessSection />
-      <ShowroomSection />
+      <ShowroomSection image={siteSettings.showroomImage} />
       <ImpactSection />
       <TestimonialsSection />
       <NewsletterSection />

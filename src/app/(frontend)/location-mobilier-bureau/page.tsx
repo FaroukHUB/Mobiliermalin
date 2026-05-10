@@ -12,6 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
+import { getSiteSettings } from '@/lib/site-settings'
 
 export const metadata: Metadata = {
   title:
@@ -133,7 +134,15 @@ const FAQ = [
   },
 ]
 
-export default function LLDPage() {
+export default async function LLDPage() {
+  const settings = await getSiteSettings()
+  const heroImageUrl =
+    settings.lldHeroImage?.url ||
+    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&q=80'
+  const heroImageAlt =
+    settings.lldHeroImage?.alt ||
+    'Bureau professionnel équipé en location longue durée'
+
   return (
     <>
       {/* Hero */}
@@ -169,8 +178,8 @@ export default function LLDPage() {
           </div>
           <div className="relative aspect-[4/3] bg-ivory/10 overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&q=80"
-              alt="Bureau professionnel équipé en location longue durée"
+              src={heroImageUrl}
+              alt={heroImageAlt}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover"

@@ -1,8 +1,20 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Reveal } from '@/components/animations/Reveal'
+import type { MediaImage } from '@/lib/site-settings'
 
-export function ManifesteSection() {
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1200&q=80'
+const FALLBACK_ALT = 'Espace de bureau aménagé avec mobilier de qualité'
+
+interface ManifesteSectionProps {
+  image?: MediaImage
+}
+
+export function ManifesteSection({ image }: ManifesteSectionProps = {}) {
+  const src = image?.url || FALLBACK_IMAGE
+  const alt = image?.alt || FALLBACK_ALT
+
   return (
     <section className="container py-20 md:py-32 grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
       <Reveal className="lg:col-span-6 order-2 lg:order-1">
@@ -43,8 +55,8 @@ export function ManifesteSection() {
       <Reveal delay={150} className="lg:col-span-6 order-1 lg:order-2">
         <div className="relative aspect-[4/5] overflow-hidden bg-ivory-dark">
           <Image
-            src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1200&q=80"
-            alt="Espace de bureau aménagé avec mobilier de qualité"
+            src={src}
+            alt={alt}
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"

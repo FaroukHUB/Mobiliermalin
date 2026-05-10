@@ -18,6 +18,7 @@ import { BlogPosts } from './collections/BlogPosts'
 import { Orders } from './collections/Orders'
 import { Customers } from './collections/Customers'
 import { Redirects } from './collections/Redirects'
+import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -93,6 +94,7 @@ export default buildConfig({
     Customers,
     Redirects,
   ],
+  globals: [SiteSettings],
   editor: lexicalEditor(),
   // Sharp doit etre passe explicitement pour activer le redimensionnement
   // d'images des collections upload (Media). Sans ca, les sizes definies
