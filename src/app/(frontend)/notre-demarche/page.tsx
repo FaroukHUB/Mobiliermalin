@@ -15,7 +15,7 @@ const TIMELINE = [
     title: 'Le déclic',
     subtitle: 'Une idée née sur le terrain',
     body:
-      "Lors de missions de déménagement professionnel à Marseille, Djamel Djennad observe des quantités impressionnantes de mobilier de bureau presque neuf parties à la benne. Fauteuils ergonomiques, bureaux en bois massif, armoires métalliques… gaspillés. L'idée germe : et si on les récupérait ?",
+      "Lors de missions de déménagement professionnel à Marseille, Djamel Djennad constate une réalité simple : d'importants volumes de mobilier de bureau de qualité, encore parfaitement utilisables, n'ont pas de filière organisée pour leur seconde vie. L'idée germe : créer ce maillon manquant.",
   },
   {
     year: '2021',
@@ -90,18 +90,18 @@ export default function NotreDemarchePage() {
         <div className="container py-20 md:py-28 max-w-4xl">
           <p className="eyebrow">Notre histoire</p>
           <h1 className="text-display-xl mt-4 font-serif">
-            Le mobilier de bureau de qualité ne devrait pas finir à la benne
+            Du mobilier d&apos;exception, qui mérite une seconde adresse
           </h1>
           <div className="gold-divider mx-0 mt-8" />
           <p className="mt-8 text-lg text-ink-soft leading-relaxed">
-            Chaque année, des milliers de tonnes de mobilier de bureau en parfait
-            état partent à la benne lors de déménagements ou de fermetures
-            d&apos;entreprises. Des fauteuils Steelcase, des bureaux Herman
-            Miller, des armoires solides comme le roc… condamnés simplement
-            parce que personne ne s&apos;organisait pour les sauver.
+            Le tissu économique se transforme en permanence : déménagements,
+            croissances, fusions, fermetures. Avec lui, des volumes
+            considérables de mobilier de qualité — Steelcase, Herman Miller,
+            Haworth, Vitra — cherchent une nouvelle adresse chaque année.
           </p>
           <p className="mt-4 text-lg text-ink leading-relaxed font-medium">
-            Mobilier Malin est née pour changer ça.
+            Mobilier Malin a été créée pour fluidifier ce passage et donner à
+            ces pièces une seconde vie utile.
           </p>
         </div>
       </section>
@@ -146,11 +146,11 @@ export default function NotreDemarchePage() {
         <div className="container py-20 md:py-28 max-w-3xl text-center">
           <Quote className="h-10 w-10 text-gold mx-auto" strokeWidth={1.25} />
           <blockquote className="mt-8 font-serif text-2xl md:text-3xl leading-snug text-ivory">
-            « J&apos;ai vu trop de beau mobilier finir à la benne pour rester
-            les bras croisés. Mobilier Malin, c&apos;est l&apos;idée simple que
-            ce qui est encore utile mérite une seconde vie — et que les
-            entreprises ne devraient pas payer plein tarif pour bien
-            s&apos;équiper. »
+            « J&apos;ai vu passer beaucoup de beau mobilier sans qu&apos;une
+            filière dédiée n&apos;existe pour leur donner une nouvelle vie.
+            Mobilier Malin, c&apos;est l&apos;idée simple que les entreprises
+            devraient pouvoir s&apos;équiper bien sans payer plein tarif — et
+            que ces pièces méritent de continuer à servir. »
           </blockquote>
           <div className="h-px w-12 bg-gold mx-auto my-8" />
           <p className="font-serif text-lg text-gold">Djamel Djennad</p>

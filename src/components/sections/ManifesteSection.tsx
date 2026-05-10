@@ -8,27 +8,26 @@ export function ManifesteSection() {
       <Reveal className="lg:col-span-6 order-2 lg:order-1">
         <p className="eyebrow">Notre manifeste</p>
         <h2 className="text-display mt-4 font-serif leading-[1.1]">
-          Le mobilier de bureau ne se jette pas. Il se transmet.
+          Le mobilier de bureau ne se jette pas. Il circule.
         </h2>
         <div className="h-px w-12 bg-gold mt-7" />
         <div className="mt-7 space-y-5 text-ink-soft leading-relaxed">
           <p>
-            Chaque année, des milliers de tonnes de mobilier de bureau
-            d&apos;exception finissent en décharge. Bureaux Steelcase encore
-            en parfait état, fauteuils Herman Miller à peine utilisés,
-            armoires en acier solides — sacrifiés au prétexte d&apos;un
-            déménagement, d&apos;un changement de design, d&apos;un parc qu&apos;on
-            renouvelle plus vite que prévu.
+            Le monde du travail évolue vite. Les entreprises grandissent,
+            déménagent, fusionnent, repensent leurs espaces. Et avec elles,
+            d&apos;immenses volumes de mobilier — souvent signés Steelcase,
+            Herman Miller, Haworth ou Vitra — changent de mains chaque année.
           </p>
           <p>
-            Nous croyons qu&apos;une pièce signée par Vitra ou Steelcase
-            n&apos;a aucune raison de partir à la benne après quelques années
-            d&apos;usage. Nous croyons qu&apos;équiper ses bureaux n&apos;a pas
-            à coûter le prix du neuf, ni à peser sur la planète.
+            Notre métier est d&apos;être <strong className="text-ink">le pont
+            intelligent</strong> entre celles qui s&apos;en séparent et
+            celles qui souhaitent s&apos;équiper. Pour les premières, nous
+            simplifions une étape souvent fastidieuse. Pour les secondes, nous
+            rendons accessible un mobilier de qualité, à prix maîtrisé.
           </p>
           <p className="text-ink font-medium">
-            Mobilier Malin sélectionne, restaure et propose ces pièces premium
-            à celles et ceux qui veulent du beau, du durable, et du juste prix.
+            Mobilier Malin sélectionne, restaure et redistribue. Au profit
+            des entreprises, des budgets, et de la planète.
           </p>
         </div>
         <div className="mt-10 flex flex-wrap gap-3">
