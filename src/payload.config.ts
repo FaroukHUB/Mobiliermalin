@@ -112,6 +112,12 @@ export default buildConfig({
         process.env.DATABASE_URI?.includes('supabase.')
           ? { rejectUnauthorized: false }
           : undefined,
+      // CRITIQUE pour Vercel + Supabase Session Pooler (limite 15 connexions globales) :
+      // chaque fonction serverless ouvre son propre pool, on doit donc limiter
+      // chaque pool a 1-2 connexions max pour ne pas saturer le pooler.
+      max: 2,
+      idleTimeoutMillis: 10000, // libere les connexions inactives apres 10s
+      connectionTimeoutMillis: 10000, // attend max 10s pour avoir une connexion
     },
     // Auto-push du schema : Payload synchronise les tables a chaque cold start.
     // L'overhead est negligeable et ca nous evite de devoir gerer les migrations
