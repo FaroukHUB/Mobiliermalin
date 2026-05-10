@@ -12,9 +12,10 @@ const CATEGORIES = [
 ]
 
 const SERVICES = [
-  { label: 'Achat de mobilier reconditionné', href: '/services/achat' },
-  { label: 'Vidage de locaux professionnels', href: '/vidage-de-locaux' },
-  { label: 'Livraison & installation', href: '/livraison' },
+  { label: 'Achat reconditionné', href: '/boutique' },
+  { label: 'Location longue durée', href: '/location-mobilier-bureau' },
+  { label: 'Vidage de locaux', href: '/vidage-de-locaux' },
+  { label: 'Attestation RSE', href: '/attestation-rse' },
   { label: 'Demander un devis', href: '/contact' },
 ]
 

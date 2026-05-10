@@ -8,9 +8,9 @@ import { cn } from '@/lib/utils'
 const NAV = [
   { label: 'Accueil', href: '/' },
   { label: 'Boutique', href: '/boutique' },
+  { label: 'Location LLD', href: '/location-mobilier-bureau' },
   { label: 'Vidage de locaux', href: '/vidage-de-locaux' },
   { label: 'Notre démarche', href: '/notre-demarche' },
-  { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
 ]
 

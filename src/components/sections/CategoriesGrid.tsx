@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, ArrowRight } from 'lucide-react'
+import { Reveal } from '@/components/animations/Reveal'
 
 type Category = {
   label: string
@@ -11,28 +12,26 @@ type Category = {
   imageAlt: string
 }
 
-// Placeholders Unsplash en attendant que le client uploade ses vraies photos
-// dans l'admin Payload. Les vraies photos remplaceront automatiquement.
 const CATEGORIES: Category[] = [
   {
     label: 'Bureaux individuels',
-    description: 'Bureaux droits et en L, mélaminé ou bois.',
+    description: 'Bureaux droits et en L, mélaminé ou bois',
     href: '/categorie/bureaux-individuels',
     fromPrice: 'À partir de 72 €',
     image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=900&q=80',
-    imageAlt: 'Bureau individuel en bois clair dans un espace de travail moderne',
+    imageAlt: 'Bureau individuel en bois clair',
   },
   {
     label: 'Fauteuils ergonomiques',
-    description: 'Steelcase, Haworth, Herman Miller reconditionnés.',
+    description: 'Steelcase, Haworth, Herman Miller',
     href: '/categorie/fauteuils-ergonomiques',
     fromPrice: 'À partir de 24 €',
     image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=900&q=80',
-    imageAlt: 'Fauteuil ergonomique de bureau noir',
+    imageAlt: 'Fauteuil ergonomique de bureau',
   },
   {
     label: 'Armoires & rangements',
-    description: 'Armoires hautes, basses, métal ou bois.',
+    description: 'Hautes, basses, métal ou bois',
     href: '/categorie/armoires-rangements',
     fromPrice: 'À partir de 96 €',
     image: 'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=900&q=80',
@@ -40,23 +39,23 @@ const CATEGORIES: Category[] = [
   },
   {
     label: 'Chaises d\'accueil & réunion',
-    description: 'Empilables ou avec roulettes.',
+    description: 'Empilables ou avec roulettes',
     href: '/categorie/chaises-accueil-reunion',
     fromPrice: 'À partir de 36 €',
     image: 'https://images.unsplash.com/photo-1577412647305-991150c7d163?w=900&q=80',
-    imageAlt: 'Chaises de réunion design alignées',
+    imageAlt: 'Chaises de réunion design',
   },
   {
     label: 'Tables de réunion',
-    description: 'Rondes, ovales, rectangulaires.',
+    description: 'Rondes, ovales, rectangulaires',
     href: '/categorie/tables-de-reunion',
     fromPrice: 'À partir de 108 €',
     image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80',
-    imageAlt: 'Salle de réunion avec table en bois',
+    imageAlt: 'Salle de réunion avec table',
   },
   {
     label: 'Espaces détente',
-    description: 'Lounge, canapés, poufs design.',
+    description: 'Lounge, canapés, poufs design',
     href: '/categorie/espaces-detente',
     fromPrice: 'À partir de 60 €',
     image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=80',
@@ -64,7 +63,7 @@ const CATEGORIES: Category[] = [
   },
   {
     label: 'Caissons de bureau',
-    description: 'Mobiles ou fixes, avec serrure.',
+    description: 'Mobiles ou fixes, avec serrure',
     href: '/categorie/caissons',
     fromPrice: 'À partir de 36 €',
     image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=80',
@@ -75,65 +74,85 @@ const CATEGORIES: Category[] = [
 export function CategoriesGrid() {
   return (
     <section className="container py-20 md:py-28">
-      <div className="text-center max-w-2xl mx-auto mb-14">
-        <p className="eyebrow">Catalogue</p>
-        <h2 className="text-display mt-3 font-serif">
-          Trouvez ce qu&apos;il vous faut
-        </h2>
-        <div className="gold-divider mt-6" />
-        <p className="mt-6 text-ink-mute">
-          Sept univers, des centaines de références. Toutes nos pièces sont
-          inspectées, nettoyées et reconditionnées avant livraison.
-        </p>
-      </div>
+      <Reveal>
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <p className="eyebrow">Catalogue</p>
+          <h2 className="text-display mt-3 font-serif">
+            Sept univers, une exigence
+          </h2>
+          <div className="gold-divider mt-6" />
+          <p className="mt-6 text-ink-mute">
+            Chaque pièce est inspectée, nettoyée et reconditionnée avant
+            livraison. Marques premium, état contrôlé, garantie 6 mois.
+          </p>
+        </div>
+      </Reveal>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
         {CATEGORIES.map((c, i) => (
-          <Link
-            key={c.href}
-            href={c.href}
-            className={`group relative bg-ivory-light border border-line overflow-hidden hover:shadow-soft transition-all duration-300 ${
-              i === 0 ? 'sm:col-span-2 lg:row-span-2' : ''
-            }`}
-          >
-            <div className={`relative w-full overflow-hidden bg-ivory-dark ${i === 0 ? 'aspect-[16/10] lg:aspect-[4/5]' : 'aspect-[4/3]'}`}>
-              <Image
-                src={c.image}
-                alt={c.imageAlt}
-                fill
-                sizes={i === 0 ? '(min-width: 1024px) 33vw, (min-width: 640px) 100vw, 100vw' : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'}
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition" />
-              <div className="absolute top-4 left-4">
-                <span className="inline-block bg-ivory/90 backdrop-blur text-[0.65rem] uppercase tracking-widest text-gold-dark font-medium px-3 py-1.5">
-                  {c.fromPrice}
-                </span>
+          <Reveal key={c.href} delay={i * 60}>
+            <Link
+              href={c.href}
+              className="group block bg-ivory-light border border-line hover:border-gold transition-colors duration-300"
+            >
+              <div className="relative aspect-square overflow-hidden bg-ivory-dark">
+                <Image
+                  src={c.image}
+                  alt={c.imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                />
+                {/* Badge dispo en haut à droite */}
+                <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-ivory/95 backdrop-blur px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-ink">
+                  <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+                  Disponible
+                </div>
+                {/* Flèche au hover */}
+                <div className="absolute bottom-3 right-3 h-10 w-10 bg-ivory translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                  <ArrowUpRight className="h-4 w-4 text-ink" strokeWidth={1.5} />
+                </div>
               </div>
-            </div>
-
-            <div className="p-6 md:p-7 flex items-start justify-between gap-4">
-              <div>
-                <h3 className="font-serif text-xl md:text-2xl text-ink group-hover:text-gold-dark transition leading-tight">
+              <div className="p-5">
+                <p className="text-[0.7rem] uppercase tracking-widest text-gold-dark font-medium">
+                  {c.fromPrice}
+                </p>
+                <h3 className="font-serif text-lg md:text-xl text-ink mt-1.5 leading-tight">
                   {c.label}
                 </h3>
-                <p className="text-sm text-ink-mute mt-2 leading-relaxed">
+                <p className="text-xs text-ink-mute mt-1.5 leading-relaxed">
                   {c.description}
                 </p>
               </div>
-              <ArrowUpRight
-                className="h-5 w-5 text-ink-mute group-hover:text-gold-dark group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition shrink-0 mt-1"
-                strokeWidth={1.5}
+            </Link>
+          </Reveal>
+        ))}
+
+        {/* 8e card : "Voir tout" en style different */}
+        <Reveal delay={420}>
+          <Link
+            href="/boutique"
+            className="group flex flex-col bg-ink text-ivory border border-ink hover:bg-gold-dark hover:border-gold-dark transition-colors duration-300 h-full"
+          >
+            <div className="aspect-square flex items-center justify-center">
+              <ArrowRight
+                className="h-10 w-10 text-gold group-hover:text-ivory group-hover:translate-x-1 transition"
+                strokeWidth={1.25}
               />
             </div>
+            <div className="p-5 mt-auto">
+              <p className="text-[0.7rem] uppercase tracking-widest text-gold font-medium group-hover:text-ivory">
+                Catalogue complet
+              </p>
+              <h3 className="font-serif text-lg md:text-xl mt-1.5 leading-tight text-ivory">
+                Voir tous nos produits
+              </h3>
+              <p className="text-xs text-ivory/70 mt-1.5 leading-relaxed">
+                Recherche, filtres, panier B2B
+              </p>
+            </div>
           </Link>
-        ))}
-      </div>
-
-      <div className="text-center mt-12">
-        <Link href="/boutique" className="btn-outline">
-          Voir tout le catalogue
-        </Link>
+        </Reveal>
       </div>
     </section>
   )
