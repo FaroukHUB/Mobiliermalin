@@ -17,7 +17,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: 'Bientôt en ligne — Mobilier Malin',
   description:
-    'Mobilier de bureau d\'occasion sélectionné. Notre nouveau site arrive bientôt.',
+    'Mobilier de bureau reconditionné premium. Notre nouveau site arrive bientôt.',
   robots: { index: false, follow: false },
 }
 

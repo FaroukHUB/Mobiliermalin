@@ -26,7 +26,7 @@ export default function MaintenancePage() {
           Notre nouveau site arrive très prochainement.
         </p>
         <p className="text-base text-ink-mute leading-relaxed mt-3">
-          Le mobilier de bureau d&apos;occasion, sélectionné avec exigence.
+          Le mobilier de bureau reconditionné premium, sélectionné avec exigence.
           <br />
           Économique, écologique, professionnel.
         </p>

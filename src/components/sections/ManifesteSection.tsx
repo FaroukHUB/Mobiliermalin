@@ -14,21 +14,21 @@ export function ManifesteSection() {
         <div className="mt-7 space-y-5 text-ink-soft leading-relaxed">
           <p>
             Chaque année, des milliers de tonnes de mobilier de bureau
-            d&apos;exception finissent en décharge. Bureaux Steelcase,
-            fauteuils Herman Miller, armoires en acier de 30 ans qui n&apos;ont
-            rien perdu de leur solidité — sacrifiés au prétexte d&apos;un
-            déménagement, d&apos;un changement de couleur, d&apos;un design plus
-            « tendance ».
+            d&apos;exception finissent en décharge. Bureaux Steelcase encore
+            en parfait état, fauteuils Herman Miller à peine utilisés,
+            armoires en acier solides — sacrifiés au prétexte d&apos;un
+            déménagement, d&apos;un changement de design, d&apos;un parc qu&apos;on
+            renouvelle plus vite que prévu.
           </p>
           <p>
-            Nous croyons qu&apos;une chaise de qualité, pensée pour durer
-            vingt-cinq ans, n&apos;a aucune raison d&apos;en finir au bout de
-            cinq. Nous croyons qu&apos;équiper ses bureaux n&apos;a pas à
-            coûter le prix du neuf, ni à peser sur la planète.
+            Nous croyons qu&apos;une pièce signée par Vitra ou Steelcase
+            n&apos;a aucune raison de partir à la benne après quelques années
+            d&apos;usage. Nous croyons qu&apos;équiper ses bureaux n&apos;a pas
+            à coûter le prix du neuf, ni à peser sur la planète.
           </p>
           <p className="text-ink font-medium">
-            Mobilier Malin sélectionne, restaure et redonne une seconde vie aux
-            pièces qui méritent de continuer.
+            Mobilier Malin sélectionne, restaure et propose ces pièces premium
+            à celles et ceux qui veulent du beau, du durable, et du juste prix.
           </p>
         </div>
         <div className="mt-10 flex flex-wrap gap-3">
