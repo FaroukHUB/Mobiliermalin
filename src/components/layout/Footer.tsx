@@ -47,9 +47,9 @@ export function Footer({ logo }: FooterProps = {}) {
             <Image
               src={logo.url}
               alt={logo.alt || 'Mobilier Malin'}
-              width={220}
-              height={56}
-              className="h-12 w-auto object-contain"
+              width={280}
+              height={84}
+              className="h-16 md:h-20 w-auto object-contain"
             />
           ) : (
             <p className="font-serif text-2xl">

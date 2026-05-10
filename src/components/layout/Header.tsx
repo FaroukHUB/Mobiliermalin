@@ -34,10 +34,10 @@ export function Header({ logo }: HeaderProps = {}) {
             <Image
               src={logo.url}
               alt={logo.alt || 'Mobilier Malin'}
-              width={200}
-              height={56}
+              width={240}
+              height={72}
               priority
-              className="h-12 w-auto object-contain"
+              className="h-12 md:h-16 w-auto object-contain"
             />
           ) : (
             <span className="font-serif text-2xl tracking-tight text-ink">
