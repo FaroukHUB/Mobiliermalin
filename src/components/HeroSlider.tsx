@@ -31,7 +31,17 @@ interface HeroSliderProps {
 export function HeroSlider({ slides, autoplayDelay = 6000 }: HeroSliderProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'start', skipSnaps: false },
-    [Autoplay({ delay: autoplayDelay, stopOnInteraction: true, stopOnMouseEnter: true })],
+    [
+      Autoplay({
+        delay: autoplayDelay,
+        // L'autoplay reprend apres une interaction (clic / swipe).
+        // Sinon il s'arretait definitivement, ce qui donnait l'impression
+        // que le slider "n'etait pas automatique".
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+        playOnInit: true,
+      }),
+    ],
   )
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -106,15 +116,29 @@ export function HeroSlider({ slides, autoplayDelay = 6000 }: HeroSliderProps) {
 }
 
 function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
+  const position = slide.textPosition || 'left'
   const positionClass = {
     left: 'items-start text-left',
     center: 'items-center text-center',
     right: 'items-end text-right',
-  }[slide.textPosition || 'left']
+  }[position]
 
   const textColorClass = slide.textColor === 'dark' ? 'text-ink' : 'text-ivory'
-  const overlay = Math.min(80, Math.max(0, slide.overlayOpacity ?? 30)) / 100
+  const overlay = Math.min(80, Math.max(0, slide.overlayOpacity ?? 35)) / 100
   const TitleTag = isFirst ? 'h1' : 'h2'
+
+  // Gradient directionnel : sombre du cote du texte, transparent de l'autre cote.
+  // Pour textColor=light on assombrit, pour textColor=dark on eclaircit.
+  const overlayBase = slide.textColor === 'dark' ? '255, 255, 255' : '26, 26, 26'
+  const a1 = overlay
+  const a2 = overlay * 0.7
+  const a3 = overlay * 0.35
+  const overlayGradient =
+    position === 'right'
+      ? `linear-gradient(to left, rgba(${overlayBase}, ${a1}) 0%, rgba(${overlayBase}, ${a2}) 30%, rgba(${overlayBase}, ${a3}) 55%, rgba(${overlayBase}, 0) 75%)`
+      : position === 'center'
+        ? `linear-gradient(to bottom, rgba(${overlayBase}, ${a3}) 0%, rgba(${overlayBase}, ${a1}) 100%)`
+        : `linear-gradient(to right, rgba(${overlayBase}, ${a1}) 0%, rgba(${overlayBase}, ${a2}) 30%, rgba(${overlayBase}, ${a3}) 55%, rgba(${overlayBase}, 0) 75%)`
 
   return (
     <div className="relative flex-[0_0_100%] min-w-0">
@@ -139,8 +163,8 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
         />
 
         <div
-          className="absolute inset-0 bg-ink"
-          style={{ opacity: overlay }}
+          className="absolute inset-0"
+          style={{ background: overlayGradient }}
           aria-hidden
         />
 
