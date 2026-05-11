@@ -2,18 +2,20 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronRight, ArrowRight, Check, ExternalLink } from 'lucide-react'
+import { ChevronRight, ArrowRight, Check } from 'lucide-react'
 import {
   CATEGORIES,
   getCategoryBySlug,
   getCategoryRelated,
 } from '@/lib/categories-data'
 import { Reveal } from '@/components/animations/Reveal'
-import { shopCategoryUrl } from '@/lib/config'
+import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
+import { getProductsByCategory, type AirtableProduct } from '@/lib/airtable'
+
+export const revalidate = 60
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
-// Pre-generation statique des 7 categories connues
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }))
 }
@@ -36,6 +38,22 @@ export async function generateMetadata({
   }
 }
 
+function airtableToCard(p: AirtableProduct): ProductCardData {
+  return {
+    id: p.id,
+    slug: p.slug,
+    title: p.name,
+    shortDescription: p.shortDescription,
+    price: p.price,
+    comparePrice: p.comparePrice,
+    condition: p.condition,
+    brandName: p.brand,
+    imageUrl: p.images[0]?.url,
+    imageAlt: p.images[0]?.alt || p.name,
+    status: 'published',
+  }
+}
+
 export default async function CategoryPage({
   params,
 }: {
@@ -45,10 +63,11 @@ export default async function CategoryPage({
   const staticData = getCategoryBySlug(slug)
   if (!staticData) notFound()
 
-  const related = getCategoryRelated(slug, 3)
-  const shopUrl = shopCategoryUrl(slug)
+  const [products, related] = await Promise.all([
+    getProductsByCategory(slug),
+    Promise.resolve(getCategoryRelated(slug, 3)),
+  ])
 
-  // JSON-LD : Breadcrumb
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -80,12 +99,17 @@ export default async function CategoryPage({
       {/* Hero */}
       <section className="bg-ivory-dark border-b border-line">
         <div className="container py-12 md:py-16">
-          {/* Breadcrumb */}
           <nav aria-label="Fil d'Ariane" className="text-xs text-ink-mute">
             <ol className="flex items-center gap-2 flex-wrap">
               <li>
                 <Link href="/" className="hover:text-gold-dark">
                   Accueil
+                </Link>
+              </li>
+              <ChevronRight className="h-3 w-3" />
+              <li>
+                <Link href="/boutique" className="hover:text-gold-dark">
+                  Boutique
                 </Link>
               </li>
               <ChevronRight className="h-3 w-3" />
@@ -107,23 +131,6 @@ export default async function CategoryPage({
                 {staticData.longDescription}
               </p>
 
-              {/* CTA principal vers la boutique */}
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href={shopUrl}
-                  target="_blank"
-                  rel="noopener"
-                  className="btn-gold inline-flex items-center gap-2"
-                >
-                  Voir les produits disponibles
-                  <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
-                </Link>
-                <Link href="/contact" className="btn-outline">
-                  Demander un devis personnalisé
-                </Link>
-              </div>
-
-              {/* Variants comme badges */}
               {staticData.variants.length > 0 && (
                 <div className="mt-8">
                   <p className="text-xs uppercase tracking-widest text-ink-mute mb-3">
@@ -159,30 +166,83 @@ export default async function CategoryPage({
         </div>
       </section>
 
-      {/* Highlights — Pourquoi nous */}
+      {/* Produits */}
       <section className="container py-16 md:py-20">
         <Reveal>
-          <div className="max-w-2xl mb-10">
-            <p className="eyebrow">Notre exigence</p>
-            <h2 className="text-h1 mt-2 font-serif">
-              Ce qui distingue nos {staticData.name.toLowerCase()}
-            </h2>
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+            <div>
+              <p className="eyebrow">Notre sélection</p>
+              <h2 className="font-serif text-h1 mt-2">
+                {products.length > 0
+                  ? `${products.length} ${products.length > 1 ? 'pièces disponibles' : 'pièce disponible'}`
+                  : 'Pièces disponibles sur demande'}
+              </h2>
+            </div>
+            <Link href="/contact" className="btn-outline">
+              Demander un devis personnalisé
+            </Link>
           </div>
         </Reveal>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-line border border-line">
-          {staticData.highlights.map((h, i) => (
-            <Reveal key={h.title} delay={i * 80}>
-              <div className="bg-ivory-light p-7 md:p-9 h-full">
-                <Check className="h-6 w-6 text-gold" strokeWidth={1.5} />
-                <h3 className="font-serif text-xl text-ink mt-5 leading-tight">
-                  {h.title}
-                </h3>
-                <p className="text-sm text-ink-soft mt-3 leading-relaxed">
-                  {h.body}
-                </p>
+
+        {products.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            {products.map((p, i) => (
+              <Reveal key={p.id} delay={i * 50}>
+                <ProductCard product={airtableToCard(p)} />
+              </Reveal>
+            ))}
+          </div>
+        ) : (
+          <Reveal>
+            <div className="bg-ivory-light border border-line p-10 md:p-16 text-center">
+              <p className="font-serif text-2xl text-ink">
+                Notre stock évolue chaque semaine
+              </p>
+              <p className="text-ink-mute mt-3 max-w-xl mx-auto leading-relaxed">
+                Les pièces de cette catégorie ne sont pas encore listées en
+                ligne, mais elles sont disponibles à notre showroom d&apos;Aubagne.
+                Décrivez-nous votre besoin, nous revenons sous 24 h avec ce que
+                nous avons en stock — souvent plus large qu&apos;affiché ici.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/contact" className="btn-primary">
+                  Demander la disponibilité
+                </Link>
+                <a href="tel:+33676617053" className="btn-outline">
+                  06 76 61 70 53
+                </a>
               </div>
-            </Reveal>
-          ))}
+            </div>
+          </Reveal>
+        )}
+      </section>
+
+      {/* Highlights */}
+      <section className="bg-ivory-dark border-y border-line">
+        <div className="container py-16 md:py-20">
+          <Reveal>
+            <div className="max-w-2xl mb-10">
+              <p className="eyebrow">Notre exigence</p>
+              <h2 className="text-h1 mt-2 font-serif">
+                Ce qui distingue nos {staticData.name.toLowerCase()}
+              </h2>
+            </div>
+          </Reveal>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-line border border-line">
+            {staticData.highlights.map((h, i) => (
+              <Reveal key={h.title} delay={i * 80}>
+                <div className="bg-ivory-light p-7 md:p-9 h-full">
+                  <Check className="h-6 w-6 text-gold" strokeWidth={1.5} />
+                  <h3 className="font-serif text-xl text-ink mt-5 leading-tight">
+                    {h.title}
+                  </h3>
+                  <p className="text-sm text-ink-soft mt-3 leading-relaxed">
+                    {h.body}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -215,7 +275,6 @@ export default async function CategoryPage({
         </div>
       </section>
 
-      {/* Cross-sell autres catégories */}
       {related.length > 0 && (
         <section className="bg-ivory-dark border-t border-line">
           <div className="container py-16 md:py-20">
@@ -257,7 +316,6 @@ export default async function CategoryPage({
         </section>
       )}
 
-      {/* CTA final */}
       <section className="bg-ink text-ivory">
         <div className="container py-16 md:py-20 text-center max-w-3xl mx-auto">
           <p className="eyebrow text-gold">Besoin d&apos;un conseil ?</p>
