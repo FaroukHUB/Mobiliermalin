@@ -86,20 +86,7 @@ const CATEGORIES: Category[] = [
   },
 ]
 
-/**
- * Map slug → image custom uploaded by client (depuis l'admin Catégories).
- * Si une catégorie a son propre `image`, on l'utilise. Sinon fallback Unsplash.
- */
-export type CategoryImageMap = Record<
-  string,
-  { url?: string; alt?: string } | undefined
->
-
-interface CategoriesGridProps {
-  imageMap?: CategoryImageMap
-}
-
-export function CategoriesGrid({ imageMap = {} }: CategoriesGridProps = {}) {
+export function CategoriesGrid() {
   return (
     <section className="container py-20 md:py-28">
       <Reveal>
@@ -118,10 +105,6 @@ export function CategoriesGrid({ imageMap = {} }: CategoriesGridProps = {}) {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
         {CATEGORIES.map((c, i) => {
-          const custom = imageMap[c.slug]
-          const src = custom?.url || c.fallbackImage
-          const alt = custom?.alt || c.fallbackAlt
-
           return (
             <Reveal key={c.href} delay={i * 60}>
               <Link
@@ -130,8 +113,8 @@ export function CategoriesGrid({ imageMap = {} }: CategoriesGridProps = {}) {
               >
                 <div className="relative aspect-square overflow-hidden bg-ivory-dark">
                   <Image
-                    src={src}
-                    alt={alt}
+                    src={c.fallbackImage}
+                    alt={c.fallbackAlt}
                     fill
                     sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"

@@ -1,10 +1,6 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react'
-
-interface FooterProps {
-  logo?: { url: string; alt?: string }
-}
+import { SHOP_URL } from '@/lib/config'
 
 const CATEGORIES = [
   { label: 'Bureaux individuels', href: '/categorie/bureaux-individuels' },
@@ -17,11 +13,11 @@ const CATEGORIES = [
 ]
 
 const SERVICES = [
-  { label: 'Achat reconditionné', href: '/boutique' },
-  { label: 'Location longue durée', href: '/location-mobilier-bureau' },
-  { label: 'Vidage de locaux', href: '/vidage-de-locaux' },
-  { label: 'Attestation RSE', href: '/attestation-rse' },
-  { label: 'Demander un devis', href: '/contact' },
+  { label: 'Achat reconditionné', href: SHOP_URL, external: true },
+  { label: 'Location longue durée', href: '/location-mobilier-bureau', external: false },
+  { label: 'Vidage de locaux', href: '/vidage-de-locaux', external: false },
+  { label: 'Attestation RSE', href: '/attestation-rse', external: false },
+  { label: 'Demander un devis', href: '/contact', external: false },
 ]
 
 const ZONES = [
@@ -37,25 +33,15 @@ const LEGAL = [
   { label: 'Cookies', href: '/cookies' },
 ]
 
-export function Footer({ logo }: FooterProps = {}) {
+export function Footer() {
   return (
     <footer className="bg-ink text-ivory mt-24">
       <div className="container py-16 grid gap-12 md:grid-cols-12">
         {/* Identité */}
         <div className="md:col-span-4">
-          {logo ? (
-            <Image
-              src={logo.url}
-              alt={logo.alt || 'Mobilier Malin'}
-              width={280}
-              height={84}
-              className="h-16 md:h-20 w-auto object-contain"
-            />
-          ) : (
-            <p className="font-serif text-2xl">
-              Mobilier <span className="text-gold">Malin</span>
-            </p>
-          )}
+          <p className="font-serif text-2xl">
+            Mobilier <span className="text-gold">Malin</span>
+          </p>
           <p className="mt-4 text-sm text-ivory/70 max-w-sm leading-relaxed">
             Mobilier de bureau d&apos;exception, reconditionné avec exigence.
             <br />
@@ -140,9 +126,20 @@ export function Footer({ logo }: FooterProps = {}) {
           <ul className="space-y-2.5 text-sm text-ivory/70">
             {SERVICES.map((s) => (
               <li key={s.href}>
-                <Link href={s.href} className="hover:text-gold transition">
-                  {s.label}
-                </Link>
+                {s.external ? (
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener"
+                    className="hover:text-gold transition"
+                  >
+                    {s.label}
+                  </a>
+                ) : (
+                  <Link href={s.href} className="hover:text-gold transition">
+                    {s.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

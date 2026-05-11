@@ -1,6 +1,6 @@
 {
   "name": "mobiliermalin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,29 +8,17 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "payload": "payload",
-    "generate:types": "payload generate:types",
     "format": "prettier --write \"**/*.{ts,tsx,md,css}\""
   },
   "dependencies": {
-    "@payloadcms/db-postgres": "^3.0.0",
-    "@payloadcms/db-sqlite": "^3.0.0",
-    "@payloadcms/email-resend": "^3.84.1",
-    "@payloadcms/next": "^3.0.0",
-    "@payloadcms/richtext-lexical": "^3.0.0",
-    "@payloadcms/storage-s3": "^3.84.1",
-    "@payloadcms/ui": "^3.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-autoplay": "^8.5.2",
     "embla-carousel-react": "^8.5.2",
-    "graphql": "^16.10.0",
     "lucide-react": "^0.468.0",
     "next": "15.4.11",
-    "payload": "^3.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sharp": "^0.33.5",
     "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {

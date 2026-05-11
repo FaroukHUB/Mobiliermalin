@@ -3,23 +3,20 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { ShoppingBag, Search, User, Menu, X } from 'lucide-react'
+import { ShoppingBag, ExternalLink, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-interface HeaderProps {
-  logo?: { url: string; alt?: string }
-}
+import { SHOP_URL } from '@/lib/config'
 
 const NAV = [
-  { label: 'Accueil', href: '/' },
-  { label: 'Boutique', href: '/boutique' },
-  { label: 'Location LLD', href: '/location-mobilier-bureau' },
-  { label: 'Vidage de locaux', href: '/vidage-de-locaux' },
-  { label: 'Notre démarche', href: '/notre-demarche' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Accueil', href: '/', external: false },
+  { label: 'Boutique', href: SHOP_URL, external: true },
+  { label: 'Location LLD', href: '/location-mobilier-bureau', external: false },
+  { label: 'Vidage de locaux', href: '/vidage-de-locaux', external: false },
+  { label: 'Notre démarche', href: '/notre-demarche', external: false },
+  { label: 'Contact', href: '/contact', external: false },
 ]
 
-export function Header({ logo }: HeaderProps = {}) {
+export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
@@ -30,35 +27,47 @@ export function Header({ logo }: HeaderProps = {}) {
           className="flex items-center gap-3 shrink-0"
           aria-label="Mobilier Malin — accueil"
         >
-          {logo ? (
-            <Image
-              src={logo.url}
-              alt={logo.alt || 'Mobilier Malin'}
-              width={240}
-              height={72}
-              priority
-              className="h-12 md:h-16 w-auto object-contain"
-            />
-          ) : (
-            <span className="font-serif text-2xl tracking-tight text-ink">
-              Mobilier <span className="text-gold-dark">Malin</span>
-            </span>
-          )}
+          {/* Pour utiliser un logo PNG : depose le fichier dans /public/logo.png
+              et decommente le bloc Image ci-dessous (et commente le wordmark texte). */}
+          {/* <Image
+            src="/logo.png"
+            alt="Mobilier Malin"
+            width={240}
+            height={72}
+            priority
+            className="h-12 md:h-16 w-auto object-contain"
+          /> */}
+          <span className="font-serif text-2xl tracking-tight text-ink">
+            Mobilier <span className="text-gold-dark">Malin</span>
+          </span>
         </Link>
 
         <nav
           aria-label="Navigation principale"
           className="hidden lg:flex items-center gap-8"
         >
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm text-ink hover:text-gold-dark transition"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) =>
+            item.external ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener"
+                className="text-sm text-ink hover:text-gold-dark transition inline-flex items-center gap-1"
+              >
+                {item.label}
+                <ExternalLink className="h-3 w-3" strokeWidth={1.5} />
+              </a>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm text-ink hover:text-gold-dark transition"
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <div className="flex items-center gap-1">
@@ -68,27 +77,15 @@ export function Header({ logo }: HeaderProps = {}) {
           >
             Demander un devis
           </Link>
-          <button
-            type="button"
-            aria-label="Rechercher"
-            className="p-2 hover:text-gold-dark hidden sm:inline-flex"
-          >
-            <Search className="h-5 w-5" />
-          </button>
-          <Link
-            href="/compte"
-            aria-label="Mon compte"
-            className="p-2 hover:text-gold-dark hidden sm:inline-flex"
-          >
-            <User className="h-5 w-5" />
-          </Link>
-          <Link
-            href="/panier"
-            aria-label="Panier"
+          <a
+            href={SHOP_URL}
+            target="_blank"
+            rel="noopener"
+            aria-label="Boutique en ligne"
             className="p-2 hover:text-gold-dark relative"
           >
             <ShoppingBag className="h-5 w-5" />
-          </Link>
+          </a>
           <button
             type="button"
             aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
@@ -101,7 +98,6 @@ export function Header({ logo }: HeaderProps = {}) {
         </div>
       </div>
 
-      {/* Menu mobile */}
       <div
         className={cn(
           'lg:hidden border-t border-line bg-ivory transition-[max-height] duration-300 overflow-hidden',
@@ -109,16 +105,30 @@ export function Header({ logo }: HeaderProps = {}) {
         )}
       >
         <nav aria-label="Navigation mobile" className="container py-6 flex flex-col gap-4">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className="text-base text-ink hover:text-gold-dark"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) =>
+            item.external ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener"
+                onClick={() => setMobileOpen(false)}
+                className="text-base text-ink hover:text-gold-dark inline-flex items-center gap-2"
+              >
+                {item.label}
+                <ExternalLink className="h-3 w-3" strokeWidth={1.5} />
+              </a>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className="text-base text-ink hover:text-gold-dark"
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
           <Link
             href="/contact"
             onClick={() => setMobileOpen(false)}

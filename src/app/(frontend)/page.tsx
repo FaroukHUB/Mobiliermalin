@@ -3,7 +3,7 @@ import { HeroSlider, type HeroSlide } from '@/components/HeroSlider'
 import { ReassuranceBar } from '@/components/sections/ReassuranceBar'
 import { ManifesteSection } from '@/components/sections/ManifesteSection'
 import { BrandsSection } from '@/components/sections/BrandsSection'
-import { CategoriesGrid, type CategoryImageMap } from '@/components/sections/CategoriesGrid'
+import { CategoriesGrid } from '@/components/sections/CategoriesGrid'
 import { LLDSection } from '@/components/sections/LLDSection'
 import { RSESection } from '@/components/sections/RSESection'
 import { ServicesSection } from '@/components/sections/ServicesSection'
@@ -12,10 +12,7 @@ import { ShowroomSection } from '@/components/sections/ShowroomSection'
 import { ImpactSection } from '@/components/sections/ImpactSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
-import { getPayloadClient } from '@/lib/payload'
-import { getSiteSettings } from '@/lib/site-settings'
-
-export const revalidate = 60
+import { SHOP_URL } from '@/lib/config'
 
 export const metadata: Metadata = {
   title: 'Mobilier de bureau d\'exception, à −60 % du prix neuf',
@@ -42,78 +39,9 @@ export const metadata: Metadata = {
   ],
 }
 
-async function getHeroSlides(): Promise<HeroSlide[]> {
-  try {
-    const payload = await getPayloadClient()
-    const now = new Date().toISOString()
-    const result = await payload.find({
-      collection: 'hero-slides',
-      where: {
-        and: [
-          { status: { equals: 'published' } },
-          {
-            or: [
-              { startsAt: { exists: false } },
-              { startsAt: { less_than_equal: now } },
-            ],
-          },
-          {
-            or: [
-              { endsAt: { exists: false } },
-              { endsAt: { greater_than_equal: now } },
-            ],
-          },
-        ],
-      },
-      sort: 'order',
-      depth: 2,
-      limit: 10,
-    })
-
-    return result.docs
-      .map((raw): HeroSlide | null => {
-        const doc = raw as unknown as {
-          id: string | number
-          title: string
-          subtitle?: string
-          image?: { url?: string; alt?: string }
-          imageMobile?: { url?: string; alt?: string }
-          ctaPrimaryLabel?: string
-          ctaPrimaryHref?: string
-          ctaSecondaryLabel?: string
-          ctaSecondaryHref?: string
-          textPosition?: HeroSlide['textPosition']
-          textColor?: HeroSlide['textColor']
-          overlayOpacity?: number
-        }
-        if (!doc.image?.url) return null
-        return {
-          id: String(doc.id),
-          title: doc.title,
-          subtitle: doc.subtitle,
-          image: { url: doc.image.url, alt: doc.image.alt },
-          imageMobile: doc.imageMobile?.url
-            ? { url: doc.imageMobile.url, alt: doc.imageMobile.alt }
-            : undefined,
-          ctaPrimaryLabel: doc.ctaPrimaryLabel,
-          ctaPrimaryHref: doc.ctaPrimaryHref,
-          ctaSecondaryLabel: doc.ctaSecondaryLabel,
-          ctaSecondaryHref: doc.ctaSecondaryHref,
-          textPosition: doc.textPosition,
-          textColor: doc.textColor,
-          overlayOpacity: doc.overlayOpacity,
-        }
-      })
-      .filter((s): s is HeroSlide => s !== null)
-  } catch (err) {
-    console.warn('[hero] fallback demo slides:', err)
-    return []
-  }
-}
-
-const FALLBACK_SLIDES: HeroSlide[] = [
+const SLIDES: HeroSlide[] = [
   {
-    id: 'demo-1',
+    id: 'slide-1',
     title: "Du mobilier de bureau d'exception, à −60 %",
     subtitle:
       'Steelcase, Herman Miller, Haworth, Vitra. Pièces signées, restaurées avec exigence, garanties 6 mois.',
@@ -122,7 +50,7 @@ const FALLBACK_SLIDES: HeroSlide[] = [
       alt: 'Open-space moderne avec mobilier de bureau premium',
     },
     ctaPrimaryLabel: 'Voir le catalogue',
-    ctaPrimaryHref: '/boutique',
+    ctaPrimaryHref: SHOP_URL,
     ctaSecondaryLabel: 'Vidage de locaux',
     ctaSecondaryHref: '/vidage-de-locaux',
     textPosition: 'left',
@@ -130,7 +58,7 @@ const FALLBACK_SLIDES: HeroSlide[] = [
     overlayOpacity: 40,
   },
   {
-    id: 'demo-2',
+    id: 'slide-2',
     title: "La location longue durée, désormais disponible",
     subtitle:
       'Équipez vos bureaux dès aujourd\'hui. Étalez sur 36 mois. SAV inclus.',
@@ -148,49 +76,19 @@ const FALLBACK_SLIDES: HeroSlide[] = [
   },
 ]
 
-async function getCategoryImageMap(): Promise<CategoryImageMap> {
-  try {
-    const payload = await getPayloadClient()
-    const result = await payload.find({
-      collection: 'categories',
-      limit: 50,
-      depth: 2,
-    })
-    const map: CategoryImageMap = {}
-    for (const cat of result.docs as Array<{
-      slug?: string
-      image?: { url?: string; alt?: string } | null
-    }>) {
-      if (cat.slug && cat.image?.url) {
-        map[cat.slug] = { url: cat.image.url, alt: cat.image.alt }
-      }
-    }
-    return map
-  } catch {
-    return {}
-  }
-}
-
-export default async function HomePage() {
-  const [slidesFromDb, siteSettings, categoryImageMap] = await Promise.all([
-    getHeroSlides(),
-    getSiteSettings(),
-    getCategoryImageMap(),
-  ])
-  const slides = slidesFromDb.length > 0 ? slidesFromDb : FALLBACK_SLIDES
-
+export default function HomePage() {
   return (
     <>
-      <HeroSlider slides={slides} />
+      <HeroSlider slides={SLIDES} />
       <ReassuranceBar />
-      <ManifesteSection image={siteSettings.manifesteImage} />
+      <ManifesteSection />
       <BrandsSection />
-      <CategoriesGrid imageMap={categoryImageMap} />
-      <LLDSection image={siteSettings.lldSectionImage} />
+      <CategoriesGrid />
+      <LLDSection />
       <RSESection />
       <ServicesSection />
       <ProcessSection />
-      <ShowroomSection image={siteSettings.showroomImage} />
+      <ShowroomSection />
       <ImpactSection />
       <TestimonialsSection />
       <NewsletterSection />

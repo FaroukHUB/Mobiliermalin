@@ -2,17 +2,14 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronRight, ArrowRight, Check } from 'lucide-react'
+import { ChevronRight, ArrowRight, Check, ExternalLink } from 'lucide-react'
 import {
   CATEGORIES,
   getCategoryBySlug,
   getCategoryRelated,
 } from '@/lib/categories-data'
-import { getPayloadClient } from '@/lib/payload'
 import { Reveal } from '@/components/animations/Reveal'
-import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
-
-export const revalidate = 60
+import { shopCategoryUrl } from '@/lib/config'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
@@ -32,115 +29,10 @@ export async function generateMetadata({
   const cat = getCategoryBySlug(slug)
   if (!cat) return { title: 'Catégorie introuvable' }
 
-  // On essaie d'enrichir avec les SEO de la collection Payload si dispo
-  let metaTitle = `${cat.name} reconditionnés — ${cat.fromPriceLabel}`
-  let metaDescription = `${cat.shortTagline}. ${cat.longDescription.slice(0, 110)}…`
-
-  try {
-    const payload = await getPayloadClient()
-    const result = await payload.find({
-      collection: 'categories',
-      where: { slug: { equals: slug } },
-      limit: 1,
-      depth: 1,
-    })
-    const dbCat = result.docs[0] as
-      | { seo?: { title?: string; description?: string } }
-      | undefined
-    if (dbCat?.seo?.title) metaTitle = dbCat.seo.title
-    if (dbCat?.seo?.description) metaDescription = dbCat.seo.description
-  } catch {
-    // Pas grave, on reste sur les valeurs par defaut
-  }
-
   return {
-    title: metaTitle,
-    description: metaDescription,
+    title: `${cat.name} reconditionnés — ${cat.fromPriceLabel}`,
+    description: `${cat.shortTagline}. ${cat.longDescription.slice(0, 110)}…`,
     alternates: { canonical: `/categorie/${slug}` },
-  }
-}
-
-async function getProductsForCategory(
-  categoryId?: string | number,
-): Promise<ProductCardData[]> {
-  if (!categoryId) return []
-  try {
-    const payload = await getPayloadClient()
-    const result = await payload.find({
-      collection: 'products',
-      where: {
-        and: [
-          { category: { equals: categoryId } },
-          { status: { equals: 'published' } },
-        ],
-      },
-      sort: '-createdAt',
-      limit: 24,
-      depth: 2,
-    })
-    return result.docs.map((raw): ProductCardData => {
-      const doc = raw as unknown as {
-        id: string | number
-        slug?: string
-        title: string
-        shortDescription?: string
-        price: number
-        comparePrice?: number
-        condition?: string
-        status?: string
-        images?: Array<{ image?: { url?: string; alt?: string } | null }>
-        brand?: { name?: string } | null
-      }
-      const firstImage = doc.images?.[0]?.image
-      return {
-        id: doc.id,
-        slug: doc.slug,
-        title: doc.title,
-        shortDescription: doc.shortDescription,
-        price: doc.price,
-        comparePrice: doc.comparePrice,
-        condition: doc.condition,
-        status: doc.status,
-        brandName: doc.brand?.name,
-        imageUrl: firstImage?.url,
-        imageAlt: firstImage?.alt || doc.title,
-      }
-    })
-  } catch {
-    return []
-  }
-}
-
-async function getCategoryFromDb(slug: string): Promise<{
-  id?: string | number
-  description?: string
-  imageUrl?: string
-  imageAlt?: string
-} | null> {
-  try {
-    const payload = await getPayloadClient()
-    const result = await payload.find({
-      collection: 'categories',
-      where: { slug: { equals: slug } },
-      limit: 1,
-      depth: 2,
-    })
-    const doc = result.docs[0] as
-      | {
-          id?: string | number
-          description?: string
-          image?: { url?: string; alt?: string } | null
-        }
-      | undefined
-    if (!doc) return null
-    return {
-      id: doc.id,
-      description: doc.description,
-      imageUrl: doc.image?.url,
-      imageAlt: doc.image?.alt,
-    }
-  } catch {
-    return null
   }
 }
 
@@ -153,22 +45,27 @@ export default async function CategoryPage({
   const staticData = getCategoryBySlug(slug)
   if (!staticData) notFound()
 
-  const dbCat = await getCategoryFromDb(slug)
-  const products = await getProductsForCategory(dbCat?.id)
   const related = getCategoryRelated(slug, 3)
+  const shopUrl = shopCategoryUrl(slug)
 
-  const heroImage = dbCat?.imageUrl || staticData.fallbackImage
-  const heroAlt = dbCat?.imageAlt || staticData.fallbackImageAlt
-  const description = dbCat?.description || staticData.longDescription
-
-  // JSON-LD : Breadcrumb + ItemList des produits
+  // JSON-LD : Breadcrumb
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
-      { '@type': 'ListItem', position: 2, name: 'Boutique', item: `${siteUrl}/boutique` },
-      { '@type': 'ListItem', position: 3, name: staticData.name, item: `${siteUrl}/categorie/${slug}` },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Boutique',
+        item: `${siteUrl}/boutique`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: staticData.name,
+        item: `${siteUrl}/categorie/${slug}`,
+      },
     ],
   }
 
@@ -192,12 +89,6 @@ export default async function CategoryPage({
                 </Link>
               </li>
               <ChevronRight className="h-3 w-3" />
-              <li>
-                <Link href="/boutique" className="hover:text-gold-dark">
-                  Boutique
-                </Link>
-              </li>
-              <ChevronRight className="h-3 w-3" />
               <li className="text-ink">{staticData.name}</li>
             </ol>
           </nav>
@@ -213,20 +104,41 @@ export default async function CategoryPage({
                 {staticData.shortTagline}.
               </p>
               <p className="mt-4 text-ink-mute leading-relaxed">
-                {description}
+                {staticData.longDescription}
               </p>
+
+              {/* CTA principal vers la boutique */}
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href={shopUrl}
+                  target="_blank"
+                  rel="noopener"
+                  className="btn-gold inline-flex items-center gap-2"
+                >
+                  Voir les produits disponibles
+                  <ExternalLink className="h-4 w-4" strokeWidth={1.5} />
+                </Link>
+                <Link href="/contact" className="btn-outline">
+                  Demander un devis personnalisé
+                </Link>
+              </div>
 
               {/* Variants comme badges */}
               {staticData.variants.length > 0 && (
-                <div className="mt-8 flex flex-wrap gap-2">
-                  {staticData.variants.map((v) => (
-                    <span
-                      key={v}
-                      className="text-xs uppercase tracking-widest text-ink-mute border border-line bg-ivory-light px-3 py-1.5"
-                    >
-                      {v}
-                    </span>
-                  ))}
+                <div className="mt-8">
+                  <p className="text-xs uppercase tracking-widest text-ink-mute mb-3">
+                    Variantes disponibles
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {staticData.variants.map((v) => (
+                      <span
+                        key={v}
+                        className="text-xs uppercase tracking-widest text-ink-mute border border-line bg-ivory-light px-3 py-1.5"
+                      >
+                        {v}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -234,8 +146,8 @@ export default async function CategoryPage({
             <Reveal delay={150}>
               <div className="relative aspect-[4/5] bg-ivory-light overflow-hidden hidden lg:block">
                 <Image
-                  src={heroImage}
-                  alt={heroAlt}
+                  src={staticData.fallbackImage}
+                  alt={staticData.fallbackImageAlt}
                   fill
                   sizes="400px"
                   className="object-cover"
@@ -247,83 +159,30 @@ export default async function CategoryPage({
         </div>
       </section>
 
-      {/* Produits */}
+      {/* Highlights — Pourquoi nous */}
       <section className="container py-16 md:py-20">
         <Reveal>
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-            <div>
-              <p className="eyebrow">Notre sélection</p>
-              <h2 className="font-serif text-h1 mt-2">
-                {products.length > 0
-                  ? `${products.length} ${products.length > 1 ? 'pièces disponibles' : 'pièce disponible'}`
-                  : 'Pièces disponibles sur demande'}
-              </h2>
-            </div>
-            <Link href="/contact" className="btn-outline">
-              Demander un devis personnalisé
-            </Link>
+          <div className="max-w-2xl mb-10">
+            <p className="eyebrow">Notre exigence</p>
+            <h2 className="text-h1 mt-2 font-serif">
+              Ce qui distingue nos {staticData.name.toLowerCase()}
+            </h2>
           </div>
         </Reveal>
-
-        {products.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {products.map((p, i) => (
-              <Reveal key={String(p.id)} delay={i * 50}>
-                <ProductCard product={p} />
-              </Reveal>
-            ))}
-          </div>
-        ) : (
-          <Reveal>
-            <div className="bg-ivory-light border border-line p-10 md:p-16 text-center">
-              <p className="font-serif text-2xl text-ink">
-                Notre stock évolue chaque semaine
-              </p>
-              <p className="text-ink-mute mt-3 max-w-xl mx-auto leading-relaxed">
-                Les pièces de cette catégorie ne sont pas encore listées en
-                ligne, mais elles sont disponibles à notre showroom d&apos;Aubagne.
-                Décrivez-nous votre besoin, nous revenons sous 24 h avec ce que
-                nous avons en stock — souvent plus large qu&apos;affiché ici.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <Link href="/contact" className="btn-primary">
-                  Demander la disponibilité
-                </Link>
-                <a href="tel:+33676617053" className="btn-outline">
-                  06 76 61 70 53
-                </a>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-line border border-line">
+          {staticData.highlights.map((h, i) => (
+            <Reveal key={h.title} delay={i * 80}>
+              <div className="bg-ivory-light p-7 md:p-9 h-full">
+                <Check className="h-6 w-6 text-gold" strokeWidth={1.5} />
+                <h3 className="font-serif text-xl text-ink mt-5 leading-tight">
+                  {h.title}
+                </h3>
+                <p className="text-sm text-ink-soft mt-3 leading-relaxed">
+                  {h.body}
+                </p>
               </div>
-            </div>
-          </Reveal>
-        )}
-      </section>
-
-      {/* Highlights — Pourquoi nous */}
-      <section className="bg-ivory-dark border-y border-line">
-        <div className="container py-16 md:py-20">
-          <Reveal>
-            <div className="max-w-2xl mb-10">
-              <p className="eyebrow">Notre exigence</p>
-              <h2 className="text-h1 mt-2 font-serif">
-                Ce qui distingue nos {staticData.name.toLowerCase()}
-              </h2>
-            </div>
-          </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-line border border-line">
-            {staticData.highlights.map((h, i) => (
-              <Reveal key={h.title} delay={i * 80}>
-                <div className="bg-ivory-light p-7 md:p-9 h-full">
-                  <Check className="h-6 w-6 text-gold" strokeWidth={1.5} />
-                  <h3 className="font-serif text-xl text-ink mt-5 leading-tight">
-                    {h.title}
-                  </h3>
-                  <p className="text-sm text-ink-soft mt-3 leading-relaxed">
-                    {h.body}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
