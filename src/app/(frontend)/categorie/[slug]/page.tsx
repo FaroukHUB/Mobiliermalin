@@ -92,9 +92,11 @@ export default async function CategoryPage({
   ])
 
   // Merge : Sanity prioritaire (ce que le client a saisi), fallback sur le statique.
+  // Si le client a écrit une description Sanity, on n'affiche plus le longDescription
+  // hardcodé pour éviter la double description.
   const name = sanityCat?.name || staticData!.name
   const shortTagline = sanityCat?.description || staticData?.shortTagline || ''
-  const longDescription = staticData?.longDescription || ''
+  const longDescription = sanityCat?.description ? '' : staticData?.longDescription || ''
   const heroImage = sanityCat?.image
     ? urlFor(sanityCat.image).width(800).url()
     : staticData?.fallbackImage ||
