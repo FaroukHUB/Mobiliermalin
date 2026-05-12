@@ -161,3 +161,23 @@ export async function getAllCategories(): Promise<SanityCategory[]> {
     [],
   )
 }
+
+// ───────────────────────── Site Settings (singleton) ─────────────────────────
+
+export type SanitySiteSettings = {
+  siteName?: string
+  logoOnLight?: SanityImage
+  logoOnDark?: SanityImage
+  favicon?: SanityImage
+}
+
+/**
+ * Réglages du site (logos, etc.) — singleton.
+ */
+export async function getSiteSettings(): Promise<SanitySiteSettings> {
+  return safeFetch<SanitySiteSettings>(
+    `*[_type == "siteSettings"][0] { siteName, logoOnLight, logoOnDark, favicon }`,
+    {},
+    {},
+  )
+}

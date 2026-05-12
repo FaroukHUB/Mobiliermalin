@@ -1,6 +1,11 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react'
 import { SHOP_URL } from '@/lib/config'
+
+interface FooterProps {
+  logo?: { url: string; alt?: string }
+}
 
 const CATEGORIES = [
   { label: 'Bureaux individuels', href: '/categorie/bureaux-individuels' },
@@ -33,15 +38,25 @@ const LEGAL = [
   { label: 'Cookies', href: '/cookies' },
 ]
 
-export function Footer() {
+export function Footer({ logo }: FooterProps = {}) {
   return (
     <footer className="bg-ink text-ivory mt-24">
       <div className="container py-16 grid gap-12 md:grid-cols-12">
         {/* Identité */}
         <div className="md:col-span-4">
-          <p className="font-serif text-2xl">
-            Mobilier <span className="text-gold">Malin</span>
-          </p>
+          {logo ? (
+            <Image
+              src={logo.url}
+              alt={logo.alt || 'Mobilier Malin'}
+              width={280}
+              height={84}
+              className="h-16 md:h-20 w-auto object-contain"
+            />
+          ) : (
+            <p className="font-serif text-2xl">
+              Mobilier <span className="text-gold">Malin</span>
+            </p>
+          )}
           <p className="mt-4 text-sm text-ivory/70 max-w-sm leading-relaxed">
             Mobilier de bureau d&apos;exception, reconditionné avec exigence.
             <br />

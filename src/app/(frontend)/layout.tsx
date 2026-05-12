@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
+import { getSiteSettings, urlFor } from '@/lib/sanity'
 import './globals.css'
 
 const inter = Inter({
@@ -94,11 +95,19 @@ export const viewport: Viewport = {
   themeColor: '#FAF9F6',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const settings = await getSiteSettings()
+  const logoLight = settings.logoOnLight
+    ? { url: urlFor(settings.logoOnLight).height(160).url(), alt: settings.siteName || 'Mobilier Malin' }
+    : undefined
+  const logoDark = settings.logoOnDark
+    ? { url: urlFor(settings.logoOnDark).height(200).url(), alt: settings.siteName || 'Mobilier Malin' }
+    : undefined
+
   return (
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
       <body>
@@ -108,9 +117,9 @@ export default function RootLayout({
         >
           Aller au contenu
         </a>
-        <Header />
+        <Header logo={logoLight} />
         <main id="main">{children}</main>
-        <Footer />
+        <Footer logo={logoDark} />
         <OrganizationSchema />
       </body>
     </html>

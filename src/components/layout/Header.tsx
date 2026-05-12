@@ -7,6 +7,10 @@ import { ShoppingBag, ExternalLink, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SHOP_URL } from '@/lib/config'
 
+interface HeaderProps {
+  logo?: { url: string; alt?: string }
+}
+
 const NAV = [
   { label: 'Accueil', href: '/', external: false },
   { label: 'Boutique', href: SHOP_URL, external: true },
@@ -16,7 +20,7 @@ const NAV = [
   { label: 'Contact', href: '/contact', external: false },
 ]
 
-export function Header() {
+export function Header({ logo }: HeaderProps = {}) {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
@@ -27,19 +31,20 @@ export function Header() {
           className="flex items-center gap-3 shrink-0"
           aria-label="Mobilier Malin — accueil"
         >
-          {/* Pour utiliser un logo PNG : depose le fichier dans /public/logo.png
-              et decommente le bloc Image ci-dessous (et commente le wordmark texte). */}
-          {/* <Image
-            src="/logo.png"
-            alt="Mobilier Malin"
-            width={240}
-            height={72}
-            priority
-            className="h-12 md:h-16 w-auto object-contain"
-          /> */}
-          <span className="font-serif text-2xl tracking-tight text-ink">
-            Mobilier <span className="text-gold-dark">Malin</span>
-          </span>
+          {logo ? (
+            <Image
+              src={logo.url}
+              alt={logo.alt || 'Mobilier Malin'}
+              width={240}
+              height={72}
+              priority
+              className="h-12 md:h-16 w-auto object-contain"
+            />
+          ) : (
+            <span className="font-serif text-2xl tracking-tight text-ink">
+              Mobilier <span className="text-gold-dark">Malin</span>
+            </span>
+          )}
         </Link>
 
         <nav
