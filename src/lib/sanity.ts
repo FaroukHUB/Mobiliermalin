@@ -192,17 +192,19 @@ export type SanitySiteSettings = {
 
 /**
  * Réglages du site (logos, images de section, etc.) — singleton.
+ * Garantit de renvoyer un objet (jamais null) même si le document n'existe pas.
  */
 export async function getSiteSettings(): Promise<SanitySiteSettings> {
-  return safeFetch<SanitySiteSettings>(
+  const result = await safeFetch<SanitySiteSettings | null>(
     `*[_type == "siteSettings"][0] {
       siteName, logoOnLight, logoOnDark, favicon,
       manifesteImage, lldSectionImage, showroomImage,
       lldHeroImage, rseHeroImage
     }`,
     {},
-    {},
+    null,
   )
+  return result || {}
 }
 
 // ───────────────────────── Hero Slider ─────────────────────────
