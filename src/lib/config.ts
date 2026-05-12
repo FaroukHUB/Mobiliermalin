@@ -1,17 +1,12 @@
 /**
- * URL de la boutique externe (WordPress + WooCommerce).
- * Configurable via NEXT_PUBLIC_SHOP_URL en production.
- *
- * Tant que la boutique n'est pas en ligne, on pointe vers la page contact
- * pour ne pas casser les liens.
+ * URL de la boutique principale.
+ * Désormais interne au Next.js (Sanity + Stripe).
  */
-export const SHOP_URL =
-  process.env.NEXT_PUBLIC_SHOP_URL || 'https://shop.mobiliermalin.com'
+export const SHOP_URL = '/boutique'
 
 /**
- * URL d'une catégorie spécifique sur la boutique (par slug).
- * Si la boutique n'a pas la même structure d'URL, à adapter ici.
+ * URL d'une page catégorie interne (page Next.js qui liste les produits Sanity).
  */
 export function shopCategoryUrl(slug: string): string {
-  return `${SHOP_URL}/categorie-produit/${slug}`
+  return `/categorie/${slug}`
 }

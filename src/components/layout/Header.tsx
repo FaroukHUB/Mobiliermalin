@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { ShoppingBag, ExternalLink, Menu, X } from 'lucide-react'
+import { ShoppingBag, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SHOP_URL } from '@/lib/config'
 
@@ -12,12 +12,12 @@ interface HeaderProps {
 }
 
 const NAV = [
-  { label: 'Accueil', href: '/', external: false },
-  { label: 'Boutique', href: SHOP_URL, external: true },
-  { label: 'Location LLD', href: '/location-mobilier-bureau', external: false },
-  { label: 'Vidage de locaux', href: '/vidage-de-locaux', external: false },
-  { label: 'Notre démarche', href: '/notre-demarche', external: false },
-  { label: 'Contact', href: '/contact', external: false },
+  { label: 'Accueil', href: '/' },
+  { label: 'Boutique', href: SHOP_URL },
+  { label: 'Location LLD', href: '/location-mobilier-bureau' },
+  { label: 'Vidage de locaux', href: '/vidage-de-locaux' },
+  { label: 'Notre démarche', href: '/notre-demarche' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export function Header({ logo }: HeaderProps = {}) {
@@ -51,28 +51,15 @@ export function Header({ logo }: HeaderProps = {}) {
           aria-label="Navigation principale"
           className="hidden lg:flex items-center gap-8"
         >
-          {NAV.map((item) =>
-            item.external ? (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noopener"
-                className="text-sm text-ink hover:text-gold-dark transition inline-flex items-center gap-1"
-              >
-                {item.label}
-                <ExternalLink className="h-3 w-3" strokeWidth={1.5} />
-              </a>
-            ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm text-ink hover:text-gold-dark transition"
-              >
-                {item.label}
-              </Link>
-            ),
-          )}
+          {NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-sm text-ink hover:text-gold-dark transition"
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-1">
@@ -82,15 +69,13 @@ export function Header({ logo }: HeaderProps = {}) {
           >
             Demander un devis
           </Link>
-          <a
+          <Link
             href={SHOP_URL}
-            target="_blank"
-            rel="noopener"
-            aria-label="Boutique en ligne"
+            aria-label="Boutique"
             className="p-2 hover:text-gold-dark relative"
           >
             <ShoppingBag className="h-5 w-5" />
-          </a>
+          </Link>
           <button
             type="button"
             aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
@@ -110,30 +95,16 @@ export function Header({ logo }: HeaderProps = {}) {
         )}
       >
         <nav aria-label="Navigation mobile" className="container py-6 flex flex-col gap-4">
-          {NAV.map((item) =>
-            item.external ? (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noopener"
-                onClick={() => setMobileOpen(false)}
-                className="text-base text-ink hover:text-gold-dark inline-flex items-center gap-2"
-              >
-                {item.label}
-                <ExternalLink className="h-3 w-3" strokeWidth={1.5} />
-              </a>
-            ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className="text-base text-ink hover:text-gold-dark"
-              >
-                {item.label}
-              </Link>
-            ),
-          )}
+          {NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              className="text-base text-ink hover:text-gold-dark"
+            >
+              {item.label}
+            </Link>
+          ))}
           <Link
             href="/contact"
             onClick={() => setMobileOpen(false)}
