@@ -9,8 +9,11 @@ import imageUrlBuilder from '@sanity/image-url'
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import { projectId, dataset, apiVersion, useCdn } from '../../sanity/env'
 
+// Si projectId est absent (avant configuration Vercel), on crée un client
+// "stub" qui ne peut pas vraiment fetch. Toutes les fonctions ci-dessous
+// retournent leur fallback grâce à safeFetch.
 export const sanityClient: SanityClient = createClient({
-  projectId,
+  projectId: projectId || 'placeholder',
   dataset,
   apiVersion,
   useCdn,
