@@ -25,7 +25,7 @@ export function Header({ logo }: HeaderProps = {}) {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-ivory/90 backdrop-blur supports-[backdrop-filter]:bg-ivory/75 border-b border-line">
-      <div className="container flex items-center justify-between h-20">
+      <div className="container flex items-center justify-between h-24 md:h-28">
         <Link
           href="/"
           className="flex items-center gap-3 shrink-0"
@@ -35,10 +35,10 @@ export function Header({ logo }: HeaderProps = {}) {
             <Image
               src={logo.url}
               alt={logo.alt || 'Mobilier Malin'}
-              width={240}
-              height={72}
+              width={320}
+              height={96}
               priority
-              className="h-12 md:h-16 w-auto object-contain"
+              className="h-16 md:h-20 w-auto object-contain"
             />
           ) : (
             <span className="font-serif text-2xl tracking-tight text-ink">
