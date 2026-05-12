@@ -104,6 +104,10 @@ export default async function CategoryPage({
       'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80'
   const heroImageAlt = sanityCat?.image?.alt || staticData?.fallbackImageAlt || name
   const fromPriceLabel = staticData?.fromPriceLabel || 'Découvrir'
+  const variants =
+    sanityCat?.variants && sanityCat.variants.length > 0
+      ? sanityCat.variants
+      : staticData?.variants || []
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -172,13 +176,13 @@ export default async function CategoryPage({
                 </p>
               )}
 
-              {staticData?.variants && staticData.variants.length > 0 && (
+              {variants.length > 0 && (
                 <div className="mt-8">
                   <p className="text-xs uppercase tracking-widest text-ink-mute mb-3">
                     Variantes disponibles
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {staticData.variants.map((v) => (
+                    {variants.map((v) => (
                       <span
                         key={v}
                         className="text-xs uppercase tracking-widest text-ink-mute border border-line bg-ivory-light px-3 py-1.5"

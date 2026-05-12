@@ -41,6 +41,7 @@ export type SanityCategory = {
   slug: { current: string }
   description?: string
   image?: SanityImage
+  variants?: string[]
   order?: number
 }
 
@@ -76,7 +77,7 @@ const PRODUCT_FIELDS = `
   _id, name, slug, status, shortDescription, description,
   price, comparePrice, stock,
   images[]{_key, asset, alt, hotspot},
-  category->{_id, name, slug, description, image, order},
+  category->{_id, name, slug, description, image, variants, order},
   brand, condition,
   widthCm, depthCm, heightCm,
   material, color, sku, featured,
@@ -159,7 +160,7 @@ export async function getAllProductSlugs(): Promise<string[]> {
  */
 export async function getAllCategories(): Promise<SanityCategory[]> {
   return safeFetch<SanityCategory[]>(
-    `*[_type == "category"] | order(order asc, name asc) { _id, name, slug, description, image, order }`,
+    `*[_type == "category"] | order(order asc, name asc) { _id, name, slug, description, image, variants, order }`,
     {},
     [],
   )
@@ -170,7 +171,7 @@ export async function getAllCategories(): Promise<SanityCategory[]> {
  */
 export async function getCategoryBySlugSanity(slug: string): Promise<SanityCategory | null> {
   return safeFetch<SanityCategory | null>(
-    `*[_type == "category" && slug.current == $slug][0] { _id, name, slug, description, image, order }`,
+    `*[_type == "category" && slug.current == $slug][0] { _id, name, slug, description, image, variants, order }`,
     { slug },
     null,
   )

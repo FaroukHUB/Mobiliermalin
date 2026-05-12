@@ -33,6 +33,15 @@ export const category = {
       options: { hotspot: true },
     },
     {
+      name: 'variants',
+      title: 'Variantes disponibles',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: { layout: 'tags' },
+      description:
+        'Liste de variantes affichées sous la description (ex: "Direction", "Opérateur", "Visiteur"). Tapez puis Entrée.',
+    },
+    {
       name: 'order',
       title: 'Ordre d\'affichage',
       type: 'number',
