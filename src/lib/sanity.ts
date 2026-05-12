@@ -165,6 +165,17 @@ export async function getAllCategories(): Promise<SanityCategory[]> {
   )
 }
 
+/**
+ * Une catégorie par son slug (depuis Sanity).
+ */
+export async function getCategoryBySlugSanity(slug: string): Promise<SanityCategory | null> {
+  return safeFetch<SanityCategory | null>(
+    `*[_type == "category" && slug.current == $slug][0] { _id, name, slug, description, image, order }`,
+    { slug },
+    null,
+  )
+}
+
 // ───────────────────────── Site Settings (singleton) ─────────────────────────
 
 export type SanitySiteSettings = {

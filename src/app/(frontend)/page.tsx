@@ -13,7 +13,7 @@ import { ImpactSection } from '@/components/sections/ImpactSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
 import { SHOP_URL } from '@/lib/config'
-import { getHeroSlides, getSiteSettings, urlFor, type SanityImage } from '@/lib/sanity'
+import { getHeroSlides, getSiteSettings, getAllCategories, urlFor, type SanityImage } from '@/lib/sanity'
 
 export const revalidate = 60
 
@@ -85,9 +85,10 @@ function sanityImageToMedia(image?: SanityImage, alt?: string): { url: string; a
 }
 
 export default async function HomePage() {
-  const [sanitySlides, settings] = await Promise.all([
+  const [sanitySlides, settings, sanityCategories] = await Promise.all([
     getHeroSlides(),
     getSiteSettings(),
+    getAllCategories(),
   ])
 
   const slides: HeroSlide[] = sanitySlides.length
@@ -115,7 +116,7 @@ export default async function HomePage() {
       <ReassuranceBar />
       <ManifesteSection image={sanityImageToMedia(settings.manifesteImage, 'Notre manifeste')} />
       <BrandsSection />
-      <CategoriesGrid />
+      <CategoriesGrid categories={sanityCategories} />
       <LLDSection image={sanityImageToMedia(settings.lldSectionImage, 'Location longue durée')} />
       <RSESection />
       <ServicesSection />

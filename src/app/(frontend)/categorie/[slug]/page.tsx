@@ -5,18 +5,26 @@ import Image from 'next/image'
 import { ChevronRight, ArrowRight, Check } from 'lucide-react'
 import {
   CATEGORIES,
-  getCategoryBySlug,
+  getCategoryBySlug as getStaticCategory,
   getCategoryRelated,
 } from '@/lib/categories-data'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
-import { getProductsByCategory, urlFor, type SanityProduct } from '@/lib/sanity'
+import {
+  getProductsByCategory,
+  getCategoryBySlugSanity,
+  urlFor,
+  type SanityProduct,
+  type SanityCategory,
+} from '@/lib/sanity'
 
 export const revalidate = 60
+export const dynamicParams = true // accept slugs not in generateStaticParams
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export function generateStaticParams() {
+  // Pré-rend les 7 catégories connues. Les nouvelles Sanity sont rendues à la demande.
   return CATEGORIES.map((c) => ({ slug: c.slug }))
 }
 
@@ -28,12 +36,19 @@ export async function generateMetadata({
   params: Promise<Params>
 }): Promise<Metadata> {
   const { slug } = await params
-  const cat = getCategoryBySlug(slug)
-  if (!cat) return { title: 'Catégorie introuvable' }
+  const staticCat = getStaticCategory(slug)
+  const sanityCat = staticCat ? null : await getCategoryBySlugSanity(slug)
+  const name = staticCat?.name || sanityCat?.name
+  if (!name) return { title: 'Catégorie introuvable' }
 
   return {
-    title: `${cat.name} reconditionnés — ${cat.fromPriceLabel}`,
-    description: `${cat.shortTagline}. ${cat.longDescription.slice(0, 110)}…`,
+    title: staticCat
+      ? `${name} reconditionnés — ${staticCat.fromPriceLabel}`
+      : `${name} — Catalogue`,
+    description:
+      staticCat?.shortTagline ||
+      sanityCat?.description ||
+      `${name} reconditionnés. Garantis 6 mois. Livraison France.`,
     alternates: { canonical: `/categorie/${slug}` },
   }
 }
@@ -64,13 +79,31 @@ export default async function CategoryPage({
   params: Promise<Params>
 }) {
   const { slug } = await params
-  const staticData = getCategoryBySlug(slug)
-  if (!staticData) notFound()
+  const staticData = getStaticCategory(slug)
+
+  // Try Sanity if no static data
+  let sanityCat: SanityCategory | null = null
+  if (!staticData) {
+    sanityCat = await getCategoryBySlugSanity(slug)
+  }
+
+  if (!staticData && !sanityCat) notFound()
 
   const [products, related] = await Promise.all([
     getProductsByCategory(slug),
-    Promise.resolve(getCategoryRelated(slug, 3)),
+    Promise.resolve(staticData ? getCategoryRelated(slug, 3) : []),
   ])
+
+  // Display data — merge static + Sanity (static richer, used when slug matches)
+  const name = staticData?.name || sanityCat!.name
+  const shortTagline = staticData?.shortTagline || sanityCat?.description || ''
+  const longDescription = staticData?.longDescription || sanityCat?.description || ''
+  const heroImage = sanityCat?.image
+    ? urlFor(sanityCat.image).width(800).url()
+    : staticData?.fallbackImage ||
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80'
+  const heroImageAlt = sanityCat?.image?.alt || staticData?.fallbackImageAlt || name
+  const fromPriceLabel = staticData?.fromPriceLabel || 'Découvrir'
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -86,7 +119,7 @@ export default async function CategoryPage({
       {
         '@type': 'ListItem',
         position: 3,
-        name: staticData.name,
+        name,
         item: `${siteUrl}/categorie/${slug}`,
       },
     ],
@@ -117,25 +150,29 @@ export default async function CategoryPage({
                 </Link>
               </li>
               <ChevronRight className="h-3 w-3" />
-              <li className="text-ink">{staticData.name}</li>
+              <li className="text-ink">{name}</li>
             </ol>
           </nav>
 
           <div className="mt-8 grid lg:grid-cols-[1fr_400px] gap-10 lg:gap-16 items-center">
             <div>
-              <p className="eyebrow">{staticData.fromPriceLabel}</p>
+              <p className="eyebrow">{fromPriceLabel}</p>
               <h1 className="text-display mt-3 font-serif leading-[1.05]">
-                {staticData.name}
+                {name}
               </h1>
               <div className="gold-divider mx-0 mt-7" />
-              <p className="mt-7 text-lg text-ink-soft leading-relaxed">
-                {staticData.shortTagline}.
-              </p>
-              <p className="mt-4 text-ink-mute leading-relaxed">
-                {staticData.longDescription}
-              </p>
+              {shortTagline && (
+                <p className="mt-7 text-lg text-ink-soft leading-relaxed">
+                  {shortTagline}.
+                </p>
+              )}
+              {longDescription && longDescription !== shortTagline && (
+                <p className="mt-4 text-ink-mute leading-relaxed">
+                  {longDescription}
+                </p>
+              )}
 
-              {staticData.variants.length > 0 && (
+              {staticData?.variants && staticData.variants.length > 0 && (
                 <div className="mt-8">
                   <p className="text-xs uppercase tracking-widest text-ink-mute mb-3">
                     Variantes disponibles
@@ -157,8 +194,8 @@ export default async function CategoryPage({
             <Reveal delay={150}>
               <div className="relative aspect-[4/5] bg-ivory-light overflow-hidden hidden lg:block">
                 <Image
-                  src={staticData.fallbackImage}
-                  alt={staticData.fallbackImageAlt}
+                  src={heroImage}
+                  alt={heroImageAlt}
                   fill
                   sizes="400px"
                   className="object-cover"
@@ -205,8 +242,7 @@ export default async function CategoryPage({
               <p className="text-ink-mute mt-3 max-w-xl mx-auto leading-relaxed">
                 Les pièces de cette catégorie ne sont pas encore listées en
                 ligne, mais elles sont disponibles à notre showroom d&apos;Aubagne.
-                Décrivez-nous votre besoin, nous revenons sous 24 h avec ce que
-                nous avons en stock — souvent plus large qu&apos;affiché ici.
+                Décrivez-nous votre besoin, nous revenons sous 24 h.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link href="/contact" className="btn-primary">
@@ -221,63 +257,67 @@ export default async function CategoryPage({
         )}
       </section>
 
-      {/* Highlights */}
-      <section className="bg-ivory-dark border-y border-line">
-        <div className="container py-16 md:py-20">
+      {/* Highlights — seulement si on a des données statiques riches */}
+      {staticData && staticData.highlights.length > 0 && (
+        <section className="bg-ivory-dark border-y border-line">
+          <div className="container py-16 md:py-20">
+            <Reveal>
+              <div className="max-w-2xl mb-10">
+                <p className="eyebrow">Notre exigence</p>
+                <h2 className="text-h1 mt-2 font-serif">
+                  Ce qui distingue nos {name.toLowerCase()}
+                </h2>
+              </div>
+            </Reveal>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-line border border-line">
+              {staticData.highlights.map((h, i) => (
+                <Reveal key={h.title} delay={i * 80}>
+                  <div className="bg-ivory-light p-7 md:p-9 h-full">
+                    <Check className="h-6 w-6 text-gold" strokeWidth={1.5} />
+                    <h3 className="font-serif text-xl text-ink mt-5 leading-tight">
+                      {h.title}
+                    </h3>
+                    <p className="text-sm text-ink-soft mt-3 leading-relaxed">
+                      {h.body}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FAQ — seulement si on a des données statiques */}
+      {staticData && staticData.faq.length > 0 && (
+        <section className="container py-16 md:py-20 max-w-3xl">
           <Reveal>
-            <div className="max-w-2xl mb-10">
-              <p className="eyebrow">Notre exigence</p>
-              <h2 className="text-h1 mt-2 font-serif">
-                Ce qui distingue nos {staticData.name.toLowerCase()}
-              </h2>
+            <div className="text-center mb-10">
+              <p className="eyebrow">Questions fréquentes</p>
+              <h2 className="text-h1 mt-2 font-serif">À propos de cette catégorie</h2>
             </div>
           </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-line border border-line">
-            {staticData.highlights.map((h, i) => (
-              <Reveal key={h.title} delay={i * 80}>
-                <div className="bg-ivory-light p-7 md:p-9 h-full">
-                  <Check className="h-6 w-6 text-gold" strokeWidth={1.5} />
-                  <h3 className="font-serif text-xl text-ink mt-5 leading-tight">
-                    {h.title}
-                  </h3>
-                  <p className="text-sm text-ink-soft mt-3 leading-relaxed">
-                    {h.body}
-                  </p>
-                </div>
+          <div className="space-y-3">
+            {staticData.faq.map((item, i) => (
+              <Reveal key={item.q} delay={i * 50}>
+                <details className="group bg-ivory-light border border-line">
+                  <summary className="cursor-pointer p-5 md:p-6 flex items-center justify-between gap-4 list-none">
+                    <span className="font-serif text-base md:text-lg text-ink leading-snug">
+                      {item.q}
+                    </span>
+                    <span className="text-gold text-2xl transition-transform group-open:rotate-45 leading-none shrink-0">
+                      +
+                    </span>
+                  </summary>
+                  <div className="px-5 md:px-6 pb-5 md:pb-6 text-sm text-ink-soft leading-relaxed">
+                    {item.a}
+                  </div>
+                </details>
               </Reveal>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="container py-16 md:py-20 max-w-3xl">
-        <Reveal>
-          <div className="text-center mb-10">
-            <p className="eyebrow">Questions fréquentes</p>
-            <h2 className="text-h1 mt-2 font-serif">À propos de cette catégorie</h2>
-          </div>
-        </Reveal>
-        <div className="space-y-3">
-          {staticData.faq.map((item, i) => (
-            <Reveal key={item.q} delay={i * 50}>
-              <details className="group bg-ivory-light border border-line">
-                <summary className="cursor-pointer p-5 md:p-6 flex items-center justify-between gap-4 list-none">
-                  <span className="font-serif text-base md:text-lg text-ink leading-snug">
-                    {item.q}
-                  </span>
-                  <span className="text-gold text-2xl transition-transform group-open:rotate-45 leading-none shrink-0">
-                    +
-                  </span>
-                </summary>
-                <div className="px-5 md:px-6 pb-5 md:pb-6 text-sm text-ink-soft leading-relaxed">
-                  {item.a}
-                </div>
-              </details>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+        </section>
+      )}
 
       {related.length > 0 && (
         <section className="bg-ivory-dark border-t border-line">

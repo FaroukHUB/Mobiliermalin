@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
-import { getAllProducts, urlFor, type SanityProduct } from '@/lib/sanity'
-import { CATEGORIES } from '@/lib/categories-data'
+import { getAllProducts, getAllCategories, urlFor, type SanityProduct } from '@/lib/sanity'
+import { CATEGORIES as STATIC_CATEGORIES } from '@/lib/categories-data'
 
 export const revalidate = 60
 
@@ -44,7 +44,15 @@ function sanityToCard(p: SanityProduct): ProductCardData {
 }
 
 export default async function BoutiquePage() {
-  const products = await getAllProducts()
+  const [products, sanityCategories] = await Promise.all([
+    getAllProducts(),
+    getAllCategories(),
+  ])
+  // Si on a des catégories en Sanity, on les affiche. Sinon fallback hardcodé.
+  const filterCategories =
+    sanityCategories.length > 0
+      ? sanityCategories.map((c) => ({ slug: c.slug.current, name: c.name }))
+      : STATIC_CATEGORIES.map((c) => ({ slug: c.slug, name: c.name }))
 
   return (
     <>
@@ -71,7 +79,7 @@ export default async function BoutiquePage() {
             <span className="text-xs uppercase tracking-widest text-ink-mute mr-2 whitespace-nowrap">
               Filtrer par :
             </span>
-            {CATEGORIES.map((c) => (
+            {filterCategories.map((c) => (
               <Link
                 key={c.slug}
                 href={`/categorie/${c.slug}`}
