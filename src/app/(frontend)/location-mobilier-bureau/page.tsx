@@ -172,7 +172,7 @@ export default async function LLDPage() {
                 Demander un devis LLD
               </Link>
               <a href="tel:+33676617053" className="btn-outline-light">
-                07 64 32 — Djamel
+                06 76 61 70 53
               </a>
             </div>
           </div>
