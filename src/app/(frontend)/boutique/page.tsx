@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
-import { getAllProducts, type AirtableProduct } from '@/lib/airtable'
+import { getAllProducts, urlFor, type SanityProduct } from '@/lib/sanity'
 import { CATEGORIES } from '@/lib/categories-data'
 
 export const revalidate = 60
@@ -15,18 +15,30 @@ export const metadata: Metadata = {
   alternates: { canonical: '/boutique' },
 }
 
-function airtableToCard(p: AirtableProduct): ProductCardData {
+const CONDITION_KEYS: Record<string, string> = {
+  new: 'new',
+  excellent: 'excellent',
+  'very-good': 'very-good',
+  good: 'good',
+  fair: 'fair',
+}
+
+function sanityToCard(p: SanityProduct): ProductCardData {
+  const firstImage = p.images?.[0]
+  const imageUrl = firstImage
+    ? urlFor(firstImage).width(800).height(800).fit('crop').url()
+    : undefined
   return {
-    id: p.id,
-    slug: p.slug,
+    id: p._id,
+    slug: p.slug.current,
     title: p.name,
     shortDescription: p.shortDescription,
     price: p.price,
     comparePrice: p.comparePrice,
-    condition: p.condition,
+    condition: p.condition ? CONDITION_KEYS[p.condition] : undefined,
     brandName: p.brand,
-    imageUrl: p.images[0]?.url,
-    imageAlt: p.images[0]?.alt || p.name,
+    imageUrl,
+    imageAlt: firstImage?.alt || p.name,
     status: 'published',
   }
 }
@@ -87,8 +99,8 @@ export default async function BoutiquePage() {
         {products.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {products.map((p, i) => (
-              <Reveal key={p.id} delay={Math.min(i, 8) * 50}>
-                <ProductCard product={airtableToCard(p)} />
+              <Reveal key={p._id} delay={Math.min(i, 8) * 50}>
+                <ProductCard product={sanityToCard(p)} />
               </Reveal>
             ))}
           </div>

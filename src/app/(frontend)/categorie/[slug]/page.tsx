@@ -10,7 +10,7 @@ import {
 } from '@/lib/categories-data'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
-import { getProductsByCategory, type AirtableProduct } from '@/lib/airtable'
+import { getProductsByCategory, urlFor, type SanityProduct } from '@/lib/sanity'
 
 export const revalidate = 60
 
@@ -38,18 +38,22 @@ export async function generateMetadata({
   }
 }
 
-function airtableToCard(p: AirtableProduct): ProductCardData {
+function sanityToCard(p: SanityProduct): ProductCardData {
+  const firstImage = p.images?.[0]
+  const imageUrl = firstImage
+    ? urlFor(firstImage).width(800).height(800).fit('crop').url()
+    : undefined
   return {
-    id: p.id,
-    slug: p.slug,
+    id: p._id,
+    slug: p.slug.current,
     title: p.name,
     shortDescription: p.shortDescription,
     price: p.price,
     comparePrice: p.comparePrice,
     condition: p.condition,
     brandName: p.brand,
-    imageUrl: p.images[0]?.url,
-    imageAlt: p.images[0]?.alt || p.name,
+    imageUrl,
+    imageAlt: firstImage?.alt || p.name,
     status: 'published',
   }
 }
@@ -187,8 +191,8 @@ export default async function CategoryPage({
         {products.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {products.map((p, i) => (
-              <Reveal key={p.id} delay={i * 50}>
-                <ProductCard product={airtableToCard(p)} />
+              <Reveal key={p._id} delay={i * 50}>
+                <ProductCard product={sanityToCard(p)} />
               </Reveal>
             ))}
           </div>
