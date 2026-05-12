@@ -12,6 +12,10 @@ import { projectId, dataset, apiVersion } from './sanity/env'
 const SINGLETON_TYPES = new Set(['siteSettings'])
 const SINGLETON_ACTIONS = new Set(['publish', 'discardChanges', 'restore'])
 
+// Vision tool (GROQ query playground) : utile en dev, retiré en production
+// pour alléger le bundle du Studio.
+const isDev = process.env.NODE_ENV !== 'production'
+
 export default defineConfig({
   name: 'mobilier-malin',
   title: 'Mobilier Malin — Espace de gestion',
@@ -78,6 +82,6 @@ export default defineConfig({
               .child(S.documentTypeList('category').title('Catégories')),
           ]),
     }),
-    visionTool({ defaultApiVersion: apiVersion }),
+    ...(isDev ? [visionTool({ defaultApiVersion: apiVersion })] : []),
   ],
 })
