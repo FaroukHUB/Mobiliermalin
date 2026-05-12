@@ -112,11 +112,6 @@ export function CategoriesGrid({ categories = [] }: CategoriesGridProps = {}) {
                 <h3 className="font-serif text-lg md:text-xl text-ink mt-1.5 leading-tight">
                   {c.label}
                 </h3>
-                {c.description && (
-                  <p className="text-xs text-ink-mute mt-1.5 leading-relaxed">
-                    {c.description}
-                  </p>
-                )}
               </div>
             </Link>
           </Reveal>
