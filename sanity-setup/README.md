@@ -55,7 +55,53 @@ Remplace `abc12def` par ton vrai Project ID.
    - 🪑 **Mobilier (produits)**
    - 📁 **Catégories**
 
-## Étape 6 — Créer tes 7 catégories
+## Étape 6 — Configurer les Réglages du site (logos + images de section)
+
+Dans la sidebar du Studio, tu vois **⚙️ Réglages du site** en haut.
+
+C'est un **singleton** : un seul document qui regroupe tout ce qui est "global" sur le site.
+
+3 onglets dans le formulaire :
+
+### Onglet "Identité"
+- **Logo pour fonds clairs (header)** — version sombre (lettres noires/or) sur fond transparent → affichée en haut du site
+- **Logo pour fonds sombres (footer)** — version claire/or sur fond transparent → affichée en bas du site
+- **Favicon** — petite icône 32×32 ou 512×512 qui s'affiche dans l'onglet du navigateur
+
+### Onglet "Images des sections"
+- **Image — Section Manifeste** : grande image de la section "Notre manifeste" sur la home (portrait 1200×1500)
+- **Image — Section Location LLD** : illustration de la section LLD (portrait 1000×1250)
+- **Image — Section Showroom Aubagne** : photo réelle du showroom ou de l'atelier (paysage 1200×900)
+
+### Onglet "Hero des pages internes"
+- **Hero — page Location LLD** : visuel en haut de `/location-mobilier-bureau`
+- **Hero — page Attestation RSE** : optionnel
+
+→ Si un champ reste vide, le site affiche un **placeholder Unsplash** automatique.
+
+→ Quand le client uploade une image, **n'oublie pas de cliquer "Publish"** en bas à droite.
+
+## Étape 7 — Gérer le hero slider d'accueil
+
+Sidebar → **🎞️ Hero — Slider d'accueil**.
+
+C'est un **document type multiple** : tu peux créer autant de slides que tu veux, elles défilent dans le carrousel d'accueil.
+
+Pour chaque slide :
+- **Titre** (H1 sur la 1ère, H2 sur les suivantes)
+- **Sous-titre** (optionnel)
+- **Image desktop** (1920×900)
+- **Image mobile** (optionnel, format portrait)
+- **2 boutons CTA** avec leur lien interne (`/boutique`, `/contact`, etc.)
+- **Position du texte** (gauche / centre / droite)
+- **Couleur du texte** (clair / sombre) selon l'image de fond
+- **Voile sombre** (0-80 %) pour la lisibilité
+- **Ordre** d'affichage (plus petit = premier)
+- **Statut** : Publiée / Brouillon
+
+→ Au moins **1 slide publiée** pour que le carrousel apparaisse. Si aucune slide en base, le site affiche les 2 slides de démo Unsplash.
+
+## Étape 8 — Créer tes 7 catégories
 
 Avant d'ajouter des produits, crée tes catégories. Sidebar → **Catégories** → bouton **"+"** en haut à droite.
 
@@ -73,7 +119,7 @@ Crée ces 7 catégories (slug auto-généré depuis le nom) :
 
 Pour chacune : Sauvegarder (bouton "Publish" en bas à droite).
 
-## Étape 7 — Créer ton premier produit
+## Étape 9 — Créer ton premier produit
 
 Sidebar → **Mobilier (produits)** → bouton **"+"** → **Create**.
 

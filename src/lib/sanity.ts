@@ -169,15 +169,59 @@ export type SanitySiteSettings = {
   logoOnLight?: SanityImage
   logoOnDark?: SanityImage
   favicon?: SanityImage
+  manifesteImage?: SanityImage
+  lldSectionImage?: SanityImage
+  showroomImage?: SanityImage
+  lldHeroImage?: SanityImage
+  rseHeroImage?: SanityImage
 }
 
 /**
- * Réglages du site (logos, etc.) — singleton.
+ * Réglages du site (logos, images de section, etc.) — singleton.
  */
 export async function getSiteSettings(): Promise<SanitySiteSettings> {
   return safeFetch<SanitySiteSettings>(
-    `*[_type == "siteSettings"][0] { siteName, logoOnLight, logoOnDark, favicon }`,
+    `*[_type == "siteSettings"][0] {
+      siteName, logoOnLight, logoOnDark, favicon,
+      manifesteImage, lldSectionImage, showroomImage,
+      lldHeroImage, rseHeroImage
+    }`,
     {},
     {},
+  )
+}
+
+// ───────────────────────── Hero Slider ─────────────────────────
+
+export type SanityHeroSlide = {
+  _id: string
+  title: string
+  subtitle?: string
+  image: SanityImage
+  imageMobile?: SanityImage
+  ctaPrimaryLabel?: string
+  ctaPrimaryHref?: string
+  ctaSecondaryLabel?: string
+  ctaSecondaryHref?: string
+  textPosition?: 'left' | 'center' | 'right'
+  textColor?: 'light' | 'dark'
+  overlayOpacity?: number
+  order?: number
+  status: 'published' | 'draft'
+}
+
+/**
+ * Slides du hero d'accueil (uniquement publiées, triées).
+ */
+export async function getHeroSlides(): Promise<SanityHeroSlide[]> {
+  return safeFetch<SanityHeroSlide[]>(
+    `*[_type == "heroSlide" && status == "published"] | order(order asc) {
+      _id, title, subtitle,
+      image, imageMobile,
+      ctaPrimaryLabel, ctaPrimaryHref, ctaSecondaryLabel, ctaSecondaryHref,
+      textPosition, textColor, overlayOpacity, order, status
+    }`,
+    {},
+    [],
   )
 }

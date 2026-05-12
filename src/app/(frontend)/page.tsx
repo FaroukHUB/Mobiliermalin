@@ -13,6 +13,9 @@ import { ImpactSection } from '@/components/sections/ImpactSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
 import { SHOP_URL } from '@/lib/config'
+import { getHeroSlides, getSiteSettings, urlFor, type SanityImage } from '@/lib/sanity'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'Mobilier de bureau d\'exception, à −60 % du prix neuf',
@@ -39,7 +42,7 @@ export const metadata: Metadata = {
   ],
 }
 
-const SLIDES: HeroSlide[] = [
+const FALLBACK_SLIDES: HeroSlide[] = [
   {
     id: 'slide-1',
     title: "Du mobilier de bureau d'exception, à −60 %",
@@ -76,19 +79,48 @@ const SLIDES: HeroSlide[] = [
   },
 ]
 
-export default function HomePage() {
+function sanityImageToMedia(image?: SanityImage, alt?: string): { url: string; alt?: string } | undefined {
+  if (!image) return undefined
+  return { url: urlFor(image).width(2000).url(), alt: image.alt || alt }
+}
+
+export default async function HomePage() {
+  const [sanitySlides, settings] = await Promise.all([
+    getHeroSlides(),
+    getSiteSettings(),
+  ])
+
+  const slides: HeroSlide[] = sanitySlides.length
+    ? sanitySlides.map((s) => ({
+        id: s._id,
+        title: s.title,
+        subtitle: s.subtitle,
+        image: { url: urlFor(s.image).width(2000).url(), alt: s.image.alt || s.title },
+        imageMobile: s.imageMobile
+          ? { url: urlFor(s.imageMobile).width(1000).url(), alt: s.imageMobile.alt || s.title }
+          : undefined,
+        ctaPrimaryLabel: s.ctaPrimaryLabel,
+        ctaPrimaryHref: s.ctaPrimaryHref,
+        ctaSecondaryLabel: s.ctaSecondaryLabel,
+        ctaSecondaryHref: s.ctaSecondaryHref,
+        textPosition: s.textPosition,
+        textColor: s.textColor,
+        overlayOpacity: s.overlayOpacity,
+      }))
+    : FALLBACK_SLIDES
+
   return (
     <>
-      <HeroSlider slides={SLIDES} />
+      <HeroSlider slides={slides} />
       <ReassuranceBar />
-      <ManifesteSection />
+      <ManifesteSection image={sanityImageToMedia(settings.manifesteImage, 'Notre manifeste')} />
       <BrandsSection />
       <CategoriesGrid />
-      <LLDSection />
+      <LLDSection image={sanityImageToMedia(settings.lldSectionImage, 'Location longue durée')} />
       <RSESection />
       <ServicesSection />
       <ProcessSection />
-      <ShowroomSection />
+      <ShowroomSection image={sanityImageToMedia(settings.showroomImage, 'Showroom Aubagne')} />
       <ImpactSection />
       <TestimonialsSection />
       <NewsletterSection />

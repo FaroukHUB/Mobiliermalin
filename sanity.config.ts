@@ -54,6 +54,14 @@ export default defineConfig({
             S.divider(),
             // Collections normales
             S.listItem()
+              .title('Hero — Slider d\'accueil')
+              .icon(() => '🎞️')
+              .child(
+                S.documentTypeList('heroSlide')
+                  .title('Slides du carrousel')
+                  .defaultOrdering([{ field: 'order', direction: 'asc' }]),
+              ),
+            S.listItem()
               .title('Mobilier (produits)')
               .icon(() => '🪑')
               .child(

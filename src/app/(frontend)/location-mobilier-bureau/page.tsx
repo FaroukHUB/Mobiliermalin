@@ -12,7 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
-import { getSiteSettings } from '@/lib/site-settings'
+import { getSiteSettings, urlFor } from '@/lib/sanity'
 
 export const metadata: Metadata = {
   title:
@@ -136,9 +136,9 @@ const FAQ = [
 
 export default async function LLDPage() {
   const settings = await getSiteSettings()
-  const heroImageUrl =
-    settings.lldHeroImage?.url ||
-    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&q=80'
+  const heroImageUrl = settings.lldHeroImage
+    ? urlFor(settings.lldHeroImage).width(1600).url()
+    : 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&q=80'
   const heroImageAlt =
     settings.lldHeroImage?.alt ||
     'Bureau professionnel équipé en location longue durée'
