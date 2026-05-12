@@ -37,8 +37,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const staticCat = getStaticCategory(slug)
-  const sanityCat = staticCat ? null : await getCategoryBySlugSanity(slug)
-  const name = staticCat?.name || sanityCat?.name
+  const sanityCat = await getCategoryBySlugSanity(slug)
+  const name = sanityCat?.name || staticCat?.name
   if (!name) return { title: 'Catégorie introuvable' }
 
   return {
@@ -46,8 +46,8 @@ export async function generateMetadata({
       ? `${name} reconditionnés — ${staticCat.fromPriceLabel}`
       : `${name} — Catalogue`,
     description:
-      staticCat?.shortTagline ||
       sanityCat?.description ||
+      staticCat?.shortTagline ||
       `${name} reconditionnés. Garantis 6 mois. Livraison France.`,
     alternates: { canonical: `/categorie/${slug}` },
   }
@@ -81,11 +81,8 @@ export default async function CategoryPage({
   const { slug } = await params
   const staticData = getStaticCategory(slug)
 
-  // Try Sanity if no static data
-  let sanityCat: SanityCategory | null = null
-  if (!staticData) {
-    sanityCat = await getCategoryBySlugSanity(slug)
-  }
+  // Toujours essayer Sanity : sa description / image / variantes ont priorité sur le statique.
+  const sanityCat: SanityCategory | null = await getCategoryBySlugSanity(slug)
 
   if (!staticData && !sanityCat) notFound()
 
@@ -94,10 +91,10 @@ export default async function CategoryPage({
     Promise.resolve(staticData ? getCategoryRelated(slug, 3) : []),
   ])
 
-  // Display data — merge static + Sanity (static richer, used when slug matches)
-  const name = staticData?.name || sanityCat!.name
-  const shortTagline = staticData?.shortTagline || sanityCat?.description || ''
-  const longDescription = staticData?.longDescription || sanityCat?.description || ''
+  // Merge : Sanity prioritaire (ce que le client a saisi), fallback sur le statique.
+  const name = sanityCat?.name || staticData!.name
+  const shortTagline = sanityCat?.description || staticData?.shortTagline || ''
+  const longDescription = staticData?.longDescription || ''
   const heroImage = sanityCat?.image
     ? urlFor(sanityCat.image).width(800).url()
     : staticData?.fallbackImage ||
