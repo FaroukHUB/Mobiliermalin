@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
-import { getAllProducts, getAllCategories, urlFor, type SanityProduct } from '@/lib/sanity'
+import { getAllProducts, getAllCategories, urlFor, type SanityProduct, type SanityCategory } from '@/lib/sanity'
 import { CATEGORIES as STATIC_CATEGORIES } from '@/lib/categories-data'
 
 export const revalidate = 60
@@ -43,16 +43,52 @@ function sanityToCard(p: SanityProduct): ProductCardData {
   }
 }
 
+type FilterGroup = {
+  parentSlug: string | null
+  parentName: string | null
+  children: { slug: string; name: string }[]
+}
+
+function groupByParent(categories: SanityCategory[]): FilterGroup[] {
+  // Catégories racines (sans parent)
+  const roots = categories.filter((c) => !c.parent)
+  // Catégories enfants (avec parent)
+  const childrenByParent = new Map<string, SanityCategory[]>()
+  for (const c of categories) {
+    if (c.parent) {
+      const list = childrenByParent.get(c.parent._id) || []
+      list.push(c)
+      childrenByParent.set(c.parent._id, list)
+    }
+  }
+  return roots.map((root) => ({
+    parentSlug: root.slug.current,
+    parentName: root.name,
+    children: (childrenByParent.get(root._id) || []).map((c) => ({
+      slug: c.slug.current,
+      name: c.name,
+    })),
+  }))
+}
+
 export default async function BoutiquePage() {
   const [products, sanityCategories] = await Promise.all([
     getAllProducts(),
     getAllCategories(),
   ])
-  // Si on a des catégories en Sanity, on les affiche. Sinon fallback hardcodé.
-  const filterCategories =
+
+  // Si on a des catégories Sanity, on les groupe par parent.
+  // Sinon, on fallback à plat sur les 7 catégories hardcodées.
+  const filterGroups: FilterGroup[] =
     sanityCategories.length > 0
-      ? sanityCategories.map((c) => ({ slug: c.slug.current, name: c.name }))
-      : STATIC_CATEGORIES.map((c) => ({ slug: c.slug, name: c.name }))
+      ? groupByParent(sanityCategories)
+      : [
+          {
+            parentSlug: null,
+            parentName: null,
+            children: STATIC_CATEGORIES.map((c) => ({ slug: c.slug, name: c.name })),
+          },
+        ]
 
   return (
     <>
@@ -72,23 +108,37 @@ export default async function BoutiquePage() {
         </div>
       </section>
 
-      {/* Filtres catégories */}
+      {/* Filtres catégories — hiérarchie parent → enfants */}
       <section className="border-b border-line bg-ivory-light">
-        <div className="container py-6 overflow-x-auto">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs uppercase tracking-widest text-ink-mute mr-2 whitespace-nowrap">
-              Filtrer par :
-            </span>
-            {filterCategories.map((c) => (
-              <Link
-                key={c.slug}
-                href={`/categorie/${c.slug}`}
-                className="text-xs uppercase tracking-widest text-ink-soft border border-line bg-ivory px-3 py-1.5 hover:border-gold hover:text-gold-dark transition whitespace-nowrap"
-              >
-                {c.name}
-              </Link>
-            ))}
-          </div>
+        <div className="container py-6 space-y-4">
+          {filterGroups.map((group, idx) => (
+            <div
+              key={group.parentSlug || `flat-${idx}`}
+              className="flex items-center gap-2 flex-wrap"
+            >
+              {group.parentSlug && group.parentName ? (
+                <Link
+                  href={`/categorie/${group.parentSlug}`}
+                  className="text-xs uppercase tracking-widest text-ink font-medium border border-ink bg-ink text-ivory px-3 py-1.5 hover:bg-gold-dark hover:border-gold-dark transition whitespace-nowrap"
+                >
+                  {group.parentName}
+                </Link>
+              ) : (
+                <span className="text-xs uppercase tracking-widest text-ink-mute mr-2 whitespace-nowrap">
+                  Filtrer par :
+                </span>
+              )}
+              {group.children.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/categorie/${c.slug}`}
+                  className="text-xs uppercase tracking-widest text-ink-soft border border-line bg-ivory px-3 py-1.5 hover:border-gold hover:text-gold-dark transition whitespace-nowrap"
+                >
+                  {c.name}
+                </Link>
+              ))}
+            </div>
+          ))}
         </div>
       </section>
 
