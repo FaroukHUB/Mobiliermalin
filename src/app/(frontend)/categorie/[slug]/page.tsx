@@ -12,6 +12,7 @@ import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import {
   getProductsByCategory,
+  getProductsByCategoryDeep,
   getCategoryBySlugSanity,
   urlFor,
   type SanityProduct,
@@ -86,8 +87,11 @@ export default async function CategoryPage({
 
   if (!staticData && !sanityCat) notFound()
 
+  const hasChildren = (sanityCat?.children?.length ?? 0) > 0
+  // Si la catégorie a des enfants → on agrège tous les produits des sous-catégories.
+  // Sinon → on prend uniquement les produits attachés à cette catégorie.
   const [products, related] = await Promise.all([
-    getProductsByCategory(slug),
+    hasChildren ? getProductsByCategoryDeep(slug) : getProductsByCategory(slug),
     Promise.resolve(staticData ? getCategoryRelated(slug, 3) : []),
   ])
 
@@ -152,6 +156,19 @@ export default async function CategoryPage({
                   Boutique
                 </Link>
               </li>
+              {sanityCat?.parent && (
+                <>
+                  <ChevronRight className="h-3 w-3" />
+                  <li>
+                    <Link
+                      href={`/categorie/${sanityCat.parent.slug.current}`}
+                      className="hover:text-gold-dark"
+                    >
+                      {sanityCat.parent.name}
+                    </Link>
+                  </li>
+                </>
+              )}
               <ChevronRight className="h-3 w-3" />
               <li className="text-ink">{name}</li>
             </ol>
@@ -209,6 +226,51 @@ export default async function CategoryPage({
           </div>
         </div>
       </section>
+
+      {/* Sous-catégories (si la catégorie est un parent) */}
+      {hasChildren && (
+        <section className="container py-12 md:py-16 border-b border-line">
+          <Reveal>
+            <div className="max-w-2xl mb-10">
+              <p className="eyebrow">Explorer</p>
+              <h2 className="font-serif text-h1 mt-2">Sous-catégories</h2>
+            </div>
+          </Reveal>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            {sanityCat!.children!.map((child, i) => {
+              const childImage = child.image
+                ? urlFor(child.image).width(800).height(800).fit('crop').url()
+                : 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80'
+              return (
+                <Reveal key={child._id} delay={i * 60}>
+                  <Link
+                    href={`/categorie/${child.slug.current}`}
+                    className="group block bg-ivory-light border border-line hover:border-gold transition-colors duration-300"
+                  >
+                    <div className="relative aspect-square overflow-hidden bg-ivory-dark">
+                      <Image
+                        src={childImage}
+                        alt={child.image?.alt || child.name}
+                        fill
+                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <p className="text-[0.7rem] uppercase tracking-widest text-gold-dark font-medium">
+                        Découvrir
+                      </p>
+                      <h3 className="font-serif text-lg md:text-xl text-ink mt-1.5 leading-tight">
+                        {child.name}
+                      </h3>
+                    </div>
+                  </Link>
+                </Reveal>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Produits */}
       <section className="container py-16 md:py-20">

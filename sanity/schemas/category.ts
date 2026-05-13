@@ -27,6 +27,17 @@ export const category = {
       rows: 3,
     },
     {
+      name: 'parent',
+      title: 'Catégorie parente',
+      type: 'reference',
+      to: [{ type: 'category' }],
+      description:
+        'Laisser vide si c\'est une catégorie principale (ex: Assises). Sinon, choisir le parent (ex: pour "Fauteuils ergonomiques", sélectionner "Assises").',
+      options: {
+        filter: '!(_id in path("drafts.**"))',
+      },
+    },
+    {
       name: 'image',
       title: 'Image de la catégorie',
       type: 'image',

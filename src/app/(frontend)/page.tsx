@@ -13,7 +13,7 @@ import { ImpactSection } from '@/components/sections/ImpactSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
 import { SHOP_URL } from '@/lib/config'
-import { getHeroSlides, getSiteSettings, getAllCategories, urlFor, type SanityImage } from '@/lib/sanity'
+import { getHeroSlides, getSiteSettings, getTopLevelCategories, urlFor, type SanityImage } from '@/lib/sanity'
 
 export const revalidate = 60
 
@@ -88,7 +88,7 @@ export default async function HomePage() {
   const [sanitySlides, settings, sanityCategories] = await Promise.all([
     getHeroSlides(),
     getSiteSettings(),
-    getAllCategories(),
+    getTopLevelCategories(),
   ])
 
   const slides: HeroSlide[] = sanitySlides.length

@@ -43,6 +43,8 @@ export type SanityCategory = {
   image?: SanityImage
   variants?: string[]
   order?: number
+  parent?: { _id: string; name: string; slug: { current: string } } | null
+  children?: SanityCategory[]
 }
 
 export type SanityProduct = {
@@ -156,24 +158,59 @@ export async function getAllProductSlugs(): Promise<string[]> {
 }
 
 /**
- * Toutes les catégories.
+ * Toutes les catégories (avec leur parent éventuel).
  */
 export async function getAllCategories(): Promise<SanityCategory[]> {
   return safeFetch<SanityCategory[]>(
-    `*[_type == "category"] | order(order asc, name asc) { _id, name, slug, description, image, variants, order }`,
+    `*[_type == "category"] | order(order asc, name asc) {
+      _id, name, slug, description, image, variants, order,
+      parent->{_id, name, slug}
+    }`,
     {},
     [],
   )
 }
 
 /**
- * Une catégorie par son slug (depuis Sanity).
+ * Uniquement les catégories de premier niveau (sans parent) — pour la home.
+ */
+export async function getTopLevelCategories(): Promise<SanityCategory[]> {
+  return safeFetch<SanityCategory[]>(
+    `*[_type == "category" && !defined(parent)] | order(order asc, name asc) {
+      _id, name, slug, description, image, variants, order
+    }`,
+    {},
+    [],
+  )
+}
+
+/**
+ * Une catégorie par son slug + son parent + ses enfants éventuels.
  */
 export async function getCategoryBySlugSanity(slug: string): Promise<SanityCategory | null> {
   return safeFetch<SanityCategory | null>(
-    `*[_type == "category" && slug.current == $slug][0] { _id, name, slug, description, image, variants, order }`,
+    `*[_type == "category" && slug.current == $slug][0] {
+      _id, name, slug, description, image, variants, order,
+      parent->{_id, name, slug},
+      "children": *[_type == "category" && parent._ref == ^._id] | order(order asc, name asc) {
+        _id, name, slug, description, image, variants, order
+      }
+    }`,
     { slug },
     null,
+  )
+}
+
+/**
+ * Produits d'une catégorie ET de ses sous-catégories (agrégation).
+ */
+export async function getProductsByCategoryDeep(categorySlug: string): Promise<SanityProduct[]> {
+  return safeFetch<SanityProduct[]>(
+    `*[_type == "product" && status == "published" &&
+      (category->slug.current == $slug || category->parent->slug.current == $slug)
+    ] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
+    { slug: categorySlug },
+    [],
   )
 }
 
