@@ -1,19 +1,45 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
 const PROJECT_TYPES = [
   { value: 'achat', label: 'Achat de mobilier reconditionné' },
+  { value: 'devis-livraison', label: 'Devis livraison pour un produit' },
   { value: 'vidage', label: 'Vidage de locaux / reprise' },
   { value: 'mixte', label: 'Achat ET vidage' },
+  { value: 'lld', label: 'Location longue durée (LLD)' },
   { value: 'devis', label: 'Demande de devis détaillé' },
   { value: 'autre', label: 'Autre demande' },
 ]
 
+function buildPrefilledMessage(produit?: string | null, prix?: string | null): string {
+  if (!produit && !prix) return ''
+  const parts = ['Bonjour,\n\nJe souhaite recevoir un devis pour la livraison du produit suivant :']
+  if (produit) parts.push(`• Produit : ${produit}`)
+  if (prix) parts.push(`• Prix indiqué : ${prix} €`)
+  parts.push('\nMerci de me communiquer :')
+  parts.push('— Le coût de livraison vers mon adresse')
+  parts.push('— Les délais et options possibles (montage, étage, etc.)')
+  parts.push('\nAdresse de livraison : …')
+  parts.push('Étage : …  |  Ascenseur : oui / non')
+  parts.push('\nCordialement,')
+  return parts.join('\n')
+}
+
 export function ContactForm() {
+  const searchParams = useSearchParams()
+  const presetType = searchParams.get('type')
+  const presetProduit = searchParams.get('nom') || searchParams.get('produit')
+  const presetPrix = searchParams.get('prix')
+
+  const initialType =
+    presetType && PROJECT_TYPES.some((t) => t.value === presetType) ? presetType : ''
+  const initialMessage = buildPrefilledMessage(presetProduit, presetPrix)
+
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState<string>('')
 
@@ -85,7 +111,12 @@ export function ContactForm() {
         <label className="mm-label">
           Type de projet <span className="text-gold-dark">*</span>
         </label>
-        <select name="projectType" required className="mm-input" defaultValue="">
+        <select
+          name="projectType"
+          required
+          className="mm-input"
+          defaultValue={initialType}
+        >
           <option value="" disabled>
             Sélectionnez…
           </option>
@@ -104,9 +135,10 @@ export function ContactForm() {
         <textarea
           name="message"
           required
-          rows={5}
+          rows={initialMessage ? 10 : 5}
           className="mm-input"
           placeholder="Volume estimé, localisation, délais, références produits, etc."
+          defaultValue={initialMessage}
         />
       </div>
 

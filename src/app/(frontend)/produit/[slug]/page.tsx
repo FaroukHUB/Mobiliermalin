@@ -7,6 +7,7 @@ import { ChevronRight, Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucid
 import { getProductBySlug, getAllProductSlugs, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
 import { BuyButton } from '@/components/product/BuyButton'
+import { DeliveryChoice } from '@/components/product/DeliveryChoice'
 
 export const revalidate = 60
 
@@ -239,18 +240,24 @@ export default async function ProductPage({
               <p className="mt-6 text-ink-soft leading-relaxed">{product.shortDescription}</p>
             )}
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              {isInStock ? (
-                <BuyButton
-                  productId={product._id}
-                  slug={product.slug.current}
-                  name={product.name}
-                  price={product.price}
-                />
-              ) : (
+            {isInStock ? (
+              <DeliveryChoice
+                productId={product._id}
+                slug={product.slug.current}
+                name={product.name}
+                price={product.price}
+              />
+            ) : (
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Link href="/contact" className="btn-gold">Demander la disponibilité</Link>
-              )}
-              <Link href="/contact" className="btn-outline">Poser une question</Link>
+                <Link href="/contact" className="btn-outline">Poser une question</Link>
+              </div>
+            )}
+
+            <div className="mt-4">
+              <Link href="/contact" className="text-xs text-ink-mute hover:text-gold-dark underline underline-offset-2">
+                Poser une question sur ce produit
+              </Link>
             </div>
 
             <ul className="mt-8 space-y-3 text-sm">

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Mail, Phone, MapPin, Clock } from 'lucide-react'
+import { Suspense } from 'react'
 import { ContactForm } from '@/components/forms/ContactForm'
 
 export const metadata: Metadata = {
@@ -90,7 +91,9 @@ export default function ContactPage() {
           <div>
             <div className="bg-ivory-light border border-line p-6 md:p-10">
               <h2 className="font-serif text-2xl text-ink mb-6">Formulaire de contact</h2>
-              <ContactForm />
+              <Suspense fallback={<div className="h-96 animate-pulse bg-ivory" />}>
+                <ContactForm />
+              </Suspense>
             </div>
           </div>
         </div>
