@@ -30,12 +30,12 @@ export function DeliveryChoice({ productId, slug, name, price }: DeliveryChoiceP
             Retrait au showroom
           </h3>
           <p className="text-xs text-ink-mute mt-1.5">
-            Aubagne (13400) — sur rendez-vous
+            La Penne-sur-Huveaune (13821) — sur rendez-vous
           </p>
           <ul className="mt-4 space-y-2 text-xs text-ink-soft flex-1">
             <li className="flex items-start gap-2">
               <CalendarCheck className="h-3.5 w-3.5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
-              <span>Vous choisissez votre créneau</span>
+              <span>Vous choisissez votre créneau, lundi — samedi 10 h — 18 h</span>
             </li>
             <li className="flex items-start gap-2">
               <Clock className="h-3.5 w-3.5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />

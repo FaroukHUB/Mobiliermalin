@@ -33,8 +33,8 @@ export function ShowroomSection({ image }: ShowroomSectionProps = {}) {
             confiance.
           </p>
           <p className="mt-3 text-ink-soft leading-relaxed">
-            Sur rendez-vous, du lundi au samedi. Café offert, conseils sans
-            pression.
+            Sur rendez-vous, du lundi au samedi de 10 h à 18 h. Café offert,
+            conseils sans pression.
           </p>
 
           <div className="mt-8 space-y-4 text-sm">
@@ -48,7 +48,7 @@ export function ShowroomSection({ image }: ShowroomSectionProps = {}) {
             </div>
             <div className="flex items-center gap-3">
               <Clock className="h-4 w-4 text-gold shrink-0" strokeWidth={1.5} />
-              <p className="text-ink">Du lundi au samedi sur rendez-vous</p>
+              <p className="text-ink">Lundi — Samedi, 10 h — 18 h (sur rendez-vous)</p>
             </div>
             <div className="flex items-center gap-3">
               <Phone className="h-4 w-4 text-gold shrink-0" strokeWidth={1.5} />

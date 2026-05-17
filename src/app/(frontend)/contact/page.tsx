@@ -44,7 +44,7 @@ export default function ContactPage() {
                 label="Téléphone"
                 value="06 76 61 70 53"
                 href="tel:+33676617053"
-                hint="Du lundi au vendredi, 9 h — 18 h"
+                hint="Du lundi au samedi, 10 h — 18 h"
               />
               <ContactItem
                 icon={Mail}
@@ -70,9 +70,9 @@ export default function ContactPage() {
                 label="Horaires"
                 value={
                   <>
-                    Lundi — Vendredi : 9 h — 18 h
+                    Lundi — Samedi : 10 h — 18 h
                     <br />
-                    Samedi : sur rendez-vous
+                    Dimanche : fermé
                   </>
                 }
               />

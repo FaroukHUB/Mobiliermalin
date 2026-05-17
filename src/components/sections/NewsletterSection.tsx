@@ -42,7 +42,7 @@ export function NewsletterSection() {
               <span className="text-xs uppercase tracking-widest text-gold">Téléphone</span>
               <span className="font-serif text-lg">06 76 61 70 53</span>
               <span className="text-xs text-ivory/60 group-hover:text-ivory">
-                Lundi — Vendredi 9 h — 18 h →
+                Lundi — Samedi 10 h — 18 h →
               </span>
             </a>
             <a
