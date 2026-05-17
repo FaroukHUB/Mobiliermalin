@@ -267,7 +267,7 @@ export default async function ProductPage({
               </li>
               <li className="flex items-start gap-3 text-ink-soft">
                 <Truck className="h-4 w-4 text-gold mt-1 shrink-0" strokeWidth={1.5} />
-                <span>Livraison France entière, montage inclus dès 3 postes</span>
+                <span>Retrait gratuit au showroom ou livraison sur devis</span>
               </li>
               <li className="flex items-start gap-3 text-ink-soft">
                 <FileBadge2 className="h-4 w-4 text-gold mt-1 shrink-0" strokeWidth={1.5} />

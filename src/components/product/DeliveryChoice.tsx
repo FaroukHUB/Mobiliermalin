@@ -35,11 +35,11 @@ export function DeliveryChoice({ productId, slug, name, price }: DeliveryChoiceP
           <ul className="mt-4 space-y-2 text-xs text-ink-soft flex-1">
             <li className="flex items-start gap-2">
               <CalendarCheck className="h-3.5 w-3.5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
-              <span>Créneau au choix lun-ven 9h-18h, sam 10h-13h</span>
+              <span>Vous choisissez votre créneau</span>
             </li>
             <li className="flex items-start gap-2">
               <Clock className="h-3.5 w-3.5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
-              <span>Disponible dès le lendemain</span>
+              <span>Aucun frais de transport</span>
             </li>
           </ul>
           <div className="mt-5">
@@ -64,16 +64,16 @@ export function DeliveryChoice({ productId, slug, name, price }: DeliveryChoiceP
             Livraison à domicile
           </h3>
           <p className="text-xs text-ink-mute mt-1.5">
-            France entière — devis personnalisé
+            Devis personnalisé
           </p>
           <ul className="mt-4 space-y-2 text-xs text-ink-soft flex-1">
             <li className="flex items-start gap-2">
               <FileText className="h-3.5 w-3.5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
-              <span>Devis PDF sous 24 h, montage inclus dès 3 postes</span>
+              <span>Devis transmis sous 24 h ouvrées</span>
             </li>
             <li className="flex items-start gap-2">
               <Truck className="h-3.5 w-3.5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
-              <span>Marseille / Aix / Aubagne : livraison offerte</span>
+              <span>Tarif adapté à votre adresse et au volume</span>
             </li>
           </ul>
           <div className="mt-5">
