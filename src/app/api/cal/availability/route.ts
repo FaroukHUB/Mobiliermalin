@@ -26,15 +26,27 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ configured: false, slots: [] })
   }
 
-  const slots = await getAvailableSlots(start, end)
-  if (slots === null) {
-    // Erreur côté Cal API → on signale configured mais slots vide
-    // pour que le frontend puisse afficher un message clair.
-    return NextResponse.json({ configured: true, error: 'Cal API indisponible', slots: [] }, { status: 502 })
+  const result = await getAvailableSlots(start, end)
+  if (result === null) {
+    return NextResponse.json({ configured: false, slots: [] })
+  }
+  if (!result.ok) {
+    // On laisse passer en 200 pour ne pas casser le front, mais on remonte
+    // le détail de l'erreur côté serveur (logs Vercel) ET dans la réponse
+    // (debug temporaire — pour comprendre pourquoi Cal API échoue).
+    return NextResponse.json({
+      configured: true,
+      slots: [],
+      debug: {
+        reason: result.reason,
+        status: result.status,
+        body: result.body,
+      },
+    })
   }
 
   return NextResponse.json({
     configured: true,
-    slots: slots.map((s) => s.start),
+    slots: result.slots.map((s) => s.start),
   })
 }

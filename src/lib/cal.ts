@@ -42,53 +42,75 @@ export function isCalConfigured(): boolean {
   return getCalConfig() !== null
 }
 
+export type AvailabilityFetchResult =
+  | { ok: true; slots: AvailableSlot[] }
+  | { ok: false; reason: string; status?: number; body?: string }
+
 /**
  * Récupère les créneaux disponibles pour une plage de dates.
- * Si Cal n'est pas configuré, retourne null (le frontend sait alors
- * qu'il doit afficher tous les créneaux comme disponibles).
+ * Retourne null si Cal n'est pas configuré (frontend affichera tous
+ * les créneaux). Sinon retourne un résultat structuré incluant le
+ * détail de l'erreur pour debug.
  */
 export async function getAvailableSlots(
   startDate: string, // YYYY-MM-DD
   endDate: string, // YYYY-MM-DD
   timeZone: string = 'Europe/Paris',
-): Promise<AvailableSlot[] | null> {
+): Promise<AvailabilityFetchResult | null> {
   const config = getCalConfig()
   if (!config) return null
 
-  const url = new URL(`${config.apiBase}/slots/available`)
-  url.searchParams.set('eventTypeId', config.eventTypeId)
-  url.searchParams.set('startTime', `${startDate}T00:00:00.000Z`)
-  url.searchParams.set('endTime', `${endDate}T23:59:59.999Z`)
-  url.searchParams.set('timeZone', timeZone)
-
-  try {
-    const res = await fetch(url.toString(), {
-      headers: {
-        Authorization: `Bearer ${config.apiKey}`,
-        'cal-api-version': API_VERSION_SLOTS,
-      },
-      cache: 'no-store',
-    })
-
-    if (!res.ok) {
-      console.warn('[cal] availability fetch failed', res.status, await res.text().catch(() => ''))
-      return null
-    }
-
-    const json = (await res.json()) as SlotsResponse
-    const slotsByDate = json.data?.slots || {}
-    const flat: AvailableSlot[] = []
-    for (const date of Object.keys(slotsByDate)) {
-      for (const s of slotsByDate[date] || []) {
-        const start = s.start || s.time
-        if (start) flat.push({ start })
-      }
-    }
-    return flat
-  } catch (err) {
-    console.warn('[cal] availability fetch error', err)
-    return null
+  // Cal.com v2 API : essai endpoint /slots/available (legacy) puis /slots (récent).
+  const endpoints = ['/slots/available', '/slots']
+  let lastErr: { reason: string; status?: number; body?: string } = {
+    reason: 'no-endpoint-tried',
   }
+
+  for (const path of endpoints) {
+    const url = new URL(`${config.apiBase}${path}`)
+    url.searchParams.set('eventTypeId', config.eventTypeId)
+    // Certaines versions attendent startTime/endTime, d'autres start/end → on envoie les deux.
+    url.searchParams.set('startTime', `${startDate}T00:00:00.000Z`)
+    url.searchParams.set('endTime', `${endDate}T23:59:59.999Z`)
+    url.searchParams.set('start', `${startDate}T00:00:00.000Z`)
+    url.searchParams.set('end', `${endDate}T23:59:59.999Z`)
+    url.searchParams.set('timeZone', timeZone)
+
+    try {
+      const res = await fetch(url.toString(), {
+        headers: {
+          Authorization: `Bearer ${config.apiKey}`,
+          'cal-api-version': API_VERSION_SLOTS,
+        },
+        cache: 'no-store',
+      })
+
+      const bodyText = await res.text().catch(() => '')
+
+      if (!res.ok) {
+        console.warn(`[cal] ${path} failed`, res.status, bodyText.slice(0, 300))
+        lastErr = { reason: `cal-api-${res.status}`, status: res.status, body: bodyText.slice(0, 500) }
+        continue // essai suivant
+      }
+
+      const json = JSON.parse(bodyText) as SlotsResponse
+      const slotsByDate = json.data?.slots || {}
+      const flat: AvailableSlot[] = []
+      for (const date of Object.keys(slotsByDate)) {
+        for (const s of slotsByDate[date] || []) {
+          const start = s.start || s.time
+          if (start) flat.push({ start })
+        }
+      }
+      console.log(`[cal] ${path} OK → ${flat.length} slots`)
+      return { ok: true, slots: flat }
+    } catch (err) {
+      console.warn(`[cal] ${path} fetch error`, err)
+      lastErr = { reason: err instanceof Error ? err.message : 'fetch-error' }
+    }
+  }
+
+  return { ok: false, ...lastErr }
 }
 
 export type CreateBookingInput = {

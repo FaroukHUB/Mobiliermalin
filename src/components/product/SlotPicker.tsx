@@ -114,12 +114,17 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
     fetch(`/api/cal/availability?start=${start}&end=${end}`)
       .then(async (res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        return res.json() as Promise<{ configured: boolean; slots: string[] }>
+        return res.json() as Promise<{
+          configured: boolean
+          slots: string[]
+          debug?: { reason?: string; status?: number; body?: string }
+        }>
       })
       .then((data) => {
-        if (!data.configured) {
-          // Cal pas configuré : on traite tous les slots comme disponibles
-          setAvailability({ status: 'ready', configured: false, availableSet: new Set() })
+        if (!data.configured || data.debug) {
+          // Cal pas configuré ou erreur API : fallback "tous dispo"
+          if (data.debug) console.warn('[SlotPicker] Cal API issue:', data.debug)
+          setAvailability({ status: 'error', message: 'Disponibilité en temps réel indisponible' })
           return
         }
         const set = new Set(data.slots.map(isoToLocalKey).filter(Boolean))
@@ -127,7 +132,7 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
       })
       .catch((err) => {
         console.warn('[SlotPicker] availability error', err)
-        setAvailability({ status: 'error', message: 'Disponibilité indisponible — tous les créneaux affichés' })
+        setAvailability({ status: 'error', message: 'Disponibilité en temps réel indisponible' })
       })
   }, [open, dates, availability.status])
 
@@ -252,10 +257,9 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
               </div>
             )}
             {availability.status === 'error' && (
-              <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 text-xs text-amber-800 p-3 mb-3">
-                <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" strokeWidth={1.75} />
-                <span>{availability.message}</span>
-              </div>
+              <p className="text-[0.7rem] text-ink-mute mb-3">
+                Disponibilité en temps réel indisponible — confirmez votre créneau par téléphone si nécessaire.
+              </p>
             )}
 
             <p className="text-xs text-ink-mute mb-2">Matin</p>
