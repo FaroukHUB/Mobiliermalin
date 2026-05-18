@@ -60,21 +60,39 @@ export async function getAvailableSlots(
   const config = getCalConfig()
   if (!config) return null
 
-  // Cal.com v2 API : essai endpoint /slots/available (legacy) puis /slots (récent).
-  const endpoints = ['/slots/available', '/slots']
+  // Cal.com v2 API : on tente d'abord /slots (récent, strict sur start/end),
+  // puis /slots/available (legacy, qui acceptait startTime/endTime) en fallback.
+  type Attempt = { path: string; params: Record<string, string> }
+  const attempts: Attempt[] = [
+    {
+      path: '/slots',
+      params: {
+        eventTypeId: config.eventTypeId,
+        start: `${startDate}T00:00:00.000Z`,
+        end: `${endDate}T23:59:59.999Z`,
+        timeZone,
+      },
+    },
+    {
+      path: '/slots/available',
+      params: {
+        eventTypeId: config.eventTypeId,
+        startTime: `${startDate}T00:00:00.000Z`,
+        endTime: `${endDate}T23:59:59.999Z`,
+        timeZone,
+      },
+    },
+  ]
+
   let lastErr: { reason: string; status?: number; body?: string } = {
     reason: 'no-endpoint-tried',
   }
 
-  for (const path of endpoints) {
-    const url = new URL(`${config.apiBase}${path}`)
-    url.searchParams.set('eventTypeId', config.eventTypeId)
-    // Certaines versions attendent startTime/endTime, d'autres start/end → on envoie les deux.
-    url.searchParams.set('startTime', `${startDate}T00:00:00.000Z`)
-    url.searchParams.set('endTime', `${endDate}T23:59:59.999Z`)
-    url.searchParams.set('start', `${startDate}T00:00:00.000Z`)
-    url.searchParams.set('end', `${endDate}T23:59:59.999Z`)
-    url.searchParams.set('timeZone', timeZone)
+  for (const attempt of attempts) {
+    const url = new URL(`${config.apiBase}${attempt.path}`)
+    for (const [k, v] of Object.entries(attempt.params)) {
+      url.searchParams.set(k, v)
+    }
 
     try {
       const res = await fetch(url.toString(), {
@@ -88,7 +106,7 @@ export async function getAvailableSlots(
       const bodyText = await res.text().catch(() => '')
 
       if (!res.ok) {
-        console.warn(`[cal] ${path} failed`, res.status, bodyText.slice(0, 300))
+        console.warn(`[cal] ${attempt.path} failed`, res.status, bodyText.slice(0, 300))
         lastErr = { reason: `cal-api-${res.status}`, status: res.status, body: bodyText.slice(0, 500) }
         continue // essai suivant
       }
@@ -102,10 +120,10 @@ export async function getAvailableSlots(
           if (start) flat.push({ start })
         }
       }
-      console.log(`[cal] ${path} OK → ${flat.length} slots`)
+      console.log(`[cal] ${attempt.path} OK → ${flat.length} slots`)
       return { ok: true, slots: flat }
     } catch (err) {
-      console.warn(`[cal] ${path} fetch error`, err)
+      console.warn(`[cal] ${attempt.path} fetch error`, err)
       lastErr = { reason: err instanceof Error ? err.message : 'fetch-error' }
     }
   }
