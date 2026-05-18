@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { Calendar, Clock, X, MapPin, Loader2, ArrowRight } from 'lucide-react'
+import { Calendar, Clock, X, MapPin, Loader2, ArrowRight, AlertCircle } from 'lucide-react'
 
 interface SlotPickerProps {
   open: boolean
@@ -51,10 +51,39 @@ function formatSlotLabel(iso: string, time: string): string {
   return `${weekday} ${dayNum} ${month} à ${time}`
 }
 
+type AvailabilityState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'ready'; configured: boolean; availableSet: Set<string> }
+  | { status: 'error'; message: string }
+
+/**
+ * Construit la clé "YYYY-MM-DD|HH:MM" à partir d'un ISO 8601.
+ * On compare en local Europe/Paris pour faire matcher les créneaux Cal
+ * (qui peuvent arriver en +02:00 ou +01:00 selon DST) avec nos slots fixes.
+ */
+function isoToLocalKey(iso: string): string {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  // toLocaleString avec timeZone='Europe/Paris' nous donne la version locale Paris
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Paris',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(d)
+  const get = (type: string) => parts.find((p) => p.type === type)?.value || ''
+  return `${get('year')}-${get('month')}-${get('day')}|${get('hour')}:${get('minute')}`
+}
+
 export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProps) {
   const dates = useMemo(generateDates, [])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
+  const [availability, setAvailability] = useState<AvailabilityState>({ status: 'idle' })
 
   // Sélectionne le premier jour par défaut
   useEffect(() => {
@@ -73,7 +102,43 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
     }
   }, [open])
 
+  // Fetch availability une fois quand la modal s'ouvre
+  useEffect(() => {
+    if (!open || dates.length === 0) return
+    if (availability.status !== 'idle') return
+
+    const start = dates[0].iso
+    const end = dates[dates.length - 1].iso
+    setAvailability({ status: 'loading' })
+
+    fetch(`/api/cal/availability?start=${start}&end=${end}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        return res.json() as Promise<{ configured: boolean; slots: string[] }>
+      })
+      .then((data) => {
+        if (!data.configured) {
+          // Cal pas configuré : on traite tous les slots comme disponibles
+          setAvailability({ status: 'ready', configured: false, availableSet: new Set() })
+          return
+        }
+        const set = new Set(data.slots.map(isoToLocalKey).filter(Boolean))
+        setAvailability({ status: 'ready', configured: true, availableSet: set })
+      })
+      .catch((err) => {
+        console.warn('[SlotPicker] availability error', err)
+        setAvailability({ status: 'error', message: 'Disponibilité indisponible — tous les créneaux affichés' })
+      })
+  }, [open, dates, availability.status])
+
   if (!open) return null
+
+  /** Renvoie true si le créneau est disponible (ou si Cal n'est pas configuré). */
+  function isSlotAvailable(date: string, time: string): boolean {
+    if (availability.status !== 'ready') return true // pendant le chargement, on n'interdit rien
+    if (!availability.configured) return true
+    return availability.availableSet.has(`${date}|${time}`)
+  }
 
   const canConfirm = selectedDate && selectedTime && !loading
 
@@ -180,19 +245,36 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
               </p>
             </div>
 
+            {availability.status === 'loading' && (
+              <div className="flex items-center gap-2 text-xs text-ink-mute mb-3">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Vérification des créneaux disponibles…
+              </div>
+            )}
+            {availability.status === 'error' && (
+              <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 text-xs text-amber-800 p-3 mb-3">
+                <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" strokeWidth={1.75} />
+                <span>{availability.message}</span>
+              </div>
+            )}
+
             <p className="text-xs text-ink-mute mb-2">Matin</p>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
               {TIME_SLOTS_MORNING.map((t) => {
                 const isSelected = selectedTime === t
+                const isAvailable = selectedDate ? isSlotAvailable(selectedDate, t) : true
                 return (
                   <button
                     key={t}
                     type="button"
+                    disabled={!isAvailable}
                     onClick={() => setSelectedTime(t)}
                     className={`py-2.5 px-2 text-sm border transition ${
-                      isSelected
-                        ? 'border-gold bg-gold/10 text-ink font-medium'
-                        : 'border-line bg-ivory-light text-ink-soft hover:border-gold/40'
+                      !isAvailable
+                        ? 'border-line bg-ivory text-ink-mute/40 cursor-not-allowed line-through'
+                        : isSelected
+                          ? 'border-gold bg-gold/10 text-ink font-medium'
+                          : 'border-line bg-ivory-light text-ink-soft hover:border-gold/40'
                     }`}
                   >
                     {t}
@@ -205,15 +287,19 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
             <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
               {TIME_SLOTS_AFTERNOON.map((t) => {
                 const isSelected = selectedTime === t
+                const isAvailable = selectedDate ? isSlotAvailable(selectedDate, t) : true
                 return (
                   <button
                     key={t}
                     type="button"
+                    disabled={!isAvailable}
                     onClick={() => setSelectedTime(t)}
                     className={`py-2.5 px-2 text-sm border transition ${
-                      isSelected
-                        ? 'border-gold bg-gold/10 text-ink font-medium'
-                        : 'border-line bg-ivory-light text-ink-soft hover:border-gold/40'
+                      !isAvailable
+                        ? 'border-line bg-ivory text-ink-mute/40 cursor-not-allowed line-through'
+                        : isSelected
+                          ? 'border-gold bg-gold/10 text-ink font-medium'
+                          : 'border-line bg-ivory-light text-ink-soft hover:border-gold/40'
                     }`}
                   >
                     {t}
