@@ -8,6 +8,10 @@ type CheckoutPayload = {
   name?: string
   price?: number
   quantity?: number
+  fulfillmentMode?: 'pickup' | 'delivery'
+  pickupDate?: string
+  pickupTime?: string
+  pickupLabel?: string
 }
 
 /**
@@ -35,11 +39,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'JSON invalide' }, { status: 400 })
   }
 
-  const { slug, name, price, quantity } = body
+  const { slug, name, price, quantity, fulfillmentMode, pickupDate, pickupTime, pickupLabel } = body
   if (!slug || !name || typeof price !== 'number' || price <= 0) {
     return NextResponse.json({ error: 'Données produit invalides' }, { status: 400 })
   }
   const qty = Math.max(1, Math.min(10, quantity || 1))
+  const isPickup = fulfillmentMode === 'pickup'
 
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || `https://${req.headers.get('host')}`
@@ -61,12 +66,39 @@ export async function POST(req: NextRequest) {
   params.append('line_items[0][price_data][unit_amount]', String(unitAmount))
   params.append('line_items[0][quantity]', String(qty))
   params.append('billing_address_collection', 'required')
-  params.append('shipping_address_collection[allowed_countries][0]', 'FR')
-  params.append('shipping_address_collection[allowed_countries][1]', 'BE')
-  params.append('shipping_address_collection[allowed_countries][2]', 'LU')
-  params.append('shipping_address_collection[allowed_countries][3]', 'CH')
+
+  // En mode retrait : pas de collecte d'adresse de livraison (le client vient au showroom).
+  // En mode livraison : on collecte l'adresse de livraison.
+  if (!isPickup) {
+    params.append('shipping_address_collection[allowed_countries][0]', 'FR')
+    params.append('shipping_address_collection[allowed_countries][1]', 'BE')
+    params.append('shipping_address_collection[allowed_countries][2]', 'LU')
+    params.append('shipping_address_collection[allowed_countries][3]', 'CH')
+  }
+
   params.append('locale', 'fr')
   params.append('automatic_tax[enabled]', 'false')
+
+  // Phone collection (utile pour confirmer le créneau de retrait)
+  if (isPickup) {
+    params.append('phone_number_collection[enabled]', 'true')
+  }
+
+  // Metadata : retrouvable dans Stripe Dashboard et sur la page de succès
+  params.append('metadata[product_slug]', slug)
+  params.append('metadata[fulfillment_mode]', isPickup ? 'pickup' : 'delivery')
+  if (isPickup && pickupDate && pickupTime) {
+    params.append('metadata[pickup_date]', pickupDate)
+    params.append('metadata[pickup_time]', pickupTime)
+    if (pickupLabel) {
+      params.append('metadata[pickup_label]', pickupLabel)
+    }
+    // Affiché dans l'email de reçu Stripe automatique
+    params.append(
+      'payment_intent_data[description]',
+      `Retrait au showroom — ${pickupLabel || `${pickupDate} ${pickupTime}`}`,
+    )
+  }
 
   try {
     const res = await fetch(`${STRIPE_API}/checkout/sessions`, {

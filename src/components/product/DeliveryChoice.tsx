@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Store, Truck, ArrowRight, Clock, FileText, CalendarCheck } from 'lucide-react'
-import { BuyButton } from './BuyButton'
+import { PickupBookingButton } from './PickupBookingButton'
 
 interface DeliveryChoiceProps {
   productId: string
@@ -43,7 +43,7 @@ export function DeliveryChoice({ productId, slug, name, price }: DeliveryChoiceP
             </li>
           </ul>
           <div className="mt-5">
-            <BuyButton
+            <PickupBookingButton
               productId={productId}
               slug={slug}
               name={name}

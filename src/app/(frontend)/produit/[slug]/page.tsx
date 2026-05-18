@@ -6,7 +6,6 @@ import { PortableText, type PortableTextBlock } from 'next-sanity'
 import { ChevronRight, Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
 import { getProductBySlug, getAllProductSlugs, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
-import { BuyButton } from '@/components/product/BuyButton'
 import { DeliveryChoice } from '@/components/product/DeliveryChoice'
 
 export const revalidate = 60
