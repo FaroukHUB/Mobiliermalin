@@ -123,7 +123,11 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
       .then((data) => {
         if (!data.configured || data.debug) {
           // Cal pas configuré ou erreur API : fallback "tous dispo"
-          if (data.debug) console.warn('[SlotPicker] Cal API issue:', data.debug)
+          if (data.debug) {
+            console.warn('[SlotPicker] Cal API debug — reason:', data.debug.reason)
+            console.warn('[SlotPicker] Cal API debug — status:', data.debug.status)
+            console.warn('[SlotPicker] Cal API debug — body:', data.debug.body)
+          }
           setAvailability({ status: 'error', message: 'Disponibilité en temps réel indisponible' })
           return
         }
