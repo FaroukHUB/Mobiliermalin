@@ -22,6 +22,17 @@ type DateOption = {
   isTomorrow: boolean
 }
 
+/**
+ * Formate une Date au format YYYY-MM-DD selon l'heure LOCALE (et pas UTC).
+ * Évite le bug du décalage UTC qui transformait Mardi 00:00 Paris en Lundi 22:00 UTC.
+ */
+function toLocalISODate(d: Date): string {
+  const y = d.getFullYear()
+  const m = (d.getMonth() + 1).toString().padStart(2, '0')
+  const day = d.getDate().toString().padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
 function generateDates(): DateOption[] {
   const dates: DateOption[] = []
   const now = new Date()
@@ -32,7 +43,7 @@ function generateDates(): DateOption[] {
     d.setDate(todayMidnight.getDate() + i)
     if (d.getDay() === 0) continue // Dimanche fermé
     dates.push({
-      iso: d.toISOString().slice(0, 10),
+      iso: toLocalISODate(d),
       weekday: d.toLocaleDateString('fr-FR', { weekday: 'short' }).replace('.', ''),
       dayNum: d.getDate().toString().padStart(2, '0'),
       month: d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', ''),
