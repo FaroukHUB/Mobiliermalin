@@ -21,6 +21,9 @@ type StripeSession = {
     pickup_date?: string
     pickup_time?: string
     product_slug?: string
+    customer_name?: string
+    cal_booking_id?: string
+    cal_booking_uid?: string
   }
 }
 
@@ -59,7 +62,8 @@ export default async function OrderSuccessPage({
 
   const isPickup = session?.metadata?.fulfillment_mode === 'pickup'
   const pickupLabel = session?.metadata?.pickup_label
-  const customerName = session?.customer_details?.name
+  const hasCalBooking = !!session?.metadata?.cal_booking_id
+  const customerName = session?.customer_details?.name || session?.metadata?.customer_name
   const customerEmail = session?.customer_details?.email || session?.customer_email
   const amount = formatPrice(session?.amount_total)
 
@@ -103,6 +107,12 @@ export default async function OrderSuccessPage({
                   <p className="font-serif text-lg text-ink mt-1 capitalize">
                     {pickupLabel}
                   </p>
+                  {hasCalBooking && (
+                    <p className="text-xs text-gold-dark mt-1.5 flex items-center gap-1.5">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold" />
+                      Réservation ajoutée à l&apos;agenda de notre équipe
+                    </p>
+                  )}
                 </div>
               </div>
             )}

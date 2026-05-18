@@ -6,8 +6,9 @@ import { Calendar, Clock, X, MapPin, Loader2, ArrowRight, AlertCircle } from 'lu
 interface SlotPickerProps {
   open: boolean
   onClose: () => void
-  onConfirm: (slot: { date: string; time: string; label: string }) => void
+  onConfirm: (slot: { date: string; time: string; label: string; name: string; email: string }) => void
   loading?: boolean
+  errorMessage?: string | null
 }
 
 const TIME_SLOTS_MORNING = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30']
@@ -90,11 +91,13 @@ function isoToLocalKey(iso: string): string {
   return `${get('year')}-${get('month')}-${get('day')}|${get('hour')}:${get('minute')}`
 }
 
-export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProps) {
+export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: SlotPickerProps) {
   const dates = useMemo(generateDates, [])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [availability, setAvailability] = useState<AvailabilityState>({ status: 'idle' })
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
 
   // Sélectionne le premier jour par défaut
   useEffect(() => {
@@ -174,14 +177,20 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
     return availability.availableSet.has(`${date}|${time}`)
   }
 
-  const canConfirm = selectedDate && selectedTime && !loading
+  const trimmedName = name.trim()
+  const trimmedEmail = email.trim()
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)
+  const canConfirm =
+    !!selectedDate && !!selectedTime && trimmedName.length >= 2 && isValidEmail && !loading
 
   function handleConfirm() {
-    if (!selectedDate || !selectedTime) return
+    if (!selectedDate || !selectedTime || !canConfirm) return
     onConfirm({
       date: selectedDate,
       time: selectedTime,
       label: formatSlotLabel(selectedDate, selectedTime),
+      name: trimmedName,
+      email: trimmedEmail,
     })
   }
 
@@ -342,15 +351,63 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
             </div>
           </div>
 
-          {/* Récap + CTA */}
+          {/* Récap créneau */}
           {selectedDate && selectedTime && (
             <div className="bg-gold/5 border border-gold/30 p-4">
               <p className="text-xs uppercase tracking-widest text-gold-dark mb-1">
                 Votre créneau
               </p>
-              <p className="font-serif text-base text-ink">
+              <p className="font-serif text-base text-ink capitalize">
                 {formatSlotLabel(selectedDate, selectedTime)}
               </p>
+            </div>
+          )}
+
+          {/* Mini-form nom + email — n'apparaît qu'après sélection */}
+          {selectedDate && selectedTime && (
+            <div className="space-y-3">
+              <p className="text-xs uppercase tracking-widest text-ink-mute">
+                Vos coordonnées pour la confirmation
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="slot-name" className="sr-only">Prénom & Nom</label>
+                  <input
+                    id="slot-name"
+                    type="text"
+                    name="name"
+                    autoComplete="name"
+                    placeholder="Prénom & Nom"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    disabled={loading}
+                    className="mm-input"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="slot-email" className="sr-only">Email</label>
+                  <input
+                    id="slot-email"
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
+                    className="mm-input"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {errorMessage && (
+            <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-xs text-red-800 p-3">
+              <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" strokeWidth={1.75} />
+              <span>{errorMessage}</span>
             </div>
           )}
 
@@ -363,7 +420,7 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Redirection vers le paiement…
+                Confirmation et redirection…
               </>
             ) : (
               <>
@@ -374,8 +431,8 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
           </button>
 
           <p className="text-xs text-ink-mute text-center leading-relaxed">
-            Vous serez redirigé vers le paiement sécurisé Stripe. Un email de
-            confirmation avec votre créneau vous sera envoyé après le paiement.
+            Votre créneau est réservé puis vous êtes redirigé vers le paiement sécurisé Stripe.
+            Un email de confirmation vous sera envoyé.
           </p>
         </div>
       </div>

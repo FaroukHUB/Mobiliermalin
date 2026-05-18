@@ -12,6 +12,10 @@ type CheckoutPayload = {
   pickupDate?: string
   pickupTime?: string
   pickupLabel?: string
+  customerName?: string
+  customerEmail?: string
+  calBookingId?: string | number
+  calBookingUid?: string
 }
 
 /**
@@ -39,7 +43,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'JSON invalide' }, { status: 400 })
   }
 
-  const { slug, name, price, quantity, fulfillmentMode, pickupDate, pickupTime, pickupLabel } = body
+  const {
+    slug,
+    name,
+    price,
+    quantity,
+    fulfillmentMode,
+    pickupDate,
+    pickupTime,
+    pickupLabel,
+    customerName,
+    customerEmail,
+    calBookingId,
+    calBookingUid,
+  } = body
   if (!slug || !name || typeof price !== 'number' || price <= 0) {
     return NextResponse.json({ error: 'Données produit invalides' }, { status: 400 })
   }
@@ -84,15 +101,23 @@ export async function POST(req: NextRequest) {
     params.append('phone_number_collection[enabled]', 'true')
   }
 
+  // Pré-remplir l'email Stripe pour éviter au client de le ressaisir
+  if (customerEmail && customerEmail.includes('@')) {
+    params.append('customer_email', customerEmail)
+  }
+
   // Metadata : retrouvable dans Stripe Dashboard et sur la page de succès
   params.append('metadata[product_slug]', slug)
   params.append('metadata[fulfillment_mode]', isPickup ? 'pickup' : 'delivery')
+  if (customerName) params.append('metadata[customer_name]', customerName)
   if (isPickup && pickupDate && pickupTime) {
     params.append('metadata[pickup_date]', pickupDate)
     params.append('metadata[pickup_time]', pickupTime)
     if (pickupLabel) {
       params.append('metadata[pickup_label]', pickupLabel)
     }
+    if (calBookingId) params.append('metadata[cal_booking_id]', String(calBookingId))
+    if (calBookingUid) params.append('metadata[cal_booking_uid]', calBookingUid)
     // Affiché dans l'email de reçu Stripe automatique
     params.append(
       'payment_intent_data[description]',

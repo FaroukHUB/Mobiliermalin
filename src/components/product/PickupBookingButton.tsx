@@ -16,11 +16,45 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function handleConfirm(slot: { date: string; time: string; label: string }) {
+  async function handleConfirm(slot: {
+    date: string
+    time: string
+    label: string
+    name: string
+    email: string
+  }) {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/checkout', {
+      // 1) On crée d'abord la réservation Cal.eu (apparaît dans Google Cal de l'équipe)
+      const calRes = await fetch('/api/cal/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: slot.date,
+          time: slot.time,
+          name: slot.name,
+          email: slot.email,
+          productName: name,
+          productSlug: slug,
+        }),
+      })
+      const calData = (await calRes.json().catch(() => ({}))) as {
+        ok?: boolean
+        bookingId?: string | number
+        bookingUid?: string
+        error?: string
+        configured?: boolean
+      }
+      if (!calRes.ok || calData.ok === false) {
+        throw new Error(
+          calData.error ||
+            'Le créneau n\'a pas pu être réservé. Il a peut-être été pris pendant votre saisie — essayez un autre créneau.',
+        )
+      }
+
+      // 2) On lance le checkout Stripe avec le bookingId en metadata + email prérempli
+      const checkoutRes = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -33,13 +67,17 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
           pickupDate: slot.date,
           pickupTime: slot.time,
           pickupLabel: slot.label,
+          customerName: slot.name,
+          customerEmail: slot.email,
+          calBookingId: calData.bookingId,
+          calBookingUid: calData.bookingUid,
         }),
       })
-      if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as { error?: string }
+      if (!checkoutRes.ok) {
+        const data = (await checkoutRes.json().catch(() => ({}))) as { error?: string }
         throw new Error(data.error || 'Erreur lors de la création du paiement')
       }
-      const data = (await res.json()) as { url?: string }
+      const data = (await checkoutRes.json()) as { url?: string }
       if (data.url) {
         window.location.href = data.url
       } else {
@@ -71,12 +109,12 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
           </>
         )}
       </button>
-      {error && <p className="text-xs text-red-700">{error}</p>}
       <SlotPicker
         open={open}
         onClose={() => !loading && setOpen(false)}
         onConfirm={handleConfirm}
         loading={loading}
+        errorMessage={error}
       />
     </div>
   )
