@@ -14,6 +14,7 @@ type CheckoutPayload = {
   pickupLabel?: string
   customerName?: string
   customerEmail?: string
+  customerPhone?: string
   calBookingId?: string | number
   calBookingUid?: string
 }
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
     pickupLabel,
     customerName,
     customerEmail,
+    customerPhone,
     calBookingId,
     calBookingUid,
   } = body
@@ -110,6 +112,7 @@ export async function POST(req: NextRequest) {
   params.append('metadata[product_slug]', slug)
   params.append('metadata[fulfillment_mode]', isPickup ? 'pickup' : 'delivery')
   if (customerName) params.append('metadata[customer_name]', customerName)
+  if (customerPhone) params.append('metadata[customer_phone]', customerPhone)
   if (isPickup && pickupDate && pickupTime) {
     params.append('metadata[pickup_date]', pickupDate)
     params.append('metadata[pickup_time]', pickupTime)

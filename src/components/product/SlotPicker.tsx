@@ -6,7 +6,14 @@ import { Calendar, Clock, X, MapPin, Loader2, ArrowRight, AlertCircle } from 'lu
 interface SlotPickerProps {
   open: boolean
   onClose: () => void
-  onConfirm: (slot: { date: string; time: string; label: string; name: string; email: string }) => void
+  onConfirm: (slot: {
+    date: string
+    time: string
+    label: string
+    name: string
+    email: string
+    phone: string
+  }) => void
   loading?: boolean
   errorMessage?: string | null
 }
@@ -98,6 +105,7 @@ export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: 
   const [availability, setAvailability] = useState<AvailabilityState>({ status: 'idle' })
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
 
   // Sélectionne le premier jour par défaut
   useEffect(() => {
@@ -179,9 +187,16 @@ export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: 
 
   const trimmedName = name.trim()
   const trimmedEmail = email.trim()
+  const trimmedPhone = phone.replace(/[^\d+]/g, '') // garde uniquement chiffres et +
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)
+  const isValidPhone = trimmedPhone.length >= 9 // tolérant : portable FR (10) ou intl (+33...)
   const canConfirm =
-    !!selectedDate && !!selectedTime && trimmedName.length >= 2 && isValidEmail && !loading
+    !!selectedDate &&
+    !!selectedTime &&
+    trimmedName.length >= 2 &&
+    isValidEmail &&
+    isValidPhone &&
+    !loading
 
   function handleConfirm() {
     if (!selectedDate || !selectedTime || !canConfirm) return
@@ -191,6 +206,7 @@ export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: 
       label: formatSlotLabel(selectedDate, selectedTime),
       name: trimmedName,
       email: trimmedEmail,
+      phone: trimmedPhone,
     })
   }
 
@@ -369,7 +385,7 @@ export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: 
               <p className="text-xs uppercase tracking-widest text-ink-mute">
                 Vos coordonnées pour la confirmation
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-3">
                 <div>
                   <label htmlFor="slot-name" className="sr-only">Prénom & Nom</label>
                   <input
@@ -385,20 +401,37 @@ export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: 
                     required
                   />
                 </div>
-                <div>
-                  <label htmlFor="slot-email" className="sr-only">Email</label>
-                  <input
-                    id="slot-email"
-                    type="email"
-                    name="email"
-                    autoComplete="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={loading}
-                    className="mm-input"
-                    required
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="slot-email" className="sr-only">Email</label>
+                    <input
+                      id="slot-email"
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={loading}
+                      className="mm-input"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="slot-phone" className="sr-only">Téléphone</label>
+                    <input
+                      id="slot-phone"
+                      type="tel"
+                      name="phone"
+                      autoComplete="tel"
+                      placeholder="Téléphone (ex: 06 12 34 56 78)"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      disabled={loading}
+                      className="mm-input"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
             </div>

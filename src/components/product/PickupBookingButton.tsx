@@ -22,6 +22,7 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
     label: string
     name: string
     email: string
+    phone: string
   }) {
     setLoading(true)
     setError(null)
@@ -35,6 +36,7 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
           time: slot.time,
           name: slot.name,
           email: slot.email,
+          phone: slot.phone,
           productName: name,
           productSlug: slug,
         }),
@@ -69,6 +71,7 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
           pickupLabel: slot.label,
           customerName: slot.name,
           customerEmail: slot.email,
+          customerPhone: slot.phone,
           calBookingId: calData.bookingId,
           calBookingUid: calData.bookingUid,
         }),

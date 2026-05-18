@@ -8,6 +8,7 @@ type BookingPayload = {
   time?: string // HH:MM (Paris)
   name?: string
   email?: string
+  phone?: string
   productName?: string
   productSlug?: string
 }
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'JSON invalide' }, { status: 400 })
   }
 
-  const { date, time, name, email, productName, productSlug } = body
+  const { date, time, name, email, phone, productName, productSlug } = body
 
   if (!date || !time || !name || !email) {
     return NextResponse.json(
@@ -80,7 +81,12 @@ export async function POST(req: NextRequest) {
 
   const result = await createBooking({
     start: startIso,
-    attendee: { name, email, timeZone: 'Europe/Paris' },
+    attendee: {
+      name,
+      email,
+      phoneNumber: phone || undefined,
+      timeZone: 'Europe/Paris',
+    },
     notes,
     metadata: productSlug ? { productSlug } : undefined,
   })
