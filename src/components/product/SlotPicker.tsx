@@ -121,17 +121,31 @@ export function SlotPicker({ open, onClose, onConfirm, loading }: SlotPickerProp
         }>
       })
       .then((data) => {
-        if (!data.configured || data.debug) {
-          // Cal pas configuré ou erreur API : fallback "tous dispo"
-          if (data.debug) {
-            console.warn('[SlotPicker] Cal API debug — reason:', data.debug.reason)
-            console.warn('[SlotPicker] Cal API debug — status:', data.debug.status)
-            console.warn('[SlotPicker] Cal API debug — body:', data.debug.body)
-          }
+        if (!data.configured) {
+          setAvailability({ status: 'error', message: 'Cal non configuré' })
+          return
+        }
+        // En cas d'erreur API, debug contient reason/status/body
+        if (data.debug && (data.debug as { reason?: string }).reason) {
+          const d = data.debug as { reason?: string; status?: number; body?: string }
+          console.warn('[SlotPicker] Cal API ERR — reason:', d.reason)
+          console.warn('[SlotPicker] Cal API ERR — status:', d.status)
+          console.warn('[SlotPicker] Cal API ERR — body:', d.body)
           setAvailability({ status: 'error', message: 'Disponibilité en temps réel indisponible' })
           return
         }
-        const set = new Set(data.slots.map(isoToLocalKey).filter(Boolean))
+        // Succès : on log un échantillon pour debug du parsing
+        if (data.debug) {
+          const d = data.debug as { totalSlots?: number; sampleSlot?: string; rawSample?: string }
+          console.log('[SlotPicker] Cal API OK — totalSlots:', d.totalSlots)
+          console.log('[SlotPicker] Cal API OK — sampleSlot:', d.sampleSlot)
+          if (d.totalSlots === 0) {
+            console.log('[SlotPicker] Cal API OK — rawSample:', d.rawSample)
+          }
+        }
+        const keys = data.slots.map(isoToLocalKey).filter(Boolean)
+        console.log('[SlotPicker] mapped keys (5 first):', keys.slice(0, 5))
+        const set = new Set(keys)
         setAvailability({ status: 'ready', configured: true, availableSet: set })
       })
       .catch((err) => {

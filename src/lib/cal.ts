@@ -12,10 +12,13 @@ const DEFAULT_API_BASE = 'https://api.cal.com/v2'
 const API_VERSION_SLOTS = '2024-09-04'
 const API_VERSION_BOOKINGS = '2024-08-13'
 
+type SlotEntry = { time?: string; start?: string } | string
+type SlotsByDate = Record<string, SlotEntry[]>
+
 type SlotsResponse = {
-  data?: {
-    slots?: Record<string, Array<{ time?: string; start?: string }>>
-  }
+  // Format 1 (legacy) : { data: { slots: { "2026-05-18": [...] } } }
+  // Format 2 (récent) : { data: { "2026-05-18": [...] } }
+  data?: SlotsByDate | { slots?: SlotsByDate }
 }
 
 export type AvailableSlot = {
@@ -43,7 +46,7 @@ export function isCalConfigured(): boolean {
 }
 
 export type AvailabilityFetchResult =
-  | { ok: true; slots: AvailableSlot[] }
+  | { ok: true; slots: AvailableSlot[]; debug?: { sampleSlot?: string; totalSlots: number; rawSample?: string } }
   | { ok: false; reason: string; status?: number; body?: string }
 
 /**
@@ -111,17 +114,40 @@ export async function getAvailableSlots(
         continue // essai suivant
       }
 
-      const json = JSON.parse(bodyText) as SlotsResponse
-      const slotsByDate = json.data?.slots || {}
+      const json = JSON.parse(bodyText) as { data?: unknown }
+      // Détecte automatiquement le format : data.slots ou data direct
+      let slotsByDate: SlotsByDate = {}
+      const data = json.data
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        const dataObj = data as Record<string, unknown>
+        const candidate =
+          dataObj.slots && typeof dataObj.slots === 'object'
+            ? (dataObj.slots as Record<string, unknown>)
+            : dataObj
+        for (const key of Object.keys(candidate)) {
+          const value = candidate[key]
+          if (Array.isArray(value)) {
+            slotsByDate[key] = value as SlotEntry[]
+          }
+        }
+      }
+
       const flat: AvailableSlot[] = []
       for (const date of Object.keys(slotsByDate)) {
-        for (const s of slotsByDate[date] || []) {
-          const start = s.start || s.time
+        const entries = slotsByDate[date]
+        if (!Array.isArray(entries)) continue
+        for (const s of entries) {
+          let start: string | undefined
+          if (typeof s === 'string') start = s
+          else if (s && typeof s === 'object') start = s.start || s.time
           if (start) flat.push({ start })
         }
       }
-      console.log(`[cal] ${attempt.path} OK → ${flat.length} slots`)
-      return { ok: true, slots: flat }
+      console.log(
+        `[cal] ${attempt.path} OK → ${flat.length} slots`,
+        flat.length > 0 ? `first: ${flat[0].start}` : '(empty)',
+      )
+      return { ok: true, slots: flat, debug: { sampleSlot: flat[0]?.start, totalSlots: flat.length, rawSample: bodyText.slice(0, 400) } }
     } catch (err) {
       console.warn(`[cal] ${attempt.path} fetch error`, err)
       lastErr = { reason: err instanceof Error ? err.message : 'fetch-error' }

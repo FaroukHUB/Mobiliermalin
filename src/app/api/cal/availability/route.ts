@@ -48,5 +48,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     configured: true,
     slots: result.slots.map((s) => s.start),
+    debug: result.debug,
   })
 }
