@@ -15,6 +15,7 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [refreshKey, setRefreshKey] = useState(0)
 
   async function handleConfirm(slot: {
     date: string
@@ -49,42 +50,61 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
         configured?: boolean
       }
       if (!calRes.ok || calData.ok === false) {
+        // Probable conflit de créneau : on force le SlotPicker à rafraîchir la dispo
+        setRefreshKey((k) => k + 1)
         throw new Error(
           calData.error ||
-            'Le créneau n\'a pas pu être réservé. Il a peut-être été pris pendant votre saisie — essayez un autre créneau.',
+            'Le créneau n\'a pas pu être réservé. Il a peut-être été pris pendant votre saisie — sélectionnez un autre créneau.',
         )
       }
 
       // 2) On lance le checkout Stripe avec le bookingId en metadata + email prérempli
-      const checkoutRes = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          productId,
-          slug,
-          name,
-          price,
-          quantity: 1,
-          fulfillmentMode: 'pickup',
-          pickupDate: slot.date,
-          pickupTime: slot.time,
-          pickupLabel: slot.label,
-          customerName: slot.name,
-          customerEmail: slot.email,
-          customerPhone: slot.phone,
-          calBookingId: calData.bookingId,
-          calBookingUid: calData.bookingUid,
-        }),
-      })
-      if (!checkoutRes.ok) {
-        const data = (await checkoutRes.json().catch(() => ({}))) as { error?: string }
-        throw new Error(data.error || 'Erreur lors de la création du paiement')
-      }
-      const data = (await checkoutRes.json()) as { url?: string }
-      if (data.url) {
+      let checkoutFailed = false
+      try {
+        const checkoutRes = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            productId,
+            slug,
+            name,
+            price,
+            quantity: 1,
+            fulfillmentMode: 'pickup',
+            pickupDate: slot.date,
+            pickupTime: slot.time,
+            pickupLabel: slot.label,
+            customerName: slot.name,
+            customerEmail: slot.email,
+            customerPhone: slot.phone,
+            calBookingId: calData.bookingId,
+            calBookingUid: calData.bookingUid,
+          }),
+        })
+        if (!checkoutRes.ok) {
+          const data = (await checkoutRes.json().catch(() => ({}))) as { error?: string }
+          checkoutFailed = true
+          throw new Error(data.error || 'Erreur lors de la création du paiement')
+        }
+        const data = (await checkoutRes.json()) as { url?: string }
+        if (!data.url) {
+          checkoutFailed = true
+          throw new Error('URL de paiement manquante')
+        }
         window.location.href = data.url
-      } else {
-        throw new Error('URL de paiement manquante')
+      } catch (err) {
+        // Rollback : on libère le créneau Cal pour éviter qu'il reste bloqué
+        if (checkoutFailed) {
+          const ref = calData.bookingUid || calData.bookingId
+          if (ref) {
+            fetch(`/api/cal/booking?ref=${encodeURIComponent(String(ref))}`, {
+              method: 'DELETE',
+            }).catch(() => {
+              // best-effort, on n'interrompt pas l'affichage de l'erreur
+            })
+          }
+        }
+        throw err
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
@@ -118,6 +138,7 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
         onConfirm={handleConfirm}
         loading={loading}
         errorMessage={error}
+        refreshKey={refreshKey}
       />
     </div>
   )

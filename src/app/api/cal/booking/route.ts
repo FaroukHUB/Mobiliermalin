@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { createBooking, isCalConfigured } from '@/lib/cal'
+import { cancelBooking, createBooking, isCalConfigured } from '@/lib/cal'
 
 export const dynamic = 'force-dynamic'
 
@@ -103,4 +103,24 @@ export async function POST(req: NextRequest) {
     bookingId: result.bookingId,
     bookingUid: result.bookingUid,
   })
+}
+
+/**
+ * DELETE /api/cal/booking?ref=<bookingUid_ou_bookingId>
+ *
+ * Rollback : annule une réservation Cal.eu (utilisé quand le client
+ * a réservé un créneau mais que la création de la session Stripe échoue
+ * derrière → on libère le créneau immédiatement plutôt qu'attendre
+ * l'expiration).
+ */
+export async function DELETE(req: NextRequest) {
+  const ref = req.nextUrl.searchParams.get('ref')
+  if (!ref) {
+    return NextResponse.json({ ok: false, error: 'Paramètre ref requis' }, { status: 400 })
+  }
+  if (!isCalConfigured()) {
+    return NextResponse.json({ ok: true, configured: false })
+  }
+  const result = await cancelBooking(ref, 'Rollback automatique : checkout Stripe échoué')
+  return NextResponse.json({ ok: result.ok, error: result.error })
 }

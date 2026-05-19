@@ -16,6 +16,8 @@ interface SlotPickerProps {
   }) => void
   loading?: boolean
   errorMessage?: string | null
+  /** Incrémenté à chaque erreur côté parent → force un refetch de la dispo */
+  refreshKey?: number
 }
 
 const TIME_SLOTS_MORNING = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30']
@@ -98,7 +100,7 @@ function isoToLocalKey(iso: string): string {
   return `${get('year')}-${get('month')}-${get('day')}|${get('hour')}:${get('minute')}`
 }
 
-export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: SlotPickerProps) {
+export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage, refreshKey }: SlotPickerProps) {
   const dates = useMemo(generateDates, [])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
@@ -124,7 +126,14 @@ export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: 
     }
   }, [open])
 
-  // Fetch availability une fois quand la modal s'ouvre
+  // Reset l'état quand refreshKey change (forçage par le parent après erreur)
+  useEffect(() => {
+    if (refreshKey === undefined) return
+    setAvailability({ status: 'idle' })
+    setSelectedTime(null)
+  }, [refreshKey])
+
+  // Fetch availability quand la modal s'ouvre OU quand un refresh est demandé
   useEffect(() => {
     if (!open || dates.length === 0) return
     if (availability.status !== 'idle') return
