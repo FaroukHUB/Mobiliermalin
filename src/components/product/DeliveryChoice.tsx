@@ -10,7 +10,7 @@ interface DeliveryChoiceProps {
 }
 
 export function DeliveryChoice({ productId, slug, name, price }: DeliveryChoiceProps) {
-  const devisHref = `/contact?type=devis-livraison&produit=${encodeURIComponent(slug)}&nom=${encodeURIComponent(name)}&prix=${price}`
+  const devisHref = `/demander-devis?produit=${encodeURIComponent(slug)}&nom=${encodeURIComponent(name)}&prix=${price}`
 
   return (
     <div className="mt-8">

@@ -7,6 +7,7 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './sanity/schemas'
+import { sendQuoteAction } from './sanity/actions/sendQuoteAction'
 import { projectId, dataset, apiVersion } from './sanity/env'
 
 const SINGLETON_TYPES = new Set(['siteSettings'])
@@ -24,11 +25,17 @@ export default defineConfig({
   dataset,
   schema: { types: schemaTypes },
   document: {
-    // Sur les singletons : retire les actions "Duplicate" et "Delete"
-    actions: (input, context) =>
-      SINGLETON_TYPES.has(context.schemaType)
-        ? input.filter(({ action }) => action && SINGLETON_ACTIONS.has(action))
-        : input,
+    actions: (input, context) => {
+      // Sur les singletons : retire les actions "Duplicate" et "Delete"
+      if (SINGLETON_TYPES.has(context.schemaType)) {
+        return input.filter(({ action }) => action && SINGLETON_ACTIONS.has(action))
+      }
+      // Sur les devis : ajoute l'action "Envoyer au client"
+      if (context.schemaType === 'quote') {
+        return [...input, sendQuoteAction]
+      }
+      return input
+    },
     // Empêche la création de nouvelles instances de singleton
     newDocumentOptions: (prev, { creationContext }) => {
       if (creationContext.type === 'global') {
@@ -80,6 +87,54 @@ export default defineConfig({
               .title('Catégories')
               .icon(() => '📁')
               .child(S.documentTypeList('category').title('Catégories')),
+            S.divider(),
+            // Devis de livraison (workflow B2B)
+            S.listItem()
+              .title('Devis livraison')
+              .icon(() => '📋')
+              .child(
+                S.list()
+                  .title('Devis livraison')
+                  .items([
+                    S.listItem()
+                      .title('🟡 À traiter (nouveaux)')
+                      .child(
+                        S.documentList()
+                          .title('À traiter')
+                          .filter('_type == "quote" && status == "pending"')
+                          .defaultOrdering([{ field: '_createdAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('✏️ En préparation')
+                      .child(
+                        S.documentList()
+                          .title('En préparation')
+                          .filter('_type == "quote" && status == "draft"'),
+                      ),
+                    S.listItem()
+                      .title('📤 Envoyés (en attente client)')
+                      .child(
+                        S.documentList()
+                          .title('Envoyés')
+                          .filter('_type == "quote" && status == "sent"'),
+                      ),
+                    S.listItem()
+                      .title('✅ Acceptés + payés')
+                      .child(
+                        S.documentList()
+                          .title('Acceptés')
+                          .filter('_type == "quote" && status == "accepted"'),
+                      ),
+                    S.divider(),
+                    S.listItem()
+                      .title('Tous les devis')
+                      .child(
+                        S.documentTypeList('quote')
+                          .title('Tous les devis')
+                          .defaultOrdering([{ field: '_createdAt', direction: 'desc' }]),
+                      ),
+                  ]),
+              ),
           ]),
     }),
     ...(isDev ? [visionTool({ defaultApiVersion: apiVersion })] : []),
