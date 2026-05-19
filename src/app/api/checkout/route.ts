@@ -110,6 +110,7 @@ export async function POST(req: NextRequest) {
 
   // Metadata : retrouvable dans Stripe Dashboard et sur la page de succès
   params.append('metadata[product_slug]', slug)
+  params.append('metadata[product_name]', name)
   params.append('metadata[fulfillment_mode]', isPickup ? 'pickup' : 'delivery')
   if (customerName) params.append('metadata[customer_name]', customerName)
   if (customerPhone) params.append('metadata[customer_phone]', customerPhone)

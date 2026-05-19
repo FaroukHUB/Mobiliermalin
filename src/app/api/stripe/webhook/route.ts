@@ -1,33 +1,45 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { cancelBooking } from '@/lib/cal'
+import {
+  renderPickupCancellationHtml,
+  renderPickupConfirmationHtml,
+  sendEmail,
+} from '@/lib/brevo'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs' // crypto-subtle nécessite Node, pas Edge
 
 /**
- * Webhook Stripe pour gérer les sessions abandonnées.
+ * Webhook Stripe pour gérer le cycle de vie d'une commande.
  *
  * Events écoutés :
- * - checkout.session.expired : session abandonnée → on annule le booking Cal
- *   pour libérer le créneau
+ * - checkout.session.completed : paiement réussi → envoi email branded
+ * - checkout.session.expired   : session abandonnée → annule le booking
+ *   Cal + envoie email d'annulation
  * - checkout.session.async_payment_failed : paiement raté → idem
  *
  * Configuration requise sur Stripe Dashboard :
  *   1. Developers → Webhooks → Add endpoint
  *   2. URL : https://mobiliermalin.vercel.app/api/stripe/webhook
- *   3. Events : checkout.session.expired, checkout.session.async_payment_failed
+ *   3. Events : checkout.session.completed, checkout.session.expired,
+ *              checkout.session.async_payment_failed
  *   4. Récupérer le "Signing secret" (whsec_...) et le coller dans Vercel
  *      en tant que STRIPE_WEBHOOK_SECRET
  */
+
+type StripeSessionObject = {
+  id?: string
+  amount_total?: number
+  customer_email?: string
+  customer_details?: { email?: string; name?: string }
+  metadata?: Record<string, string>
+}
 
 type StripeEvent = {
   id?: string
   type?: string
   data?: {
-    object?: {
-      id?: string
-      metadata?: Record<string, string>
-    }
+    object?: StripeSessionObject
   }
 }
 
@@ -91,28 +103,71 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'JSON invalide' }, { status: 400 })
   }
 
-  // Events qui doivent libérer le créneau
+  const session = event.data?.object
+  const meta = session?.metadata || {}
+  const isPickup = meta.fulfillment_mode === 'pickup'
+  const pickupLabel = meta.pickup_label
+  const customerEmail = session?.customer_details?.email || session?.customer_email
+  const customerName = session?.customer_details?.name || meta.customer_name || ''
+  const productName = meta.product_name || meta.product_slug || 'Votre commande'
+
+  // ───── checkout.session.completed → envoi email confirmation ─────
+  if (event.type === 'checkout.session.completed' && isPickup && customerEmail && pickupLabel) {
+    const result = await sendEmail({
+      to: { email: customerEmail, name: customerName || undefined },
+      subject: `Confirmation de votre retrait — ${pickupLabel}`,
+      htmlContent: renderPickupConfirmationHtml({
+        customerName: customerName || 'Cher client',
+        customerEmail,
+        productName,
+        amountCents: session?.amount_total,
+        pickupLabel,
+      }),
+      tags: ['pickup-confirmation'],
+    })
+    if (!result.ok) {
+      console.warn('[stripe-webhook] confirmation email failed', result.error)
+    } else {
+      console.log('[stripe-webhook] confirmation email sent to', customerEmail)
+    }
+  }
+
+  // ───── checkout.session.expired / async_payment_failed → libère créneau ─────
   const cancelEvents = new Set([
     'checkout.session.expired',
     'checkout.session.async_payment_failed',
   ])
-
   if (event.type && cancelEvents.has(event.type)) {
-    const session = event.data?.object
-    const bookingUid = session?.metadata?.cal_booking_uid
-    const bookingId = session?.metadata?.cal_booking_id
+    const bookingUid = meta.cal_booking_uid
+    const bookingId = meta.cal_booking_id
     const ref = bookingUid || bookingId
     if (ref) {
-      const result = await cancelBooking(
-        ref,
+      const cancelReason =
         event.type === 'checkout.session.expired'
           ? 'Session Stripe expirée — créneau libéré'
-          : 'Paiement Stripe échoué — créneau libéré',
-      )
+          : 'Paiement Stripe échoué — créneau libéré'
+      const result = await cancelBooking(ref, cancelReason)
       if (!result.ok) {
         console.warn('[stripe-webhook] cancel booking failed', ref, result.error)
       } else {
         console.log('[stripe-webhook] booking cancelled', ref, event.type)
+      }
+
+      // Email d'annulation au client
+      if (customerEmail && pickupLabel) {
+        await sendEmail({
+          to: { email: customerEmail, name: customerName || undefined },
+          subject: `Votre créneau de retrait a été annulé — ${pickupLabel}`,
+          htmlContent: renderPickupCancellationHtml({
+            customerName: customerName || 'Cher client',
+            pickupLabel,
+            reason:
+              event.type === 'checkout.session.expired'
+                ? 'le paiement n\'a pas été finalisé dans les temps'
+                : 'le paiement a échoué',
+          }),
+          tags: ['pickup-cancellation'],
+        })
       }
     }
   }
