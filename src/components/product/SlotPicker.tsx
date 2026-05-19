@@ -147,31 +147,14 @@ export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage }: 
           setAvailability({ status: 'error', message: 'Cal non configuré' })
           return
         }
-        // En cas d'erreur API, debug contient reason/status/body
         if (data.debug && (data.debug as { reason?: string }).reason) {
-          const d = data.debug as { reason?: string; status?: number; body?: string }
-          console.warn('[SlotPicker] Cal API ERR — reason:', d.reason)
-          console.warn('[SlotPicker] Cal API ERR — status:', d.status)
-          console.warn('[SlotPicker] Cal API ERR — body:', d.body)
           setAvailability({ status: 'error', message: 'Disponibilité en temps réel indisponible' })
           return
         }
-        // Succès : on log un échantillon pour debug du parsing
-        if (data.debug) {
-          const d = data.debug as { totalSlots?: number; sampleSlot?: string; rawSample?: string }
-          console.log('[SlotPicker] Cal API OK — totalSlots:', d.totalSlots)
-          console.log('[SlotPicker] Cal API OK — sampleSlot:', d.sampleSlot)
-          if (d.totalSlots === 0) {
-            console.log('[SlotPicker] Cal API OK — rawSample:', d.rawSample)
-          }
-        }
-        const keys = data.slots.map(isoToLocalKey).filter(Boolean)
-        console.log('[SlotPicker] mapped keys (5 first):', keys.slice(0, 5))
-        const set = new Set(keys)
+        const set = new Set(data.slots.map(isoToLocalKey).filter(Boolean))
         setAvailability({ status: 'ready', configured: true, availableSet: set })
       })
-      .catch((err) => {
-        console.warn('[SlotPicker] availability error', err)
+      .catch(() => {
         setAvailability({ status: 'error', message: 'Disponibilité en temps réel indisponible' })
       })
   }, [open, dates, availability.status])

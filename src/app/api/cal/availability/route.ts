@@ -31,23 +31,16 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ configured: false, slots: [] })
   }
   if (!result.ok) {
-    // On laisse passer en 200 pour ne pas casser le front, mais on remonte
-    // le détail de l'erreur côté serveur (logs Vercel) ET dans la réponse
-    // (debug temporaire — pour comprendre pourquoi Cal API échoue).
+    console.warn('[cal] availability error', result.reason, result.status)
     return NextResponse.json({
       configured: true,
       slots: [],
-      debug: {
-        reason: result.reason,
-        status: result.status,
-        body: result.body,
-      },
+      debug: { reason: result.reason },
     })
   }
 
   return NextResponse.json({
     configured: true,
     slots: result.slots.map((s) => s.start),
-    debug: result.debug,
   })
 }

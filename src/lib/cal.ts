@@ -46,7 +46,7 @@ export function isCalConfigured(): boolean {
 }
 
 export type AvailabilityFetchResult =
-  | { ok: true; slots: AvailableSlot[]; debug?: { sampleSlot?: string; totalSlots: number; rawSample?: string } }
+  | { ok: true; slots: AvailableSlot[] }
   | { ok: false; reason: string; status?: number; body?: string }
 
 /**
@@ -109,13 +109,11 @@ export async function getAvailableSlots(
       const bodyText = await res.text().catch(() => '')
 
       if (!res.ok) {
-        console.warn(`[cal] ${attempt.path} failed`, res.status, bodyText.slice(0, 300))
-        lastErr = { reason: `cal-api-${res.status}`, status: res.status, body: bodyText.slice(0, 500) }
-        continue // essai suivant
+        lastErr = { reason: `cal-api-${res.status}`, status: res.status, body: bodyText.slice(0, 200) }
+        continue
       }
 
       const json = JSON.parse(bodyText) as { data?: unknown }
-      // Détecte automatiquement le format : data.slots ou data direct
       let slotsByDate: SlotsByDate = {}
       const data = json.data
       if (data && typeof data === 'object' && !Array.isArray(data)) {
@@ -143,13 +141,8 @@ export async function getAvailableSlots(
           if (start) flat.push({ start })
         }
       }
-      console.log(
-        `[cal] ${attempt.path} OK → ${flat.length} slots`,
-        flat.length > 0 ? `first: ${flat[0].start}` : '(empty)',
-      )
-      return { ok: true, slots: flat, debug: { sampleSlot: flat[0]?.start, totalSlots: flat.length, rawSample: bodyText.slice(0, 400) } }
+      return { ok: true, slots: flat }
     } catch (err) {
-      console.warn(`[cal] ${attempt.path} fetch error`, err)
       lastErr = { reason: err instanceof Error ? err.message : 'fetch-error' }
     }
   }
@@ -174,6 +167,39 @@ export type CreateBookingResult = {
   bookingId?: number | string
   bookingUid?: string
   error?: string
+}
+
+/**
+ * Annule une réservation Cal.com par son UID (string) ou son ID (number).
+ * Utilisé pour libérer un créneau quand le paiement Stripe est abandonné.
+ */
+export async function cancelBooking(
+  bookingUidOrId: string | number,
+  reason: string = 'Paiement abandonné',
+): Promise<{ ok: boolean; error?: string }> {
+  const config = getCalConfig()
+  if (!config) return { ok: true } // pas configuré → ne bloque pas
+
+  try {
+    const res = await fetch(`${config.apiBase}/bookings/${bookingUidOrId}/cancel`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        'cal-api-version': API_VERSION_BOOKINGS,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cancellationReason: reason }),
+    })
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '')
+      console.warn('[cal] cancel failed', res.status, errText.slice(0, 200))
+      return { ok: false, error: `Cal API ${res.status}` }
+    }
+    return { ok: true }
+  } catch (err) {
+    console.warn('[cal] cancel error', err)
+    return { ok: false, error: 'Erreur réseau Cal' }
+  }
 }
 
 /**
