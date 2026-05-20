@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { QuotePdf, type QuotePdfInput } from '@/components/pdf/QuotePdf'
-import { sendEmail, isBrevoConfigured } from '@/lib/brevo'
 import { getWriteClient, isSanityWriteConfigured } from '@/lib/sanity-write'
 import { sanityClient } from '@/lib/sanity'
 import { LEGAL } from '@/lib/legal'
@@ -110,8 +109,11 @@ export async function POST(
     )
   }
 
-  // 3) Email au client avec PDF en pièce jointe
-  if (!isBrevoConfigured()) {
+  // 3) Email au client avec PDF en pièce jointe — un seul appel Brevo
+  const brevoKey = process.env.BREVO_API_KEY
+  const brevoSender = process.env.BREVO_SENDER_EMAIL
+  const brevoName = process.env.BREVO_SENDER_NAME || 'Mobilier Malin'
+  if (!brevoKey || !brevoSender) {
     return NextResponse.json(
       { error: 'Brevo non configuré : impossible d\'envoyer l\'email' },
       { status: 503 },
@@ -132,56 +134,49 @@ export async function POST(
     acceptUrl,
   })
 
-  const sendResult = await sendEmail({
-    to: { email: quote.customer.email, name: quote.customer.name },
-    subject: `Votre devis Mobilier Malin — ${quote.numero}`,
-    htmlContent: customerHtml,
-    tags: ['quote-sent'],
-    // Brevo accepte les pièces jointes via "attachment"
-    // (pas dans notre type SendEmailInput → on passe par fetch direct)
-  })
-
-  // Note : pour ajouter le PDF en pièce jointe, on doit appeler Brevo
-  // directement (notre helper sendEmail ne supporte pas attachments).
-  // On le fait ici :
-  if (!sendResult.ok) {
-    console.warn('[devis/envoyer] email failed (without attachment)', sendResult.error)
-  }
-
-  // Envoi alternatif avec pièce jointe via API Brevo directe
-  const brevoKey = process.env.BREVO_API_KEY
-  const brevoSender = process.env.BREVO_SENDER_EMAIL
-  if (brevoKey && brevoSender) {
-    try {
-      const pdfBase64 = pdfBuffer.toString('base64')
-      const fullRes = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': brevoKey,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+  const pdfBase64 = pdfBuffer.toString('base64')
+  let brevoStatus = 0
+  let brevoBody = ''
+  try {
+    const fullRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': brevoKey,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { name: brevoName, email: brevoSender },
+        to: [{ email: quote.customer.email, name: quote.customer.name }],
+        subject: `Votre devis Mobilier Malin — ${quote.numero}`,
+        htmlContent: customerHtml,
+        tags: ['quote-sent'],
+        attachment: [
+          {
+            name: `${quote.numero}.pdf`,
+            content: pdfBase64,
+          },
+        ],
+      }),
+    })
+    brevoStatus = fullRes.status
+    brevoBody = await fullRes.text().catch(() => '')
+    if (!fullRes.ok) {
+      console.error('[devis/envoyer] brevo failed', brevoStatus, brevoBody.slice(0, 500))
+      return NextResponse.json(
+        {
+          error: `Brevo a refusé l'envoi (status ${brevoStatus}).`,
+          debug: { brevoStatus, brevoBody: brevoBody.slice(0, 500) },
         },
-        body: JSON.stringify({
-          sender: { name: process.env.BREVO_SENDER_NAME || 'Mobilier Malin', email: brevoSender },
-          to: [{ email: quote.customer.email, name: quote.customer.name }],
-          subject: `Votre devis Mobilier Malin — ${quote.numero}`,
-          htmlContent: customerHtml,
-          tags: ['quote-sent-with-pdf'],
-          attachment: [
-            {
-              name: `${quote.numero}.pdf`,
-              content: pdfBase64,
-            },
-          ],
-        }),
-      })
-      if (!fullRes.ok) {
-        const errText = await fullRes.text().catch(() => '')
-        console.warn('[devis/envoyer] brevo with attachment failed', fullRes.status, errText.slice(0, 200))
-      }
-    } catch (err) {
-      console.warn('[devis/envoyer] brevo with attachment error', err)
+        { status: 502 },
+      )
     }
+  } catch (err) {
+    console.error('[devis/envoyer] brevo network error', err)
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Erreur réseau Brevo' },
+      { status: 502 },
+    )
   }
 
   // 4) Mise à jour Sanity : status="sent", sentAt=now
