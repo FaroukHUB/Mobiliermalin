@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 import { ChevronRight, Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
 import { getProductBySlug, getAllProductSlugs, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
 import { DeliveryChoice } from '@/components/product/DeliveryChoice'
+import { ProductGallery } from '@/components/product/ProductGallery'
 
 export const revalidate = 60
 
@@ -65,13 +65,15 @@ export default async function ProductPage({
   if (!product) notFound()
 
   const category = product.category
-  const mainImage = product.images?.[0]
-  const galleryImages = product.images?.slice(1) || []
   const conditionLabel = product.condition ? CONDITION_LABELS[product.condition] : null
 
-  const mainImageUrl = mainImage
-    ? urlFor(mainImage).width(1200).height(1200).fit('crop').url()
-    : undefined
+  // Galerie avec 3 résolutions par image : main (1600), thumb (400), zoom (2400)
+  const galleryItems = (product.images || []).map((img, i) => ({
+    src: urlFor(img).width(2400).fit('max').url(),
+    mainSrc: urlFor(img).width(1600).height(1600).fit('crop').url(),
+    thumbSrc: urlFor(img).width(400).height(400).fit('crop').url(),
+    alt: img.alt || `${product.name} - vue ${i + 1}`,
+  }))
 
   // JSON-LD Product schema
   const productSchema = {
@@ -174,43 +176,11 @@ export default async function ProductPage({
       <section className="container py-10 md:py-16">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           <div>
-            <div className="relative aspect-square bg-ivory-dark overflow-hidden">
-              {mainImageUrl ? (
-                <Image
-                  src={mainImageUrl}
-                  alt={mainImage?.alt || product.name}
-                  fill
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover"
-                  priority
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-ink-mute/40 text-xs uppercase tracking-widest">
-                  Photo à venir
-                </div>
-              )}
-              {discount > 0 && (
-                <div className="absolute top-4 left-4 bg-ink text-ivory text-xs uppercase tracking-widest px-3 py-1.5">
-                  −{discount} %
-                </div>
-              )}
-            </div>
-
-            {galleryImages.length > 0 && (
-              <div className="mt-3 grid grid-cols-4 gap-2">
-                {galleryImages.map((img, i) => (
-                  <div key={img._key || i} className="relative aspect-square bg-ivory-dark overflow-hidden border border-line">
-                    <Image
-                      src={urlFor(img).width(400).height(400).fit('crop').url()}
-                      alt={img.alt || `${product.name} - vue ${i + 2}`}
-                      fill
-                      sizes="200px"
-                      className="object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+            <ProductGallery
+              productName={product.name}
+              images={galleryItems}
+              discount={discount}
+            />
           </div>
 
           <div>
