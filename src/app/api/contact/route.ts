@@ -1,4 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { sendEmail, isBrevoConfigured } from '@/lib/brevo'
+import { LEGAL } from '@/lib/legal'
 
 type ContactPayload = {
   name?: string
@@ -11,8 +13,10 @@ type ContactPayload = {
 
 const PROJECT_TYPE_LABELS: Record<string, string> = {
   achat: 'Achat de mobilier reconditionné',
+  'devis-livraison': 'Devis livraison pour un produit',
   vidage: 'Vidage de locaux / reprise',
   mixte: 'Achat ET vidage',
+  lld: 'Location longue durée (LLD)',
   devis: 'Demande de devis détaillé',
   autre: 'Autre demande',
 }
@@ -58,10 +62,6 @@ export async function POST(req: NextRequest) {
   }
 
   const projectLabel = PROJECT_TYPE_LABELS[projectType] || projectType
-  const TO = 'mobiliermalin@gmail.com'
-  const FROM_ADDRESS = process.env.EMAIL_FROM_ADDRESS || 'noreply@mobiliermalin.com'
-  const FROM_NAME = process.env.EMAIL_FROM_NAME || 'Mobilier Malin'
-
   const subject = `[Site] ${projectLabel} — ${name}`
 
   const textBody = `
@@ -103,43 +103,26 @@ Envoyé le ${new Date().toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 
 </html>
 `
 
-  // Tentative d'envoi via Resend si configuré, sinon log console
-  if (process.env.RESEND_API_KEY) {
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: `${FROM_NAME} <${FROM_ADDRESS}>`,
-          to: [TO],
-          reply_to: email,
-          subject,
-          text: textBody,
-          html: htmlBody,
-        }),
-      })
-      if (!res.ok) {
-        const errBody = await res.text()
-        console.error('[contact] Resend error:', res.status, errBody)
-        return NextResponse.json(
-          { error: 'Erreur lors de l\'envoi de l\'email' },
-          { status: 502 },
-        )
-      }
-    } catch (err) {
-      console.error('[contact] Resend fetch failed:', err)
+  // Envoi via Brevo (cohérent avec le reste du site)
+  if (isBrevoConfigured()) {
+    const result = await sendEmail({
+      to: { email: LEGAL.email, name: 'Mobilier Malin' },
+      subject,
+      htmlContent: htmlBody,
+      replyTo: { email, name },
+      tags: ['contact-form'],
+    })
+    if (!result.ok) {
+      console.error('[contact] Brevo error:', result.error)
       return NextResponse.json(
         { error: 'Erreur lors de l\'envoi de l\'email' },
         { status: 502 },
       )
     }
   } else {
-    // Pas de service email configuré : log la demande pour qu'elle reste visible
-    // dans les logs Vercel. À configurer Resend dès que possible pour la prod.
-    console.warn('[contact] RESEND_API_KEY non configurée — message non envoyé')
+    // Pas de service email configuré : log la demande pour qu'elle reste
+    // visible dans les logs Vercel.
+    console.warn('[contact] Brevo non configuré — message non envoyé')
     console.log('[contact] Nouveau message reçu:\n' + textBody)
   }
 
