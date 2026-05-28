@@ -117,8 +117,9 @@ export async function POST(req: NextRequest) {
   // 2) Email à Djamel (best-effort)
   if (isBrevoConfigured()) {
     const elevatorLabel = body.elevator === 'yes' ? 'Oui' : body.elevator === 'no' ? 'Non' : 'Inconnu'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
     const sanityLink = createdId
-      ? `https://mobiliermalin.vercel.app/studio/desk/quote;${createdId}`
+      ? `${siteUrl}/studio/structure/devisLivraison;${createdId}`
       : ''
     const adminHtml = `<!DOCTYPE html>
 <html lang="fr"><body style="font-family:Helvetica,Arial,sans-serif;background:#f5f5f5;padding:24px;color:#1a1a1a;">

@@ -22,7 +22,7 @@ export const runtime = 'nodejs' // crypto-subtle nécessite Node, pas Edge
  *
  * Configuration requise sur Stripe Dashboard :
  *   1. Developers → Webhooks → Add endpoint
- *   2. URL : https://mobiliermalin.vercel.app/api/stripe/webhook
+ *   2. URL : https://mobiliermalin.com/api/stripe/webhook
  *   3. Events : checkout.session.completed, checkout.session.expired,
  *              checkout.session.async_payment_failed
  *   4. Récupérer le "Signing secret" (whsec_...) et le coller dans Vercel
@@ -282,7 +282,7 @@ function renderQuoteAcceptedAdminHtml(input: {
   const { customerName, customerEmail, numero, quoteId, amountCents } = input
   const price = formatPrice(amountCents)
   const studioLink = quoteId
-    ? `https://mobiliermalin.vercel.app/studio/desk/quote;${quoteId}`
+    ? `${process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'}/studio/structure/devisLivraison;${quoteId}`
     : ''
   return `<!DOCTYPE html>
 <html lang="fr"><body style="font-family:Helvetica,Arial,sans-serif;background:#f5f5f5;padding:24px;color:#1a1a1a;">
