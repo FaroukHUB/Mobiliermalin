@@ -97,10 +97,6 @@ export function CategoriesGrid({ categories = [] }: CategoriesGridProps = {}) {
                   sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                 />
-                <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-ivory/95 backdrop-blur px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-ink">
-                  <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-                  Disponible
-                </div>
                 <div className="absolute bottom-3 right-3 h-10 w-10 bg-ivory translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
                   <ArrowUpRight className="h-4 w-4 text-ink" strokeWidth={1.5} />
                 </div>
