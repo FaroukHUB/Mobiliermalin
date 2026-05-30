@@ -39,6 +39,19 @@ export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; e
   const config = getBrevoConfig()
   if (!config) return { ok: true } // pas configuré → on ne plante pas
 
+  // Reply-to par défaut = boîte de réception réelle (mobiliermalin@gmail.com)
+  // Comme ça les emails envoyés depuis contact@mobiliermalin.com (alias DKIM
+  // sans boîte) ont leurs réponses routées vers une vraie boîte que Djamel lit.
+  // L'appelant peut surcharger via input.replyTo (ex: pour le contact form où
+  // on veut que Djamel puisse répondre directement au client).
+  const defaultReplyTo = process.env.BREVO_REPLY_TO_EMAIL
+    ? {
+        email: process.env.BREVO_REPLY_TO_EMAIL,
+        name: process.env.BREVO_REPLY_TO_NAME || 'Mobilier Malin',
+      }
+    : undefined
+  const replyTo = input.replyTo || defaultReplyTo
+
   try {
     const res = await fetch(BREVO_API, {
       method: 'POST',
@@ -52,7 +65,7 @@ export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; e
         to: [input.to],
         subject: input.subject,
         htmlContent: input.htmlContent,
-        replyTo: input.replyTo,
+        replyTo,
         tags: input.tags,
       }),
     })

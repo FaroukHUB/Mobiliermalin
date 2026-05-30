@@ -148,6 +148,12 @@ export async function POST(
       body: JSON.stringify({
         sender: { name: brevoName, email: brevoSender },
         to: [{ email: quote.customer.email, name: quote.customer.name }],
+        replyTo: process.env.BREVO_REPLY_TO_EMAIL
+          ? {
+              email: process.env.BREVO_REPLY_TO_EMAIL,
+              name: process.env.BREVO_REPLY_TO_NAME || 'Mobilier Malin',
+            }
+          : undefined,
         subject: `Votre devis Mobilier Malin — ${quote.numero}`,
         htmlContent: customerHtml,
         tags: ['quote-sent'],
