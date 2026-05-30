@@ -76,11 +76,28 @@ export default defineConfig({
               .title('Mobilier (produits)')
               .icon(() => '🪑')
               .child(
-                S.documentTypeList('product')
-                  .title('Mobilier (produits)')
-                  .defaultOrdering([
-                    { field: 'status', direction: 'asc' },
-                    { field: '_createdAt', direction: 'desc' },
+                S.list()
+                  .title('Mobilier')
+                  .items([
+                    S.listItem()
+                      .title('🌟 Mis en avant sur la home')
+                      .child(
+                        S.documentList()
+                          .title('Coups de cœur (home)')
+                          .filter('_type == "product" && featured == true')
+                          .defaultOrdering([{ field: '_createdAt', direction: 'desc' }]),
+                      ),
+                    S.divider(),
+                    S.listItem()
+                      .title('Tous les produits')
+                      .child(
+                        S.documentTypeList('product')
+                          .title('Tous les produits')
+                          .defaultOrdering([
+                            { field: 'status', direction: 'asc' },
+                            { field: '_createdAt', direction: 'desc' },
+                          ]),
+                      ),
                   ]),
               ),
             S.listItem()
