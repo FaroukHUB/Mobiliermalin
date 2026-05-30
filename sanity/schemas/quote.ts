@@ -113,7 +113,9 @@ export const quote = {
           title: 'Produit (catalogue)',
           type: 'reference',
           to: [{ type: 'product' }],
-          description: 'Lien vers le produit Sanity (auto-rempli depuis la demande)',
+          weak: true,
+          description:
+            'Lien vers le produit Sanity (auto-rempli depuis la demande). Référence faible : le produit peut être supprimé sans casser ce devis.',
         },
         { name: 'name', title: 'Nom du produit', type: 'string', validation: (R: Rule) => R.required() },
         { name: 'slug', title: 'Slug', type: 'string' },
