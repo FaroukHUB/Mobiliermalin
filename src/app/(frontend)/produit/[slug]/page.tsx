@@ -185,8 +185,19 @@ export default async function ProductPage({
 
           <div>
             {(product.brand || conditionLabel) && (
-              <p className="eyebrow">
-                {[product.brand, conditionLabel].filter(Boolean).join(' · ')}
+              <p className="eyebrow inline-flex items-center gap-2 flex-wrap">
+                <span>{[product.brand, conditionLabel].filter(Boolean).join(' · ')}</span>
+                {conditionLabel && (
+                  <Link
+                    href="/charte-qualite"
+                    target="_blank"
+                    rel="noopener"
+                    className="text-[0.65rem] normal-case tracking-normal text-gold-dark hover:text-gold underline underline-offset-2"
+                    title="Voir notre charte qualité"
+                  >
+                    Qu&apos;est-ce que ça veut dire ?
+                  </Link>
+                )}
               </p>
             )}
             <h1 className="text-display mt-3 font-serif leading-[1.05]">{product.name}</h1>

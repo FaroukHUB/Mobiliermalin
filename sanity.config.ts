@@ -10,7 +10,7 @@ import { schemaTypes } from './sanity/schemas'
 import { sendQuoteAction } from './sanity/actions/sendQuoteAction'
 import { projectId, dataset, apiVersion } from './sanity/env'
 
-const SINGLETON_TYPES = new Set(['siteSettings'])
+const SINGLETON_TYPES = new Set(['siteSettings', 'qualityGuide'])
 const SINGLETON_ACTIONS = new Set(['publish', 'discardChanges', 'restore'])
 
 // Vision tool (GROQ query playground) : utile en dev, retiré en production
@@ -61,6 +61,16 @@ export default defineConfig({
                   .id('siteSettings')
                   .schemaType('siteSettings')
                   .documentId('siteSettings'),
+              ),
+            // Singleton : Charte qualité
+            S.listItem()
+              .title('Charte qualité')
+              .icon(() => '📐')
+              .child(
+                S.editor()
+                  .id('qualityGuide')
+                  .schemaType('qualityGuide')
+                  .documentId('qualityGuide'),
               ),
             S.divider(),
             // Collections normales

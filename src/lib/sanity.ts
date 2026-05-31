@@ -245,6 +245,63 @@ export async function getSiteSettings(): Promise<SanitySiteSettings> {
   return result || {}
 }
 
+// ───────────────────────── Charte qualité ─────────────────────────
+
+export type SanityQualityCondition = {
+  _key?: string
+  code: 'new' | 'excellent' | 'very-good' | 'good' | 'fair'
+  label: string
+  pitch: string
+  image?: SanityImage
+  apparence?: string
+  fonctionnel?: string
+  garantie?: string
+  pourQui?: string
+}
+
+export type SanityQualityStep = {
+  _key?: string
+  title: string
+  description?: string
+}
+
+export type SanityQualityFaq = {
+  _key?: string
+  q: string
+  a: string
+}
+
+export type SanityQualityGuide = {
+  heroEyebrow?: string
+  heroTitle?: string
+  heroSubtitle?: string
+  heroImage?: SanityImage
+  introText?: string
+  conditions?: SanityQualityCondition[]
+  processSteps?: SanityQualityStep[]
+  warrantyTitle?: string
+  warrantyIntro?: string
+  warrantyCovered?: string[]
+  warrantyNotCovered?: string[]
+  faq?: SanityQualityFaq[]
+}
+
+export async function getQualityGuide(): Promise<SanityQualityGuide> {
+  const result = await safeFetch<SanityQualityGuide | null>(
+    `*[_type == "qualityGuide"][0] {
+      heroEyebrow, heroTitle, heroSubtitle, heroImage,
+      introText,
+      conditions[]{ _key, code, label, pitch, image, apparence, fonctionnel, garantie, pourQui },
+      processSteps[]{ _key, title, description },
+      warrantyTitle, warrantyIntro, warrantyCovered, warrantyNotCovered,
+      faq[]{ _key, q, a }
+    }`,
+    {},
+    null,
+  )
+  return result || {}
+}
+
 // ───────────────────────── Hero Slider ─────────────────────────
 
 export type SanityHeroSlide = {

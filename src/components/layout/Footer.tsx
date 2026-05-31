@@ -22,6 +22,7 @@ const SERVICES = [
   { label: 'Location longue durée', href: '/location-mobilier-bureau' },
   { label: 'Vidage de locaux', href: '/vidage-de-locaux' },
   { label: 'Attestation RSE', href: '/attestation-rse' },
+  { label: 'Charte qualité', href: '/charte-qualite' },
   { label: 'Demander un devis', href: '/contact' },
 ]
 
