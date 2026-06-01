@@ -115,11 +115,11 @@ export default async function HomePage() {
   return (
     <>
       <HeroSlider slides={slides} />
+      <FeaturedProducts products={featuredProducts} />
       <ReassuranceBar />
       <ManifesteSection image={sanityImageToMedia(settings.manifesteImage, 'Notre manifeste')} />
       <BrandsSection />
       <CategoriesGrid categories={sanityCategories} />
-      <FeaturedProducts products={featuredProducts} />
       <LLDSection image={sanityImageToMedia(settings.lldSectionImage, 'Location longue durée')} />
       <RSESection />
       <ServicesSection />
