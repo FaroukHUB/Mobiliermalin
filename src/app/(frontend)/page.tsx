@@ -90,7 +90,7 @@ export default async function HomePage() {
     getHeroSlides(),
     getSiteSettings(),
     getTopLevelCategories(),
-    getFeaturedProducts(4),
+    getFeaturedProducts(8),
   ])
 
   const slides: HeroSlide[] = sanitySlides.length

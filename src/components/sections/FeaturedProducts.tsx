@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
-import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
+import { type ProductCardData } from '@/components/product/ProductCard'
+import { FeaturedProductsCarousel } from '@/components/sections/FeaturedProductsCarousel'
 import { urlFor, type SanityProduct } from '@/lib/sanity'
 
 interface FeaturedProductsProps {
@@ -38,17 +39,20 @@ function sanityToCard(p: SanityProduct): ProductCardData {
 
 /**
  * Section "Coups de cœur" sur la home : produits mis en avant via le toggle
- * "Produit en avant" dans Sanity Studio. Auto-cachée si aucun produit
- * featured n'existe.
+ * "Produit en avant" dans Sanity Studio. Affichés en carousel horizontal
+ * avec "peek effect" (2 visibles mobile + 3e à moitié, 4 desktop + 5e à
+ * moitié). Auto-cachée si aucun produit featured n'existe.
  */
 export function FeaturedProducts({ products }: FeaturedProductsProps) {
   if (!products || products.length === 0) return null
 
+  const cards = products.map(sanityToCard)
+
   return (
-    <section className="bg-ivory border-y border-line">
+    <section className="bg-ivory border-b border-line">
       <div className="container py-20 md:py-28">
         <Reveal>
-          <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="text-center max-w-2xl mx-auto mb-12">
             <p className="eyebrow">Coups de cœur</p>
             <h2 className="text-display mt-3 font-serif">
               Pièces sélectionnées par l&apos;équipe
@@ -61,15 +65,11 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-          {products.map((p, i) => (
-            <Reveal key={p._id} delay={Math.min(i, 6) * 60}>
-              <ProductCard product={sanityToCard(p)} />
-            </Reveal>
-          ))}
-        </div>
+        <Reveal>
+          <FeaturedProductsCarousel cards={cards} />
+        </Reveal>
 
-        <Reveal delay={products.length * 60}>
+        <Reveal>
           <div className="mt-12 text-center">
             <Link
               href="/boutique"
