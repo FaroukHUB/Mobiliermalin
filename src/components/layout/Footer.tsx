@@ -27,9 +27,7 @@ const SERVICES = [
 ]
 
 const ZONES = [
-  { label: 'Marseille', href: '/mobilier-bureau-marseille' },
-  { label: 'Aubagne', href: '/mobilier-bureau-aubagne' },
-  { label: 'Aix-en-Provence', href: '/mobilier-bureau-aix-en-provence' },
+  { label: 'Marseille', href: '/mobilier-bureau-occasion-marseille' },
 ]
 
 const LEGAL = [
