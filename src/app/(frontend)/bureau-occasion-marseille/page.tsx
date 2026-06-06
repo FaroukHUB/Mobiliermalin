@@ -250,7 +250,7 @@ export default async function MarseillePage() {
 
           <div className="mt-10 max-w-3xl">
             <p className="eyebrow text-gold">Marseille &amp; alentours</p>
-            <h1 className="text-display-xl mt-4 font-serif leading-[1.05]">
+            <h1 className="text-display-xl mt-4 font-serif leading-[1.05] text-ivory">
               Bureaux d&apos;occasion à Marseille
             </h1>
             <div className="h-px w-16 bg-gold mt-8" />
@@ -364,6 +364,43 @@ export default async function MarseillePage() {
         </div>
       </section>
 
+      {/* ═══ DERNIERS BUREAUX ARRIVÉS ═══ */}
+      {productCards.length > 0 && (
+        <section className="container py-16 md:py-24">
+          <Reveal>
+            <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+              <div>
+                <p className="eyebrow">Arrivés à l&apos;atelier</p>
+                <h2 className="text-display mt-3 font-serif leading-[1.05]">
+                  Nos derniers bureaux disponibles
+                </h2>
+                <div className="gold-divider mx-0 mt-6" />
+              </div>
+              <Link href="/categorie/bureau" className="text-sm text-gold-dark hover:text-gold underline underline-offset-4 self-end">
+                Voir tous les bureaux →
+              </Link>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            {productCards.map((card, i) => (
+              <Reveal key={card.id} delay={i * 60}>
+                <ProductCard product={card} />
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal>
+            <p className="mt-8 text-sm text-ink-mute text-center max-w-2xl mx-auto">
+              Ces bureaux viennent d&apos;être reconditionnés dans notre atelier. Notre
+              stock évolue chaque semaine — si vous cherchez un modèle précis ou
+              un volume particulier qui n&apos;apparaît pas, demandez-nous, on l&apos;a
+              peut-être en réserve.
+            </p>
+          </Reveal>
+        </section>
+      )}
+
       {/* ═══ LOGISTIQUE MARSEILLE ═══ */}
       <section className="container py-16 md:py-24">
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-16">
@@ -475,43 +512,6 @@ export default async function MarseillePage() {
           </div>
         </div>
       </section>
-
-      {/* ═══ DERNIERS BUREAUX ARRIVÉS ═══ */}
-      {productCards.length > 0 && (
-        <section className="container py-16 md:py-24">
-          <Reveal>
-            <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-              <div>
-                <p className="eyebrow">Arrivés à l&apos;atelier</p>
-                <h2 className="text-display mt-3 font-serif leading-[1.05]">
-                  Nos derniers bureaux disponibles
-                </h2>
-                <div className="gold-divider mx-0 mt-6" />
-              </div>
-              <Link href="/categorie/bureau" className="text-sm text-gold-dark hover:text-gold underline underline-offset-4 self-end">
-                Voir tous les bureaux →
-              </Link>
-            </div>
-          </Reveal>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            {productCards.map((card, i) => (
-              <Reveal key={card.id} delay={i * 60}>
-                <ProductCard product={card} />
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal>
-            <p className="mt-8 text-sm text-ink-mute text-center max-w-2xl mx-auto">
-              Ces bureaux viennent d&apos;être reconditionnés dans notre atelier. Notre
-              stock évolue chaque semaine — si vous cherchez un modèle précis ou
-              un volume particulier qui n&apos;apparaît pas, demandez-nous, on l&apos;a
-              peut-être en réserve.
-            </p>
-          </Reveal>
-        </section>
-      )}
 
       {/* ═══ SOUS-CATÉGORIES BUREAU ═══ */}
       {featuredCategories.length > 0 && (
