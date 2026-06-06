@@ -18,7 +18,6 @@ import {
 } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
 import {
-  getSiteSettings,
   getLatestProductsByCategoryDeep,
   getCategoryChildren,
   urlFor,
@@ -125,15 +124,15 @@ const MAPS_EMBED_URL = `https://maps.google.com/maps?q=${encodeURIComponent(SHOW
 const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SHOWROOM_FULL_ADDRESS)}`
 
 export default async function MarseillePage() {
-  const [settings, latestProducts, subCategories] = await Promise.all([
-    getSiteSettings(),
+  const [latestProducts, subCategories] = await Promise.all([
     getLatestProductsByCategoryDeep(CATEGORY_SLUG, 4),
     getCategoryChildren(CATEGORY_SLUG),
   ])
 
-  const showroomImageUrl = settings.showroomImage
-    ? urlFor(settings.showroomImage).width(1600).url()
-    : null
+  // Image hero — open space bureau (à remplacer par une vraie photo
+  // d'installation client plus tard, via un champ Sanity dédié)
+  const heroImageUrl =
+    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=2000&q=85'
 
   // Les sous-catégories de "Bureau" (bureau droit, angle, bench, assis-debout)
   const featuredCategories = subCategories.slice(0, 4)
@@ -212,22 +211,23 @@ export default async function MarseillePage() {
       />
 
       {/* ═══ HERO ═══ */}
-      <section className="relative bg-ink text-ivory overflow-hidden">
-        {showroomImageUrl && (
-          <div className="absolute inset-0 opacity-30">
-            <Image
-              src={showroomImageUrl}
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/80 to-transparent" />
-          </div>
-        )}
+      <section className="relative bg-ink text-ivory overflow-hidden min-h-[520px] md:min-h-[600px] flex items-center">
+        {/* Image fond — open space bureau */}
+        <div className="absolute inset-0">
+          <Image
+            src={heroImageUrl}
+            alt="Espace bureau ouvert équipé en mobilier reconditionné — Marseille"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+          {/* Gradient sombre pour la lisibilité du texte */}
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/75 to-ink/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
+        </div>
 
-        <div className="container relative py-16 md:py-24">
+        <div className="container relative py-16 md:py-24 w-full">
           <nav aria-label="Fil d'Ariane" className="text-xs text-ivory/60">
             <ol className="flex items-center gap-2 flex-wrap">
               <li>
