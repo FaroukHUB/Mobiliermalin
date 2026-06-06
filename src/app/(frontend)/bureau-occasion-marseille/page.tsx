@@ -19,7 +19,7 @@ import {
 import { Reveal } from '@/components/animations/Reveal'
 import {
   getSiteSettings,
-  getFeaturedProducts,
+  getLatestProducts,
   getTopLevelCategories,
   urlFor,
   type SanityProduct,
@@ -121,9 +121,9 @@ const MAPS_EMBED_URL = `https://maps.google.com/maps?q=${encodeURIComponent(SHOW
 const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SHOWROOM_FULL_ADDRESS)}`
 
 export default async function MarseillePage() {
-  const [settings, featuredProducts, categories] = await Promise.all([
+  const [settings, latestProducts, categories] = await Promise.all([
     getSiteSettings(),
-    getFeaturedProducts(4),
+    getLatestProducts(4),
     getTopLevelCategories(),
   ])
 
@@ -133,7 +133,7 @@ export default async function MarseillePage() {
 
   // 3 catégories les plus pertinentes pour une page locale (les premières par ordre)
   const featuredCategories = categories.slice(0, 3)
-  const productCards = featuredProducts.map(sanityToCard)
+  const productCards = latestProducts.map(sanityToCard)
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -464,15 +464,15 @@ export default async function MarseillePage() {
         </div>
       </section>
 
-      {/* ═══ NOTRE SÉLECTION ACTUELLE ═══ */}
+      {/* ═══ DERNIERS ARRIVAGES ═══ */}
       {productCards.length > 0 && (
         <section className="container py-16 md:py-24">
           <Reveal>
             <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
               <div>
-                <p className="eyebrow">Disponible cette semaine</p>
+                <p className="eyebrow">Arrivés à l&apos;atelier</p>
                 <h2 className="text-display mt-3 font-serif leading-[1.05]">
-                  Notre sélection actuelle
+                  Derniers arrivages disponibles
                 </h2>
                 <div className="gold-divider mx-0 mt-6" />
               </div>
@@ -492,7 +492,8 @@ export default async function MarseillePage() {
 
           <Reveal>
             <p className="mt-8 text-sm text-ink-mute text-center max-w-2xl mx-auto">
-              Notre stock tourne en permanence — chaque semaine apporte ses nouveaux
+              Ces pièces viennent d&apos;être reconditionnées dans notre atelier. Le
+              stock tourne en permanence — chaque semaine apporte ses nouveaux
               arrivages. Si vous cherchez un modèle précis qui n&apos;est pas listé,
               demandez-nous, on l&apos;a peut-être en réserve.
             </p>

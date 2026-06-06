@@ -136,11 +136,25 @@ export async function getProductBySlug(slug: string): Promise<SanityProduct | nu
 }
 
 /**
- * Produits "Featured" pour la home.
+ * Produits "Featured" pour la home (curation Djamel via toggle featured).
  */
 export async function getFeaturedProducts(limit: number = 6): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
     `*[_type == "product" && status == "published" && featured == true] | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
+    { limit },
+    [],
+  )
+}
+
+/**
+ * Derniers arrivages (pour les pages locales).
+ * Renvoie les N produits publiés les plus récents, indépendamment du
+ * toggle "featured" — angle éditorial "voici ce qui est arrivé chez
+ * nous cette semaine". Évite tout conflit avec la sélection home.
+ */
+export async function getLatestProducts(limit: number = 4): Promise<SanityProduct[]> {
+  return safeFetch<SanityProduct[]>(
+    `*[_type == "product" && status == "published"] | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
     { limit },
     [],
   )
