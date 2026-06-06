@@ -27,7 +27,7 @@ const SERVICES = [
 ]
 
 const ZONES = [
-  { label: 'Marseille', href: '/mobilier-bureau-occasion-marseille' },
+  { label: 'Marseille', href: '/bureau-occasion-marseille' },
 ]
 
 const LEGAL = [

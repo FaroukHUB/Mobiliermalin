@@ -10,9 +10,21 @@ import {
   Truck,
   Quote,
   ArrowRight,
+  ShoppingBag,
+  FileText,
+  CalendarCheck,
+  CheckCircle2,
+  Navigation,
 } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
-import { getSiteSettings, urlFor } from '@/lib/sanity'
+import {
+  getSiteSettings,
+  getFeaturedProducts,
+  getTopLevelCategories,
+  urlFor,
+  type SanityProduct,
+} from '@/lib/sanity'
+import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { LEGAL } from '@/lib/legal'
 
 export const revalidate = 86400 // 24h, pas besoin de revalider plus souvent
@@ -33,12 +45,12 @@ export const metadata: Metadata = {
     'équiper bureaux Marseille',
     'vente mobilier bureau Marseille',
   ],
-  alternates: { canonical: `${siteUrl}/mobilier-bureau-occasion-marseille` },
+  alternates: { canonical: `${siteUrl}/bureau-occasion-marseille` },
   openGraph: {
     title: 'Mobilier de bureau d\'occasion à Marseille — Mobilier Malin',
     description:
       'Steelcase, Herman Miller, Haworth, Vitra reconditionnés. Livraison Marseille, retrait au showroom, garantie 6 mois.',
-    url: `${siteUrl}/mobilier-bureau-occasion-marseille`,
+    url: `${siteUrl}/bureau-occasion-marseille`,
     type: 'website',
   },
 }
@@ -75,11 +87,53 @@ const ZONES_MARSEILLE = [
   { code: '13015-16', name: 'L\'Estaque, Saint-Henri', detail: 'zones d\'activités, ateliers' },
 ]
 
+const CONDITION_KEYS: Record<string, string> = {
+  new: 'new',
+  excellent: 'excellent',
+  'very-good': 'very-good',
+  good: 'good',
+  fair: 'fair',
+}
+
+function sanityToCard(p: SanityProduct): ProductCardData {
+  const firstImage = p.images?.[0]
+  const imageUrl = firstImage
+    ? urlFor(firstImage).width(800).height(800).fit('crop').url()
+    : undefined
+  return {
+    id: p._id,
+    slug: p.slug.current,
+    title: p.name,
+    shortDescription: p.shortDescription,
+    price: p.price,
+    comparePrice: p.comparePrice,
+    condition: p.condition ? CONDITION_KEYS[p.condition] : undefined,
+    brandName: p.brand,
+    imageUrl,
+    imageAlt: firstImage?.alt || p.name,
+    status: 'published',
+  }
+}
+
+// Adresse showroom (utilisée pour la map embed)
+const SHOWROOM_FULL_ADDRESS = `${LEGAL.showroom.ligne1}, ${LEGAL.showroom.codePostal} ${LEGAL.showroom.ville}`
+const MAPS_EMBED_URL = `https://maps.google.com/maps?q=${encodeURIComponent(SHOWROOM_FULL_ADDRESS)}&output=embed`
+const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SHOWROOM_FULL_ADDRESS)}`
+
 export default async function MarseillePage() {
-  const settings = await getSiteSettings()
+  const [settings, featuredProducts, categories] = await Promise.all([
+    getSiteSettings(),
+    getFeaturedProducts(4),
+    getTopLevelCategories(),
+  ])
+
   const showroomImageUrl = settings.showroomImage
     ? urlFor(settings.showroomImage).width(1600).url()
     : null
+
+  // 3 catégories les plus pertinentes pour une page locale (les premières par ordre)
+  const featuredCategories = categories.slice(0, 3)
+  const productCards = featuredProducts.map(sanityToCard)
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -90,7 +144,7 @@ export default async function MarseillePage() {
         '@type': 'ListItem',
         position: 2,
         name: 'Mobilier de bureau à Marseille',
-        item: `${siteUrl}/mobilier-bureau-occasion-marseille`,
+        item: `${siteUrl}/bureau-occasion-marseille`,
       },
     ],
   }
@@ -102,7 +156,7 @@ export default async function MarseillePage() {
     name: 'Mobilier Malin — Mobilier de bureau d\'occasion (Marseille)',
     description:
       'Vente et livraison de mobilier de bureau reconditionné Steelcase, Herman Miller, Haworth, Vitra pour les entreprises et particuliers de Marseille et alentours.',
-    url: `${siteUrl}/mobilier-bureau-occasion-marseille`,
+    url: `${siteUrl}/bureau-occasion-marseille`,
     telephone: LEGAL.telephoneTel,
     email: LEGAL.email,
     priceRange: '€€',
@@ -410,60 +464,310 @@ export default async function MarseillePage() {
         </div>
       </section>
 
-      {/* ═══ COMMENT ÇA SE PASSE ═══ */}
-      <section className="container py-16 md:py-24 max-w-4xl">
+      {/* ═══ NOTRE SÉLECTION ACTUELLE ═══ */}
+      {productCards.length > 0 && (
+        <section className="container py-16 md:py-24">
+          <Reveal>
+            <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+              <div>
+                <p className="eyebrow">Disponible cette semaine</p>
+                <h2 className="text-display mt-3 font-serif leading-[1.05]">
+                  Notre sélection actuelle
+                </h2>
+                <div className="gold-divider mx-0 mt-6" />
+              </div>
+              <Link href="/boutique" className="text-sm text-gold-dark hover:text-gold underline underline-offset-4 self-end">
+                Voir tout le catalogue →
+              </Link>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            {productCards.map((card, i) => (
+              <Reveal key={card.id} delay={i * 60}>
+                <ProductCard product={card} />
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal>
+            <p className="mt-8 text-sm text-ink-mute text-center max-w-2xl mx-auto">
+              Notre stock tourne en permanence — chaque semaine apporte ses nouveaux
+              arrivages. Si vous cherchez un modèle précis qui n&apos;est pas listé,
+              demandez-nous, on l&apos;a peut-être en réserve.
+            </p>
+          </Reveal>
+        </section>
+      )}
+
+      {/* ═══ CATÉGORIES PHARES ═══ */}
+      {featuredCategories.length > 0 && (
+        <section className="bg-ivory-light border-y border-line">
+          <div className="container py-16 md:py-24">
+            <Reveal>
+              <div className="max-w-2xl mb-10">
+                <p className="eyebrow">Explorez par catégorie</p>
+                <h2 className="text-display mt-3 font-serif">
+                  Les pièces les plus demandées par nos clients marseillais
+                </h2>
+                <div className="gold-divider mx-0 mt-6" />
+              </div>
+            </Reveal>
+
+            <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+              {featuredCategories.map((cat, i) => {
+                const imageUrl = cat.image
+                  ? urlFor(cat.image).width(600).height(400).fit('crop').url()
+                  : null
+                return (
+                  <Reveal key={cat._id} delay={i * 80}>
+                    <Link
+                      href={`/categorie/${cat.slug.current}`}
+                      className="group block bg-ivory border border-line hover:border-gold transition-colors duration-300"
+                    >
+                      <div className="relative aspect-[3/2] overflow-hidden bg-ivory-dark">
+                        {imageUrl ? (
+                          <Image
+                            src={imageUrl}
+                            alt={cat.image?.alt || cat.name}
+                            fill
+                            sizes="(min-width: 768px) 33vw, 100vw"
+                            className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-ink-mute/30 text-xs uppercase tracking-widest">
+                            {cat.name}
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-5 md:p-6">
+                        <h3 className="font-serif text-xl text-ink leading-tight">{cat.name}</h3>
+                        {cat.description && (
+                          <p className="mt-2 text-sm text-ink-soft leading-relaxed line-clamp-2">
+                            {cat.description}
+                          </p>
+                        )}
+                        <p className="mt-4 text-xs uppercase tracking-widest text-gold-dark inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                          Découvrir <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
+                        </p>
+                      </div>
+                    </Link>
+                  </Reveal>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══ COMMENT COMMANDER (2 PATHS RÉELS) ═══ */}
+      <section className="container py-16 md:py-24">
         <Reveal>
-          <div className="text-center mb-14">
-            <p className="eyebrow">Étape par étape</p>
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <p className="eyebrow">Deux façons de commander</p>
             <h2 className="text-display mt-3 font-serif">
-              Comment ça se passe, concrètement
+              Achat en ligne ou devis livraison — vous choisissez
             </h2>
             <div className="gold-divider mt-6" />
+            <p className="mt-6 text-ink-mute">
+              Selon que vous préférez venir chercher votre commande à La Penne-sur-Huveaune
+              ou que nous vous livrions à votre adresse marseillaise, le parcours diffère.
+              Aucun engagement avant validation.
+            </p>
           </div>
         </Reveal>
 
-        <ol className="space-y-6">
-          {[
-            {
-              title: 'Vous nous contactez',
-              text: 'Par téléphone au 06 76 61 70 53, par mail ou via le formulaire en ligne. On répond le jour même en semaine.',
-            },
-            {
-              title: 'On échange sur votre besoin',
-              text: 'Type de mobilier, volume, budget approximatif, deadline éventuelle. 10 minutes suffisent pour cadrer.',
-            },
-            {
-              title: 'Visite du showroom ou photos précises',
-              text: 'Soit vous venez tester sur place à La Penne-sur-Huveaune, soit on vous envoie des photos détaillées des pièces qui correspondent à votre besoin.',
-            },
-            {
-              title: 'Devis transmis sous 24 h ouvrées',
-              text: 'PDF clair avec le détail des pièces, les frais de livraison adaptés à votre adresse, les options (montage, étage, évacuation de l\'ancien mobilier).',
-            },
-            {
-              title: 'Validation et règlement',
-              text: 'Stripe pour les paiements en ligne par carte. Virement possible pour les commandes professionnelles. Acompte ou paiement intégral selon vos préférences.',
-            },
-            {
-              title: 'Livraison ou retrait',
-              text: 'Livraison Marseille sous 5 à 7 jours, ou retrait immédiat au showroom selon votre choix.',
-            },
-          ].map((step, i) => (
-            <Reveal key={step.title} delay={i * 60}>
-              <li className="flex gap-5">
-                <span className="shrink-0 font-serif text-3xl text-gold-dark w-12">
-                  {(i + 1).toString().padStart(2, '0')}
-                </span>
-                <div className="border-l border-line pl-5 pb-1">
-                  <h3 className="font-serif text-lg text-ink leading-snug">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-ink-soft leading-relaxed">{step.text}</p>
-                </div>
-              </li>
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          {/* Path A — Achat + Retrait */}
+          <Reveal>
+            <article className="bg-ivory-light border border-line p-6 md:p-8 h-full flex flex-col">
+              <div className="flex items-center gap-3 pb-5 border-b border-line">
+                <ShoppingBag className="h-7 w-7 text-gold" strokeWidth={1.5} />
+                <h3 className="font-serif text-xl text-ink">
+                  Achat en ligne + retrait au showroom
+                </h3>
+              </div>
+              <p className="text-xs text-ink-mute mt-4 uppercase tracking-widest">
+                Idéal si vous habitez à Marseille ou alentours
+              </p>
+              <ol className="mt-4 space-y-4 flex-1">
+                <li className="flex gap-3">
+                  <CalendarCheck className="h-4 w-4 text-gold-dark shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ink-soft leading-relaxed">
+                    <strong className="text-ink">1.</strong> Vous parcourez le catalogue et
+                    cliquez <em>« Choisir un créneau et payer »</em> sur le produit qui vous plaît.
+                  </p>
+                </li>
+                <li className="flex gap-3">
+                  <CalendarCheck className="h-4 w-4 text-gold-dark shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ink-soft leading-relaxed">
+                    <strong className="text-ink">2.</strong> Vous sélectionnez votre créneau
+                    de retrait (lundi-samedi 10 h-18 h) dans notre calendrier connecté.
+                  </p>
+                </li>
+                <li className="flex gap-3">
+                  <CheckCircle2 className="h-4 w-4 text-gold-dark shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ink-soft leading-relaxed">
+                    <strong className="text-ink">3.</strong> Vous payez en ligne par carte
+                    via Stripe (paiement sécurisé). Confirmation immédiate par email.
+                  </p>
+                </li>
+                <li className="flex gap-3">
+                  <MapPin className="h-4 w-4 text-gold-dark shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ink-soft leading-relaxed">
+                    <strong className="text-ink">4.</strong> Vous venez à La Penne-sur-Huveaune
+                    au créneau choisi. On vous aide à charger dans votre véhicule.
+                  </p>
+                </li>
+              </ol>
+              <div className="mt-6 pt-6 border-t border-line">
+                <Link href="/boutique" className="btn-gold inline-flex items-center gap-2 w-full justify-center">
+                  Voir le catalogue
+                  <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+                </Link>
+              </div>
+            </article>
+          </Reveal>
+
+          {/* Path B — Devis livraison */}
+          <Reveal delay={120}>
+            <article className="bg-ink text-ivory border border-ink p-6 md:p-8 h-full flex flex-col">
+              <div className="flex items-center gap-3 pb-5 border-b border-ivory/15">
+                <Truck className="h-7 w-7 text-gold" strokeWidth={1.5} />
+                <h3 className="font-serif text-xl text-ivory">
+                  Devis livraison à votre adresse
+                </h3>
+              </div>
+              <p className="text-xs text-gold mt-4 uppercase tracking-widest">
+                Idéal pour vous faire livrer, ou pour les commandes volumineuses
+              </p>
+              <ol className="mt-4 space-y-4 flex-1">
+                <li className="flex gap-3">
+                  <FileText className="h-4 w-4 text-gold shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ivory/85 leading-relaxed">
+                    <strong className="text-ivory">1.</strong> Sur la fiche d&apos;un produit,
+                    vous cliquez <em>« Demander un devis »</em>.
+                  </p>
+                </li>
+                <li className="flex gap-3">
+                  <FileText className="h-4 w-4 text-gold shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ivory/85 leading-relaxed">
+                    <strong className="text-ivory">2.</strong> Vous remplissez le formulaire :
+                    votre adresse de livraison, étage, accès, besoins particuliers.
+                  </p>
+                </li>
+                <li className="flex gap-3">
+                  <Clock className="h-4 w-4 text-gold shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ivory/85 leading-relaxed">
+                    <strong className="text-ivory">3.</strong> Sous <strong className="text-gold">24 h ouvrées</strong>,
+                    vous recevez par email un devis PDF détaillé : produit, frais de livraison
+                    adaptés à votre adresse, options éventuelles.
+                  </p>
+                </li>
+                <li className="flex gap-3">
+                  <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ivory/85 leading-relaxed">
+                    <strong className="text-ivory">4.</strong> Vous cliquez « Accepter et payer »
+                    dans l&apos;email — paiement intégral en ligne via Stripe.
+                  </p>
+                </li>
+                <li className="flex gap-3">
+                  <Truck className="h-4 w-4 text-gold shrink-0 mt-1" strokeWidth={1.5} />
+                  <p className="text-sm text-ivory/85 leading-relaxed">
+                    <strong className="text-ivory">5.</strong> Livraison à votre adresse marseillaise
+                    sous 5 à 7 jours après paiement.
+                  </p>
+                </li>
+              </ol>
+              <div className="mt-6 pt-6 border-t border-ivory/15">
+                <Link href="/boutique" className="btn-outline-light inline-flex items-center gap-2 w-full justify-center">
+                  Parcourir et demander un devis
+                  <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+                </Link>
+              </div>
+            </article>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ═══ MAP + ITINÉRAIRE ═══ */}
+      <section className="bg-ivory-dark border-y border-line">
+        <div className="container py-16 md:py-24">
+          <div className="grid lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-16 items-start">
+            <Reveal>
+              <div>
+                <p className="eyebrow">Showroom &amp; atelier</p>
+                <h2 className="text-display mt-3 font-serif leading-[1.05]">
+                  Venir nous voir depuis Marseille
+                </h2>
+                <div className="gold-divider mx-0 mt-6" />
+                <p className="mt-6 text-ink-soft leading-relaxed">
+                  Notre showroom est à La Penne-sur-Huveaune, à la sortie de l&apos;A50,
+                  à environ 20 minutes du Vieux-Port et 15 minutes de la Joliette.
+                  Visite sur rendez-vous, café offert.
+                </p>
+
+                <dl className="mt-8 space-y-4 text-sm">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-5 w-5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
+                    <div>
+                      <dt className="text-xs uppercase tracking-widest text-ink-mute mb-1">Adresse</dt>
+                      <dd className="text-ink leading-snug">
+                        {LEGAL.showroom.ligne1}<br />
+                        {LEGAL.showroom.codePostal} {LEGAL.showroom.ville}
+                      </dd>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-5 w-5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
+                    <div>
+                      <dt className="text-xs uppercase tracking-widest text-ink-mute mb-1">Horaires</dt>
+                      <dd className="text-ink">Lundi — Samedi, 10 h — 18 h<br />
+                        <span className="text-ink-mute text-xs">(sur rendez-vous)</span>
+                      </dd>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Phone className="h-5 w-5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
+                    <div>
+                      <dt className="text-xs uppercase tracking-widest text-ink-mute mb-1">Contact</dt>
+                      <dd>
+                        <a href={`tel:${LEGAL.telephoneTel}`} className="text-ink hover:text-gold-dark">
+                          {LEGAL.telephone}
+                        </a>
+                      </dd>
+                    </div>
+                  </div>
+                </dl>
+
+                <a
+                  href={MAPS_DIRECTIONS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-gold inline-flex items-center gap-2 mt-8"
+                >
+                  <Navigation className="h-4 w-4" strokeWidth={1.5} />
+                  Itinéraire depuis ma position
+                </a>
+              </div>
             </Reveal>
-          ))}
-        </ol>
+
+            <Reveal delay={100}>
+              <div className="relative aspect-[4/3] md:aspect-[5/4] bg-ivory-light border border-line overflow-hidden">
+                <iframe
+                  src={MAPS_EMBED_URL}
+                  width="100%"
+                  height="100%"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Localisation showroom Mobilier Malin"
+                  className="absolute inset-0"
+                  allow="fullscreen"
+                />
+              </div>
+            </Reveal>
+          </div>
+        </div>
       </section>
 
       {/* ═══ CTA FINAL ═══ */}

@@ -18,6 +18,12 @@ const nextConfig = {
         destination: 'https://mobiliermalin.com/:path*',
         permanent: true,
       },
+      // Ancienne URL Marseille (raccourcie pour meilleur CTR / SEO)
+      {
+        source: '/mobilier-bureau-occasion-marseille',
+        destination: '/bureau-occasion-marseille',
+        permanent: true,
+      },
     ]
   },
   // Sécurité + signal SEO : HSTS force https sur tous les liens
