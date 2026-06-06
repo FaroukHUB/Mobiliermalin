@@ -19,11 +19,14 @@ import {
 import { Reveal } from '@/components/animations/Reveal'
 import {
   getSiteSettings,
-  getLatestProducts,
-  getTopLevelCategories,
+  getLatestProductsByCategoryDeep,
+  getCategoryChildren,
   urlFor,
   type SanityProduct,
 } from '@/lib/sanity'
+
+// Slug Sanity de la catégorie cible pour cette page
+const CATEGORY_SLUG = 'bureau'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { LEGAL } from '@/lib/legal'
 
@@ -32,24 +35,25 @@ export const revalidate = 86400 // 24h, pas besoin de revalider plus souvent
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export const metadata: Metadata = {
-  title:
-    'Mobilier de bureau d\'occasion à Marseille — Reconditionné, livré, garanti',
+  title: 'Bureaux d\'occasion à Marseille — Reconditionnés, livrés, garantis',
   description:
-    'Mobilier de bureau professionnel d\'occasion livré à Marseille : Steelcase, Herman Miller, Haworth, Vitra reconditionnés. Showroom à 15 min de la Joliette, garantie 6 mois, devis sous 24 h.',
+    'Bureaux droits, bureaux d\'angle, bench et assis-debout d\'occasion reconditionnés. Steelcase, Haworth, Vitra. Atelier La Penne-sur-Huveaune, livraison Marseille, garantie 6 mois.',
   keywords: [
-    'mobilier de bureau occasion Marseille',
-    'meuble occasion Marseille',
     'bureau occasion Marseille',
-    'fauteuil bureau Marseille',
-    'mobilier professionnel Marseille',
-    'équiper bureaux Marseille',
-    'vente mobilier bureau Marseille',
+    'bureau d\'occasion Marseille',
+    'bureau professionnel Marseille',
+    'bureau droit occasion',
+    'bureau d\'angle occasion Marseille',
+    'bench bureau Marseille',
+    'bureau assis-debout occasion',
+    'bureau reconditionné Marseille',
+    'achat bureau Marseille',
   ],
   alternates: { canonical: `${siteUrl}/bureau-occasion-marseille` },
   openGraph: {
-    title: 'Mobilier de bureau d\'occasion à Marseille — Mobilier Malin',
+    title: 'Bureaux d\'occasion à Marseille — Mobilier Malin',
     description:
-      'Steelcase, Herman Miller, Haworth, Vitra reconditionnés. Livraison Marseille, retrait au showroom, garantie 6 mois.',
+      'Bureaux droits, angle, bench et assis-debout reconditionnés. Showroom La Penne-sur-Huveaune, livraison Marseille, garantie 6 mois.',
     url: `${siteUrl}/bureau-occasion-marseille`,
     type: 'website',
   },
@@ -121,18 +125,18 @@ const MAPS_EMBED_URL = `https://maps.google.com/maps?q=${encodeURIComponent(SHOW
 const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SHOWROOM_FULL_ADDRESS)}`
 
 export default async function MarseillePage() {
-  const [settings, latestProducts, categories] = await Promise.all([
+  const [settings, latestProducts, subCategories] = await Promise.all([
     getSiteSettings(),
-    getLatestProducts(4),
-    getTopLevelCategories(),
+    getLatestProductsByCategoryDeep(CATEGORY_SLUG, 4),
+    getCategoryChildren(CATEGORY_SLUG),
   ])
 
   const showroomImageUrl = settings.showroomImage
     ? urlFor(settings.showroomImage).width(1600).url()
     : null
 
-  // 3 catégories les plus pertinentes pour une page locale (les premières par ordre)
-  const featuredCategories = categories.slice(0, 3)
+  // Les sous-catégories de "Bureau" (bureau droit, angle, bench, assis-debout)
+  const featuredCategories = subCategories.slice(0, 4)
   const productCards = latestProducts.map(sanityToCard)
 
   const breadcrumbSchema = {
@@ -230,22 +234,23 @@ export default async function MarseillePage() {
                 <Link href="/" className="hover:text-gold">Accueil</Link>
               </li>
               <ChevronRight className="h-3 w-3" />
-              <li className="text-gold">Mobilier de bureau à Marseille</li>
+              <li className="text-gold">Bureaux d&apos;occasion à Marseille</li>
             </ol>
           </nav>
 
           <div className="mt-10 max-w-3xl">
             <p className="eyebrow text-gold">Marseille &amp; alentours</p>
             <h1 className="text-display-xl mt-4 font-serif leading-[1.05]">
-              Mobilier de bureau d&apos;occasion à Marseille
+              Bureaux d&apos;occasion à Marseille
             </h1>
             <div className="h-px w-16 bg-gold mt-8" />
             <p className="mt-8 text-lg text-ivory/85 leading-relaxed">
-              Steelcase, Herman Miller, Haworth, Vitra reconditionnés —
-              récupérés dans des entreprises qui déménagent, inspectés et
-              remis en état dans notre atelier à 15 minutes de la Joliette.
-              Livraison Marseille intra-muros, retrait possible au showroom,
-              garantie 6 mois sur chaque pièce.
+              Bureaux droits, bureaux d&apos;angle, bench collaboratifs et
+              assis-debout électriques — reconditionnés dans notre atelier
+              de La Penne-sur-Huveaune, à 15 minutes de la Joliette. Plateaux
+              mélaminé chêne, blanc, gris ou bois véritable, signés Steelcase,
+              Haworth, Vitra. Livraison Marseille, retrait au showroom,
+              garantie 6 mois.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -264,9 +269,9 @@ export default async function MarseillePage() {
       {/* ═══ POURQUOI DES ENTREPRISES MARSEILLAISES ═══ */}
       <section className="container py-16 md:py-24 max-w-4xl">
         <Reveal>
-          <p className="eyebrow">Le tissu économique marseillais</p>
+          <p className="eyebrow">Postes de travail à Marseille</p>
           <h2 className="text-display mt-3 font-serif">
-            Pourquoi des entreprises marseillaises choisissent le mobilier reconditionné
+            Le bureau, le premier équipement qu&apos;une entreprise doit choisir
           </h2>
           <div className="gold-divider mx-0 mt-6" />
         </Reveal>
@@ -274,39 +279,36 @@ export default async function MarseillePage() {
         <div className="mt-10 space-y-6 text-lg text-ink-soft leading-relaxed">
           <Reveal>
             <p>
-              Marseille a ses particularités. Un mélange dense de PME
-              industrielles historiques dans les arrondissements nord, de
-              startups montées dans le sillage d&apos;Euroméditerranée à la
-              Joliette, et de cabinets libéraux installés du centre-ville au
-              huitième. Le point commun de tous ces acteurs : équiper un
-              poste de travail sans absorber le budget de la première année.
+              À Marseille comme ailleurs, le bureau structure la journée. Que
+              ce soit dans une agence du 8e qui équipe ses commerciaux, une
+              startup montée à la Joliette qui s&apos;installe dans 200 m²
+              d&apos;open-space, ou un cabinet d&apos;avocats du centre-ville
+              qui renouvelle ses postes, le choix du bureau dicte tout le
+              reste : le confort, la posture, et finalement la productivité.
             </p>
           </Reveal>
 
           <Reveal delay={80}>
             <p>
-              C&apos;est là qu&apos;on intervient. À 15 minutes de la
-              Joliette, notre atelier de La Penne-sur-Huveaune reçoit chaque
-              semaine du mobilier déposé par des entreprises qui se
-              réorganisent — déménagements, fermetures de sites, mutations
-              vers du télétravail hybride. Les pièces qui en sortent sont
-              celles qu&apos;on retrouve dans les sièges des grands groupes :
-              fauteuils Steelcase Leap, Herman Miller Aeron, tables de réunion
-              Haworth, banquettes Vitra. Tout passe par notre processus de
-              reconditionnement avant d&apos;être proposé.
+              Le neuf à 800-1 500 € pièce, c&apos;est l&apos;option à laquelle
+              beaucoup d&apos;entreprises marseillaises renoncent. L&apos;occasion
+              reconditionnée, c&apos;est la même chose — Steelcase, Haworth,
+              Vitra — à un tiers ou un quart du prix. À condition d&apos;avoir
+              en face un atelier qui inspecte, nettoie, et garantit ce qu&apos;il
+              vend. C&apos;est ce qu&apos;on fait à La Penne-sur-Huveaune, à
+              15 minutes de la Joliette.
             </p>
           </Reveal>
 
           <Reveal delay={160}>
             <p>
-              Notre clientèle marseillaise se répartit assez naturellement
-              entre trois profils : les indépendants et professions libérales
-              qui équipent leur premier bureau pro, les PME et startups en
-              phase de croissance qui équipent 5 à 50 postes d&apos;un coup,
-              et les associations ou structures publiques qui cherchent du
-              mobilier durable à budget contrôlé. À chacun, la même réponse :
-              du mobilier signé, contrôlé, garanti — sans le ticket d&apos;entrée
-              du neuf.
+              Notre stock tourne autour de quatre types de postes : le bureau
+              droit standard (120, 140, 160 cm) qui équipe l&apos;essentiel des
+              open-spaces, le bureau d&apos;angle pour les directions et
+              postes premium, le bench collaboratif qui aligne 4 à 8 postes
+              sur un même plan, et l&apos;assis-debout électrique qui transforme
+              l&apos;ergonomie au quotidien. Chacun a son public à Marseille —
+              et chacun est garanti 6 mois.
             </p>
           </Reveal>
         </div>
@@ -464,7 +466,7 @@ export default async function MarseillePage() {
         </div>
       </section>
 
-      {/* ═══ DERNIERS ARRIVAGES ═══ */}
+      {/* ═══ DERNIERS BUREAUX ARRIVÉS ═══ */}
       {productCards.length > 0 && (
         <section className="container py-16 md:py-24">
           <Reveal>
@@ -472,12 +474,12 @@ export default async function MarseillePage() {
               <div>
                 <p className="eyebrow">Arrivés à l&apos;atelier</p>
                 <h2 className="text-display mt-3 font-serif leading-[1.05]">
-                  Derniers arrivages disponibles
+                  Nos derniers bureaux disponibles
                 </h2>
                 <div className="gold-divider mx-0 mt-6" />
               </div>
-              <Link href="/boutique" className="text-sm text-gold-dark hover:text-gold underline underline-offset-4 self-end">
-                Voir tout le catalogue →
+              <Link href="/categorie/bureau" className="text-sm text-gold-dark hover:text-gold underline underline-offset-4 self-end">
+                Voir tous les bureaux →
               </Link>
             </div>
           </Reveal>
@@ -492,30 +494,30 @@ export default async function MarseillePage() {
 
           <Reveal>
             <p className="mt-8 text-sm text-ink-mute text-center max-w-2xl mx-auto">
-              Ces pièces viennent d&apos;être reconditionnées dans notre atelier. Le
-              stock tourne en permanence — chaque semaine apporte ses nouveaux
-              arrivages. Si vous cherchez un modèle précis qui n&apos;est pas listé,
-              demandez-nous, on l&apos;a peut-être en réserve.
+              Ces bureaux viennent d&apos;être reconditionnés dans notre atelier. Notre
+              stock évolue chaque semaine — si vous cherchez un modèle précis ou
+              un volume particulier qui n&apos;apparaît pas, demandez-nous, on l&apos;a
+              peut-être en réserve.
             </p>
           </Reveal>
         </section>
       )}
 
-      {/* ═══ CATÉGORIES PHARES ═══ */}
+      {/* ═══ SOUS-CATÉGORIES BUREAU ═══ */}
       {featuredCategories.length > 0 && (
         <section className="bg-ivory-light border-y border-line">
           <div className="container py-16 md:py-24">
             <Reveal>
               <div className="max-w-2xl mb-10">
-                <p className="eyebrow">Explorez par catégorie</p>
+                <p className="eyebrow">Types de bureaux</p>
                 <h2 className="text-display mt-3 font-serif">
-                  Les pièces les plus demandées par nos clients marseillais
+                  Droit, en angle, bench ou assis-debout — chaque besoin son format
                 </h2>
                 <div className="gold-divider mx-0 mt-6" />
               </div>
             </Reveal>
 
-            <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {featuredCategories.map((cat, i) => {
                 const imageUrl = cat.image
                   ? urlFor(cat.image).width(600).height(400).fit('crop').url()

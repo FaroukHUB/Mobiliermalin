@@ -161,6 +161,39 @@ export async function getLatestProducts(limit: number = 4): Promise<SanityProduc
 }
 
 /**
+ * Derniers produits d'une catégorie (et ses sous-catégories).
+ * Utilisé pour les pages locales catégorie × ville. Exemple :
+ *   /bureau-occasion-marseille → getLatestProductsByCategoryDeep('bureau', 4)
+ *   → renvoie les 4 derniers bureaux (catégorie "bureau" ou enfants)
+ */
+export async function getLatestProductsByCategoryDeep(
+  categorySlug: string,
+  limit: number = 4,
+): Promise<SanityProduct[]> {
+  return safeFetch<SanityProduct[]>(
+    `*[_type == "product" && status == "published" &&
+      (category->slug.current == $slug || category->parent->slug.current == $slug)
+    ] | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
+    { slug: categorySlug, limit },
+    [],
+  )
+}
+
+/**
+ * Catégorie + ses enfants directs (utile pour afficher les sous-catégories
+ * sur une page locale parente, ex: bureau → bureau-droit, bench, assis-debout).
+ */
+export async function getCategoryChildren(parentSlug: string): Promise<SanityCategory[]> {
+  return safeFetch<SanityCategory[]>(
+    `*[_type == "category" && parent->slug.current == $slug] | order(order asc, name asc) {
+      _id, name, slug, description, image, order
+    }`,
+    { slug: parentSlug },
+    [],
+  )
+}
+
+/**
  * Tous les slugs (pour generateStaticParams).
  */
 export async function getAllProductSlugs(): Promise<string[]> {
