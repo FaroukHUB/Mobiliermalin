@@ -5,6 +5,7 @@ import { siteSettings } from './siteSettings'
 import { heroSlide } from './heroSlide'
 import { quote } from './quote'
 import { qualityGuide } from './qualityGuide'
+import { localPage } from './localPage'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   product as unknown as SchemaTypeDefinition,
@@ -13,4 +14,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   heroSlide as unknown as SchemaTypeDefinition,
   quote as unknown as SchemaTypeDefinition,
   qualityGuide as unknown as SchemaTypeDefinition,
+  localPage as unknown as SchemaTypeDefinition,
 ]

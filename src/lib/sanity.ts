@@ -193,6 +193,30 @@ export async function getCategoryChildren(parentSlug: string): Promise<SanityCat
   )
 }
 
+// ───────────────────────── Pages locales (SEO) ─────────────────────────
+
+export type SanityLocalPage = {
+  pageKey: string
+  displayName?: string
+  heroImage?: SanityImage
+}
+
+/**
+ * Récupère le contenu Sanity d'une page locale par son pageKey.
+ * Si le document n'existe pas (Djamel n'a rien créé) → renvoie un objet
+ * vide, le composant React utilise alors ses fallbacks hardcodés.
+ */
+export async function getLocalPage(pageKey: string): Promise<SanityLocalPage> {
+  const result = await safeFetch<SanityLocalPage | null>(
+    `*[_type == "localPage" && pageKey == $pageKey][0] {
+      pageKey, displayName, heroImage
+    }`,
+    { pageKey },
+    null,
+  )
+  return result || { pageKey }
+}
+
 /**
  * Tous les slugs (pour generateStaticParams).
  */

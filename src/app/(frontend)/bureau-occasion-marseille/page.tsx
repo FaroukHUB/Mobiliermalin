@@ -20,12 +20,20 @@ import { Reveal } from '@/components/animations/Reveal'
 import {
   getLatestProductsByCategoryDeep,
   getCategoryChildren,
+  getLocalPage,
   urlFor,
   type SanityProduct,
 } from '@/lib/sanity'
 
 // Slug Sanity de la catégorie cible pour cette page
 const CATEGORY_SLUG = 'bureau'
+// Identifiant de la page locale dans Sanity (pour récupérer l'image hero éditée)
+const PAGE_KEY = 'bureau-marseille'
+// Fallback Unsplash si rien n'a été uploadé dans Sanity
+const FALLBACK_HERO_URL =
+  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=2000&q=85'
+const FALLBACK_HERO_ALT =
+  'Espace bureau ouvert équipé en mobilier reconditionné — Marseille'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { LEGAL } from '@/lib/legal'
 
@@ -124,15 +132,17 @@ const MAPS_EMBED_URL = `https://maps.google.com/maps?q=${encodeURIComponent(SHOW
 const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SHOWROOM_FULL_ADDRESS)}`
 
 export default async function MarseillePage() {
-  const [latestProducts, subCategories] = await Promise.all([
+  const [latestProducts, subCategories, localPage] = await Promise.all([
     getLatestProductsByCategoryDeep(CATEGORY_SLUG, 4),
     getCategoryChildren(CATEGORY_SLUG),
+    getLocalPage(PAGE_KEY),
   ])
 
-  // Image hero — open space bureau (à remplacer par une vraie photo
-  // d'installation client plus tard, via un champ Sanity dédié)
-  const heroImageUrl =
-    'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=2000&q=85'
+  // Image hero : priorité au champ Sanity si Djamel a uploadé, sinon fallback Unsplash
+  const heroImageUrl = localPage.heroImage
+    ? urlFor(localPage.heroImage).width(2000).url()
+    : FALLBACK_HERO_URL
+  const heroImageAlt = localPage.heroImage?.alt || FALLBACK_HERO_ALT
 
   // Les sous-catégories de "Bureau" (bureau droit, angle, bench, assis-debout)
   const featuredCategories = subCategories.slice(0, 4)
@@ -216,7 +226,7 @@ export default async function MarseillePage() {
         <div className="absolute inset-0">
           <Image
             src={heroImageUrl}
-            alt="Espace bureau ouvert équipé en mobilier reconditionné — Marseille"
+            alt={heroImageAlt}
             fill
             sizes="100vw"
             className="object-cover"

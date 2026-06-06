@@ -72,6 +72,15 @@ export default defineConfig({
                   .schemaType('qualityGuide')
                   .documentId('qualityGuide'),
               ),
+            // Pages locales (catégorie × ville)
+            S.listItem()
+              .title('Pages locales (SEO)')
+              .icon(() => '📍')
+              .child(
+                S.documentTypeList('localPage')
+                  .title('Pages locales')
+                  .defaultOrdering([{ field: 'pageKey', direction: 'asc' }]),
+              ),
             S.divider(),
             // Collections normales
             S.listItem()
