@@ -20,73 +20,76 @@ const playfair = Playfair_Display({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: 'Mobilier Malin — Mobilier de bureau d\'exception, à −60 %',
-    template: '%s | Mobilier Malin',
-  },
-  description:
-    'Mobilier de bureau reconditionné premium : Steelcase, Herman Miller, Haworth, Vitra. Garanti 6 mois, livraison Marseille, Aubagne, Aix-en-Provence et toute la France. Vidage de locaux professionnel.',
-  keywords: [
-    'mobilier bureau reconditionné',
-    'mobilier bureau occasion',
-    'fauteuil ergonomique reconditionné',
-    'bureau professionnel reconditionné',
-    'Steelcase occasion',
-    'Herman Miller reconditionné',
-    'mobilier bureau Marseille',
-    'mobilier bureau Aubagne',
-    'mobilier bureau Aix-en-Provence',
-    'vidage locaux professionnels',
-    'économie circulaire mobilier',
-  ],
-  authors: [{ name: 'Mobilier Malin' }],
-  creator: 'Mobilier Malin',
-  publisher: 'SARL 2 M',
-  openGraph: {
-    type: 'website',
-    locale: 'fr_FR',
-    url: siteUrl,
-    siteName: 'Mobilier Malin',
-    title: 'Mobilier Malin — Mobilier de bureau d\'exception, à −60 %',
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  // Favicon dynamique depuis Sanity (settings.favicon) avec fallback statique
+  const faviconUrl = settings.favicon
+    ? urlFor(settings.favicon).width(64).height(64).format('png').url()
+    : '/favicon.ico'
+  const appleIconUrl = settings.favicon
+    ? urlFor(settings.favicon).width(180).height(180).format('png').url()
+    : '/apple-touch-icon.png'
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: 'Mobilier de bureau d\'occasion reconditionné — Mobilier Malin',
+      template: '%s | Mobilier Malin',
+    },
     description:
-      'Steelcase, Herman Miller, Haworth, Vitra reconditionnés. Garantis 6 mois. Livraison France.',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Mobilier Malin — Mobilier de bureau reconditionné premium',
-      },
+      'Mobilier de bureau d\'occasion reconditionné : Steelcase, Herman Miller, Haworth, Vitra. Atelier à La Penne-sur-Huveaune, livraison Marseille & PACA, garantie 6 mois.',
+    keywords: [
+      'mobilier de bureau d\'occasion',
+      'mobilier bureau reconditionné',
+      'mobilier bureau occasion Marseille',
+      'mobilier bureau Aubagne',
+      'meuble occasion Marseille',
+      'fauteuil bureau occasion',
+      'bureau occasion',
+      'fauteuil ergonomique reconditionné',
+      'Steelcase occasion',
+      'Herman Miller reconditionné',
+      'Haworth occasion',
+      'Vitra reconditionné',
+      'mobilier professionnel Marseille',
+      'mobilier bureau Aix-en-Provence',
+      'vidage locaux professionnels',
+      'rachat mobilier entreprise',
+      'économie circulaire mobilier',
     ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Mobilier Malin',
-    description:
-      'Mobilier de bureau d\'exception, reconditionné avec exigence. À −60 % du prix neuf.',
-    images: ['/og-image.jpg'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    authors: [{ name: 'Mobilier Malin' }],
+    creator: 'Mobilier Malin',
+    publisher: 'SARL 2 M',
+    openGraph: {
+      type: 'website',
+      locale: 'fr_FR',
+      url: siteUrl,
+      siteName: 'Mobilier Malin',
+      title: 'Mobilier de bureau d\'occasion reconditionné — Mobilier Malin',
+      description:
+        'Steelcase, Herman Miller, Haworth, Vitra reconditionnés. Showroom à La Penne-sur-Huveaune, livraison Marseille & PACA, garantie 6 mois.',
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'max-video-preview': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
     },
-  },
-  icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
-  },
-  alternates: {
-    canonical: '/',
-  },
-  category: 'business',
+    icons: {
+      icon: faviconUrl,
+      apple: appleIconUrl,
+      shortcut: faviconUrl,
+    },
+    alternates: {
+      canonical: '/',
+    },
+    category: 'business',
+  }
 }
 
 export const viewport: Viewport = {

@@ -19,26 +19,29 @@ import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProdu
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: 'Mobilier de bureau d\'exception, à −60 % du prix neuf',
+  title: 'Mobilier de bureau d\'occasion reconditionné — Mobilier Malin',
   description:
-    'Steelcase, Herman Miller, Haworth, Vitra reconditionnés. Achat, location longue durée, vidage de locaux. Garanti 6 mois, attestation RSE. Marseille, Aubagne, Aix-en-Provence et toute la France.',
+    'Mobilier de bureau d\'occasion reconditionné : Steelcase, Herman Miller, Haworth, Vitra. Atelier à La Penne-sur-Huveaune, livraison Marseille & PACA, garantie 6 mois.',
   alternates: { canonical: '/' },
   keywords: [
+    'mobilier de bureau d\'occasion',
     'mobilier bureau reconditionné',
-    'mobilier bureau occasion',
-    'location longue durée mobilier bureau',
+    'mobilier bureau occasion Marseille',
+    'mobilier bureau Aubagne',
+    'meuble occasion Marseille',
+    'bureau occasion',
+    'fauteuil bureau occasion',
     'fauteuil ergonomique reconditionné',
     'Steelcase occasion',
     'Herman Miller reconditionné',
     'Haworth occasion',
     'Vitra reconditionné',
-    'attestation RSE mobilier',
-    'économie circulaire bureau',
-    'mobilier bureau Marseille',
-    'mobilier bureau Aubagne',
+    'mobilier professionnel Marseille',
     'mobilier bureau Aix-en-Provence',
-    'vidage locaux professionnels',
+    'location longue durée mobilier bureau',
     'rachat mobilier entreprise',
+    'vidage locaux professionnels',
+    'attestation RSE mobilier',
     'loi AGEC mobilier',
   ],
 }
