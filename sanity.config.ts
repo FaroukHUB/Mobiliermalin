@@ -104,7 +104,15 @@ export default defineConfig({
                         S.documentList()
                           .title('Coups de cœur (home)')
                           .filter('_type == "product" && featured == true')
-                          .defaultOrdering([{ field: '_createdAt', direction: 'desc' }]),
+                          .defaultOrdering([{ field: 'featuredOrder', direction: 'asc' }]),
+                      ),
+                    S.listItem()
+                      .title('💎 Pièces d\'exception')
+                      .child(
+                        S.documentList()
+                          .title('Pièces d\'exception (home)')
+                          .filter('_type == "product" && exception == true')
+                          .defaultOrdering([{ field: 'exceptionOrder', direction: 'asc' }]),
                       ),
                     S.divider(),
                     S.listItem()

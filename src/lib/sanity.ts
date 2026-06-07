@@ -69,6 +69,8 @@ export type SanityProduct = {
   sku?: string
   featured?: boolean
   featuredOrder?: number
+  exception?: boolean
+  exceptionOrder?: number
   seo?: { metaTitle?: string; metaDescription?: string }
   _createdAt: string
   _updatedAt: string
@@ -83,7 +85,7 @@ const PRODUCT_FIELDS = `
   category->{_id, name, slug, description, image, variants, order},
   brand, condition,
   widthCm, depthCm, heightCm,
-  material, color, sku, featured, featuredOrder,
+  material, color, sku, featured, featuredOrder, exception, exceptionOrder,
   seo,
   _createdAt, _updatedAt
 `
@@ -145,6 +147,22 @@ export async function getFeaturedProducts(limit: number = 6): Promise<SanityProd
     // coalesce(featuredOrder, 9999) → les produits sans ordre tombent à la fin.
     `*[_type == "product" && status == "published" && featured == true]
        | order(coalesce(featuredOrder, 9999) asc, _createdAt desc) [0...$limit] {
+         ${PRODUCT_FIELDS}
+       }`,
+    { limit },
+    [],
+  )
+}
+
+/**
+ * Pièces d'exception (section premium sur la home).
+ * Curation Djamel via toggle "Pièce d'exception" sur le produit.
+ * Indépendant du toggle "Mettre en avant" — un produit peut être les deux.
+ */
+export async function getExceptionProducts(limit: number = 3): Promise<SanityProduct[]> {
+  return safeFetch<SanityProduct[]>(
+    `*[_type == "product" && status == "published" && exception == true]
+       | order(coalesce(exceptionOrder, 9999) asc, _createdAt desc) [0...$limit] {
          ${PRODUCT_FIELDS}
        }`,
     { limit },

@@ -210,6 +210,26 @@ export const product = {
         !document?.featured,
       validation: (R: Rule) => R.min(1).integer(),
     },
+    {
+      name: 'exception',
+      title: 'Pièce d\'exception',
+      description:
+        'À cocher pour les pièces premium, rares ou signature. Apparaît dans la section "Nos pièces d\'exception" sur la home (fond noir, traitement luxe). Indépendant du toggle "Mettre en avant sur la home" — un produit peut être les deux.',
+      type: 'boolean',
+      group: 'specs',
+      initialValue: false,
+    },
+    {
+      name: 'exceptionOrder',
+      title: 'Ordre dans Pièces d\'exception',
+      description:
+        'Position dans la section "Pièces d\'exception". 1 = premier, etc. Laisser vide = tri par date. N\'a d\'effet que si "Pièce d\'exception" est activé.',
+      type: 'number',
+      group: 'specs',
+      hidden: ({ document }: { document?: { exception?: boolean } }) =>
+        !document?.exception,
+      validation: (R: Rule) => R.min(1).integer(),
+    },
 
     // ─────── SEO ───────
     {

@@ -5,6 +5,7 @@ import { ManifesteSection } from '@/components/sections/ManifesteSection'
 import { BrandsSection } from '@/components/sections/BrandsSection'
 import { CategoriesGrid } from '@/components/sections/CategoriesGrid'
 import { FeaturedProducts } from '@/components/sections/FeaturedProducts'
+import { ExceptionPieces } from '@/components/sections/ExceptionPieces'
 import { LLDSection } from '@/components/sections/LLDSection'
 import { RSESection } from '@/components/sections/RSESection'
 import { ServicesSection } from '@/components/sections/ServicesSection'
@@ -14,7 +15,7 @@ import { ImpactSection } from '@/components/sections/ImpactSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
 import { SHOP_URL } from '@/lib/config'
-import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProducts, urlFor, type SanityImage } from '@/lib/sanity'
+import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProducts, getExceptionProducts, urlFor, type SanityImage } from '@/lib/sanity'
 
 export const revalidate = 60
 
@@ -89,11 +90,12 @@ function sanityImageToMedia(image?: SanityImage, alt?: string): { url: string; a
 }
 
 export default async function HomePage() {
-  const [sanitySlides, settings, sanityCategories, featuredProducts] = await Promise.all([
+  const [sanitySlides, settings, sanityCategories, featuredProducts, exceptionProducts] = await Promise.all([
     getHeroSlides(),
     getSiteSettings(),
     getTopLevelCategories(),
     getFeaturedProducts(8),
+    getExceptionProducts(3),
   ])
 
   const slides: HeroSlide[] = sanitySlides.length
@@ -122,6 +124,7 @@ export default async function HomePage() {
       <ReassuranceBar />
       <ManifesteSection image={sanityImageToMedia(settings.manifesteImage, 'Notre manifeste')} />
       <BrandsSection />
+      <ExceptionPieces products={exceptionProducts} />
       <CategoriesGrid categories={sanityCategories} />
       <LLDSection image={sanityImageToMedia(settings.lldSectionImage, 'Location longue durée')} />
       <RSESection />
