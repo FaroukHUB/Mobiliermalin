@@ -68,6 +68,7 @@ export type SanityProduct = {
   color?: string
   sku?: string
   featured?: boolean
+  featuredOrder?: number
   seo?: { metaTitle?: string; metaDescription?: string }
   _createdAt: string
   _updatedAt: string
@@ -82,7 +83,7 @@ const PRODUCT_FIELDS = `
   category->{_id, name, slug, description, image, variants, order},
   brand, condition,
   widthCm, depthCm, heightCm,
-  material, color, sku, featured,
+  material, color, sku, featured, featuredOrder,
   seo,
   _createdAt, _updatedAt
 `
@@ -140,7 +141,12 @@ export async function getProductBySlug(slug: string): Promise<SanityProduct | nu
  */
 export async function getFeaturedProducts(limit: number = 6): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published" && featured == true] | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
+    // Tri : d'abord par featuredOrder (1, 2, 3...) si défini, sinon par date.
+    // coalesce(featuredOrder, 9999) → les produits sans ordre tombent à la fin.
+    `*[_type == "product" && status == "published" && featured == true]
+       | order(coalesce(featuredOrder, 9999) asc, _createdAt desc) [0...$limit] {
+         ${PRODUCT_FIELDS}
+       }`,
     { limit },
     [],
   )

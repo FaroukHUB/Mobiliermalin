@@ -199,6 +199,17 @@ export const product = {
       group: 'specs',
       initialValue: false,
     },
+    {
+      name: 'featuredOrder',
+      title: 'Ordre dans Coups de cœur',
+      description:
+        'Position du produit dans la section "Coups de cœur" de la home. 1 = premier, 2 = deuxième, etc. Laisser vide pour que le produit s\'affiche selon la date de publication (plus récent en premier). N\'a d\'effet QUE si "Mettre en avant sur la home" est activé.',
+      type: 'number',
+      group: 'specs',
+      hidden: ({ document }: { document?: { featured?: boolean } }) =>
+        !document?.featured,
+      validation: (R: Rule) => R.min(1).integer(),
+    },
 
     // ─────── SEO ───────
     {
