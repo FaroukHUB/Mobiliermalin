@@ -180,6 +180,35 @@ export async function getLatestProductsByCategoryDeep(
 }
 
 /**
+ * Toutes les catégories regroupées en hiérarchie parent → enfants.
+ * Utilisé pour le mega-menu du header.
+ */
+export type CategoryGroup = {
+  parent: SanityCategory
+  children: SanityCategory[]
+}
+
+export async function getCategoryHierarchy(): Promise<CategoryGroup[]> {
+  const all = await getAllCategories()
+  if (all.length === 0) return []
+  const parents = all.filter((c) => !c.parent)
+  const childrenByParentId = new Map<string, SanityCategory[]>()
+  for (const c of all) {
+    if (c.parent?._id) {
+      const list = childrenByParentId.get(c.parent._id) || []
+      list.push(c)
+      childrenByParentId.set(c.parent._id, list)
+    }
+  }
+  return parents.map((p) => ({
+    parent: p,
+    children: (childrenByParentId.get(p._id) || []).sort(
+      (a, b) => (a.order ?? 999) - (b.order ?? 999),
+    ),
+  }))
+}
+
+/**
  * Catégorie + ses enfants directs (utile pour afficher les sous-catégories
  * sur une page locale parente, ex: bureau → bureau-droit, bench, assis-debout).
  */

@@ -3,7 +3,7 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
-import { getSiteSettings, urlFor } from '@/lib/sanity'
+import { getSiteSettings, getCategoryHierarchy, urlFor } from '@/lib/sanity'
 import './globals.css'
 
 const inter = Inter({
@@ -103,13 +103,28 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const settings = await getSiteSettings()
+  const [settings, categoryHierarchy] = await Promise.all([
+    getSiteSettings(),
+    getCategoryHierarchy(),
+  ])
   const logoLight = settings.logoOnLight
     ? { url: urlFor(settings.logoOnLight).height(160).url(), alt: settings.siteName || 'Mobilier Malin' }
     : undefined
   const logoDark = settings.logoOnDark
     ? { url: urlFor(settings.logoOnDark).height(200).url(), alt: settings.siteName || 'Mobilier Malin' }
     : undefined
+
+  // Sérialise les catégories pour les passer au Header (client component)
+  const menuCategories = categoryHierarchy.map(({ parent, children }) => ({
+    id: parent._id,
+    name: parent.name,
+    slug: parent.slug.current,
+    children: children.map((c) => ({
+      id: c._id,
+      name: c.name,
+      slug: c.slug.current,
+    })),
+  }))
 
   return (
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
@@ -120,7 +135,7 @@ export default async function RootLayout({
         >
           Aller au contenu
         </a>
-        <Header logo={logoLight} />
+        <Header logo={logoLight} categories={menuCategories} />
         <main id="main">{children}</main>
         <Footer logo={logoDark} />
         <OrganizationSchema />
