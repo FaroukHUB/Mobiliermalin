@@ -14,9 +14,28 @@ export type MenuCategory = {
   children: { id: string; name: string; slug: string }[]
 }
 
+export type MenuShowcase = {
+  slug: string
+  name: string
+  brand?: string
+  condition?: string
+  price: number
+  imageUrl: string | null
+  imageAlt?: string
+}
+
+const CONDITION_LABELS: Record<string, string> = {
+  new: 'Neuf',
+  excellent: 'Excellent état',
+  'very-good': 'Très bon état',
+  good: 'Bon état',
+  fair: 'État correct',
+}
+
 interface HeaderProps {
   logo?: { url: string; alt?: string }
   categories?: MenuCategory[]
+  showcase?: MenuShowcase | null
 }
 
 // Pages secondaires de la nav (à côté du mega-menu Catalogue)
@@ -31,7 +50,7 @@ const SECONDARY_NAV = [
   { label: 'Contact', href: '/contact' },
 ] as const
 
-export function Header({ logo, categories = [] }: HeaderProps = {}) {
+export function Header({ logo, categories = [], showcase = null }: HeaderProps = {}) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState<'catalogue' | 'services' | null>(null)
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null)
@@ -216,42 +235,109 @@ export function Header({ logo, categories = [] }: HeaderProps = {}) {
           onMouseLeave={scheduleClose}
         >
           <div className="container py-10 md:py-12">
-            <div className="grid grid-cols-3 xl:grid-cols-4 gap-x-10 gap-y-8">
-              {categories.map((cat) => (
-                <div key={cat.id}>
+            <div
+              className={cn(
+                'grid gap-x-10 gap-y-8',
+                showcase
+                  ? 'grid-cols-[1fr_280px] xl:grid-cols-[1fr_320px]'
+                  : 'grid-cols-1',
+              )}
+            >
+              {/* Catégories à gauche, sur 3 colonnes internes */}
+              <div className="grid grid-cols-3 gap-x-10 gap-y-8">
+                {categories.map((cat) => (
+                  <div key={cat.id}>
+                    <Link
+                      href={`/categorie/${cat.slug}`}
+                      onClick={() => setMegaOpen(null)}
+                      className="block group"
+                    >
+                      <p className="font-serif text-lg text-ink group-hover:text-gold-dark transition">
+                        {cat.name}
+                      </p>
+                      <div className="h-px w-8 bg-gold mt-2 group-hover:w-16 transition-all duration-300" />
+                    </Link>
+                    {cat.children.length > 0 && (
+                      <ul className="mt-4 space-y-2">
+                        {cat.children.map((child) => (
+                          <li key={child.id}>
+                            <Link
+                              href={`/categorie/${child.slug}`}
+                              onClick={() => setMegaOpen(null)}
+                              className="text-sm text-ink-soft hover:text-gold-dark transition inline-flex items-center gap-1.5 group"
+                            >
+                              <span className="text-gold-dark/40 group-hover:text-gold-dark transition">→</span>
+                              {child.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Vitrine produit à droite (4e colonne) */}
+              {showcase && (
+                <aside className="border-l border-line pl-10 hidden lg:block">
+                  <p className="text-[0.65rem] uppercase tracking-widest text-gold-dark mb-3">
+                    Coup de cœur
+                  </p>
                   <Link
-                    href={`/categorie/${cat.slug}`}
+                    href={`/produit/${showcase.slug}`}
                     onClick={() => setMegaOpen(null)}
                     className="block group"
                   >
-                    <p className="font-serif text-lg text-ink group-hover:text-gold-dark transition">
-                      {cat.name}
-                    </p>
-                    <div className="h-px w-8 bg-gold mt-2 group-hover:w-16 transition-all duration-300" />
+                    <div className="relative aspect-[4/5] bg-ivory-dark overflow-hidden border border-line">
+                      {showcase.imageUrl ? (
+                        <Image
+                          src={showcase.imageUrl}
+                          alt={showcase.imageAlt || showcase.name}
+                          fill
+                          sizes="320px"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-ink-mute/30 text-xs uppercase tracking-widest">
+                          Photo à venir
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-4">
+                      {(showcase.brand || showcase.condition) && (
+                        <p className="text-[0.65rem] uppercase tracking-widest text-gold-dark font-medium">
+                          {[
+                            showcase.brand,
+                            showcase.condition ? CONDITION_LABELS[showcase.condition] : null,
+                          ]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </p>
+                      )}
+                      <p className="font-serif text-base text-ink mt-1 leading-snug group-hover:text-gold-dark transition line-clamp-2">
+                        {showcase.name}
+                      </p>
+                      <div className="mt-3 flex items-baseline justify-between">
+                        <span className="font-serif text-xl text-ink">
+                          {new Intl.NumberFormat('fr-FR', {
+                            style: 'currency',
+                            currency: 'EUR',
+                            maximumFractionDigits: 0,
+                          }).format(showcase.price)}
+                        </span>
+                        <span className="text-xs uppercase tracking-widest text-gold-dark inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                          Voir <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
+                        </span>
+                      </div>
+                    </div>
                   </Link>
-                  {cat.children.length > 0 && (
-                    <ul className="mt-4 space-y-2">
-                      {cat.children.map((child) => (
-                        <li key={child.id}>
-                          <Link
-                            href={`/categorie/${child.slug}`}
-                            onClick={() => setMegaOpen(null)}
-                            className="text-sm text-ink-soft hover:text-gold-dark transition inline-flex items-center gap-1.5 group"
-                          >
-                            <span className="text-gold-dark/40 group-hover:text-gold-dark transition">→</span>
-                            {child.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
+                </aside>
+              )}
             </div>
 
             <div className="mt-10 pt-6 border-t border-line flex items-center justify-between flex-wrap gap-4">
               <p className="text-xs text-ink-mute uppercase tracking-widest">
-                Stock renouvelé chaque semaine — pièces signées, garanties 6 mois
+                Arrivages réguliers — pièces signées, garanties 6 mois
               </p>
               <Link
                 href="/boutique"

@@ -3,7 +3,7 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
-import { getSiteSettings, getCategoryHierarchy, urlFor } from '@/lib/sanity'
+import { getSiteSettings, getCategoryHierarchy, getFeaturedProducts, urlFor } from '@/lib/sanity'
 import './globals.css'
 
 const inter = Inter({
@@ -103,9 +103,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [settings, categoryHierarchy] = await Promise.all([
+  const [settings, categoryHierarchy, featuredForMenu] = await Promise.all([
     getSiteSettings(),
     getCategoryHierarchy(),
+    getFeaturedProducts(1),
   ])
   const logoLight = settings.logoOnLight
     ? { url: urlFor(settings.logoOnLight).height(160).url(), alt: settings.siteName || 'Mobilier Malin' }
@@ -126,6 +127,23 @@ export default async function RootLayout({
     })),
   }))
 
+  // Produit à afficher dans la 4e colonne du mega-menu (le premier featured
+  // par ordre de date). Optionnel — si Sanity n'a aucun produit featured,
+  // la colonne ne s'affiche pas.
+  const menuShowcase = featuredForMenu[0]
+    ? {
+        slug: featuredForMenu[0].slug.current,
+        name: featuredForMenu[0].name,
+        brand: featuredForMenu[0].brand,
+        condition: featuredForMenu[0].condition,
+        price: featuredForMenu[0].price,
+        imageUrl: featuredForMenu[0].images?.[0]
+          ? urlFor(featuredForMenu[0].images[0]).width(600).height(750).fit('crop').url()
+          : null,
+        imageAlt: featuredForMenu[0].images?.[0]?.alt || featuredForMenu[0].name,
+      }
+    : null
+
   return (
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
       <body>
@@ -135,7 +153,7 @@ export default async function RootLayout({
         >
           Aller au contenu
         </a>
-        <Header logo={logoLight} categories={menuCategories} />
+        <Header logo={logoLight} categories={menuCategories} showcase={menuShowcase} />
         <main id="main">{children}</main>
         <Footer logo={logoDark} />
         <OrganizationSchema />
