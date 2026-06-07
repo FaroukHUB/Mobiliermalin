@@ -345,6 +345,34 @@ export async function getSiteSettings(): Promise<SanitySiteSettings> {
   return result || {}
 }
 
+/**
+ * Produit vedette pour le mega-menu (4e colonne du Catalogue).
+ *
+ * Priorité :
+ *   1. Le produit explicitement sélectionné par Djamel dans
+ *      Réglages → Navigation → Produit vedette du menu
+ *   2. Fallback : dernier produit publié (le mega-menu reste vivant
+ *      même si Djamel n'a rien configuré)
+ *
+ * Indépendant du toggle "Produit en avant" qui alimente la section
+ * "Coups de cœur" de la home — pas de conflit entre les 2 zones.
+ */
+export async function getMenuShowcaseProduct(): Promise<SanityProduct | null> {
+  const explicit = await safeFetch<SanityProduct | null>(
+    `*[_type == "siteSettings"][0].menuShowcaseProduct->{ ${PRODUCT_FIELDS} }`,
+    {},
+    null,
+  )
+  if (explicit && explicit._id) return explicit
+
+  const latest = await safeFetch<SanityProduct[]>(
+    `*[_type == "product" && status == "published"] | order(_createdAt desc) [0...1] { ${PRODUCT_FIELDS} }`,
+    {},
+    [],
+  )
+  return latest[0] || null
+}
+
 // ───────────────────────── Charte qualité ─────────────────────────
 
 export type SanityQualityCondition = {

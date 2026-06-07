@@ -8,6 +8,7 @@ export const siteSettings = {
     { name: 'identity', title: 'Identité', default: true },
     { name: 'sections', title: 'Images des sections' },
     { name: 'pagesHero', title: 'Hero des pages internes' },
+    { name: 'navigation', title: 'Navigation (menu)' },
   ],
   fields: [
     // ─────────── Identité ───────────
@@ -90,6 +91,20 @@ export const siteSettings = {
       type: 'image',
       group: 'pagesHero',
       options: { hotspot: true },
+    },
+
+    // ─────────── Navigation (menu) ───────────
+    {
+      name: 'menuShowcaseProduct',
+      title: 'Produit vedette du menu',
+      description:
+        'Produit affiché dans la 4e colonne du mega-menu Catalogue (vitrine "Coup de cœur"). Indépendant du toggle "Produit en avant" (qui pilote la section Coups de cœur sur la home). Si vide, le dernier produit publié est utilisé en fallback.',
+      type: 'reference',
+      group: 'navigation',
+      to: [{ type: 'product' }],
+      options: {
+        filter: 'status == "published"',
+      },
     },
   ],
   preview: {

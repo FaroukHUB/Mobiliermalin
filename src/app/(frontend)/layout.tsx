@@ -3,7 +3,7 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
-import { getSiteSettings, getCategoryHierarchy, getFeaturedProducts, urlFor } from '@/lib/sanity'
+import { getSiteSettings, getCategoryHierarchy, getMenuShowcaseProduct, urlFor } from '@/lib/sanity'
 import './globals.css'
 
 const inter = Inter({
@@ -103,10 +103,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [settings, categoryHierarchy, featuredForMenu] = await Promise.all([
+  const [settings, categoryHierarchy, menuProduct] = await Promise.all([
     getSiteSettings(),
     getCategoryHierarchy(),
-    getFeaturedProducts(1),
+    getMenuShowcaseProduct(),
   ])
   const logoLight = settings.logoOnLight
     ? { url: urlFor(settings.logoOnLight).height(160).url(), alt: settings.siteName || 'Mobilier Malin' }
@@ -127,20 +127,23 @@ export default async function RootLayout({
     })),
   }))
 
-  // Produit à afficher dans la 4e colonne du mega-menu (le premier featured
-  // par ordre de date). Optionnel — si Sanity n'a aucun produit featured,
-  // la colonne ne s'affiche pas.
-  const menuShowcase = featuredForMenu[0]
+  // Produit à afficher dans la 4e colonne du mega-menu.
+  // Priorité au produit sélectionné par Djamel dans Réglages →
+  // Navigation → Produit vedette du menu. Si vide, fallback automatique
+  // sur le dernier produit publié (lib/sanity.ts:getMenuShowcaseProduct).
+  // → Aucun conflit avec le toggle "Produit en avant" qui pilote la
+  // section "Coups de cœur" de la home.
+  const menuShowcase = menuProduct
     ? {
-        slug: featuredForMenu[0].slug.current,
-        name: featuredForMenu[0].name,
-        brand: featuredForMenu[0].brand,
-        condition: featuredForMenu[0].condition,
-        price: featuredForMenu[0].price,
-        imageUrl: featuredForMenu[0].images?.[0]
-          ? urlFor(featuredForMenu[0].images[0]).width(600).height(750).fit('crop').url()
+        slug: menuProduct.slug.current,
+        name: menuProduct.name,
+        brand: menuProduct.brand,
+        condition: menuProduct.condition,
+        price: menuProduct.price,
+        imageUrl: menuProduct.images?.[0]
+          ? urlFor(menuProduct.images[0]).width(600).height(750).fit('crop').url()
           : null,
-        imageAlt: featuredForMenu[0].images?.[0]?.alt || featuredForMenu[0].name,
+        imageAlt: menuProduct.images?.[0]?.alt || menuProduct.name,
       }
     : null
 
