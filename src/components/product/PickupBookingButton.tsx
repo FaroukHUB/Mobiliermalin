@@ -28,84 +28,39 @@ export function PickupBookingButton({ productId, slug, name, price }: PickupBook
     setLoading(true)
     setError(null)
     try {
-      // 1) On crée d'abord la réservation Cal.eu (apparaît dans Google Cal de l'équipe)
-      const calRes = await fetch('/api/cal/booking', {
+      // On passe directement à Stripe avec toutes les infos de retrait en
+      // metadata. Le Cal booking sera créé APRÈS confirmation du paiement,
+      // par le webhook /api/stripe/webhook → checkout.session.completed.
+      // → Plus aucun risque de Cal booking "fantôme" si le client abandonne.
+      const checkoutRes = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          date: slot.date,
-          time: slot.time,
-          name: slot.name,
-          email: slot.email,
-          phone: slot.phone,
-          productName: name,
-          productSlug: slug,
+          productId,
+          slug,
+          name,
+          price,
+          quantity: 1,
+          fulfillmentMode: 'pickup',
+          pickupDate: slot.date,
+          pickupTime: slot.time,
+          pickupLabel: slot.label,
+          customerName: slot.name,
+          customerEmail: slot.email,
+          customerPhone: slot.phone,
         }),
       })
-      const calData = (await calRes.json().catch(() => ({}))) as {
-        ok?: boolean
-        bookingId?: string | number
-        bookingUid?: string
-        error?: string
-        configured?: boolean
-      }
-      if (!calRes.ok || calData.ok === false) {
-        // Probable conflit de créneau : on force le SlotPicker à rafraîchir la dispo
-        setRefreshKey((k) => k + 1)
-        throw new Error(
-          calData.error ||
-            'Le créneau n\'a pas pu être réservé. Il a peut-être été pris pendant votre saisie — sélectionnez un autre créneau.',
-        )
-      }
-
-      // 2) On lance le checkout Stripe avec le bookingId en metadata + email prérempli
-      let checkoutFailed = false
-      try {
-        const checkoutRes = await fetch('/api/checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            productId,
-            slug,
-            name,
-            price,
-            quantity: 1,
-            fulfillmentMode: 'pickup',
-            pickupDate: slot.date,
-            pickupTime: slot.time,
-            pickupLabel: slot.label,
-            customerName: slot.name,
-            customerEmail: slot.email,
-            customerPhone: slot.phone,
-            calBookingId: calData.bookingId,
-            calBookingUid: calData.bookingUid,
-          }),
-        })
-        if (!checkoutRes.ok) {
-          const data = (await checkoutRes.json().catch(() => ({}))) as { error?: string }
-          checkoutFailed = true
-          throw new Error(data.error || 'Erreur lors de la création du paiement')
+      if (!checkoutRes.ok) {
+        const data = (await checkoutRes.json().catch(() => ({}))) as { error?: string }
+        // Si le serveur signale un slot pris entre temps, on rafraîchit la dispo
+        if (checkoutRes.status === 409) {
+          setRefreshKey((k) => k + 1)
         }
-        const data = (await checkoutRes.json()) as { url?: string }
-        if (!data.url) {
-          checkoutFailed = true
-          throw new Error('URL de paiement manquante')
-        }
-        window.location.href = data.url
-      } catch (err) {
-        // Rollback : on libère le créneau Cal pour éviter qu'il reste bloqué
-        if (checkoutFailed) {
-          const ref = calData.bookingUid || calData.bookingId
-          if (ref) {
-            fetch(`/api/cal/booking?ref=${encodeURIComponent(String(ref))}`, {
-              method: 'DELETE',
-            }).catch(() => {
-              // best-effort, on n'interrompt pas l'affichage de l'erreur
-            })
-          }
-        }
-        throw err
+        throw new Error(data.error || 'Erreur lors de la création du paiement')
       }
+      const data = (await checkoutRes.json()) as { url?: string }
+      if (!data.url) throw new Error('URL de paiement manquante')
+      window.location.href = data.url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue')
       setLoading(false)

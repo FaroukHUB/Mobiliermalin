@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { cancelBooking } from '@/lib/cal'
+import { cancelBooking, createBooking } from '@/lib/cal'
 import {
+  renderPickupAdminNotificationHtml,
   renderPickupCancellationHtml,
   renderPickupConfirmationHtml,
   sendEmail,
@@ -43,6 +44,27 @@ type StripeEvent = {
   data?: {
     object?: StripeSessionObject
   }
+}
+
+/**
+ * Convertit "YYYY-MM-DD" + "HH:MM" (heure Paris) en ISO 8601 avec offset
+ * dynamique (CEST +02:00 ou CET +01:00). Géré pour Cal.eu booking.
+ */
+function parisLocalToIso(date: string, time: string): string {
+  const local = new Date(`${date}T${time}:00`)
+  const parisTimeStr = local.toLocaleString('en-US', {
+    timeZone: 'Europe/Paris',
+    hour12: false,
+  })
+  const utcTimeStr = local.toLocaleString('en-US', { timeZone: 'UTC', hour12: false })
+  const parisMs = new Date(parisTimeStr).getTime()
+  const utcMs = new Date(utcTimeStr).getTime()
+  const offsetMinutes = Math.round((parisMs - utcMs) / 60000)
+  const sign = offsetMinutes >= 0 ? '+' : '-'
+  const abs = Math.abs(offsetMinutes)
+  const oh = Math.floor(abs / 60).toString().padStart(2, '0')
+  const om = (abs % 60).toString().padStart(2, '0')
+  return `${date}T${time}:00.000${sign}${oh}:${om}`
 }
 
 /**
@@ -164,8 +186,41 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ───── checkout.session.completed (pickup) → envoi email confirmation ─────
+  // ───── checkout.session.completed (pickup) →
+  //        1. Crée le booking Cal.eu (APRÈS paiement, pas avant)
+  //        2. Email confirmation client
+  //        3. Email notification admin Djamel
   if (event.type === 'checkout.session.completed' && isPickup && customerEmail && pickupLabel) {
+    // 1) Création du Cal booking (le paiement vient d'être confirmé)
+    const pickupDate = meta.pickup_date
+    const pickupTime = meta.pickup_time
+    const customerPhone = meta.customer_phone
+    let calBookingRef: string | number | undefined
+    if (pickupDate && pickupTime) {
+      // Convertit "YYYY-MM-DD" + "HH:MM" Paris en ISO 8601 avec offset
+      // (gère DST automatiquement)
+      const startIso = parisLocalToIso(pickupDate, pickupTime)
+      const calResult = await createBooking({
+        start: startIso,
+        attendee: {
+          name: customerName || 'Client',
+          email: customerEmail,
+          phoneNumber: customerPhone,
+          timeZone: 'Europe/Paris',
+        },
+        notes: `Retrait pour : ${productName}`,
+      })
+      if (calResult.ok) {
+        calBookingRef = calResult.bookingUid || calResult.bookingId
+        console.log('[stripe-webhook] cal booking created', calBookingRef)
+      } else {
+        console.error('[stripe-webhook] cal booking creation failed', calResult.error)
+        // On continue malgré l'échec : email envoyé quand même, Djamel
+        // crée manuellement le RDV dans Google Cal s'il le faut
+      }
+    }
+
+    // 2) Email confirmation client
     const result = await sendEmail({
       to: { email: customerEmail, name: customerName || undefined },
       subject: `Confirmation de votre retrait — ${pickupLabel}`,
@@ -182,6 +237,28 @@ export async function POST(req: NextRequest) {
       console.warn('[stripe-webhook] confirmation email failed', result.error)
     } else {
       console.log('[stripe-webhook] confirmation email sent to', customerEmail)
+    }
+
+    // 3) Email notification admin (Djamel) avec tout le détail commande
+    const adminResult = await sendEmail({
+      to: { email: LEGAL.email, name: 'Mobilier Malin' },
+      subject: `🛒 Nouvelle commande RETRAIT — ${productName}`,
+      htmlContent: renderPickupAdminNotificationHtml({
+        customerName: customerName || '(non renseigné)',
+        customerEmail,
+        customerPhone: customerPhone || '(non renseigné)',
+        productName,
+        pickupLabel,
+        amountCents: session?.amount_total,
+        stripeSessionId: session?.id,
+        calBookingRef: calBookingRef ? String(calBookingRef) : undefined,
+      }),
+      tags: ['pickup-admin-notification'],
+    })
+    if (!adminResult.ok) {
+      console.warn('[stripe-webhook] admin email failed', adminResult.error)
+    } else {
+      console.log('[stripe-webhook] admin notification sent')
     }
   }
 

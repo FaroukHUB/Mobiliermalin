@@ -217,6 +217,100 @@ export type PickupCancellationInput = {
   reason?: string
 }
 
+export type PickupAdminNotificationInput = {
+  customerName: string
+  customerEmail: string
+  customerPhone: string
+  productName: string
+  pickupLabel: string
+  amountCents?: number
+  stripeSessionId?: string
+  calBookingRef?: string
+}
+
+/**
+ * Email envoyé à Djamel/Mobilier Malin après chaque paiement retrait
+ * confirmé. Contient tout le détail commande pour qu'il prépare le
+ * produit avant l'arrivée du client.
+ */
+export function renderPickupAdminNotificationHtml(input: PickupAdminNotificationInput): string {
+  const {
+    customerName,
+    customerEmail,
+    customerPhone,
+    productName,
+    pickupLabel,
+    amountCents,
+    stripeSessionId,
+    calBookingRef,
+  } = input
+  const price = formatPrice(amountCents)
+  const stripeUrl = stripeSessionId
+    ? `https://dashboard.stripe.com/payments/${stripeSessionId}`
+    : null
+
+  return `<!DOCTYPE html>
+<html lang="fr"><body style="margin:0;padding:0;background:${COLORS.ivoryDark};font-family:Georgia,serif;color:${COLORS.ink};">
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:32px 16px;">
+<tr><td align="center">
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background:${COLORS.ivory};border:1px solid ${COLORS.line};">
+
+<tr><td style="background:${COLORS.ink};color:${COLORS.ivory};padding:24px 32px;">
+  <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${COLORS.gold};font-family:'Helvetica Neue',Arial,sans-serif;">Mobilier Malin — Admin</div>
+  <h1 style="margin:8px 0 0;font-size:22px;font-weight:normal;font-family:Georgia,serif;">🛒 Nouvelle commande</h1>
+  <div style="margin-top:6px;font-size:13px;color:${COLORS.ivory};opacity:0.7;">Retrait au showroom · ${price ? `<strong>${price}</strong>` : 'Montant à vérifier'}</div>
+</td></tr>
+
+<tr><td style="padding:28px 32px;">
+
+  <!-- Créneau -->
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${COLORS.ivoryDark};border-left:3px solid ${COLORS.gold};margin:0 0 24px;">
+    <tr><td style="padding:16px 20px;">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${COLORS.inkMute};margin-bottom:4px;font-family:'Helvetica Neue',Arial,sans-serif;">Créneau de retrait</div>
+      <div style="font-size:18px;color:${COLORS.ink};text-transform:capitalize;font-family:Georgia,serif;">${escapeHtml(pickupLabel)}</div>
+    </td></tr>
+  </table>
+
+  <!-- Produit -->
+  <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${COLORS.inkMute};margin-bottom:6px;font-family:'Helvetica Neue',Arial,sans-serif;">Produit à préparer</div>
+  <p style="margin:0 0 24px;font-size:16px;color:${COLORS.ink};font-family:Georgia,serif;">${escapeHtml(productName)}</p>
+
+  <hr style="border:none;border-top:1px solid ${COLORS.line};margin:0 0 20px;">
+
+  <!-- Client -->
+  <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${COLORS.inkMute};margin-bottom:10px;font-family:'Helvetica Neue',Arial,sans-serif;">Coordonnées client</div>
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:${COLORS.inkSoft};">
+    <tr><td style="padding:4px 0;width:90px;color:${COLORS.inkMute};">Nom</td><td style="padding:4px 0;color:${COLORS.ink};"><strong>${escapeHtml(customerName)}</strong></td></tr>
+    <tr><td style="padding:4px 0;color:${COLORS.inkMute};">Email</td><td style="padding:4px 0;"><a href="mailto:${escapeHtml(customerEmail)}" style="color:${COLORS.goldDark};">${escapeHtml(customerEmail)}</a></td></tr>
+    <tr><td style="padding:4px 0;color:${COLORS.inkMute};">Téléphone</td><td style="padding:4px 0;"><a href="tel:${escapeHtml(customerPhone.replace(/\s/g, ''))}" style="color:${COLORS.goldDark};">${escapeHtml(customerPhone)}</a></td></tr>
+  </table>
+
+  ${
+    calBookingRef
+      ? `<p style="margin:20px 0 0;font-size:12px;color:${COLORS.inkMute};font-family:'Helvetica Neue',Arial,sans-serif;">📅 RDV ajouté à l'agenda Cal.eu (réf. ${escapeHtml(calBookingRef)})</p>`
+      : `<div style="margin:20px 0 0;padding:12px;background:#FFF4E5;border-left:3px solid #B8721C;font-size:13px;color:#7A4A0F;font-family:'Helvetica Neue',Arial,sans-serif;">⚠️ Échec création RDV Cal.eu — à créer manuellement dans Google Calendar.</div>`
+  }
+
+  ${
+    stripeUrl
+      ? `<div style="margin-top:24px;text-align:center;">
+          <a href="${stripeUrl}" style="display:inline-block;background:${COLORS.gold};color:${COLORS.ivory};padding:10px 20px;text-decoration:none;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;letter-spacing:1px;">Voir le paiement sur Stripe</a>
+        </div>`
+      : ''
+  }
+
+</td></tr>
+
+<tr><td style="background:${COLORS.ivoryDark};padding:16px 32px;text-align:center;font-size:11px;color:${COLORS.inkMute};font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.5px;">
+  Notification automatique · Mobilier Malin
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body></html>`
+}
+
 export function renderPickupCancellationHtml(input: PickupCancellationInput): string {
   const { customerName, pickupLabel, reason } = input
   const firstName = customerName.split(' ')[0] || customerName
