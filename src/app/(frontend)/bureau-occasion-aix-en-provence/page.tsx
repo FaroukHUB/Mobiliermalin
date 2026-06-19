@@ -30,9 +30,9 @@ import { LEGAL } from '@/lib/legal'
 const CATEGORY_SLUG = 'bureau'
 const PAGE_KEY = 'bureau-aix-en-provence'
 const FALLBACK_HERO_URL =
-  'https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=2000&q=85'
+  'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=2000&q=85'
 const FALLBACK_HERO_ALT =
-  'Bureau d\'entreprise équipé en mobilier reconditionné — Aix-en-Provence'
+  'Open space tertiaire équipé en mobilier reconditionné — Aix-en-Provence'
 
 export const revalidate = 86400
 
