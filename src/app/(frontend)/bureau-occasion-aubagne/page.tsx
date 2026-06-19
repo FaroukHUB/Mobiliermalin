@@ -35,9 +35,9 @@ const CATEGORY_SLUG = 'bureau'
 const PAGE_KEY = 'bureau-aubagne'
 // Fallback Unsplash si rien n'a été uploadé dans Sanity (image style showroom mobilier)
 const FALLBACK_HERO_URL =
-  'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=2000&q=85'
+  'https://images.unsplash.com/photo-1497366216548-37526070297c?w=2000&q=85'
 const FALLBACK_HERO_ALT =
-  'Showroom mobilier de bureau d\'occasion près d\'Aubagne'
+  'Espace de bureau ouvert équipé en mobilier d\'occasion près d\'Aubagne'
 
 export const metadata: Metadata = {
   title: 'Bureaux d\'occasion à Aubagne — Showroom à 5 min, retrait sur place',
