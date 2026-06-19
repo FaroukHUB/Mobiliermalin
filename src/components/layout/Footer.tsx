@@ -29,6 +29,7 @@ const SERVICES = [
 const ZONES = [
   { label: 'Marseille', href: '/bureau-occasion-marseille' },
   { label: 'Aubagne', href: '/bureau-occasion-aubagne' },
+  { label: 'Aix-en-Provence', href: '/bureau-occasion-aix-en-provence' },
 ]
 
 const LEGAL = [
