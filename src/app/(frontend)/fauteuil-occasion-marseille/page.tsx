@@ -369,16 +369,18 @@ export default async function FauteuilMarseillePage() {
           <Reveal>
             <div className="lg:sticky lg:top-28">
               <Eye className="h-10 w-10 text-gold" strokeWidth={1.5} />
-              <p className="eyebrow mt-6">Showroom essai</p>
+              <p className="eyebrow mt-6">Showroom ou achat en ligne</p>
               <h2 className="text-display mt-3 font-serif leading-[1.05]">
-                Venir essayer plusieurs modèles au showroom
+                Bien choisir son fauteuil ergonomique
               </h2>
               <div className="gold-divider mx-0 mt-6" />
               <p className="mt-6 text-ink-soft leading-relaxed">
-                À la différence d&apos;un bureau ou d&apos;une armoire, un
-                fauteuil engage le corps. Nous invitons toujours nos clients
-                marseillais à passer au showroom pour s&apos;asseoir, régler
-                les commandes, comparer plusieurs modèles.
+                Vous pouvez commander directement en ligne — chaque fiche
+                produit détaille la morphologie ciblée, les réglages
+                disponibles et l&apos;état précis du siège. Si vous
+                préférez essayer avant d&apos;acheter, notre showroom de
+                La Penne-sur-Huveaune est ouvert du lundi au samedi. Voici
+                les trois points qui font la différence dans le choix.
               </p>
             </div>
           </Reveal>
