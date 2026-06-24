@@ -27,11 +27,14 @@ const SERVICES = [
 ]
 
 const ZONES = [
-  { label: 'Marseille', href: '/bureau-occasion-marseille' },
-  { label: 'Aubagne', href: '/bureau-occasion-aubagne' },
-  { label: 'Aix-en-Provence', href: '/bureau-occasion-aix-en-provence' },
-  { label: 'Nice', href: '/bureau-occasion-nice' },
+  { label: 'Bureaux Marseille', href: '/bureau-occasion-marseille' },
+  { label: 'Bureaux Aubagne', href: '/bureau-occasion-aubagne' },
+  { label: 'Bureaux Aix-en-Provence', href: '/bureau-occasion-aix-en-provence' },
+  { label: 'Bureaux Nice', href: '/bureau-occasion-nice' },
   { label: 'Fauteuils Marseille', href: '/fauteuil-occasion-marseille' },
+  { label: 'Fauteuils Aubagne', href: '/fauteuil-occasion-aubagne' },
+  { label: 'Fauteuils Aix-en-Provence', href: '/fauteuil-occasion-aix-en-provence' },
+  { label: 'Fauteuils Nice', href: '/fauteuil-occasion-nice' },
 ]
 
 const LEGAL = [
