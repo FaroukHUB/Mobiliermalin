@@ -31,6 +31,7 @@ const ZONES = [
   { label: 'Aubagne', href: '/bureau-occasion-aubagne' },
   { label: 'Aix-en-Provence', href: '/bureau-occasion-aix-en-provence' },
   { label: 'Nice', href: '/bureau-occasion-nice' },
+  { label: 'Fauteuils Marseille', href: '/fauteuil-occasion-marseille' },
 ]
 
 const LEGAL = [
