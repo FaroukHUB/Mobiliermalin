@@ -371,7 +371,7 @@ export default async function FauteuilMarseillePage() {
               <Eye className="h-10 w-10 text-gold" strokeWidth={1.5} />
               <p className="eyebrow mt-6">Showroom essai</p>
               <h2 className="text-display mt-3 font-serif leading-[1.05]">
-                Un fauteuil ne s&apos;achète pas sur photo
+                Venir essayer plusieurs modèles au showroom
               </h2>
               <div className="gold-divider mx-0 mt-6" />
               <p className="mt-6 text-ink-soft leading-relaxed">
