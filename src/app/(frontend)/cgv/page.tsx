@@ -130,16 +130,14 @@ export default function CGVPage() {
             Stripe et ne sont jamais stockées par Mobilier Malin.
           </p>
           <p className="mt-4">
-            Sont acceptés&nbsp;: cartes Visa, Mastercard, American Express,
-            ainsi que les moyens de paiement locaux supportés par Stripe au
-            moment de la commande. Les paiements en plusieurs fois peuvent
-            être proposés selon les conditions de Stripe.
+            Sont acceptés&nbsp;:
           </p>
-          <p className="mt-4">
-            Pour les commandes dépassant un certain montant ou volume, un
-            paiement par virement bancaire peut être convenu ; les coordonnées
-            sont alors transmises par email.
-          </p>
+          <ul className="mt-3 space-y-2 list-disc pl-5 text-[15px]">
+            <li><strong className="text-ink">Carte bancaire en ligne</strong> via Stripe — Visa, Mastercard, American Express et les moyens de paiement locaux supportés au moment de la commande. Les paiements en plusieurs fois peuvent être proposés selon les conditions de Stripe.</li>
+            <li><strong className="text-ink">Virement bancaire</strong> — pour les commandes professionnelles ou les volumes importants, sur demande, coordonnées transmises par email.</li>
+            <li><strong className="text-ink">Espèces</strong> — uniquement lors d&apos;un règlement directement au showroom de La Penne-sur-Huveaune.</li>
+            <li><strong className="text-ink">Chèque</strong> — sur demande, à l&apos;ordre de la SARL 2 M. La commande est préparée à réception et encaissement du chèque.</li>
+          </ul>
         </Section>
 
         <Section title="Article 7 — Livraison & retrait">

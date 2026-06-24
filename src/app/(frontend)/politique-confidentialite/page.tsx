@@ -107,8 +107,7 @@ export default function ConfidentialitePage() {
             <li>l&apos;équipe de Mobilier Malin (gérant et collaborateurs) ;</li>
             <li>les prestataires techniques strictement nécessaires :
               <ul className="mt-2 space-y-1.5 list-[circle] pl-5 text-sm">
-                <li><strong className="text-ink">Vercel Inc.</strong> (États-Unis) — hébergement du site ;</li>
-                <li><strong className="text-ink">Sanity Inc.</strong> (États-Unis) — gestion du catalogue produits ;</li>
+                <li><strong className="text-ink">Automattic Inc.</strong> (États-Unis) — hébergement du site via la plateforme WordPress.com ;</li>
                 <li><strong className="text-ink">Stripe Payments Europe Ltd.</strong> (Irlande) — traitement des paiements ;</li>
                 <li><strong className="text-ink">Brevo SAS</strong> (France) — envoi des emails transactionnels.</li>
               </ul>
@@ -119,9 +118,9 @@ export default function ConfidentialitePage() {
             des fins commerciales ou publicitaires.
           </p>
           <p className="mt-4">
-            Les transferts vers les États-Unis (Vercel, Sanity) sont encadrés
-            par les Clauses Contractuelles Types de la Commission européenne
-            et le cadre de protection des données UE-États-Unis (Data Privacy
+            Les transferts vers les États-Unis (Automattic) sont encadrés par
+            les Clauses Contractuelles Types de la Commission européenne et
+            le cadre de protection des données UE-États-Unis (Data Privacy
             Framework).
           </p>
         </Section>

@@ -64,28 +64,27 @@ export default function MentionsLegalesPage() {
 
         <Section title="4. Hébergeur">
           <p>
-            Le site est hébergé par&nbsp;:
+            Le site est hébergé par la plateforme{' '}
+            <strong className="text-ink">WordPress.com</strong>, exploitée par&nbsp;:
           </p>
           <ul className="mt-3 space-y-1.5 text-sm">
-            <li><strong className="text-ink">Vercel Inc.</strong></li>
-            <li>340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis</li>
+            <li><strong className="text-ink">Automattic Inc.</strong></li>
+            <li>60 29th Street #343, San Francisco, CA 94110, États-Unis</li>
             <li>
               Site web&nbsp;:&nbsp;
               <a
-                href="https://vercel.com"
+                href="https://wordpress.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gold-dark hover:underline"
               >
-                vercel.com
+                wordpress.com
               </a>
             </li>
           </ul>
           <p className="mt-4 text-sm">
-            Le contenu géré (catalogue produits, pages éditoriales) est stocké
-            sur <strong className="text-ink">Sanity.io</strong> (Sanity, Inc.,
-            San Francisco, CA, États-Unis). Les paiements sont opérés par
-            <strong className="text-ink"> Stripe Payments Europe Ltd.</strong>{' '}
+            Les paiements en ligne sont opérés par{' '}
+            <strong className="text-ink">Stripe Payments Europe Ltd.</strong>{' '}
             (Dublin, Irlande). Les emails transactionnels sont envoyés via{' '}
             <strong className="text-ink">Brevo SAS</strong> (Paris, France).
           </p>
