@@ -37,7 +37,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Bureaux d\'occasion livrés à Nice — Mobilier Malin',
   description:
-    'On reçoit beaucoup de demandes depuis Nice et la Côte d\'Azur. On a décidé d\'organiser des journées de livraison dédiées pour y répondre. Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
+    'Nous recevons de nombreuses demandes depuis Nice et la Côte d\'Azur. Pour y répondre, nous avons mis en place des journées de livraison dédiées. Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
   keywords: [
     'bureau occasion Nice',
     'bureau d\'occasion Nice',
@@ -222,16 +222,16 @@ export default async function NicePage() {
           <div className="mt-10 max-w-3xl">
             <p className="eyebrow text-gold">Nouveau — livraison Côte d&apos;Azur</p>
             <h1 className="text-display-xl mt-4 font-serif leading-[1.05] text-ivory">
-              On livre maintenant nos bureaux d&apos;occasion à Nice
+              Nous livrons désormais nos bureaux d&apos;occasion à Nice
             </h1>
             <div className="h-px w-16 bg-gold mt-8" />
             <p className="mt-8 text-lg text-ivory/85 leading-relaxed">
-              On reçoit beaucoup de demandes depuis Nice et la Côte
+              Nous recevons de nombreuses demandes depuis Nice et la Côte
               d&apos;Azur. Plutôt que de continuer à les traiter au cas par
-              cas, on a décidé d&apos;organiser des journées de livraison
-              dédiées sur la région niçoise. C&apos;est plus simple à
-              planifier de notre côté, et plus accessible côté tarif pour
-              vous.
+              cas, nous avons fait le choix d&apos;organiser des journées de
+              livraison dédiées à la région niçoise. Cela nous permet de
+              mieux planifier nos déplacements et de proposer un tarif de
+              livraison plus accessible.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -252,7 +252,7 @@ export default async function NicePage() {
         <Reveal>
           <p className="eyebrow">Notre démarche</p>
           <h2 className="text-display mt-3 font-serif">
-            Pourquoi on a décidé d&apos;ouvrir une ligne de livraison sur Nice
+            Pourquoi nous avons ouvert une ligne de livraison sur Nice
           </h2>
           <div className="gold-divider mx-0 mt-6" />
         </Reveal>
@@ -260,33 +260,36 @@ export default async function NicePage() {
         <div className="mt-10 space-y-6 text-lg text-ink-soft leading-relaxed">
           <Reveal>
             <p>
-              Notre atelier est à La Penne-sur-Huveaune, près de Marseille. C&apos;est
-              là qu&apos;on inspecte, démonte, nettoie et remonte chaque bureau
-              avant de le proposer à la vente. Pendant longtemps, on a livré
-              principalement sur Marseille, Aubagne et Aix — les villes
-              accessibles dans la journée.
+              Notre atelier est implanté à La Penne-sur-Huveaune, près de
+              Marseille. C&apos;est là que nous inspectons, démontons,
+              nettoyons et remontons chaque bureau avant de le proposer à
+              la vente. Pendant longtemps, nous avons livré principalement
+              sur Marseille, Aubagne et Aix — les villes accessibles dans
+              la journée.
             </p>
           </Reveal>
 
           <Reveal delay={80}>
             <p>
-              Depuis plusieurs mois, on remarque qu&apos;un nombre croissant
-              de demandes viennent de Nice et de la Côte d&apos;Azur, souvent
-              suite à nos annonces sur Le Bon Coin. Au début, on déclinait
-              ou on facturait le déplacement au cas par cas — ce qui était
-              compliqué pour tout le monde.
+              Depuis plusieurs mois, nous constatons qu&apos;un nombre
+              croissant de demandes nous parviennent depuis Nice et la
+              Côte d&apos;Azur, souvent à la suite de nos annonces Le Bon
+              Coin. Au début, nous les déclinions ou facturions le
+              déplacement au cas par cas — une organisation peu lisible,
+              aussi bien pour nos clients que pour nous.
             </p>
           </Reveal>
 
           <Reveal delay={160}>
             <p>
-              On a fini par s&apos;organiser autrement : on prévoit
-              désormais une à deux journées de livraison dédiées à la Côte
-              d&apos;Azur, ce qui permet de mutualiser les déplacements et
-              de proposer un tarif de livraison nettement plus accessible
-              que si on faisait l&apos;aller-retour uniquement pour vous.
-              C&apos;est cette nouvelle organisation qui rend notre offre
-              pertinente à Nice.
+              Nous avons donc choisi de structurer cette zone autrement :
+              nous prévoyons désormais une à deux journées de livraison
+              dédiées à la Côte d&apos;Azur. Cette mutualisation des
+              déplacements nous permet d&apos;offrir un tarif de
+              livraison nettement plus compétitif que si nous réalisions
+              un aller-retour uniquement pour votre commande. C&apos;est
+              cette nouvelle organisation qui rend notre offre pertinente
+              à Nice.
             </p>
           </Reveal>
         </div>
@@ -299,7 +302,7 @@ export default async function NicePage() {
             <div className="max-w-2xl mb-12">
               <p className="eyebrow">Concrètement</p>
               <h2 className="text-display mt-3 font-serif">
-                Comment ça se passe si vous êtes sur Nice
+                Comment se déroule une commande depuis Nice
               </h2>
               <div className="gold-divider mx-0 mt-6" />
             </div>
@@ -313,13 +316,13 @@ export default async function NicePage() {
                   1. Vous nous contactez
                 </p>
                 <h3 className="font-serif text-xl text-ink mt-2 leading-tight">
-                  On échange sur votre besoin
+                  Nous échangeons sur votre besoin
                 </h3>
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                   Par mail, par téléphone ou depuis la fiche d&apos;un produit
-                  qui vous intéresse. Dites-nous ce que vous cherchez, votre
-                  adresse à Nice, et les contraintes d&apos;accès (étage,
-                  ascenseur, créneau).
+                  qui vous intéresse. Indiquez-nous ce que vous cherchez, votre
+                  adresse à Nice, ainsi que les contraintes d&apos;accès
+                  (étage, ascenseur, créneau).
                 </p>
               </article>
             </Reveal>
@@ -328,16 +331,17 @@ export default async function NicePage() {
               <article className="bg-ivory border border-line p-7 h-full">
                 <CalendarDays className="h-7 w-7 text-gold" strokeWidth={1.5} />
                 <p className="text-xs uppercase tracking-widest text-gold-dark mt-5">
-                  2. On cale ensemble une date
+                  2. Nous fixons une date ensemble
                 </p>
                 <h3 className="font-serif text-xl text-ink mt-2 leading-tight">
-                  On vous propose la prochaine tournée
+                  Nous vous proposons la prochaine tournée
                 </h3>
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                   Vous recevez sous 24 h ouvrées un devis détaillé : produit,
-                  frais de livraison adaptés, date de la prochaine journée
-                  de livraison Côte d&apos;Azur prévue. Si la date ne vous
-                  convient pas, on en propose une autre.
+                  frais de livraison adaptés à votre adresse, et date de la
+                  prochaine journée de livraison Côte d&apos;Azur prévue. Si
+                  cette date ne vous convient pas, nous vous en proposons une
+                  autre.
                 </p>
               </article>
             </Reveal>
@@ -349,13 +353,14 @@ export default async function NicePage() {
                   3. Livraison &amp; garantie
                 </p>
                 <h3 className="font-serif text-xl text-ink mt-2 leading-tight">
-                  On vous livre et on reste joignable
+                  Nous vous livrons et restons joignables
                 </h3>
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
-                  Le jour J, on livre à l&apos;adresse convenue. Garantie six
-                  mois activée à la livraison — un mécanisme qui lâche, un
-                  défaut qui apparaît, on s&apos;arrange. C&apos;est inclus,
-                  même à 200 km.
+                  Le jour de la livraison, nous nous présentons à
+                  l&apos;adresse convenue. La garantie de six mois est
+                  activée à la remise des produits — un mécanisme qui
+                  faiblit, un défaut qui apparaît, nous intervenons.
+                  C&apos;est inclus, y compris à 200 km.
                 </p>
               </article>
             </Reveal>
@@ -363,9 +368,10 @@ export default async function NicePage() {
 
           <Reveal>
             <p className="mt-10 text-sm text-ink-mute text-center max-w-2xl mx-auto">
-              Si vous préférez venir chercher vous-même, le showroom est à
-              La Penne-sur-Huveaune, à environ 2 h 30 par l&apos;A8. Visite
-              sur rendez-vous, lundi-samedi de 10 h à 18 h.
+              Si vous préférez venir chercher votre commande, notre showroom
+              se trouve à La Penne-sur-Huveaune, à environ 2 h 30 par
+              l&apos;A8. Visite sur rendez-vous, du lundi au samedi de 10 h
+              à 18 h.
             </p>
           </Reveal>
         </div>
@@ -400,9 +406,9 @@ export default async function NicePage() {
           <Reveal>
             <p className="mt-8 text-sm text-ink-mute text-center max-w-2xl mx-auto">
               Notre stock évolue régulièrement. Si vous cherchez un modèle
-              précis qui n&apos;apparaît pas, demandez-nous — on l&apos;a
-              peut-être en réserve, ou il peut arriver à la prochaine vague
-              de récupération.
+              précis qui n&apos;apparaît pas, contactez-nous : nous
+              l&apos;avons peut-être en réserve, ou il peut arriver lors
+              de la prochaine vague de récupération.
             </p>
           </Reveal>
         </section>
@@ -415,7 +421,7 @@ export default async function NicePage() {
             <div className="text-center max-w-2xl mx-auto mb-14">
               <p className="eyebrow">Avis Google vérifiés</p>
               <h2 className="text-display mt-3 font-serif">
-                Ce que disent les clients qu&apos;on équipe
+                Ce que disent les clients que nous équipons
               </h2>
               <div className="gold-divider mt-6" />
             </div>
@@ -506,14 +512,14 @@ export default async function NicePage() {
           <Truck className="h-8 w-8 text-gold mx-auto" strokeWidth={1.5} />
           <p className="eyebrow text-gold mt-4">Vous êtes sur Nice ?</p>
           <h2 className="font-serif text-h1 mt-3 text-ivory">
-            Dites-nous ce que vous cherchez, on s&apos;organise
+            Indiquez-nous votre besoin, nous nous organisons
           </h2>
           <div className="h-px w-12 bg-gold mx-auto mt-6" />
           <p className="mt-6 text-ivory/80 leading-relaxed">
             Un bureau ou trente, un poste isolé ou un plateau complet — plus
-            votre besoin est clair, plus on peut caler la livraison sur la
-            prochaine tournée Côte d&apos;Azur. On revient vers vous sous
-            24 h ouvrées avec un devis détaillé.
+            votre besoin est précis, plus nous pouvons positionner la
+            livraison sur la prochaine tournée Côte d&apos;Azur. Nous
+            revenons vers vous sous 24 h ouvrées avec un devis détaillé.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
