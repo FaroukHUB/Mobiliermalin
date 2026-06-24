@@ -34,6 +34,7 @@ export const localPage = {
           { value: 'bureau-aubagne', title: 'Bureau × Aubagne' },
           { value: 'fauteuil-aubagne', title: 'Fauteuil × Aubagne' },
           { value: 'bureau-aix-en-provence', title: 'Bureau × Aix-en-Provence' },
+          { value: 'bureau-nice', title: 'Bureau × Nice' },
         ],
       },
     },
