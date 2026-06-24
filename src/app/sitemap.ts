@@ -34,7 +34,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/fauteuil-occasion-aix-en-provence`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${siteUrl}/fauteuil-occasion-nice`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${siteUrl}/contact`, lastModified: now, changeFrequency: 'yearly', priority: 0.4 },
+    { url: `${siteUrl}/faq`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${siteUrl}/blog`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${siteUrl}/retractation`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${siteUrl}/mentions-legales`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${siteUrl}/cgv`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${siteUrl}/politique-confidentialite`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${siteUrl}/cookies`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
   ]
 
   // 2) Catégories hardcodées (les 7 "univers" historiques)
