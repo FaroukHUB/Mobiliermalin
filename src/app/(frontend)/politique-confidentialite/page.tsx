@@ -74,9 +74,12 @@ export default function ConfidentialitePage() {
             </li>
           </ul>
           <p className="mt-4">
-            Aucune donnée de tracking analytique n&apos;est collectée à ce
-            jour : le site n&apos;utilise ni Google Analytics, ni pixel Meta,
-            ni autre outil de mesure d&apos;audience.
+            <strong className="text-ink">Mesure d&apos;audience</strong> — sous
+            réserve de votre consentement explicite via la bannière cookies,
+            le site utilise Google Analytics 4 pour mesurer la fréquentation
+            (pages vues, durée de visite, source de trafic). Les adresses IP
+            sont anonymisées et aucune donnée identifiante n&apos;est partagée.
+            Aucun pixel publicitaire ni outil de reciblage n&apos;est utilisé.
           </p>
         </Section>
 
@@ -109,7 +112,8 @@ export default function ConfidentialitePage() {
               <ul className="mt-2 space-y-1.5 list-[circle] pl-5 text-sm">
                 <li><strong className="text-ink">Automattic Inc.</strong> (États-Unis) — hébergement du site via la plateforme WordPress.com ;</li>
                 <li><strong className="text-ink">Stripe Payments Europe Ltd.</strong> (Irlande) — traitement des paiements ;</li>
-                <li><strong className="text-ink">Brevo SAS</strong> (France) — envoi des emails transactionnels.</li>
+                <li><strong className="text-ink">Brevo SAS</strong> (France) — envoi des emails transactionnels ;</li>
+                <li><strong className="text-ink">Google LLC</strong> (États-Unis) — mesure d&apos;audience (Google Analytics 4), uniquement après consentement.</li>
               </ul>
             </li>
           </ul>
@@ -118,10 +122,11 @@ export default function ConfidentialitePage() {
             des fins commerciales ou publicitaires.
           </p>
           <p className="mt-4">
-            Les transferts vers les États-Unis (Automattic) sont encadrés par
-            les Clauses Contractuelles Types de la Commission européenne et
-            le cadre de protection des données UE-États-Unis (Data Privacy
-            Framework).
+            Les transferts vers les États-Unis (Automattic, Google) sont
+            encadrés par les Clauses Contractuelles Types de la Commission
+            européenne et le cadre de protection des données UE-États-Unis
+            (Data Privacy Framework), auquel ces deux sociétés sont
+            certifiées.
           </p>
         </Section>
 

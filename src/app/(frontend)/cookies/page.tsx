@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { LEGAL } from '@/lib/legal'
+import { OpenCookieSettingsButton } from '@/components/analytics/OpenCookieSettingsButton'
 
 export const metadata: Metadata = {
   title: 'Cookies',
@@ -31,18 +32,29 @@ export default function CookiesPage() {
 
         <Section title="2. Notre approche">
           <p>
-            <strong className="text-ink">Mobilier Malin ne dépose aucun cookie de
-            tracking analytique ni de cookie publicitaire.</strong> Le site
-            n&apos;utilise ni Google Analytics, ni pixel Meta/Facebook, ni
-            outil de mesure d&apos;audience tiers, ni cookie de reciblage
-            publicitaire.
+            Le site utilise deux catégories de cookies&nbsp;:
+          </p>
+          <ul className="mt-3 list-disc pl-5 space-y-2">
+            <li>
+              des <strong className="text-ink">cookies strictement
+              nécessaires</strong> au fonctionnement du site et des services
+              que vous demandez (panier, paiement). Ces cookies sont exemptés
+              de consentement préalable, conformément à la position de la
+              CNIL&nbsp;;
+            </li>
+            <li>
+              des <strong className="text-ink">cookies de mesure
+              d&apos;audience</strong> (Google Analytics 4), déposés
+              uniquement après votre consentement explicite via la bannière
+              affichée à votre première visite.
+            </li>
+          </ul>
+          <p className="mt-4">
+            Aucun cookie publicitaire ni de reciblage n&apos;est déposé. Aucun
+            pixel Meta/Facebook ni outil similaire n&apos;est utilisé.
           </p>
           <p className="mt-4">
-            Seuls les <strong className="text-ink">cookies strictement
-            nécessaires</strong> au fonctionnement du site et des services que
-            vous demandez (commande, paiement) sont utilisés. Ces cookies sont
-            exemptés de consentement préalable, conformément à la position de
-            la CNIL.
+            <OpenCookieSettingsButton />
           </p>
         </Section>
 
@@ -76,9 +88,35 @@ export default function CookiesPage() {
                   </td>
                   <td className="p-3">Session</td>
                 </tr>
+                <tr>
+                  <td className="p-3 font-mono text-xs">mm_cookie_consent_v1</td>
+                  <td className="p-3">Mobilier Malin</td>
+                  <td className="p-3">
+                    Mémorisation de vos préférences de consentement aux
+                    cookies (afin de ne pas vous redemander à chaque visite).
+                  </td>
+                  <td className="p-3">6 mois</td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-mono text-xs">_ga, _ga_*</td>
+                  <td className="p-3">Google Analytics</td>
+                  <td className="p-3">
+                    Mesure d&apos;audience anonymisée (pages vues, durée de
+                    visite, source de trafic). Déposés <strong>uniquement
+                    après votre consentement explicite</strong>.
+                  </td>
+                  <td className="p-3">13 mois</td>
+                </tr>
               </tbody>
             </table>
           </div>
+          <p className="mt-4 text-sm text-ink-soft">
+            Les cookies Google Analytics sont configurés avec l&apos;option
+            d&apos;anonymisation des adresses IP et le{' '}
+            <em>Consent Mode v2</em>&nbsp;: aucun cookie analytique n&apos;est
+            déposé tant que vous n&apos;avez pas cliqué « Tout accepter » ou
+            activé la catégorie « Mesure d&apos;audience » dans la bannière.
+          </p>
         </Section>
 
         <Section title="4. Gestion des cookies">
@@ -112,9 +150,10 @@ export default function CookiesPage() {
           <p>
             Si nous étions amenés à mettre en place de nouveaux outils
             nécessitant le dépôt de cookies non essentiels (par exemple un
-            outil d&apos;analytique d&apos;audience), une bannière de
-            consentement conforme aux exigences de la CNIL serait alors
-            déployée et cette politique mise à jour en conséquence.
+            outil de reciblage publicitaire), la bannière de consentement
+            serait enrichie d&apos;une nouvelle catégorie et cette politique
+            mise à jour en conséquence. Vous seriez alors invité·e à renouveler
+            votre choix.
           </p>
         </Section>
 

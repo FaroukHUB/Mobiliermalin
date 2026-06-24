@@ -3,6 +3,8 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
+import { CookieConsent } from '@/components/analytics/CookieConsent'
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 import { getSiteSettings, getCategoryHierarchy, getMenuShowcaseProduct, urlFor } from '@/lib/sanity'
 import './globals.css'
 
@@ -150,6 +152,7 @@ export default async function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`}>
       <body>
+        <GoogleAnalytics />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-ink focus:text-ivory focus:px-4 focus:py-2"
@@ -160,6 +163,7 @@ export default async function RootLayout({
         <main id="main">{children}</main>
         <Footer logo={logoDark} />
         <OrganizationSchema />
+        <CookieConsent />
       </body>
     </html>
   )
