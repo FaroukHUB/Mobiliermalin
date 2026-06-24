@@ -38,6 +38,7 @@ const ZONES = [
 ]
 
 const LEGAL = [
+  { label: 'Renoncer au contrat', href: '/retractation' },
   { label: 'Mentions légales', href: '/mentions-legales' },
   { label: 'CGV', href: '/cgv' },
   { label: 'Politique de confidentialité', href: '/politique-confidentialite' },
