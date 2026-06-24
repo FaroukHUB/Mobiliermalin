@@ -1,0 +1,33 @@
+name: Audit liens (404 internes + externes)
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  external-links:
+    name: Vérification des 16 liens externes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Test des URLs externes
+        run: bash scripts/check-external-links.sh
+
+  crawl-live-site:
+    name: Crawl mobiliermalin.com (recherche 404)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation de wget
+        run: sudo apt-get update && sudo apt-get install -y wget
+
+      - name: Crawl du site live
+        run: bash scripts/crawl-404.sh https://mobiliermalin.com
