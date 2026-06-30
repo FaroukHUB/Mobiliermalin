@@ -53,7 +53,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       href={href}
       className="group block bg-ivory-light border border-line hover:border-gold hover:shadow-soft transition-all duration-300"
     >
-      <div className="relative aspect-square overflow-hidden bg-ivory-dark">
+      <div className="relative aspect-[4/5] overflow-hidden bg-ivory-dark">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
