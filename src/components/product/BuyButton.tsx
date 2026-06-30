@@ -55,7 +55,7 @@ export function BuyButton({ productId, slug, name, price }: BuyButtonProps) {
         ) : (
           <>
             <ShoppingBag className="h-4 w-4" strokeWidth={1.5} />
-            Acheter — {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)}
+            Acheter — {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)} TTC
           </>
         )}
       </button>

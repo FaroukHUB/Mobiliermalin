@@ -116,7 +116,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           )}
           {product.comparePrice && product.comparePrice > displayPrice && (
             <span className="text-xs text-ink-mute/70 line-through">
-              {formatPrice(product.comparePrice)} neuf
+              neuf {formatPrice(product.comparePrice)}
             </span>
           )}
         </div>
