@@ -202,15 +202,34 @@ export default async function ProductPage({
             )}
             <h1 className="text-display mt-3 font-serif leading-[1.05]">{product.name}</h1>
 
-            <div className="mt-6 flex items-baseline gap-3">
-              <span className="font-serif text-4xl md:text-5xl text-ink">
-                {formatPrice(product.price)}
-              </span>
-              {product.comparePrice && product.comparePrice > product.price && (
-                <span className="text-lg text-ink-mute line-through">
-                  {formatPrice(product.comparePrice)}
-                </span>
-              )}
+            <div className="mt-6">
+              <div className="flex items-end gap-5 flex-wrap">
+                <div>
+                  {product.comparePrice && product.comparePrice > product.price && (
+                    <p className="text-[0.65rem] uppercase tracking-widest text-gold-dark font-medium mb-1">
+                      Prix soldé
+                    </p>
+                  )}
+                  <span className="font-serif text-4xl md:text-5xl text-ink leading-none">
+                    {formatPrice(product.price)}
+                  </span>
+                </div>
+                {product.comparePrice && product.comparePrice > product.price && (
+                  <div>
+                    <p className="text-[0.65rem] uppercase tracking-widest text-ink-mute mb-1">
+                      Prix neuf
+                    </p>
+                    <span className="text-lg text-ink-mute line-through leading-none block">
+                      {formatPrice(product.comparePrice)}
+                    </span>
+                  </div>
+                )}
+                {product.comparePrice && product.comparePrice > product.price && (
+                  <div className="bg-gold/10 text-gold-dark text-[0.7rem] uppercase tracking-widest font-medium px-2.5 py-1">
+                    Économie {formatPrice(product.comparePrice - product.price)}
+                  </div>
+                )}
+              </div>
             </div>
             <p className="mt-1 text-xs text-ink-mute uppercase tracking-widest">
               {isInStock ? `${product.stock} en stock` : 'Sur commande'}
