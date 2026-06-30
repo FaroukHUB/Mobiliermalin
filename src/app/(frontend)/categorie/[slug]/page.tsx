@@ -57,7 +57,7 @@ export async function generateMetadata({
 function sanityToCard(p: SanityProduct): ProductCardData {
   const firstImage = p.images?.[0]
   const imageUrl = firstImage
-    ? urlFor(firstImage).width(1000).height(1250).fit('crop').url()
+    ? urlFor(firstImage).width(900).height(1200).fit('crop').url()
     : undefined
   return {
     id: p._id,
@@ -240,7 +240,7 @@ export default async function CategoryPage({
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {sanityCat!.children!.map((child, i) => {
               const childImage = child.image
-                ? urlFor(child.image).width(1000).height(1250).fit('crop').url()
+                ? urlFor(child.image).width(900).height(1200).fit('crop').url()
                 : 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80'
               return (
                 <Reveal key={child._id} delay={i * 60}>

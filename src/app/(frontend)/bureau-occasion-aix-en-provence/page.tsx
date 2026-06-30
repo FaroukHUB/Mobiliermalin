@@ -133,7 +133,7 @@ const CONDITION_KEYS: Record<string, string> = {
 function sanityToCard(p: SanityProduct): ProductCardData {
   const firstImage = p.images?.[0]
   const imageUrl = firstImage
-    ? urlFor(firstImage).width(1000).height(1250).fit('crop').url()
+    ? urlFor(firstImage).width(900).height(1200).fit('crop').url()
     : undefined
   return {
     id: p._id,
