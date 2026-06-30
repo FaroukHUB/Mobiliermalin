@@ -110,6 +110,9 @@ export function ExceptionPieces({ products }: ExceptionPiecesProps) {
                         }`}
                       >
                         {formatPrice(p.salePrice && p.salePrice < p.price ? p.salePrice : p.price)}
+                        <span className="ml-1 text-[0.5em] font-sans tracking-wider opacity-60 align-baseline uppercase">
+                          TTC
+                        </span>
                       </span>
                       <span className="text-xs uppercase tracking-widest text-gold-dark inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
                         Découvrir <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />

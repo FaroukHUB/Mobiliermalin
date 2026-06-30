@@ -108,6 +108,9 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             className={`font-serif text-2xl md:text-[1.6rem] ${hasSale ? 'text-promo' : 'text-ink'}`}
           >
             {formatPrice(displayPrice)}
+            <span className="ml-1 text-[0.5em] font-sans tracking-wider opacity-60 align-baseline uppercase">
+              TTC
+            </span>
           </span>
           {hasSale && (
             <span className="text-sm text-ink-mute line-through">
@@ -116,7 +119,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           )}
           {product.comparePrice && product.comparePrice > displayPrice && (
             <span className="text-xs text-ink-mute/70 line-through">
-              neuf {formatPrice(product.comparePrice)}
+              {formatPrice(product.comparePrice)} neuf
             </span>
           )}
         </div>

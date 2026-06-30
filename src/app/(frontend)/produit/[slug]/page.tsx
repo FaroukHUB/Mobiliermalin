@@ -220,6 +220,9 @@ export default async function ProductPage({
                     </p>
                     <span className="font-serif text-4xl md:text-5xl text-promo leading-none">
                       {formatPrice(displayPrice)}
+                      <span className="ml-2 text-[0.4em] font-sans tracking-wider opacity-60 align-baseline uppercase">
+                        TTC
+                      </span>
                     </span>
                   </div>
                   <div>
@@ -252,6 +255,9 @@ export default async function ProductPage({
                     </p>
                     <span className="font-serif text-4xl md:text-5xl text-ink leading-none">
                       {formatPrice(product.price)}
+                      <span className="ml-2 text-[0.4em] font-sans tracking-wider opacity-60 align-baseline uppercase">
+                        TTC
+                      </span>
                     </span>
                   </div>
                   <div>
@@ -269,6 +275,9 @@ export default async function ProductPage({
               ) : (
                 <span className="font-serif text-4xl md:text-5xl text-ink leading-none">
                   {formatPrice(product.price)}
+                  <span className="ml-2 text-[0.4em] font-sans tracking-wider opacity-60 align-baseline uppercase">
+                    TTC
+                  </span>
                 </span>
               )}
             </div>

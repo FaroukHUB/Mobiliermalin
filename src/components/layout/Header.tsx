@@ -332,7 +332,10 @@ export function Header({ logo, categories = [], showcase = null }: HeaderProps =
                             showcase.salePrice && showcase.salePrice < showcase.price
                               ? showcase.salePrice
                               : showcase.price,
-                          )}{' '}TTC
+                          )}
+                          <span className="ml-1 text-[0.5em] font-sans tracking-wider opacity-60 align-baseline uppercase">
+                            TTC
+                          </span>
                         </span>
                         <span className="text-xs uppercase tracking-widest text-gold-dark inline-flex items-center gap-1 group-hover:gap-2 transition-all">
                           Voir <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
