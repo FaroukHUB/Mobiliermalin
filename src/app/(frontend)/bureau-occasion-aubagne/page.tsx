@@ -40,25 +40,31 @@ const FALLBACK_HERO_ALT =
   'Espace de bureau ouvert équipé en mobilier d\'occasion près d\'Aubagne'
 
 export const metadata: Metadata = {
-  title: 'Bureaux d\'occasion à Aubagne — Showroom à 5 min, retrait sur place',
+  title: 'Vente de bureaux d\'occasion à Aubagne — Showroom à 5 min, retrait sur place',
   description:
-    'Showroom de bureaux d\'occasion à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). 200 pièces en stock, lundi-samedi sur rendez-vous. Bureaux droits, angle, bench, assis-debout. Garantie 6 mois.',
+    'Vente directe de bureaux d\'occasion à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). Magasin de mobilier de bureau professionnel : 200 pièces en stock, lundi-samedi sur rendez-vous. Bureaux droits, angle, bench, assis-debout reconditionnés. Garantie 6 mois.',
   keywords: [
+    'vente bureaux aubagne',
+    'vente bureau Aubagne',
     'bureau occasion Aubagne',
     'mobilier bureau Aubagne',
+    'magasin meuble Aubagne',
+    'magasin meuble bureau Aubagne',
+    'meuble Aubagne',
+    'mobilier de bureau Aubagne',
+    'magasin ameublement Aubagne',
     'showroom mobilier Aubagne',
     'bureau d\'occasion Aubagne',
     'retrait bureau Aubagne',
     'bureau professionnel Aubagne',
     'mobilier reconditionné Aubagne',
     'bureau La Penne-sur-Huveaune',
-    'vente bureau Aubagne',
   ],
   alternates: { canonical: `${siteUrl}/bureau-occasion-aubagne` },
   openGraph: {
-    title: 'Bureaux d\'occasion à Aubagne — Mobilier Malin',
+    title: 'Vente de bureaux d\'occasion à Aubagne — Mobilier Malin',
     description:
-      'Showroom à La Penne-sur-Huveaune, à 5 minutes d\'Aubagne. Bureaux droits, angle, bench, assis-debout reconditionnés. Garantie 6 mois.',
+      'Vente directe de bureaux d\'occasion à 5 minutes d\'Aubagne. Magasin de mobilier de bureau professionnel reconditionné, garantie 6 mois.',
     url: `${siteUrl}/bureau-occasion-aubagne`,
     type: 'website',
   },
@@ -293,16 +299,18 @@ export default async function AubagneBureauPage() {
           </nav>
 
           <div className="mt-10 max-w-3xl">
-            <p className="eyebrow text-gold">Aubagne &amp; environs</p>
+            <p className="eyebrow text-gold">Vente directe · Aubagne &amp; environs</p>
             <h1 className="text-display-xl mt-4 font-serif leading-[1.05] text-ivory">
-              Bureaux d&apos;occasion à Aubagne
+              Vente de bureaux d&apos;occasion à Aubagne
             </h1>
             <div className="h-px w-16 bg-gold mt-8" />
             <p className="mt-8 text-lg text-ivory/85 leading-relaxed">
-              Notre showroom est à <strong className="text-ivory">5 minutes du centre d&apos;Aubagne</strong>,
-              à La Penne-sur-Huveaune. Environ 200 pièces en stock, bureaux droits,
-              en angle, bench et assis-debout. Lundi au samedi sur rendez-vous,
-              café offert, conseils sans pression.
+              Notre magasin de mobilier de bureau professionnel est à
+              <strong className="text-ivory"> 5 minutes du centre d&apos;Aubagne</strong>,
+              à La Penne-sur-Huveaune. Environ 200 pièces en stock, en vente
+              directe : bureaux droits, en angle, bench et assis-debout
+              reconditionnés. Lundi au samedi sur rendez-vous, café offert,
+              conseils sans pression.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -380,8 +388,60 @@ export default async function AubagneBureauPage() {
         </div>
       </section>
 
-      {/* ═══ AVIS GOOGLE (cadrage accueil) ═══ */}
+      {/* ═══ VENTE DE BUREAUX À AUBAGNE — bloc SEO ciblé ═══ */}
       <section className="bg-ivory-dark border-y border-line">
+        <div className="container py-16 md:py-20 max-w-4xl">
+          <Reveal>
+            <p className="eyebrow">Vente directe à Aubagne</p>
+            <h2 className="text-display mt-3 font-serif leading-[1.1]">
+              Vente de bureaux à Aubagne : comment ça se passe
+            </h2>
+            <div className="gold-divider mx-0 mt-6" />
+          </Reveal>
+
+          <div className="mt-10 space-y-6 text-lg text-ink-soft leading-relaxed">
+            <Reveal>
+              <p>
+                Notre magasin de mobilier de bureau professionnel à Aubagne
+                propose la vente directe de bureaux d&apos;occasion
+                reconditionnés : pas de revendeur intermédiaire, pas de
+                catalogue théorique. Vous prenez rendez-vous, vous venez
+                voir, vous testez, vous repartez avec le bureau, le caisson
+                ou le fauteuil qui vous convient — payé sur place, livré
+                ou retiré le jour même quand c&apos;est possible.
+              </p>
+            </Reveal>
+
+            <Reveal delay={80}>
+              <p>
+                Nous sommes une <strong className="text-ink">alternative
+                concrète aux magasins de meubles d&apos;Aubagne classiques</strong>
+                pour les professionnels et les indépendants qui équipent
+                leur cabinet, leur bureau ou leur atelier sur le secteur
+                Aubagne — Gémenos — La Penne-sur-Huveaune — Roquevaire —
+                Cassis. La différence : du mobilier signé Steelcase, Vitra,
+                Haworth ou Herman Miller à des prix qui ressemblent à ceux
+                d&apos;un dépôt-vente, mais avec contrôle technique et
+                garantie 6 mois.
+              </p>
+            </Reveal>
+
+            <Reveal delay={160}>
+              <p>
+                Que vous cherchiez un bureau seul, l&apos;équipement complet
+                d&apos;un open-space, un fauteuil ergonomique ou une armoire
+                de rangement, nous avons en moyenne deux cents pièces en
+                stock — toutes visibles, toutes essayables. Et si vous
+                préférez réserver d&apos;abord et venir chercher plus tard,
+                c&apos;est possible aussi.
+              </p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ AVIS GOOGLE (cadrage accueil) ═══ */}
+      <section className="bg-ivory border-y border-line">
         <div className="container py-16 md:py-24">
           <Reveal>
             <div className="max-w-2xl mb-12">
