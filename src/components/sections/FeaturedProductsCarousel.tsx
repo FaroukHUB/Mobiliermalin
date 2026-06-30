@@ -11,8 +11,9 @@ interface FeaturedProductsCarouselProps {
 
 /**
  * Carousel horizontal avec "peek effect".
- * - Mobile : 2 cartes pleines + 3e qui dépasse à moitié (40 % par carte)
- * - Desktop (≥ lg = 1024 px) : 4 cartes pleines + 5e qui dépasse (≈22 % par carte)
+ * - Mobile : 1.5 carte (60 % par carte, 1 pleine + 1/2 qui dépasse)
+ * - Tablet (md) : 2.5 cartes (40 % par carte)
+ * - Desktop (≥ lg) : 3 cartes pleines + ~1/2 qui dépasse (≈30 % par carte)
  *
  * Flèches gauche/droite désactivées en début/fin de course.
  */
@@ -57,7 +58,7 @@ export function FeaturedProductsCarousel({ cards }: FeaturedProductsCarouselProp
           {cards.map((card) => (
             <div
               key={card.id}
-              className="shrink-0 basis-[42%] lg:basis-[22.5%] px-1.5 md:px-2"
+              className="shrink-0 basis-[62%] sm:basis-[42%] md:basis-[38%] lg:basis-[30%] px-2 md:px-3"
             >
               <ProductCard product={card} />
             </div>

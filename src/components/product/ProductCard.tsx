@@ -51,7 +51,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <Link
       href={href}
-      className="group block bg-ivory-light border border-line hover:border-gold transition-colors duration-300"
+      className="group block bg-ivory-light border border-line hover:border-gold hover:shadow-soft transition-all duration-300"
     >
       <div className="relative aspect-square overflow-hidden bg-ivory-dark">
         {product.imageUrl ? (
@@ -59,8 +59,8 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             src={product.imageUrl}
             alt={product.imageAlt || product.title}
             fill
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 80vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-ink-mute/40 text-xs uppercase tracking-widest">
@@ -68,46 +68,49 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </div>
         )}
 
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-ivory/95 backdrop-blur px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-ink">
-          <span
-            className={`h-1.5 w-1.5 rounded-full ${isAvailable ? 'bg-gold' : 'bg-ink-mute'}`}
-          />
-          {statusLabel}
+        {/* Badge statut — discret, sans fond opaque */}
+        <div className="absolute top-3.5 left-3.5 inline-flex items-center gap-1.5 text-[0.6rem] uppercase tracking-widest text-ink font-medium">
+          <span className="bg-ivory/90 backdrop-blur-sm px-2 py-1 inline-flex items-center gap-1.5">
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${isAvailable ? 'bg-gold' : 'bg-ink-mute'}`}
+            />
+            {statusLabel}
+          </span>
         </div>
 
         {discountPercent > 0 && (
-          <div className="absolute top-3 right-3 bg-promo text-ivory text-[0.65rem] uppercase tracking-widest px-2.5 py-1">
+          <div className="absolute top-3.5 right-3.5 bg-promo text-ivory text-[0.65rem] uppercase tracking-widest px-2.5 py-1 font-medium">
             −{discountPercent} %
           </div>
         )}
 
-        <div className="absolute bottom-3 right-3 h-10 w-10 bg-ivory translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+        <div className="absolute bottom-3.5 right-3.5 h-11 w-11 bg-ivory translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center shadow-soft">
           <ArrowUpRight className="h-4 w-4 text-ink" strokeWidth={1.5} />
         </div>
       </div>
 
-      <div className="p-5">
+      <div className="p-6 md:p-7">
         {(product.brandName || conditionLabel) && (
           <p className="text-[0.65rem] uppercase tracking-widest text-gold-dark font-medium">
             {[product.brandName, conditionLabel].filter(Boolean).join(' · ')}
           </p>
         )}
-        <h3 className="font-serif text-lg text-ink mt-1.5 leading-tight line-clamp-2">
+        <h3 className="font-serif text-xl md:text-[1.35rem] text-ink mt-2 leading-snug line-clamp-2">
           {product.title}
         </h3>
         {product.shortDescription && (
-          <p className="text-xs text-ink-mute mt-1.5 leading-relaxed line-clamp-2">
+          <p className="text-sm text-ink-mute mt-2 leading-relaxed line-clamp-2">
             {product.shortDescription}
           </p>
         )}
-        <div className="mt-4 flex items-baseline gap-2 flex-wrap">
+        <div className="mt-5 pt-5 border-t border-line/60 flex items-baseline gap-2.5 flex-wrap">
           <span
-            className={`font-serif text-xl ${hasSale ? 'text-promo' : 'text-ink'}`}
+            className={`font-serif text-2xl md:text-[1.6rem] ${hasSale ? 'text-promo' : 'text-ink'}`}
           >
             {formatPrice(displayPrice)}
           </span>
           {hasSale && (
-            <span className="text-xs text-ink-mute line-through">
+            <span className="text-sm text-ink-mute line-through">
               {formatPrice(product.price)}
             </span>
           )}
