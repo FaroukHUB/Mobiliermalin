@@ -254,17 +254,27 @@ export const product = {
       title: 'Réglages SEO',
       type: 'object',
       group: 'seo',
+      description:
+        '⚡ Vous pouvez tout laisser vide : le site remplira automatiquement à partir du nom du produit, du prix et de la description courte. Ne remplissez ces champs que si vous voulez forcer une formulation précise pour Google.',
       fields: [
         {
           name: 'metaTitle',
           title: 'Titre meta (50-60 caractères)',
           type: 'string',
+          description:
+            '🤖 Auto si vide : "[Nom du produit] — [Prix] €". Exemple : "Bureau électrique Steelcase Series 5 — 750 €". Ne remplir que pour personnaliser.',
+          validation: (R: Rule) =>
+            R.max(70).warning('Titre trop long : Google le tronquera au-delà de ~60 caractères.'),
         },
         {
           name: 'metaDescription',
           title: 'Description meta (150-160 caractères)',
           type: 'text',
           rows: 2,
+          description:
+            '🤖 Auto si vide : reprend la "Description courte" du produit, sinon fallback générique. Ne remplir que pour optimiser le clic depuis Google.',
+          validation: (R: Rule) =>
+            R.max(180).warning('Description trop longue : Google la tronquera au-delà de ~160 caractères.'),
         },
       ],
     },
