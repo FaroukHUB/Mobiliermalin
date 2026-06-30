@@ -31,7 +31,7 @@ export default async function DevisRequestPage({ searchParams }: Props) {
       productId = product._id
       productName = product.name
       productSlug = product.slug.current
-      productPrice = product.price
+      productPrice = product.salePrice && product.salePrice < product.price ? product.salePrice : product.price
     }
   }
 

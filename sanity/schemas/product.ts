@@ -109,18 +109,34 @@ export const product = {
     // ─────── Prix & stock ───────
     {
       name: 'price',
-      title: 'Prix soldé (€ TTC)',
+      title: 'Prix de vente (€ TTC)',
       type: 'number',
       group: 'pricing',
       validation: (R: Rule) => R.required().positive(),
-      description: 'Prix actuel de vente, affiché en rouge sur la fiche produit.',
+      description: 'Prix habituel de vente du produit reconditionné. C\'est le prix utilisé tant qu\'il n\'y a pas de promo.',
+    },
+    {
+      name: 'salePrice',
+      title: 'Prix soldé (€ TTC)',
+      type: 'number',
+      group: 'pricing',
+      description: 'Optionnel — prix promo. S\'il est rempli, c\'est ce prix qui est facturé au client (affiché en rouge), et le Prix de vente apparaît barré à côté.',
+      validation: (R: Rule) =>
+        R.positive().custom((value, ctx) => {
+          if (value === undefined || value === null) return true
+          const price = (ctx.document as { price?: number } | undefined)?.price
+          if (price && (value as number) >= price) {
+            return 'Le prix soldé doit être inférieur au prix de vente.'
+          }
+          return true
+        }),
     },
     {
       name: 'comparePrice',
       title: 'Prix neuf (€ TTC)',
       type: 'number',
       group: 'pricing',
-      description: 'Optionnel — prix d\'origine du produit neuf. Affiché barré à côté du prix soldé pour montrer l\'économie réalisée.',
+      description: 'Optionnel — prix d\'origine du produit neuf en magasin. Affiché barré en plus, pour montrer la valeur initiale.',
     },
     {
       name: 'stock',

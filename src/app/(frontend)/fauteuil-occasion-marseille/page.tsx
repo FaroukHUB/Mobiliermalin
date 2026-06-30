@@ -129,6 +129,7 @@ function sanityToCard(p: SanityProduct): ProductCardData {
     title: p.name,
     shortDescription: p.shortDescription,
     price: p.price,
+    salePrice: p.salePrice,
     comparePrice: p.comparePrice,
     condition: p.condition ? CONDITION_KEYS[p.condition] : undefined,
     brandName: p.brand,

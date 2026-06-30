@@ -55,6 +55,7 @@ export type SanityProduct = {
   shortDescription?: string
   description?: unknown[] // PortableText
   price: number
+  salePrice?: number
   comparePrice?: number
   stock: number
   images: SanityImage[]
@@ -80,7 +81,7 @@ export type SanityProduct = {
 
 const PRODUCT_FIELDS = `
   _id, name, slug, status, shortDescription, description,
-  price, comparePrice, stock,
+  price, salePrice, comparePrice, stock,
   images[]{_key, asset, alt, hotspot},
   category->{_id, name, slug, description, image, variants, order},
   brand, condition,

@@ -9,6 +9,7 @@ export type ProductCardData = {
   title: string
   shortDescription?: string
   price: number
+  salePrice?: number
   comparePrice?: number
   condition?: string
   brandName?: string
@@ -38,6 +39,15 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   const statusLabel = product.status ? STATUS_LABELS[product.status] : 'Disponible'
   const isAvailable = product.status === 'published' || !product.status
 
+  const hasSale = !!product.salePrice && product.salePrice < product.price
+  const displayPrice = hasSale ? product.salePrice! : product.price
+  const discountReference = product.comparePrice && product.comparePrice > displayPrice
+    ? product.comparePrice
+    : (hasSale ? product.price : undefined)
+  const discountPercent = discountReference
+    ? Math.round((1 - displayPrice / discountReference) * 100)
+    : 0
+
   return (
     <Link
       href={href}
@@ -65,9 +75,9 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           {statusLabel}
         </div>
 
-        {product.comparePrice && product.comparePrice > product.price && (
+        {discountPercent > 0 && (
           <div className="absolute top-3 right-3 bg-promo text-ivory text-[0.65rem] uppercase tracking-widest px-2.5 py-1">
-            −{Math.round((1 - product.price / product.comparePrice) * 100)} %
+            −{discountPercent} %
           </div>
         )}
 
@@ -90,19 +100,20 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             {product.shortDescription}
           </p>
         )}
-        <div className="mt-4 flex items-baseline gap-2">
+        <div className="mt-4 flex items-baseline gap-2 flex-wrap">
           <span
-            className={`font-serif text-xl ${
-              product.comparePrice && product.comparePrice > product.price
-                ? 'text-promo'
-                : 'text-ink'
-            }`}
+            className={`font-serif text-xl ${hasSale ? 'text-promo' : 'text-ink'}`}
           >
-            {formatPrice(product.price)}
+            {formatPrice(displayPrice)}
           </span>
-          {product.comparePrice && product.comparePrice > product.price && (
+          {hasSale && (
             <span className="text-xs text-ink-mute line-through">
-              {formatPrice(product.comparePrice)}
+              {formatPrice(product.price)}
+            </span>
+          )}
+          {product.comparePrice && product.comparePrice > displayPrice && (
+            <span className="text-xs text-ink-mute/70 line-through">
+              {formatPrice(product.comparePrice)} neuf
             </span>
           )}
         </div>

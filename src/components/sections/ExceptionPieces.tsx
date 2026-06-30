@@ -104,8 +104,12 @@ export function ExceptionPieces({ products }: ExceptionPiecesProps) {
                       </p>
                     )}
                     <div className="mt-5 pt-5 border-t border-line flex items-baseline justify-between">
-                      <span className="font-serif text-2xl text-ink">
-                        {formatPrice(p.price)}
+                      <span
+                        className={`font-serif text-2xl ${
+                          p.salePrice && p.salePrice < p.price ? 'text-promo' : 'text-ink'
+                        }`}
+                      >
+                        {formatPrice(p.salePrice && p.salePrice < p.price ? p.salePrice : p.price)}
                       </span>
                       <span className="text-xs uppercase tracking-widest text-gold-dark inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
                         Découvrir <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.5} />

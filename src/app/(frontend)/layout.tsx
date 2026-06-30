@@ -142,6 +142,7 @@ export default async function RootLayout({
         brand: menuProduct.brand,
         condition: menuProduct.condition,
         price: menuProduct.price,
+        salePrice: menuProduct.salePrice,
         imageUrl: menuProduct.images?.[0]
           ? urlFor(menuProduct.images[0]).width(600).height(750).fit('crop').url()
           : null,

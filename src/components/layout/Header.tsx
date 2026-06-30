@@ -20,6 +20,7 @@ export type MenuShowcase = {
   brand?: string
   condition?: string
   price: number
+  salePrice?: number
   imageUrl: string | null
   imageAlt?: string
 }
@@ -318,12 +319,20 @@ export function Header({ logo, categories = [], showcase = null }: HeaderProps =
                         {showcase.name}
                       </p>
                       <div className="mt-3 flex items-baseline justify-between">
-                        <span className="font-serif text-xl text-ink">
+                        <span
+                          className={`font-serif text-xl ${
+                            showcase.salePrice && showcase.salePrice < showcase.price ? 'text-promo' : 'text-ink'
+                          }`}
+                        >
                           {new Intl.NumberFormat('fr-FR', {
                             style: 'currency',
                             currency: 'EUR',
                             maximumFractionDigits: 0,
-                          }).format(showcase.price)}
+                          }).format(
+                            showcase.salePrice && showcase.salePrice < showcase.price
+                              ? showcase.salePrice
+                              : showcase.price,
+                          )}
                         </span>
                         <span className="text-xs uppercase tracking-widest text-gold-dark inline-flex items-center gap-1 group-hover:gap-2 transition-all">
                           Voir <ArrowRight className="h-3 w-3" strokeWidth={1.5} />
