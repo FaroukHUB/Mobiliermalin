@@ -39,6 +39,11 @@ const config: Config = {
           deep: '#9A7E3F',
         },
         line: '#E5E3DE',
+        promo: {
+          DEFAULT: '#B8362D',
+          light: '#D14B3F',
+          dark: '#922A23',
+        },
       },
       fontFamily: {
         serif: ['var(--font-serif)', 'Playfair Display', 'Georgia', 'serif'],

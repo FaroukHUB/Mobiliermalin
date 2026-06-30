@@ -109,17 +109,18 @@ export const product = {
     // ─────── Prix & stock ───────
     {
       name: 'price',
-      title: 'Prix de vente (€ TTC)',
+      title: 'Prix soldé (€ TTC)',
       type: 'number',
       group: 'pricing',
       validation: (R: Rule) => R.required().positive(),
+      description: 'Prix actuel de vente, affiché en rouge sur la fiche produit.',
     },
     {
       name: 'comparePrice',
-      title: 'Prix barré / prix neuf (€ TTC)',
+      title: 'Prix neuf (€ TTC)',
       type: 'number',
       group: 'pricing',
-      description: 'Optionnel — affiche un prix barré pour montrer l\'économie.',
+      description: 'Optionnel — prix d\'origine du produit neuf. Affiché barré à côté du prix soldé pour montrer l\'économie réalisée.',
     },
     {
       name: 'stock',

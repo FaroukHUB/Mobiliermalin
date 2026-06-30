@@ -66,7 +66,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         </div>
 
         {product.comparePrice && product.comparePrice > product.price && (
-          <div className="absolute top-3 right-3 bg-ink text-ivory text-[0.65rem] uppercase tracking-widest px-2.5 py-1">
+          <div className="absolute top-3 right-3 bg-promo text-ivory text-[0.65rem] uppercase tracking-widest px-2.5 py-1">
             −{Math.round((1 - product.price / product.comparePrice) * 100)} %
           </div>
         )}
@@ -91,7 +91,13 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </p>
         )}
         <div className="mt-4 flex items-baseline gap-2">
-          <span className="font-serif text-xl text-ink">
+          <span
+            className={`font-serif text-xl ${
+              product.comparePrice && product.comparePrice > product.price
+                ? 'text-promo'
+                : 'text-ink'
+            }`}
+          >
             {formatPrice(product.price)}
           </span>
           {product.comparePrice && product.comparePrice > product.price && (
