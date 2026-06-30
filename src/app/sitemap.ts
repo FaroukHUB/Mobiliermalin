@@ -26,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/attestation-rse`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${siteUrl}/charte-qualite`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${siteUrl}/meuble-occasion-marseille`, lastModified: now, changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${siteUrl}/meuble-occasion-aubagne`, lastModified: now, changeFrequency: 'weekly', priority: 0.95 },
     { url: `${siteUrl}/mobilier-bureau-professionnel`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${siteUrl}/rachat-mobilier-bureau`, lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${siteUrl}/bureau-occasion-marseille`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
