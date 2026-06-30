@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { PortableText, type PortableTextBlock } from 'next-sanity'
+import { type PortableTextBlock } from 'next-sanity'
 import { ChevronRight, Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
 import { getProductBySlug, getAllProductSlugs, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
 import { DeliveryChoice } from '@/components/product/DeliveryChoice'
 import { ProductGallery } from '@/components/product/ProductGallery'
+import { ProductTabs } from '@/components/product/ProductTabs'
+import { LEGAL } from '@/lib/legal'
 
 export const revalidate = 60
 
@@ -324,71 +326,40 @@ export default async function ProductPage({
               </li>
             </ul>
 
-            {(product.widthCm || product.depthCm || product.heightCm) && (
-              <div className="mt-8 pt-6 border-t border-line">
-                <p className="eyebrow mb-3">Dimensions</p>
-                <div className="grid grid-cols-3 gap-4">
-                  {product.widthCm && (
-                    <div>
-                      <p className="text-xs text-ink-mute uppercase tracking-widest">Largeur</p>
-                      <p className="font-serif text-lg mt-1 text-ink">{product.widthCm} cm</p>
-                    </div>
-                  )}
-                  {product.depthCm && (
-                    <div>
-                      <p className="text-xs text-ink-mute uppercase tracking-widest">Profondeur</p>
-                      <p className="font-serif text-lg mt-1 text-ink">{product.depthCm} cm</p>
-                    </div>
-                  )}
-                  {product.heightCm && (
-                    <div>
-                      <p className="text-xs text-ink-mute uppercase tracking-widest">Hauteur</p>
-                      <p className="font-serif text-lg mt-1 text-ink">{product.heightCm} cm</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {(product.material || product.color) && (
-              <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-                {product.material && (
-                  <div>
-                    <p className="text-xs text-ink-mute uppercase tracking-widest">Matière</p>
-                    <p className="text-ink mt-1">{product.material}</p>
-                  </div>
-                )}
-                {product.color && (
-                  <div>
-                    <p className="text-xs text-ink-mute uppercase tracking-widest">Couleur</p>
-                    <p className="text-ink mt-1">{product.color}</p>
-                  </div>
-                )}
-              </div>
-            )}
-
             <div className="mt-10 pt-6 border-t border-line flex flex-wrap items-center gap-6 text-sm text-ink-mute">
-              <a href="tel:+33676617053" className="inline-flex items-center gap-2 hover:text-gold-dark">
-                <Phone className="h-4 w-4" /> 06 76 61 70 53
+              <a href={`tel:${LEGAL.telephoneTel}`} className="inline-flex items-center gap-2 hover:text-gold-dark">
+                <Phone className="h-4 w-4" /> {LEGAL.telephone}
               </a>
-              <a href="mailto:mobiliermalin@gmail.com" className="inline-flex items-center gap-2 hover:text-gold-dark">
-                <Mail className="h-4 w-4" /> mobiliermalin@gmail.com
+              <a href={`mailto:${LEGAL.email}`} className="inline-flex items-center gap-2 hover:text-gold-dark">
+                <Mail className="h-4 w-4" /> {LEGAL.email}
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      {product.description && Array.isArray(product.description) && product.description.length > 0 && (
-        <section className="bg-ivory-dark border-y border-line">
-          <div className="container py-12 md:py-16 max-w-3xl">
-            <p className="eyebrow">Description détaillée</p>
-            <div className="mt-4 text-ink-soft leading-relaxed prose prose-stone">
-              <PortableText value={product.description as PortableTextBlock[]} />
-            </div>
-          </div>
-        </section>
-      )}
+      <ProductTabs
+        description={
+          Array.isArray(product.description)
+            ? (product.description as PortableTextBlock[])
+            : undefined
+        }
+        specs={{
+          widthCm: product.widthCm,
+          depthCm: product.depthCm,
+          heightCm: product.heightCm,
+          material: product.material,
+          color: product.color,
+          brand: product.brand,
+          condition: product.condition,
+          sku: product.sku,
+        }}
+        legal={{
+          telephoneTel: LEGAL.telephoneTel,
+          telephone: LEGAL.telephone,
+          email: LEGAL.email,
+        }}
+      />
 
       {category && (
         <section className="container py-10 text-center">
