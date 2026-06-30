@@ -46,7 +46,7 @@ export function ExceptionPieces({ products }: ExceptionPiecesProps) {
             <div className="h-px w-16 bg-gold mx-auto mt-7" />
             <p className="mt-7 text-ivory/70 leading-relaxed">
               Modèles iconiques, éditions limitées, pièces de collection.
-              Chaque mois, quelques rareties passent par notre atelier —
+              Chaque mois, quelques raretés passent par notre atelier —
               celles qu&apos;on prend le temps de présenter une par une.
             </p>
           </div>
