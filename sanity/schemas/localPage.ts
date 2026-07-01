@@ -1,4 +1,5 @@
 import type { Rule } from 'sanity'
+import { LOCAL_PAGES } from '../localPagesRegistry'
 
 /**
  * Document "Page locale" — contenu éditable spécifique à une page
@@ -8,10 +9,9 @@ import type { Rule } from 'sanity'
  * etc.) fetch son document par pageKey. Si Djamel n'a rien uploadé,
  * un fallback hardcodé prend le relais (Unsplash, texte par défaut).
  *
- * Sera enrichi au fil du temps :
- * - heroSubtitleOverride (texte personnalisé)
- * - introParagraphs (paragraphes éditoriaux remplaçables)
- * - testimonialOverrides (avis clients par page)
+ * Les pages sont créées via la sidebar "Pages locales (SEO)" — chaque
+ * entrée ouvre un formulaire pré-rempli (pageKey + displayName) grâce
+ * aux templates définis dans sanity.config.ts.
  */
 export const localPage = {
   name: 'localPage',
@@ -23,50 +23,18 @@ export const localPage = {
       title: 'Identifiant de la page',
       type: 'string',
       description:
-        'Identifiant technique de la page (ex: "bureau-marseille"). Ne pas modifier sur une page existante.',
+        'Identifiant technique — pré-rempli automatiquement à la création. Ne pas modifier.',
+      readOnly: true,
       validation: (R: Rule) => R.required(),
       options: {
-        list: [
-          // ─── Hubs "Meuble" (catégorie large — toutes familles) ───
-          { value: 'meuble-marseille', title: 'Meuble × Marseille (hub)' },
-          { value: 'meuble-aubagne', title: 'Meuble × Aubagne (hub)' },
-
-          // ─── Marseille ───
-          { value: 'bureau-marseille', title: 'Bureau × Marseille' },
-          { value: 'fauteuil-marseille', title: 'Fauteuil × Marseille' },
-          { value: 'table-marseille', title: 'Table × Marseille' },
-          { value: 'armoire-marseille', title: 'Armoire × Marseille' },
-
-          // ─── Aubagne ───
-          { value: 'bureau-aubagne', title: 'Bureau × Aubagne' },
-          { value: 'fauteuil-aubagne', title: 'Fauteuil × Aubagne' },
-
-          // ─── Aix-en-Provence ───
-          { value: 'bureau-aix-en-provence', title: 'Bureau × Aix-en-Provence' },
-          { value: 'fauteuil-aix-en-provence', title: 'Fauteuil × Aix-en-Provence' },
-
-          // ─── Nice / Côte d'Azur ───
-          { value: 'bureau-nice', title: 'Bureau × Nice' },
-          { value: 'fauteuil-nice', title: 'Fauteuil × Nice' },
-
-          // ─── Toulon / Var ───
-          { value: 'bureau-toulon', title: 'Bureau × Toulon' },
-          { value: 'fauteuil-toulon', title: 'Fauteuil × Toulon' },
-
-          // ─── Bouches-du-Rhône (autres villes) ───
-          { value: 'bureau-la-ciotat', title: 'Bureau × La Ciotat' },
-
-          // ─── Vaucluse ───
-          { value: 'bureau-avignon', title: 'Bureau × Avignon' },
-          { value: 'bureau-orange', title: 'Bureau × Orange' },
-        ],
+        list: LOCAL_PAGES.map((p) => ({ value: p.key, title: p.title })),
       },
     },
     {
       name: 'displayName',
       title: 'Nom affiché dans Studio',
       type: 'string',
-      description: 'Libellé court pour reconnaître la page dans la liste (ex: "Bureau Marseille")',
+      description: 'Libellé court pour reconnaître la page dans la liste (ex: "Bureau Marseille"). Pré-rempli automatiquement.',
       validation: (R: Rule) => R.required(),
     },
     {
@@ -75,7 +43,7 @@ export const localPage = {
       type: 'image',
       options: { hotspot: true },
       description:
-        'Photo principale en haut de la page locale. Idéalement : un open space, un showroom installé chez un client, ou une photo de mobilier livré sur place. Format paysage 2000×1200 minimum recommandé.',
+        'Photo principale en haut de la page. Idéalement : un open space, un showroom installé chez un client, ou une photo de mobilier livré sur place. Format paysage 2000×1200 minimum recommandé. Si vide → fallback Unsplash automatique.',
       fields: [
         { name: 'alt', title: 'Texte alternatif (SEO + accessibilité)', type: 'string' },
       ],

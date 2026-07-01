@@ -9,6 +9,11 @@ import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './sanity/schemas'
 import { sendQuoteAction } from './sanity/actions/sendQuoteAction'
 import { projectId, dataset, apiVersion } from './sanity/env'
+import {
+  LOCAL_PAGES,
+  LOCAL_PAGE_SECTIONS,
+  localPageDocumentId,
+} from './sanity/localPagesRegistry'
 
 const SINGLETON_TYPES = new Set(['siteSettings', 'qualityGuide'])
 const SINGLETON_ACTIONS = new Set(['publish', 'discardChanges', 'restore'])
@@ -23,7 +28,24 @@ export default defineConfig({
   basePath: '/studio',
   projectId,
   dataset,
-  schema: { types: schemaTypes },
+  schema: {
+    types: schemaTypes,
+    // Templates de création pour les pages locales — pré-remplissent
+    // le pageKey et le displayName selon l'entrée cliquée dans la sidebar.
+    templates: (prev) => [
+      ...prev.filter((t) => t.schemaType !== 'localPage'),
+      ...LOCAL_PAGES.map((page) => ({
+        id: `localPage-${page.key}`,
+        title: page.title,
+        schemaType: 'localPage',
+        parameters: [],
+        value: {
+          pageKey: page.key,
+          displayName: page.displayName,
+        },
+      })),
+    ],
+  },
   document: {
     actions: (input, context) => {
       // Sur les singletons : retire les actions "Duplicate" et "Delete"
@@ -72,14 +94,53 @@ export default defineConfig({
                   .schemaType('qualityGuide')
                   .documentId('qualityGuide'),
               ),
-            // Pages locales (catégorie × ville)
+            // Pages locales (catégorie × ville) — arborescence structurée
+            // Toutes les pages attendues apparaissent, même sans document.
+            // Chaque clic ouvre l'éditeur (existante ou création pré-remplie).
             S.listItem()
               .title('Pages locales (SEO)')
               .icon(() => '📍')
               .child(
-                S.documentTypeList('localPage')
-                  .title('Pages locales')
-                  .defaultOrdering([{ field: 'pageKey', direction: 'asc' }]),
+                S.list()
+                  .title('Pages locales — par zone')
+                  .items(
+                    LOCAL_PAGE_SECTIONS.flatMap((section) => {
+                      const pagesInSection = LOCAL_PAGES.filter(
+                        (p) => p.section === section.key,
+                      )
+                      if (pagesInSection.length === 0) return []
+                      return [
+                        S.listItem()
+                          .id(`section-${section.key}`)
+                          .title(section.label)
+                          .icon(() => '📂')
+                          .child(
+                            S.list()
+                              .title(section.label)
+                              .items(
+                                pagesInSection.map((page) =>
+                                  S.listItem()
+                                    .id(page.key)
+                                    .title(page.title)
+                                    .icon(() => page.icon)
+                                    .child(
+                                      S.editor()
+                                        .id(page.key)
+                                        .title(page.title)
+                                        .schemaType('localPage')
+                                        .documentId(
+                                          localPageDocumentId(page.key),
+                                        )
+                                        .initialValueTemplate(
+                                          `localPage-${page.key}`,
+                                        ),
+                                    ),
+                                ),
+                              ),
+                          ),
+                      ]
+                    }),
+                  ),
               ),
             S.divider(),
             // Collections normales
