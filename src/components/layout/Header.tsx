@@ -3,9 +3,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
-import { ShoppingBag, Menu, X, ChevronDown, ArrowRight } from 'lucide-react'
+import { Store, Menu, X, ChevronDown, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SHOP_URL } from '@/lib/config'
+import { CartIcon } from './CartIcon'
 
 export type MenuCategory = {
   id: string
@@ -212,10 +213,11 @@ export function Header({ logo, categories = [], showcase = null }: HeaderProps =
           <Link
             href={SHOP_URL}
             aria-label="Boutique"
-            className="p-2 hover:text-gold-dark relative"
+            className="p-2 hover:text-gold-dark relative hidden sm:inline-flex"
           >
-            <ShoppingBag className="h-5 w-5" />
+            <Store className="h-5 w-5" strokeWidth={1.5} />
           </Link>
+          <CartIcon />
           <button
             type="button"
             aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}

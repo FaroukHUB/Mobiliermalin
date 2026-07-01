@@ -5,11 +5,20 @@ import { Loader2, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
+type CartItem = {
+  id?: string
+  slug: string
+  name: string
+  price: number
+  quantity: number
+}
+
 interface DevisRequestFormProps {
   productId?: string
   productName: string
   productSlug?: string
   productPrice: number
+  cartItems?: CartItem[]
 }
 
 export function DevisRequestForm({
@@ -17,7 +26,12 @@ export function DevisRequestForm({
   productName,
   productSlug,
   productPrice,
+  cartItems,
 }: DevisRequestFormProps) {
+  const hasCart = Array.isArray(cartItems) && cartItems.length > 0
+  const cartSubtotal = hasCart
+    ? cartItems!.reduce((sum, it) => sum + it.price * it.quantity, 0)
+    : 0
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const [quoteNumero, setQuoteNumero] = useState('')
@@ -28,7 +42,7 @@ export function DevisRequestForm({
     setErrorMessage('')
 
     const fd = new FormData(e.currentTarget)
-    const payload = {
+    const payload: Record<string, unknown> = {
       name: fd.get('name'),
       email: fd.get('email'),
       phone: fd.get('phone'),
@@ -40,10 +54,14 @@ export function DevisRequestForm({
       elevator: fd.get('elevator'),
       instructions: fd.get('instructions') || undefined,
       customerNotes: fd.get('customerNotes') || undefined,
-      productId,
-      productName,
-      productSlug,
-      productPrice,
+    }
+    if (hasCart) {
+      payload.items = cartItems
+    } else {
+      payload.productId = productId
+      payload.productName = productName
+      payload.productSlug = productSlug
+      payload.productPrice = productPrice
     }
 
     try {
@@ -93,20 +111,51 @@ export function DevisRequestForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-      {/* Produit récap */}
-      <div className="bg-ivory-light border-l-4 border-gold p-4">
-        <p className="text-xs uppercase tracking-widest text-ink-mute mb-1">
-          Produit concerné
-        </p>
-        <p className="font-serif text-base text-ink">{productName}</p>
-        <p className="text-sm text-ink-mute mt-0.5">
-          Prix produit :{' '}
-          <strong className="text-ink">
-            {productPrice.toLocaleString('fr-FR')} €
-          </strong>{' '}
-          (hors livraison)
-        </p>
-      </div>
+      {/* Produit(s) récap */}
+      {hasCart ? (
+        <div className="bg-ivory-light border-l-4 border-gold p-4">
+          <p className="text-xs uppercase tracking-widest text-ink-mute mb-2">
+            Articles demandés ({cartItems!.length})
+          </p>
+          <ul className="space-y-1.5 text-sm">
+            {cartItems!.map((it) => (
+              <li key={it.slug} className="flex items-baseline justify-between gap-3">
+                <span className="text-ink">
+                  <strong>{it.quantity}×</strong> {it.name}
+                </span>
+                <span className="text-ink-mute tabular-nums shrink-0">
+                  {(it.price * it.quantity).toLocaleString('fr-FR')} €
+                </span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-3 pt-3 border-t border-line flex items-baseline justify-between">
+            <span className="text-xs uppercase tracking-widest text-ink-mute">
+              Sous-total produits
+            </span>
+            <strong className="text-ink text-lg">
+              {cartSubtotal.toLocaleString('fr-FR')} €
+            </strong>
+          </div>
+          <p className="text-xs text-ink-mute mt-2">
+            Hors livraison — sera ajoutée dans le devis final.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-ivory-light border-l-4 border-gold p-4">
+          <p className="text-xs uppercase tracking-widest text-ink-mute mb-1">
+            Produit concerné
+          </p>
+          <p className="font-serif text-base text-ink">{productName}</p>
+          <p className="text-sm text-ink-mute mt-0.5">
+            Prix produit :{' '}
+            <strong className="text-ink">
+              {productPrice.toLocaleString('fr-FR')} €
+            </strong>{' '}
+            (hors livraison)
+          </p>
+        </div>
+      )}
 
       {/* Coordonnées */}
       <section className="space-y-4">

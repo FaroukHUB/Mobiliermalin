@@ -8,6 +8,7 @@ import { formatPrice } from '@/lib/utils'
 import { DeliveryChoice } from '@/components/product/DeliveryChoice'
 import { ProductGallery } from '@/components/product/ProductGallery'
 import { ProductTabs } from '@/components/product/ProductTabs'
+import { AddToCartButton } from '@/components/product/AddToCartButton'
 import { LEGAL } from '@/lib/legal'
 
 export const revalidate = 60
@@ -292,12 +293,29 @@ export default async function ProductPage({
             )}
 
             {isInStock ? (
-              <DeliveryChoice
-                productId={product._id}
-                slug={product.slug.current}
-                name={product.name}
-                price={displayPrice}
-              />
+              <>
+                <div className="mt-8">
+                  <AddToCartButton
+                    product={{
+                      id: product._id,
+                      slug: product.slug.current,
+                      name: product.name,
+                      price: displayPrice,
+                      imageUrl: galleryItems[0]?.thumbSrc,
+                      imageAlt: product.name,
+                      maxStock: product.stock,
+                      brand: product.brand,
+                      conditionLabel: conditionLabel || undefined,
+                    }}
+                  />
+                </div>
+                <DeliveryChoice
+                  productId={product._id}
+                  slug={product.slug.current}
+                  name={product.name}
+                  price={displayPrice}
+                />
+              </>
             ) : (
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link href="/contact" className="btn-gold">Demander la disponibilité</Link>

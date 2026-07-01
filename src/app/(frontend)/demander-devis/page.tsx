@@ -11,27 +11,78 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
+type CartItem = {
+  slug: string
+  name: string
+  price: number
+  quantity: number
+}
+
+// Accepte les query params du panier : items[0][slug]=…&items[0][name]=…&items[0][price]=…&items[0][quantity]=…
 type Props = {
-  searchParams: Promise<{ produit?: string; nom?: string; prix?: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
+
+function parseCartItems(
+  params: Record<string, string | string[] | undefined>,
+): CartItem[] {
+  const collected: Record<number, Partial<CartItem>> = {}
+  for (const [key, rawValue] of Object.entries(params)) {
+    // Format attendu : items[N][field]
+    const match = key.match(/^items\[(\d+)\]\[(slug|name|price|quantity)\]$/)
+    if (!match) continue
+    const idx = Number(match[1])
+    const field = match[2] as keyof CartItem
+    const value = Array.isArray(rawValue) ? rawValue[0] : rawValue
+    if (typeof value !== 'string') continue
+    if (!collected[idx]) collected[idx] = {}
+    if (field === 'price' || field === 'quantity') {
+      const num = Number(value)
+      if (!Number.isNaN(num) && num > 0) {
+        collected[idx][field] = num
+      }
+    } else {
+      collected[idx][field] = value
+    }
+  }
+  return Object.keys(collected)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map((i) => collected[i])
+    .filter(
+      (it): it is CartItem =>
+        typeof it.slug === 'string' &&
+        typeof it.name === 'string' &&
+        typeof it.price === 'number' &&
+        typeof it.quantity === 'number',
+    )
 }
 
 export default async function DevisRequestPage({ searchParams }: Props) {
-  const { produit, nom, prix } = await searchParams
+  const params = await searchParams
+  const produit = typeof params.produit === 'string' ? params.produit : undefined
+  const nom = typeof params.nom === 'string' ? params.nom : undefined
+  const prix = typeof params.prix === 'string' ? params.prix : undefined
 
-  // Si un slug produit est passé, on tente de le charger depuis Sanity pour
+  const cartItems = parseCartItems(params)
+
+  // Si un slug produit est passé (legacy), on tente de le charger depuis Sanity pour
   // pré-remplir nom + prix + id. Sinon on utilise les query params en fallback.
   let productId: string | undefined
   let productName = nom || 'Produit personnalisé'
   let productSlug = produit
   let productPrice = prix ? Number(prix) : 0
 
-  if (produit) {
+  if (produit && cartItems.length === 0) {
     const product = await getProductBySlug(produit)
     if (product) {
       productId = product._id
       productName = product.name
       productSlug = product.slug.current
-      productPrice = product.salePrice && product.salePrice < product.price ? product.salePrice : product.price
+      productPrice =
+        product.salePrice && product.salePrice < product.price
+          ? product.salePrice
+          : product.price
     }
   }
 
@@ -113,6 +164,7 @@ export default async function DevisRequestPage({ searchParams }: Props) {
               productName={productName}
               productSlug={productSlug}
               productPrice={productPrice}
+              cartItems={cartItems.length > 0 ? cartItems : undefined}
             />
           </Suspense>
         </div>

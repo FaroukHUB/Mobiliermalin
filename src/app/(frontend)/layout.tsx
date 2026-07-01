@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
 import { CookieConsent } from '@/components/analytics/CookieConsent'
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
+import { CartProvider } from '@/lib/cart-context'
 import { getSiteSettings, getCategoryHierarchy, getMenuShowcaseProduct, urlFor } from '@/lib/sanity'
 import './globals.css'
 
@@ -160,9 +161,11 @@ export default async function RootLayout({
         >
           Aller au contenu
         </a>
-        <Header logo={logoLight} categories={menuCategories} showcase={menuShowcase} />
-        <main id="main">{children}</main>
-        <Footer logo={logoDark} />
+        <CartProvider>
+          <Header logo={logoLight} categories={menuCategories} showcase={menuShowcase} />
+          <main id="main">{children}</main>
+          <Footer logo={logoDark} />
+        </CartProvider>
         <OrganizationSchema />
         <CookieConsent />
       </body>

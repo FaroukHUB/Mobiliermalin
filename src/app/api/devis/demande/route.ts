@@ -5,6 +5,14 @@ import { LEGAL } from '@/lib/legal'
 
 export const dynamic = 'force-dynamic'
 
+type CartItem = {
+  id?: string
+  slug: string
+  name: string
+  price: number
+  quantity: number
+}
+
 type Payload = {
   name?: string
   email?: string
@@ -16,10 +24,13 @@ type Payload = {
   floor?: string
   elevator?: 'yes' | 'no' | 'unknown'
   instructions?: string
+  // Cas 1 (legacy) — fiche produit isolée
   productId?: string
   productName?: string
   productSlug?: string
   productPrice?: number
+  // Cas 2 — panier multi-articles
+  items?: CartItem[]
   customerNotes?: string
 }
 
@@ -47,16 +58,81 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'JSON invalide' }, { status: 400 })
   }
 
+  // Normalise vers un tableau d'items (cas panier) ou un item unique (legacy)
+  const hasCart = Array.isArray(body.items) && body.items.length > 0
+  const items: CartItem[] = hasCart
+    ? body.items!
+        .filter(
+          (it) =>
+            typeof it?.slug === 'string' &&
+            typeof it?.name === 'string' &&
+            typeof it?.price === 'number' &&
+            it.price > 0 &&
+            typeof it?.quantity === 'number' &&
+            it.quantity > 0,
+        )
+        .map((it) => ({
+          id: it.id,
+          slug: it.slug,
+          name: it.name,
+          price: it.price,
+          quantity: Math.min(50, Math.max(1, Math.floor(it.quantity))),
+        }))
+    : body.productName && typeof body.productPrice === 'number'
+      ? [
+          {
+            id: body.productId,
+            slug: body.productSlug || '',
+            name: body.productName,
+            price: body.productPrice,
+            quantity: 1,
+          },
+        ]
+      : []
+
   // Validation minimale
-  const required = ['name', 'email', 'phone', 'street', 'postalCode', 'city', 'productName', 'productPrice']
+  const required = ['name', 'email', 'phone', 'street', 'postalCode', 'city']
   for (const f of required) {
     if (!body[f as keyof Payload]) {
       return NextResponse.json({ ok: false, error: `Champ requis : ${f}` }, { status: 400 })
     }
   }
+  if (items.length === 0) {
+    return NextResponse.json(
+      { ok: false, error: 'Aucun produit valide dans la demande' },
+      { status: 400 },
+    )
+  }
   if (!body.email!.includes('@')) {
     return NextResponse.json({ ok: false, error: 'Email invalide' }, { status: 400 })
   }
+
+  // Récap article(s)
+  const subtotal = items.reduce((sum, it) => sum + it.price * it.quantity, 0)
+  const primaryItem = items[0]
+  const isCart = items.length > 1 || items[0].quantity > 1
+  // Nom composé pour l'aperçu Sanity
+  const composedProductName = isCart
+    ? `Panier (${items.reduce((n, it) => n + it.quantity, 0)} articles) — ${items.length} référence${items.length > 1 ? 's' : ''}`
+    : primaryItem.name
+
+  // Bloc "Panier" prépendé aux notes client si multi-items
+  const cartNotesBlock = isCart
+    ? items
+        .map(
+          (it) =>
+            `- ${it.quantity}× ${it.name} · ${it.price.toLocaleString('fr-FR')} € l'unité = ${(it.price * it.quantity).toLocaleString('fr-FR')} €`,
+        )
+        .join('\n')
+    : ''
+  const composedNotes = [
+    cartNotesBlock
+      ? `Détail du panier :\n${cartNotesBlock}\nTotal produits (hors livraison) : ${subtotal.toLocaleString('fr-FR')} €`
+      : '',
+    body.customerNotes || '',
+  ]
+    .filter(Boolean)
+    .join('\n\n')
 
   const numero = await generateQuoteNumber()
 
@@ -85,15 +161,15 @@ export async function POST(req: NextRequest) {
       instructions: body.instructions || undefined,
     },
     product: {
-      ref: body.productId ? { _type: 'reference', _ref: body.productId } : undefined,
-      name: body.productName,
-      slug: body.productSlug,
-      unitPrice: body.productPrice,
+      ref: primaryItem.id ? { _type: 'reference', _ref: primaryItem.id } : undefined,
+      name: composedProductName,
+      slug: primaryItem.slug || undefined,
+      unitPrice: subtotal, // Total = "prix unitaire" × 1 pour rester compatible avec le schéma
       quantity: 1,
     },
     shippingFee: 0,
     tvaRate: LEGAL.tauxTvaDefaut,
-    customerNotes: body.customerNotes || undefined,
+    customerNotes: composedNotes || undefined,
   }
 
   // 1) Création du document dans Sanity (si write client configuré)
@@ -145,11 +221,36 @@ export async function POST(req: NextRequest) {
         ${body.instructions ? `<br><em>${escapeHtml(body.instructions)}</em>` : ''}
       </p>
 
-      <h3 style="margin:0 0 8px;font-size:13px;color:#6B6B6B;text-transform:uppercase;letter-spacing:1.5px;">Produit</h3>
-      <p style="margin:0 0 16px;">
-        ${escapeHtml(body.productName!)}<br>
-        Prix : <strong>${(body.productPrice || 0).toLocaleString('fr-FR')} €</strong>
-      </p>
+      <h3 style="margin:0 0 8px;font-size:13px;color:#6B6B6B;text-transform:uppercase;letter-spacing:1.5px;">${isCart ? 'Articles demandés' : 'Produit'}</h3>
+      ${
+        isCart
+          ? `<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 16px;">
+              <tr style="background:#F0EBE3;">
+                <th align="left" style="padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#6B6B6B;">Article</th>
+                <th align="center" style="padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#6B6B6B;">Qté</th>
+                <th align="right" style="padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#6B6B6B;">Unitaire</th>
+                <th align="right" style="padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#6B6B6B;">Total</th>
+              </tr>
+              ${items
+                .map(
+                  (it) => `<tr style="border-bottom:1px solid #e5e1d9;">
+                <td style="padding:10px;">${escapeHtml(it.name)}</td>
+                <td align="center" style="padding:10px;">${it.quantity}</td>
+                <td align="right" style="padding:10px;">${it.price.toLocaleString('fr-FR')} €</td>
+                <td align="right" style="padding:10px;"><strong>${(it.price * it.quantity).toLocaleString('fr-FR')} €</strong></td>
+              </tr>`,
+                )
+                .join('')}
+              <tr>
+                <td colspan="3" align="right" style="padding:10px;font-size:13px;color:#6B6B6B;">Sous-total (hors livraison) :</td>
+                <td align="right" style="padding:10px;"><strong style="font-size:16px;color:#1a1a1a;">${subtotal.toLocaleString('fr-FR')} €</strong></td>
+              </tr>
+            </table>`
+          : `<p style="margin:0 0 16px;">
+              ${escapeHtml(primaryItem.name)}<br>
+              Prix : <strong>${subtotal.toLocaleString('fr-FR')} €</strong>
+            </p>`
+      }
 
       ${body.customerNotes ? `<h3 style="margin:0 0 8px;font-size:13px;color:#6B6B6B;text-transform:uppercase;letter-spacing:1.5px;">Note du client</h3><p style="margin:0 0 16px;font-style:italic;">${escapeHtml(body.customerNotes)}</p>` : ''}
 
@@ -162,7 +263,7 @@ export async function POST(req: NextRequest) {
 
     await sendEmail({
       to: { email: LEGAL.email, name: 'Mobilier Malin' },
-      subject: `[Devis ${numero}] Nouvelle demande — ${body.productName} pour ${body.name}`,
+      subject: `[Devis ${numero}] Nouvelle demande — ${isCart ? `panier ${items.length} réf. (${subtotal.toLocaleString('fr-FR')} €)` : primaryItem.name} pour ${body.name}`,
       htmlContent: adminHtml,
       replyTo: { email: body.email!, name: body.name },
       tags: ['quote-request-admin'],
@@ -180,7 +281,7 @@ export async function POST(req: NextRequest) {
     </td></tr>
     <tr><td style="padding:32px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:#3D3D3D;">
       <p style="margin:0 0 16px;">Bonjour ${escapeHtml(body.name!.split(' ')[0] || body.name!)},</p>
-      <p style="margin:0 0 16px;">Nous avons bien reçu votre demande de devis pour <strong style="color:#1a1a1a;">${escapeHtml(body.productName!)}</strong>.</p>
+      <p style="margin:0 0 16px;">Nous avons bien reçu votre demande de devis ${isCart ? `pour <strong style="color:#1a1a1a;">${items.length} articles</strong> (sous-total ${subtotal.toLocaleString('fr-FR')} €, hors livraison)` : `pour <strong style="color:#1a1a1a;">${escapeHtml(primaryItem.name)}</strong>`}.</p>
       <p style="margin:0 0 16px;">Notre équipe revient vers vous sous <strong>24 h ouvrées</strong> avec un devis personnalisé incluant les frais de livraison adaptés à votre adresse.</p>
 
       <div style="background:#F0EBE3;border-left:3px solid #B89A5B;padding:16px 20px;margin:24px 0;">
