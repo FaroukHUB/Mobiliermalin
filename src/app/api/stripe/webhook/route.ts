@@ -187,18 +187,29 @@ export async function POST(req: NextRequest) {
   }
 
   // ───── checkout.session.completed (pickup) →
-  //        1. Crée le booking Cal.eu (APRÈS paiement, pas avant)
-  //        2. Email confirmation client
-  //        3. Email notification admin Djamel
-  if (event.type === 'checkout.session.completed' && isPickup && customerEmail && pickupLabel) {
-    // 1) Création du Cal booking (le paiement vient d'être confirmé)
+  //        1. Crée le booking Cal.eu SI un créneau a été fourni
+  //        2. Email confirmation client — TOUJOURS
+  //        3. Email notification admin Djamel — TOUJOURS (bug fix : les
+  //           anciens paniers Stripe partaient sans pickup_label et le
+  //           webhook les ignorait silencieusement)
+  if (event.type === 'checkout.session.completed' && isPickup && customerEmail) {
     const pickupDate = meta.pickup_date
     const pickupTime = meta.pickup_time
     const customerPhone = meta.customer_phone
+    const cartSummary = meta.cart_summary || ''
+    const totalItems = meta.total_items
+    const distinctProducts = meta.distinct_products
+    // Label affiché — soit le créneau réel, soit un fallback explicite
+    const effectivePickupLabel =
+      pickupLabel || 'Créneau à convenir — vous serez recontacté par téléphone'
+    // Titre commande : nom produit unique, ou résumé panier multi-articles
+    const orderTitle = distinctProducts && Number(distinctProducts) > 1
+      ? `Panier ${totalItems || '?'} article${Number(totalItems) > 1 ? 's' : ''} · ${distinctProducts} référence${Number(distinctProducts) > 1 ? 's' : ''}`
+      : productName
+
+    // 1) Cal.com booking — uniquement si un créneau réel a été choisi
     let calBookingRef: string | number | undefined
-    if (pickupDate && pickupTime) {
-      // Convertit "YYYY-MM-DD" + "HH:MM" Paris en ISO 8601 avec offset
-      // (gère DST automatiquement)
+    if (pickupDate && pickupTime && pickupLabel) {
       const startIso = parisLocalToIso(pickupDate, pickupTime)
       const calResult = await createBooking({
         start: startIso,
@@ -208,28 +219,33 @@ export async function POST(req: NextRequest) {
           phoneNumber: customerPhone,
           timeZone: 'Europe/Paris',
         },
-        notes: `Retrait pour : ${productName}`,
+        notes: `Retrait pour : ${orderTitle}${cartSummary ? `\nDétail : ${cartSummary}` : ''}`,
       })
       if (calResult.ok) {
         calBookingRef = calResult.bookingUid || calResult.bookingId
         console.log('[stripe-webhook] cal booking created', calBookingRef)
       } else {
         console.error('[stripe-webhook] cal booking creation failed', calResult.error)
-        // On continue malgré l'échec : email envoyé quand même, Djamel
-        // crée manuellement le RDV dans Google Cal s'il le faut
       }
+    } else {
+      console.warn('[stripe-webhook] pickup order without slot — no Cal booking, admin will call customer', {
+        sessionId: session?.id,
+        hasCart: !!cartSummary,
+      })
     }
 
-    // 2) Email confirmation client
+    // 2) Email confirmation client — TOUJOURS
     const result = await sendEmail({
       to: { email: customerEmail, name: customerName || undefined },
-      subject: `Confirmation de votre retrait — ${pickupLabel}`,
+      subject: pickupLabel
+        ? `Confirmation de votre retrait — ${pickupLabel}`
+        : `Confirmation de votre commande — Mobilier Malin`,
       htmlContent: renderPickupConfirmationHtml({
         customerName: customerName || 'Cher client',
         customerEmail,
-        productName,
+        productName: orderTitle,
         amountCents: session?.amount_total,
-        pickupLabel,
+        pickupLabel: effectivePickupLabel,
       }),
       tags: ['pickup-confirmation'],
     })
@@ -239,16 +255,20 @@ export async function POST(req: NextRequest) {
       console.log('[stripe-webhook] confirmation email sent to', customerEmail)
     }
 
-    // 3) Email notification admin (Djamel) avec tout le détail commande
+    // 3) Email notification admin (Djamel) — TOUJOURS
+    // Ajoute le récap panier si présent, pour que Djamel sache ce qui a été commandé.
+    const adminProductLine = cartSummary
+      ? `${orderTitle}\n\nDétail du panier :\n${cartSummary.split(' | ').map((l) => `  · ${l}`).join('\n')}`
+      : orderTitle
     const adminResult = await sendEmail({
       to: { email: LEGAL.email, name: 'Mobilier Malin' },
-      subject: `🛒 Nouvelle commande RETRAIT — ${productName}`,
+      subject: `🛒 Nouvelle commande RETRAIT — ${orderTitle}`,
       htmlContent: renderPickupAdminNotificationHtml({
         customerName: customerName || '(non renseigné)',
         customerEmail,
         customerPhone: customerPhone || '(non renseigné)',
-        productName,
-        pickupLabel,
+        productName: adminProductLine,
+        pickupLabel: effectivePickupLabel,
         amountCents: session?.amount_total,
         stripeSessionId: session?.id,
         calBookingRef: calBookingRef ? String(calBookingRef) : undefined,

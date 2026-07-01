@@ -20,7 +20,11 @@ export function AddToCartButton({
   const [justAdded, setJustAdded] = useState(false)
   const alreadyInCart = isReady && hasItem(product.id)
 
-  const handleAdd = () => {
+  const handleAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Empêche la navigation du <Link> parent quand le bouton est
+    // imbriqué dans une carte cliquable (catalogue).
+    e.preventDefault()
+    e.stopPropagation()
     addItem(product)
     setJustAdded(true)
     // Reset l'état après 2s pour que le bouton redevienne cliquable normalement
@@ -32,11 +36,16 @@ export function AddToCartButton({
       <button
         type="button"
         onClick={handleAdd}
-        className={`inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-gold-dark hover:text-gold transition ${className}`}
+        aria-label={alreadyInCart ? 'Déjà au panier' : 'Ajouter au panier'}
+        className={`inline-flex items-center justify-center gap-1.5 h-8 px-3 bg-ivory/95 backdrop-blur border border-line hover:border-gold text-[0.65rem] uppercase tracking-widest font-medium text-ink hover:text-gold-dark transition ${className}`}
       >
         {justAdded ? (
           <>
-            <Check className="h-3.5 w-3.5" strokeWidth={2} /> Ajouté
+            <Check className="h-3.5 w-3.5 text-gold" strokeWidth={2} /> Ajouté
+          </>
+        ) : alreadyInCart ? (
+          <>
+            <Check className="h-3.5 w-3.5 text-gold" strokeWidth={1.5} /> Au panier
           </>
         ) : (
           <>
