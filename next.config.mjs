@@ -2,6 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    // Loader custom → bypass du proxy `/_next/image` de Vercel pour les
+    // images Sanity et Unsplash. Voir src/lib/image-loader.ts.
+    loader: 'custom',
+    loaderFile: './src/lib/image-loader.ts',
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'cdn.sanity.io' },
