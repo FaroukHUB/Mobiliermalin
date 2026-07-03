@@ -93,6 +93,13 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: '/',
     },
     category: 'business',
+    // Vérifications de propriété de domaine (Google Search Console gérée
+    // via DNS, Pinterest via balise meta, etc.).
+    verification: {
+      other: {
+        'p:domain_verify': '5870a7e3aa42ad058aa00e27b4077d24',
+      },
+    },
   }
 }
 
