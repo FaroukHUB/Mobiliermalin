@@ -483,12 +483,12 @@ export function OrderInvoicePdf({
           <View style={styles.reviewText}>
             <Text style={styles.reviewTitle}>Merci pour votre confiance</Text>
             <Text style={styles.reviewHeading}>
-              Un petit avis Google, s&apos;il vous plaît ?
+              Partagez votre expérience sur Google
             </Text>
             <Text style={styles.reviewBody}>
-              Votre retour aide énormément notre petite équipe et permet à
-              d&apos;autres clients de nous découvrir. Scannez le QR code
-              avec votre téléphone — quelques secondes suffisent.
+              Votre retour nous permet d&apos;améliorer notre service et
+              guide les futurs clients dans leur choix. Scannez le QR code
+              avec votre téléphone pour accéder directement à notre page.
             </Text>
             <Text style={styles.reviewLink}>{GOOGLE_REVIEW_URL}</Text>
           </View>
