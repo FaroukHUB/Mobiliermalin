@@ -162,6 +162,29 @@ export async function POST(req: NextRequest) {
   params.append('locale', 'fr')
   params.append('automatic_tax[enabled]', 'false')
 
+  // Facture automatique — Stripe génère un PDF officiel et l'envoie
+  // au client par mail juste après paiement. Les infos entreprise
+  // (nom, SIRET, TVA, adresse) sont tirées des Business Settings du
+  // compte Stripe. À configurer une seule fois dans Stripe Dashboard →
+  // Settings → Business → Details, et → Settings → Tax → Automatic tax.
+  params.append('invoice_creation[enabled]', 'true')
+  params.append(
+    'invoice_creation[invoice_data][description]',
+    isPickup
+      ? 'Retrait au showroom Mobilier Malin'
+      : 'Livraison à domicile Mobilier Malin',
+  )
+  // Footer légal + rappels de garantie
+  params.append(
+    'invoice_creation[invoice_data][footer]',
+    'Garantie 6 mois — Retour sous 14 jours pour les particuliers (loi Hamon). Mobilier Malin, La Penne-sur-Huveaune.',
+  )
+  // Metadata dupliquée sur la facture (cart_summary récupérable côté admin)
+  params.append(
+    'invoice_creation[invoice_data][metadata][cart_summary]',
+    lineItems.map((it) => `${it.quantity}× ${it.name}`).join(' | ').slice(0, 500),
+  )
+
   if (isPickup) {
     params.append('phone_number_collection[enabled]', 'true')
   }

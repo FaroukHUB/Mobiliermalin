@@ -112,7 +112,7 @@ export default async function OrderSuccessPage({
         </p>
         {customerEmail && (
           <p className="mt-3 text-sm text-ink-mute">
-            Une facture sera envoyée à <strong className="text-ink">{customerEmail}</strong> d&apos;ici quelques minutes.
+            Votre facture (PDF) va être envoyée à <strong className="text-ink">{customerEmail}</strong> dans quelques minutes par notre partenaire de paiement.
           </p>
         )}
       </div>
