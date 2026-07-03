@@ -1,5 +1,8 @@
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer'
 import { LEGAL } from '@/lib/legal'
+
+const GOOGLE_REVIEW_URL = 'https://g.page/r/CUtST0PM2AI0EBM/review'
+const QR_IMAGE_URL = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=8&data=${encodeURIComponent(GOOGLE_REVIEW_URL)}`
 
 // ───────── Types ─────────
 
@@ -223,6 +226,48 @@ const styles = StyleSheet.create({
     color: COLORS.inkSoft,
     lineHeight: 1.5,
   },
+  // Encart avis Google
+  reviewBox: {
+    marginTop: 20,
+    padding: 14,
+    backgroundColor: COLORS.ink,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  reviewQr: {
+    width: 90,
+    height: 90,
+    backgroundColor: '#fff',
+    padding: 4,
+  },
+  reviewText: {
+    flex: 1,
+  },
+  reviewTitle: {
+    fontSize: 8,
+    color: COLORS.gold,
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginBottom: 3,
+  },
+  reviewHeading: {
+    fontSize: 12,
+    fontFamily: 'Times-Roman',
+    color: COLORS.ivory,
+    marginBottom: 5,
+  },
+  reviewBody: {
+    fontSize: 8.5,
+    color: COLORS.ivory,
+    opacity: 0.85,
+    lineHeight: 1.5,
+  },
+  reviewLink: {
+    fontSize: 7.5,
+    color: COLORS.gold,
+    marginTop: 4,
+  },
   // Footer
   footer: {
     position: 'absolute',
@@ -320,10 +365,9 @@ export function OrderInvoicePdf({
             <Text style={styles.partyLine}>
               {LEGAL.raisonSociale} ({LEGAL.formeJuridique})
             </Text>
-            <Text style={styles.partyLine}>{LEGAL.siegeSocial.ligne1}</Text>
-            <Text style={styles.partyLine}>{LEGAL.siegeSocial.ligne2}</Text>
+            <Text style={styles.partyLine}>{LEGAL.showroom.ligne1}</Text>
             <Text style={styles.partyLine}>
-              {LEGAL.siegeSocial.codePostal} {LEGAL.siegeSocial.ville}
+              {LEGAL.showroom.codePostal} {LEGAL.showroom.ville}
             </Text>
             <Text style={[styles.partyLine, { marginTop: 6 }]}>
               {LEGAL.telephone}
@@ -432,13 +476,31 @@ export function OrderInvoicePdf({
           </Text>
         </View>
 
+        {/* Encart avis Google — QR code + message */}
+        <View style={styles.reviewBox}>
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
+          <Image src={QR_IMAGE_URL} style={styles.reviewQr} />
+          <View style={styles.reviewText}>
+            <Text style={styles.reviewTitle}>Merci pour votre confiance</Text>
+            <Text style={styles.reviewHeading}>
+              Un petit avis Google, s&apos;il vous plaît ?
+            </Text>
+            <Text style={styles.reviewBody}>
+              Votre retour aide énormément notre petite équipe et permet à
+              d&apos;autres clients de nous découvrir. Scannez le QR code
+              avec votre téléphone — quelques secondes suffisent.
+            </Text>
+            <Text style={styles.reviewLink}>{GOOGLE_REVIEW_URL}</Text>
+          </View>
+        </View>
+
         {/* Footer */}
         <Text style={styles.footer} fixed>
           {LEGAL.nomCommercial} — {LEGAL.raisonSociale} ({LEGAL.formeJuridique})
           {'\n'}
-          {LEGAL.siegeSocial.ligne1}, {LEGAL.siegeSocial.ligne2},{' '}
-          {LEGAL.siegeSocial.codePostal} {LEGAL.siegeSocial.ville} · SIREN{' '}
-          {LEGAL.siren} · TVA {LEGAL.tvaIntracom}
+          {LEGAL.showroom.ligne1}, {LEGAL.showroom.codePostal}{' '}
+          {LEGAL.showroom.ville} · SIREN {LEGAL.siren} · TVA{' '}
+          {LEGAL.tvaIntracom}
           {'\n'}
           Garantie 6 mois sur tous les produits. Retour sous 14 jours pour les
           particuliers (loi Hamon).
