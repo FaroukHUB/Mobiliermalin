@@ -14,19 +14,15 @@ import {
   Truck,
   ShieldCheck,
   Loader2,
-  CalendarCheck,
 } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
 import { formatPrice } from '@/lib/utils'
-import { SlotPicker } from '@/components/product/SlotPicker'
 
 export function PanierClient() {
   const { items, subtotal, distinctCount, isReady, updateQuantity, removeItem, clear } =
     useCart()
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
-  const [slotPickerOpen, setSlotPickerOpen] = useState(false)
-  const [slotRefreshKey, setSlotRefreshKey] = useState(0)
 
   // Anti-hydration mismatch : le contenu du panier est côté client
   if (!isReady) {
@@ -74,14 +70,9 @@ export function PanierClient() {
   }
 
   // ─── Panier avec articles ────────────────────────────
-  const handleSlotConfirm = async (slot: {
-    date: string
-    time: string
-    label: string
-    name: string
-    email: string
-    phone: string
-  }) => {
+  // Checkout direct — le créneau de retrait sera choisi APRÈS le paiement,
+  // sur la page /commande/succes, avec vérification serveur du paiement.
+  const handleCheckout = async () => {
     setCheckoutLoading(true)
     setCheckoutError(null)
     try {
@@ -97,21 +88,10 @@ export function PanierClient() {
             quantity: it.quantity,
           })),
           fulfillmentMode: 'pickup',
-          pickupDate: slot.date,
-          pickupTime: slot.time,
-          pickupLabel: slot.label,
-          customerName: slot.name,
-          customerEmail: slot.email,
-          customerPhone: slot.phone,
         }),
       })
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { error?: string }
-        // Si le serveur signale qu'un créneau a été pris entre-temps, on
-        // réaffiche la SlotPicker avec une dispo rafraîchie.
-        if (res.status === 409) {
-          setSlotRefreshKey((k) => k + 1)
-        }
         setCheckoutError(data.error || 'Erreur lors de la création du paiement')
         setCheckoutLoading(false)
         return
@@ -326,11 +306,11 @@ export function PanierClient() {
                   </span>
                 </div>
 
-                {/* CTA #1 — Choix du créneau puis paiement direct */}
+                {/* CTA #1 — Paiement direct, créneau choisi après */}
                 <div className="mt-8 space-y-3">
                   <button
                     type="button"
-                    onClick={() => setSlotPickerOpen(true)}
+                    onClick={handleCheckout}
                     disabled={checkoutLoading}
                     className="btn-gold w-full inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
@@ -341,13 +321,13 @@ export function PanierClient() {
                       </>
                     ) : (
                       <>
-                        <CalendarCheck className="h-4 w-4" strokeWidth={1.5} />
-                        Choisir un créneau &amp; payer
+                        <Store className="h-4 w-4" strokeWidth={1.5} />
+                        Payer maintenant
                       </>
                     )}
                   </button>
                   <p className="text-[0.7rem] text-center text-ink-mute leading-relaxed">
-                    Retrait showroom La Penne-sur-Huveaune · Paiement CB sécurisé Stripe
+                    Retrait showroom La Penne-sur-Huveaune · Vous choisissez votre créneau juste après le paiement
                   </p>
                 </div>
 
@@ -394,15 +374,6 @@ export function PanierClient() {
         </div>
       </section>
 
-      {/* Modal de choix du créneau — mêmes règles de dispo que la fiche produit */}
-      <SlotPicker
-        open={slotPickerOpen}
-        onClose={() => !checkoutLoading && setSlotPickerOpen(false)}
-        onConfirm={handleSlotConfirm}
-        loading={checkoutLoading}
-        errorMessage={checkoutError}
-        refreshKey={slotRefreshKey}
-      />
     </>
   )
 }

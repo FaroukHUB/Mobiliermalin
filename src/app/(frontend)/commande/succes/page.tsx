@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CheckCircle2, MapPin, Clock, Phone, Mail, CalendarCheck, ExternalLink } from 'lucide-react'
+import { CheckCircle2, MapPin, Clock, Phone, Mail, CalendarCheck, ExternalLink, AlertCircle } from 'lucide-react'
+import { SlotPickerAfterPayment } from './SlotPickerAfterPayment'
 
 export const metadata: Metadata = {
   title: 'Commande confirmée',
@@ -12,6 +13,7 @@ const STRIPE_API = 'https://api.stripe.com/v1'
 
 type StripeSession = {
   id?: string
+  payment_status?: 'paid' | 'unpaid' | 'no_payment_required'
   amount_total?: number
   customer_email?: string
   customer_details?: { email?: string; name?: string; phone?: string }
@@ -22,6 +24,7 @@ type StripeSession = {
     pickup_time?: string
     product_slug?: string
     customer_name?: string
+    customer_phone?: string
     cal_booking_id?: string
     cal_booking_uid?: string
   }
@@ -60,12 +63,41 @@ export default async function OrderSuccessPage({
   const { session_id } = await searchParams
   const session = session_id ? await fetchSession(session_id) : null
 
+  // 🔒 Vérification côté serveur du statut du paiement.
+  // On n'affiche PAS de confirmation si Stripe ne confirme pas "paid".
+  const isPaid = session?.payment_status === 'paid'
   const isPickup = session?.metadata?.fulfillment_mode === 'pickup'
   const pickupLabel = session?.metadata?.pickup_label
   const hasCalBooking = !!session?.metadata?.cal_booking_id
   const customerName = session?.customer_details?.name || session?.metadata?.customer_name
   const customerEmail = session?.customer_details?.email || session?.customer_email
+  const customerPhone = session?.customer_details?.phone || session?.metadata?.customer_phone
   const amount = formatPrice(session?.amount_total)
+
+  // Si pas de session_id ou paiement non confirmé → page d'erreur
+  if (!session || !isPaid) {
+    return (
+      <section className="container py-24 max-w-2xl text-center">
+        <AlertCircle className="h-14 w-14 text-promo mx-auto" strokeWidth={1.25} />
+        <h1 className="font-serif text-display mt-8">Paiement non confirmé</h1>
+        <div className="gold-divider mt-6" />
+        <p className="mt-6 text-ink-soft leading-relaxed">
+          Nous n&apos;avons pas pu vérifier votre paiement. Si vous venez
+          de finaliser votre commande, patientez quelques secondes et
+          rechargez la page. Sinon, contactez-nous : nous vérifions
+          immédiatement le statut de votre commande.
+        </p>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <a href="tel:+33676617053" className="btn-gold inline-flex items-center gap-2">
+            <Phone className="h-4 w-4" strokeWidth={1.5} /> Nous appeler
+          </a>
+          <Link href="/" className="btn-outline">
+            Retour à l&apos;accueil
+          </Link>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="container py-16 md:py-24 max-w-3xl">
@@ -85,8 +117,18 @@ export default async function OrderSuccessPage({
         )}
       </div>
 
-      {/* Bloc retrait */}
-      {isPickup && (
+      {/* Si retrait sans créneau encore fixé → afficher le picker */}
+      {isPickup && !pickupLabel && session_id && (
+        <SlotPickerAfterPayment
+          sessionId={session_id}
+          defaultName={customerName}
+          defaultEmail={customerEmail}
+          defaultPhone={customerPhone}
+        />
+      )}
+
+      {/* Bloc retrait — affiché uniquement quand le créneau EST fixé */}
+      {isPickup && pickupLabel && (
         <div className="mt-12 bg-ivory-light border border-line">
           <div className="bg-ink text-ivory px-6 md:px-8 py-5">
             <p className="eyebrow text-gold">Récupération de votre commande</p>
@@ -95,27 +137,25 @@ export default async function OrderSuccessPage({
 
           <div className="p-6 md:p-8 space-y-6">
             {/* Créneau */}
-            {pickupLabel && (
-              <div className="flex items-start gap-4">
-                <div className="h-10 w-10 bg-gold/10 border border-gold/30 flex items-center justify-center shrink-0">
-                  <CalendarCheck className="h-5 w-5 text-gold-dark" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-ink-mute">
-                    Votre créneau confirmé
-                  </p>
-                  <p className="font-serif text-lg text-ink mt-1 capitalize">
-                    {pickupLabel}
-                  </p>
-                  {hasCalBooking && (
-                    <p className="text-xs text-gold-dark mt-1.5 flex items-center gap-1.5">
-                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold" />
-                      Réservation ajoutée à l&apos;agenda de notre équipe
-                    </p>
-                  )}
-                </div>
+            <div className="flex items-start gap-4">
+              <div className="h-10 w-10 bg-gold/10 border border-gold/30 flex items-center justify-center shrink-0">
+                <CalendarCheck className="h-5 w-5 text-gold-dark" strokeWidth={1.5} />
               </div>
-            )}
+              <div>
+                <p className="text-xs uppercase tracking-widest text-ink-mute">
+                  Votre créneau confirmé
+                </p>
+                <p className="font-serif text-lg text-ink mt-1 capitalize">
+                  {pickupLabel}
+                </p>
+                {hasCalBooking && (
+                  <p className="text-xs text-gold-dark mt-1.5 flex items-center gap-1.5">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold" />
+                    Réservation ajoutée à l&apos;agenda de notre équipe
+                  </p>
+                )}
+              </div>
+            </div>
 
             {/* Adresse */}
             <div className="flex items-start gap-4">
