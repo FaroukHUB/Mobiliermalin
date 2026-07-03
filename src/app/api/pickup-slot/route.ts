@@ -26,6 +26,7 @@ import {
   sendEmail,
 } from '@/lib/brevo'
 import { LEGAL } from '@/lib/legal'
+import { updateOrderPickupSlot } from '@/lib/order'
 
 const STRIPE_API = 'https://api.stripe.com/v1'
 
@@ -220,6 +221,16 @@ export async function POST(req: NextRequest) {
     customer_phone: phone,
     cal_booking_uid: calResult.bookingUid ? String(calResult.bookingUid) : '',
     cal_booking_id: calResult.bookingId ? String(calResult.bookingId) : '',
+  })
+
+  // 3bis) Patch le doc Sanity order (best-effort, sans bloquer)
+  await updateOrderPickupSlot(sessionId, {
+    label,
+    date,
+    time,
+    calBookingRef: calBookingRef ? String(calBookingRef) : undefined,
+  }).catch(() => {
+    /* silencieux — le webhook aura déjà créé/mis à jour l'order */
   })
 
   // 4) Emails — best-effort, on ne bloque pas si Brevo échoue

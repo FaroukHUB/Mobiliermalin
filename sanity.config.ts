@@ -193,6 +193,56 @@ export default defineConfig({
               .icon(() => '📁')
               .child(S.documentTypeList('category').title('Catégories')),
             S.divider(),
+            // Commandes (paiements Stripe) — auto-créées par le webhook
+            S.listItem()
+              .title('Commandes')
+              .icon(() => '🛒')
+              .child(
+                S.list()
+                  .title('Commandes')
+                  .items([
+                    S.listItem()
+                      .title('🟡 À préparer (paiement reçu)')
+                      .child(
+                        S.documentList()
+                          .title('À préparer')
+                          .filter('_type == "order" && status == "paid"')
+                          .defaultOrdering([{ field: 'placedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('📦 Prêtes (retrait / livraison)')
+                      .child(
+                        S.documentList()
+                          .title('Prêtes')
+                          .filter('_type == "order" && status == "ready"')
+                          .defaultOrdering([{ field: 'placedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('✅ Retirées / livrées')
+                      .child(
+                        S.documentList()
+                          .title('Terminées')
+                          .filter('_type == "order" && status == "fulfilled"')
+                          .defaultOrdering([{ field: 'placedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('❌ Annulées / remboursées')
+                      .child(
+                        S.documentList()
+                          .title('Annulées')
+                          .filter('_type == "order" && status == "refunded"')
+                          .defaultOrdering([{ field: 'placedAt', direction: 'desc' }]),
+                      ),
+                    S.divider(),
+                    S.listItem()
+                      .title('Toutes les commandes')
+                      .child(
+                        S.documentTypeList('order')
+                          .title('Toutes les commandes')
+                          .defaultOrdering([{ field: 'placedAt', direction: 'desc' }]),
+                      ),
+                  ]),
+              ),
             // Devis de livraison (workflow B2B)
             S.listItem()
               .title('Devis livraison')

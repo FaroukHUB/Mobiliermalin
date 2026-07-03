@@ -8,6 +8,7 @@ import {
 } from '@/lib/brevo'
 import { getWriteClient, isSanityWriteConfigured } from '@/lib/sanity-write'
 import { LEGAL } from '@/lib/legal'
+import { upsertOrderFromStripeSession } from '@/lib/order'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs' // crypto-subtle nécessite Node, pas Edge
@@ -187,12 +188,27 @@ export async function POST(req: NextRequest) {
   }
 
   // ───── checkout.session.completed (pickup) →
+  //        0. Crée le doc Sanity `order` (idempotent, ne dupliquera pas)
   //        1. Crée le booking Cal.eu SI un créneau a été fourni
   //        2. Email confirmation client — TOUJOURS
-  //        3. Email notification admin Djamel — TOUJOURS (bug fix : les
-  //           anciens paniers Stripe partaient sans pickup_label et le
-  //           webhook les ignorait silencieusement)
+  //        3. Email notification admin Djamel — TOUJOURS
   if (event.type === 'checkout.session.completed' && isPickup && customerEmail) {
+    // 0) Création du document Sanity order avec facture URL + articles
+    const stripeSecret = process.env.STRIPE_SECRET_KEY
+    if (stripeSecret && session) {
+      const orderResult = await upsertOrderFromStripeSession(
+        session as Parameters<typeof upsertOrderFromStripeSession>[0],
+        stripeSecret,
+      )
+      if (orderResult.ok) {
+        console.log(
+          `[stripe-webhook] order ${orderResult.created ? 'created' : 'already existed'}: ${orderResult.id}`,
+        )
+      } else {
+        console.warn('[stripe-webhook] order upsert failed', orderResult.error)
+      }
+    }
+
     const pickupDate = meta.pickup_date
     const pickupTime = meta.pickup_time
     const customerPhone = meta.customer_phone
