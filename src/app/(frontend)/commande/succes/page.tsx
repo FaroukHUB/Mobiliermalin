@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CheckCircle2, MapPin, Clock, Phone, Mail, CalendarCheck, ExternalLink, AlertCircle } from 'lucide-react'
+import { CheckCircle2, MapPin, Clock, Phone, Mail, CalendarCheck, ExternalLink, AlertCircle, Star } from 'lucide-react'
 import { SlotPickerAfterPayment } from './SlotPickerAfterPayment'
+
+const GOOGLE_REVIEW_URL = 'https://g.page/r/CUtST0PM2AI0EBM/review'
+const QR_IMAGE_URL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=8&data=${encodeURIComponent(GOOGLE_REVIEW_URL)}`
 
 export const metadata: Metadata = {
   title: 'Commande confirmée',
@@ -254,6 +257,60 @@ export default async function OrderSuccessPage({
               <p className="text-ink font-medium break-all">mobiliermalin@gmail.com</p>
             </div>
           </a>
+        </div>
+      </div>
+
+      {/* Encart avis Google — QR code + lien direct */}
+      <div className="mt-10 bg-ink text-ivory p-6 md:p-8">
+        <div className="grid md:grid-cols-[auto_1fr] gap-6 md:gap-8 items-center">
+          {/* QR code */}
+          <a
+            href={GOOGLE_REVIEW_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block bg-ivory p-3 self-start mx-auto md:mx-0"
+            aria-label="Ouvrir la page d'avis Google Mobilier Malin"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={QR_IMAGE_URL}
+              alt="Code QR menant à la page d'avis Google de Mobilier Malin"
+              width={160}
+              height={160}
+              className="block w-40 h-40"
+            />
+          </a>
+
+          {/* Message */}
+          <div className="text-center md:text-left">
+            <div className="inline-flex items-center gap-1 text-gold">
+              <Star className="h-4 w-4 fill-current" strokeWidth={0} />
+              <Star className="h-4 w-4 fill-current" strokeWidth={0} />
+              <Star className="h-4 w-4 fill-current" strokeWidth={0} />
+              <Star className="h-4 w-4 fill-current" strokeWidth={0} />
+              <Star className="h-4 w-4 fill-current" strokeWidth={0} />
+            </div>
+            <p className="eyebrow text-gold mt-3">Votre avis compte</p>
+            <h3 className="font-serif text-2xl mt-2 text-ivory">
+              Un petit avis Google, s&apos;il vous plaît&nbsp;?
+            </h3>
+            <div className="h-px w-12 bg-gold mt-4 mx-auto md:mx-0" />
+            <p className="mt-5 text-ivory/80 leading-relaxed">
+              Merci pour votre confiance. Votre retour aide énormément notre
+              petite équipe et permet à d&apos;autres clients de nous
+              découvrir. Scannez le QR code avec votre téléphone, ou cliquez
+              sur le bouton — quelques secondes suffisent.
+            </p>
+            <a
+              href={GOOGLE_REVIEW_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold mt-6 inline-flex items-center gap-2"
+            >
+              <Star className="h-4 w-4 fill-current" strokeWidth={0} />
+              Laisser un avis Google
+            </a>
+          </div>
         </div>
       </div>
 
