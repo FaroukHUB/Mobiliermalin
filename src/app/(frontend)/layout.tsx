@@ -6,6 +6,7 @@ import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
 import { CookieConsent } from '@/components/analytics/CookieConsent'
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 import { CartProvider } from '@/lib/cart-context'
+import { WhatsAppButton } from '@/components/layout/WhatsAppButton'
 import { getSiteSettings, getCategoryHierarchy, getMenuShowcaseProduct, urlFor } from '@/lib/sanity'
 import './globals.css'
 
@@ -166,6 +167,7 @@ export default async function RootLayout({
           <main id="main">{children}</main>
           <Footer logo={logoDark} />
         </CartProvider>
+        <WhatsAppButton />
         <OrganizationSchema />
         <CookieConsent />
       </body>
