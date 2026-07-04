@@ -47,7 +47,7 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
 
   qa.push({
     q: `Où contrôlez-vous les ${lower} avant la vente ?`,
-    a: `Tout se passe dans notre propre atelier à La Penne-sur-Huveaune (à 5 minutes d'Aubagne, 20 minutes de Marseille). Chaque pièce passe par un contrôle qualité en 7 points : structure, mécanismes, vérins, revêtement, nettoyage, sécurité et finition esthétique. Les pièces sont ensuite classées selon notre grille 5 niveaux (neuf, excellent, très bon, bon, correct). Pas de dropshipping ni de revente à l'aveugle — notre équipe technique intervient physiquement sur chaque produit et reste joignable directement après achat.`,
+    a: `Tout se passe dans notre propre atelier à La Penne-sur-Huveaune (à 5 minutes d'Aubagne, 20 minutes de Marseille). Chaque pièce passe par un contrôle qualité en 7 points : structure, mécanismes, vérins, revêtement, nettoyage, sécurité et finition esthétique. Les pièces sont ensuite classées selon notre grille 5 niveaux (neuf, excellent, très bon, bon, correct). Notre équipe technique intervient physiquement sur chaque produit et reste joignable directement après achat.`,
     aHtml: (
       <>
         Tout se passe dans{' '}
@@ -65,8 +65,8 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
         >
           charte qualité
         </Link>
-        . Pas de dropshipping ni de revente à l&apos;aveugle — notre équipe
-        reste joignable directement après achat.
+        . Notre équipe reste joignable directement après achat, sans
+        passer par un SAV externalisé.
       </>
     ),
   })

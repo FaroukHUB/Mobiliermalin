@@ -51,14 +51,15 @@ function buildFAQ({ productName, brand, conditionLabel, categoryName, stock }: P
   // 2. Atelier local (ex-garantie)
   qa.push({
     q: `Où et comment est préparé ${productName} avant la vente ?`,
-    a: `Chaque pièce est démontée, contrôlée et préparée dans notre propre atelier au 18 chemin Noël Robion, 13400 La Penne-sur-Huveaune. Pas de dropshipping ni de revente sans contrôle : notre équipe technique intervient sur chaque produit avant sa mise en vente. Vous pouvez d'ailleurs passer voir l'atelier et le showroom sur rendez-vous — nos clients particuliers comme professionnels sont libres d'essayer avant d'acheter, et de contacter directement l'équipe qui a préparé leur pièce.`,
+    a: `Chaque pièce est démontée, contrôlée et préparée dans notre propre atelier au 18 chemin Noël Robion, 13400 La Penne-sur-Huveaune. Notre équipe technique intervient sur chaque produit avant sa mise en vente — rien n'est expédié sans contrôle physique. Vous pouvez d'ailleurs passer voir l'atelier et le showroom sur rendez-vous — nos clients particuliers comme professionnels sont libres d'essayer avant d'acheter, et de contacter directement l'équipe qui a préparé leur pièce.`,
     aHtml: (
       <>
         Chaque pièce est démontée, contrôlée et préparée dans{' '}
         <strong className="text-ink">notre propre atelier</strong> au 18 chemin
-        Noël Robion, 13400 La Penne-sur-Huveaune. Pas de dropshipping ni de
-        revente sans contrôle : notre équipe technique intervient sur chaque
-        produit avant sa mise en vente. Vous pouvez d&apos;ailleurs passer voir
+        Noël Robion, 13400 La Penne-sur-Huveaune. Notre équipe technique
+        intervient sur chaque produit avant sa mise en vente — rien
+        n&apos;est expédié sans contrôle physique. Vous pouvez
+        d&apos;ailleurs passer voir
         l&apos;atelier et le showroom{' '}
         <Link
           href="/contact"

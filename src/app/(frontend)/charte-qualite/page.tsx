@@ -33,7 +33,7 @@ const DEFAULT_HERO = {
 }
 
 const DEFAULT_INTRO =
-  'Acheter du mobilier d\'occasion en ligne, c\'est faire confiance à une grille de notation qu\'on ne voit pas. Chez Mobilier Malin, on a tranché : 5 niveaux d\'état, des critères objectifs, et un contrôle physique dans notre atelier avant chaque mise en vente. Pas de jargon, pas de fausses promesses, pas de dropshipping. Vous savez exactement ce que vous recevrez avant de cliquer sur "Acheter".'
+  'Acheter du mobilier d\'occasion en ligne, c\'est faire confiance à une grille de notation qu\'on ne voit pas. Chez Mobilier Malin, on a tranché : 5 niveaux d\'état, des critères objectifs, et un contrôle physique dans notre atelier avant chaque mise en vente. Pas de jargon, pas de fausses promesses. Vous savez exactement ce que vous recevrez avant de cliquer sur "Acheter".'
 
 const CONDITION_FALLBACK_COLORS: Record<string, string> = {
   new: 'border-gold bg-gold/5',

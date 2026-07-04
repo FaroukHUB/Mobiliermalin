@@ -462,7 +462,7 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
                 <ul className="mt-3 space-y-2 text-sm text-ink-soft">
                   <li>
                     · Atelier &amp; showroom à La Penne-sur-Huveaune —{' '}
-                    <em>pas de dropshipping</em>
+                    <em>tout est préparé sur place par notre équipe</em>
                   </li>
                   <li>
                     · Contrôle qualité 7 points sur place avant mise en vente{' '}

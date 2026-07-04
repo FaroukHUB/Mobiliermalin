@@ -507,9 +507,9 @@ export default async function MobilierBureauProfessionnelPage() {
               </h3>
               <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                 Chaque pièce est démontée, contrôlée et préparée dans
-                notre atelier à La Penne-sur-Huveaune. Pas de dropshipping.
-                Notre équipe technique reste joignable directement après
-                achat, sans passer par un SAV externalisé.
+                notre atelier à La Penne-sur-Huveaune. Notre équipe
+                technique reste joignable directement après achat, sans
+                passer par un SAV externalisé.
               </p>
             </article>
           </Reveal>

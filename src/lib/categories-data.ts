@@ -93,7 +93,7 @@ export const CATEGORIES: CategoryStaticData[] = [
       },
       {
         q: 'Où sont préparés vos fauteuils avant la vente ?',
-        a: 'Dans notre propre atelier au 18 chemin Noël Robion, à La Penne-sur-Huveaune (5 min d\'Aubagne, 20 min de Marseille). Chaque siège est démonté, contrôlé, nettoyé et testé par notre équipe technique avant sa mise en vente — pas de dropshipping, pas de revente à l\'aveugle. Vous pouvez d\'ailleurs passer voir l\'atelier sur rendez-vous.',
+        a: 'Dans notre propre atelier au 18 chemin Noël Robion, à La Penne-sur-Huveaune (5 min d\'Aubagne, 20 min de Marseille). Chaque siège est démonté, contrôlé, nettoyé et testé par notre équipe technique avant sa mise en vente — pas de revente à l\'aveugle. Vous pouvez d\'ailleurs passer voir l\'atelier sur rendez-vous.',
       },
       {
         q: 'Puis-je acheter en gros pour mes équipes ?',
