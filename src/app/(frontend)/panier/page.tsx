@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Votre panier — Mobilier Malin',
   description:
     'Récapitulatif des articles sélectionnés. Payez en ligne pour un retrait au showroom, ou demandez un devis groupé pour une livraison.',
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: true },
 }
 
 export default function PanierPage() {

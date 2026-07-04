@@ -12,10 +12,13 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
+        // NB : /demander-devis et /panier ne sont PAS disallow ici.
+        // Elles portent déjà `<meta name="robots" content="noindex,follow">`.
+        // Bloquer via robots.txt empêcherait Googlebot de lire la meta
+        // et laisserait ces URL en "indexée bien que bloquée".
         disallow: [
           '/api/',
           '/studio/',
-          '/demander-devis',
           '/devis/',
           '/commande/',
           '/maintenance',

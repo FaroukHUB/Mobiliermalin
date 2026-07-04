@@ -8,7 +8,9 @@ import { DevisRequestForm } from '@/components/forms/DevisRequestForm'
 export const metadata: Metadata = {
   title: 'Demander un devis livraison',
   description: 'Devis personnalisé pour la livraison de votre mobilier reconditionné, sous 24 h ouvrées.',
-  robots: { index: false, follow: false },
+  // noindex,follow → la page reste hors du SERP tout en laissant Google
+  // suivre les liens sortants (produit → fiche produit → catégorie).
+  robots: { index: false, follow: true },
 }
 
 type CartItem = {
