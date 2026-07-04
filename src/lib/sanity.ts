@@ -140,6 +140,43 @@ export async function getProductBySlug(slug: string): Promise<SanityProduct | nu
 }
 
 /**
+ * Produits liés (cross-sell) — 4 pièces de la même catégorie,
+ * en excluant le produit courant. Utilisé sur la fiche produit
+ * pour renforcer le maillage interne et la profondeur de session.
+ * Fallback : les 4 derniers publiés si la catégorie est vide.
+ */
+export async function getRelatedProducts(
+  currentSlug: string,
+  categorySlug: string | undefined,
+  limit: number = 4,
+): Promise<SanityProduct[]> {
+  if (!categorySlug) {
+    return safeFetch<SanityProduct[]>(
+      `*[_type == "product" && status == "published" && slug.current != $slug]
+         | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
+      { slug: currentSlug, limit },
+      [],
+    )
+  }
+  // On tire 8 produits candidats de la catégorie puis on shuffle côté JS
+  // (Sanity n'a pas de vrai random() ; l'ordre par date est trop stable).
+  const pool = await safeFetch<SanityProduct[]>(
+    `*[_type == "product" && status == "published"
+        && category->slug.current == $cat
+        && slug.current != $slug]
+       | order(_createdAt desc) [0...8] { ${PRODUCT_FIELDS} }`,
+    { cat: categorySlug, slug: currentSlug },
+    [],
+  )
+  if (pool.length <= limit) return pool
+  // Sélection déterministe (basée sur le hash du slug) pour rester
+  // stable entre les rendus SSR/ISR.
+  const seed = [...currentSlug].reduce((a, c) => a + c.charCodeAt(0), 0)
+  const rotated = [...pool.slice(seed % pool.length), ...pool.slice(0, seed % pool.length)]
+  return rotated.slice(0, limit)
+}
+
+/**
  * Produits "Featured" pour la home (curation Djamel via toggle featured).
  */
 export async function getFeaturedProducts(limit: number = 6): Promise<SanityProduct[]> {

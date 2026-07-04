@@ -3,11 +3,13 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { type PortableTextBlock } from 'next-sanity'
 import { ChevronRight, Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
-import { getProductBySlug, getAllProductSlugs, urlFor } from '@/lib/sanity'
+import { getProductBySlug, getAllProductSlugs, getRelatedProducts, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
 import { DeliveryChoice } from '@/components/product/DeliveryChoice'
 import { ProductGallery } from '@/components/product/ProductGallery'
 import { ProductTabs } from '@/components/product/ProductTabs'
+import { ProductFAQ } from '@/components/product/ProductFAQ'
+import { RelatedProducts } from '@/components/product/RelatedProducts'
 import { AddToCartButton } from '@/components/product/AddToCartButton'
 import { LEGAL } from '@/lib/legal'
 
@@ -70,6 +72,13 @@ export default async function ProductPage({
 
   const category = product.category
   const conditionLabel = product.condition ? CONDITION_LABELS[product.condition] : null
+
+  // Cross-sell : 4 pièces de la même catégorie (fallback : derniers publiés)
+  const relatedProducts = await getRelatedProducts(
+    product.slug.current,
+    category?.slug?.current,
+    4,
+  )
 
   // Galerie avec 3 résolutions par image : main (1600), thumb (400), zoom (2400)
   const galleryItems = (product.images || []).map((img, i) => ({
@@ -379,13 +388,19 @@ export default async function ProductPage({
         }}
       />
 
-      {category && (
-        <section className="container py-10 text-center">
-          <Link href={`/categorie/${category.slug.current}`} className="text-sm text-ink-mute hover:text-gold-dark">
-            ← Voir d&apos;autres {category.name.toLowerCase()}
-          </Link>
-        </section>
-      )}
+      <ProductFAQ
+        productName={product.name}
+        brand={product.brand}
+        conditionLabel={conditionLabel}
+        categoryName={category?.name}
+        stock={product.stock}
+      />
+
+      <RelatedProducts
+        products={relatedProducts}
+        categoryName={category?.name}
+        categorySlug={category?.slug?.current}
+      />
     </>
   )
 }

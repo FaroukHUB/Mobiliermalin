@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { PortableText, type PortableTextBlock } from 'next-sanity'
+import { useState, useMemo } from 'react'
+import Link from 'next/link'
+import { PortableText, type PortableTextBlock, type PortableTextComponents } from 'next-sanity'
 import {
   FileText,
   Ruler,
@@ -10,6 +11,7 @@ import {
   FileBadge2,
   Phone,
   Mail,
+  Check,
 } from 'lucide-react'
 
 const CONDITION_LABELS: Record<string, string> = {
@@ -41,8 +43,149 @@ export type ProductTabsProps = {
 
 type TabKey = 'description' | 'specs' | 'livraison'
 
+// ─────────────────────────────────────────────────────────────
+// Pré-traitement de la description Sanity.
+// Le client (Djamel) écrit souvent en paragraphes plats avec des
+// emojis ✔️ / ✓ / → en début de ligne, sans utiliser les listes
+// natives de Sanity. On détecte ces patterns et on transforme :
+//   – "✔️ Item"          → item d'une liste stylée
+//   – Ligne courte finissant par ":" → sous-titre (H3)
+//   – "TITRE TOUT EN MAJ" → sous-titre (H3)
+// Résultat : rendu propre même sans re-formatage côté Studio.
+// ─────────────────────────────────────────────────────────────
+
+const BULLET_PREFIXES = /^(?:✔️|✔|✓|✅|▪|•|–|—|-|→|➜|➤|★|▶)\s*/
+
+type ParsedNode =
+  | { kind: 'para'; text: string }
+  | { kind: 'h3'; text: string }
+  | { kind: 'list'; items: string[] }
+
+function blockPlainText(block: PortableTextBlock): string {
+  const children = (block.children ?? []) as Array<{ text?: string }>
+  return children.map((c) => c.text ?? '').join('').trim()
+}
+
+function parseDescription(blocks: PortableTextBlock[]): ParsedNode[] {
+  const nodes: ParsedNode[] = []
+  let listBuffer: string[] = []
+  const flushList = () => {
+    if (listBuffer.length > 0) {
+      nodes.push({ kind: 'list', items: listBuffer })
+      listBuffer = []
+    }
+  }
+  for (const block of blocks) {
+    // On respecte les styles natifs Sanity (h1..h4, blockquote, listItem)
+    if (block._type !== 'block') {
+      flushList()
+      continue
+    }
+    const style = (block as { style?: string }).style
+    const listItem = (block as { listItem?: string }).listItem
+    const text = blockPlainText(block)
+    if (!text) continue
+
+    // Liste native Sanity → on l'ajoute au buffer
+    if (listItem) {
+      listBuffer.push(text)
+      continue
+    }
+
+    // Détection : ligne bullet (✔ item)
+    if (BULLET_PREFIXES.test(text)) {
+      listBuffer.push(text.replace(BULLET_PREFIXES, '').trim())
+      continue
+    }
+
+    flushList()
+
+    // H2/H3 natif Sanity
+    if (style === 'h2' || style === 'h3' || style === 'h4') {
+      nodes.push({ kind: 'h3', text })
+      continue
+    }
+
+    // Ligne courte finissant par ":" → mini-titre
+    const isMiniTitle =
+      text.length < 60 && /[:：]$/.test(text) && !/\.\s/.test(text)
+    // Ligne courte tout en majuscule → mini-titre
+    const isCaps = text.length < 60 && text === text.toUpperCase() && /[A-ZÀ-Ÿ]/.test(text)
+
+    if (isMiniTitle || isCaps) {
+      nodes.push({ kind: 'h3', text: text.replace(/[:：]$/, '').trim() })
+      continue
+    }
+
+    nodes.push({ kind: 'para', text })
+  }
+  flushList()
+  return nodes
+}
+
+// Composants PortableText de secours (si un jour Djamel utilise
+// vraiment les styles natifs Sanity au lieu du texte plat).
+const portableTextComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => (
+      <p className="mt-4 leading-relaxed text-ink-soft">{children}</p>
+    ),
+    h2: ({ children }) => (
+      <h3 className="font-serif text-2xl text-ink mt-10 mb-3 leading-snug">
+        {children}
+      </h3>
+    ),
+    h3: ({ children }) => (
+      <h4 className="font-serif text-xl text-ink mt-8 mb-2 leading-snug">
+        {children}
+      </h4>
+    ),
+    h4: ({ children }) => (
+      <h4 className="font-serif text-lg text-ink mt-6 mb-2">{children}</h4>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className="mt-6 border-l-4 border-gold pl-5 italic text-ink-soft">
+        {children}
+      </blockquote>
+    ),
+  },
+  list: {
+    bullet: ({ children }) => <ul className="mt-4 space-y-2">{children}</ul>,
+    number: ({ children }) => (
+      <ol className="mt-4 space-y-2 list-decimal list-inside">{children}</ol>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => (
+      <li className="flex items-start gap-3 text-ink-soft leading-relaxed">
+        <Check className="h-4 w-4 text-gold mt-1.5 shrink-0" strokeWidth={2} />
+        <span>{children}</span>
+      </li>
+    ),
+  },
+  marks: {
+    strong: ({ children }) => <strong className="text-ink font-medium">{children}</strong>,
+    em: ({ children }) => <em className="italic">{children}</em>,
+    link: ({ value, children }) => (
+      <a
+        href={value?.href}
+        className="text-gold-dark underline underline-offset-2 hover:text-gold"
+        target={value?.href?.startsWith('http') ? '_blank' : undefined}
+        rel={value?.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        {children}
+      </a>
+    ),
+  },
+}
+
 export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
-  const hasDescription = description && description.length > 0
+  const parsed = useMemo<ParsedNode[] | null>(() => {
+    if (!description || description.length === 0) return null
+    return parseDescription(description)
+  }, [description])
+
+  const hasDescription = parsed !== null && parsed.length > 0
   const hasSpecs =
     specs.widthCm ||
     specs.depthCm ||
@@ -53,7 +196,6 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
     specs.condition ||
     specs.sku
 
-  // Onglet par défaut : description si elle existe, sinon caractéristiques, sinon livraison
   const defaultTab: TabKey = hasDescription
     ? 'description'
     : hasSpecs
@@ -72,8 +214,12 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
   if (visibleTabs.length === 0) return null
 
   return (
-    <section className="bg-ivory-dark border-y border-line">
+    <section className="bg-ivory-dark border-y border-line" aria-labelledby="product-details-heading">
       <div className="container py-12 md:py-16 max-w-4xl">
+        <h2 id="product-details-heading" className="sr-only">
+          En savoir plus sur ce produit
+        </h2>
+
         {/* Barre d'onglets */}
         <div
           role="tablist"
@@ -92,9 +238,7 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
                 id={`tab-${tab.key}`}
                 onClick={() => setActive(tab.key)}
                 className={`relative inline-flex items-center gap-2 px-4 md:px-6 py-4 text-sm font-medium uppercase tracking-widest whitespace-nowrap transition-colors ${
-                  isActive
-                    ? 'text-ink'
-                    : 'text-ink-mute hover:text-ink-soft'
+                  isActive ? 'text-ink' : 'text-ink-mute hover:text-ink-soft'
                 }`}
               >
                 <Icon className="h-4 w-4" strokeWidth={1.5} />
@@ -114,16 +258,86 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
 
         {/* Panneaux */}
         <div className="mt-8">
-          {/* DESCRIPTION */}
-          {hasDescription && (
+          {/* DESCRIPTION — rendu enrichi (auto-détection des sous-titres et bullets) */}
+          {hasDescription && parsed && (
             <div
               role="tabpanel"
               id="panel-description"
               aria-labelledby="tab-description"
               hidden={active !== 'description'}
-              className="text-ink-soft leading-relaxed prose prose-stone max-w-none"
+              className="max-w-none"
             >
-              <PortableText value={description as PortableTextBlock[]} />
+              {parsed.map((node, i) => {
+                if (node.kind === 'h3') {
+                  return (
+                    <h3
+                      key={i}
+                      className="font-serif text-xl md:text-2xl text-ink mt-10 mb-3 leading-snug first:mt-0"
+                    >
+                      {node.text}
+                      <span className="block h-px w-10 bg-gold mt-3" aria-hidden />
+                    </h3>
+                  )
+                }
+                if (node.kind === 'list') {
+                  return (
+                    <ul key={i} className="mt-4 grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
+                      {node.items.map((item, j) => (
+                        <li
+                          key={j}
+                          className="flex items-start gap-3 text-ink-soft leading-relaxed"
+                        >
+                          <Check
+                            className="h-4 w-4 text-gold mt-1.5 shrink-0"
+                            strokeWidth={2}
+                          />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                }
+                return (
+                  <p
+                    key={i}
+                    className="mt-4 leading-relaxed text-ink-soft first:mt-0"
+                  >
+                    {node.text}
+                  </p>
+                )
+              })}
+
+              {/* Fallback : rendu PortableText brut si jamais Djamel utilise
+                  vraiment des styles Sanity — on l'affiche masqué pour
+                  garder les marks/liens si présents un jour. */}
+              <div className="hidden">
+                <PortableText
+                  value={description as PortableTextBlock[]}
+                  components={portableTextComponents}
+                />
+              </div>
+
+              {/* Maillage sortant : ancres contextuelles */}
+              <div className="mt-10 pt-6 border-t border-line/60 flex flex-wrap gap-4 text-xs text-ink-mute">
+                <Link
+                  href="/charte-qualite"
+                  className="inline-flex items-center gap-1.5 hover:text-gold-dark underline underline-offset-2"
+                >
+                  📐 Comprendre nos niveaux d&apos;état
+                </Link>
+                <Link
+                  href="/notre-demarche"
+                  className="inline-flex items-center gap-1.5 hover:text-gold-dark underline underline-offset-2"
+                >
+                  ♻️ Notre démarche reconditionnement
+                </Link>
+                <Link
+                  href="/attestation-rse"
+                  className="inline-flex items-center gap-1.5 hover:text-gold-dark underline underline-offset-2"
+                >
+                  📄 Attestation RSE incluse
+                </Link>
+              </div>
             </div>
           )}
 
@@ -138,14 +352,23 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
               <dl className="grid sm:grid-cols-2 gap-x-10 gap-y-5">
                 {specs.brand && (
                   <div className="flex flex-col gap-1 pb-4 border-b border-line/60">
-                    <dt className="text-xs uppercase tracking-widest text-ink-mute">Marque d&apos;origine</dt>
+                    <dt className="text-xs uppercase tracking-widest text-ink-mute">
+                      Marque d&apos;origine
+                    </dt>
                     <dd className="font-serif text-lg text-ink">{specs.brand}</dd>
                   </div>
                 )}
                 {specs.condition && CONDITION_LABELS[specs.condition] && (
                   <div className="flex flex-col gap-1 pb-4 border-b border-line/60">
                     <dt className="text-xs uppercase tracking-widest text-ink-mute">État</dt>
-                    <dd className="font-serif text-lg text-ink">{CONDITION_LABELS[specs.condition]}</dd>
+                    <dd className="font-serif text-lg text-ink">
+                      <Link
+                        href="/charte-qualite"
+                        className="hover:text-gold-dark underline underline-offset-4 decoration-gold/40"
+                      >
+                        {CONDITION_LABELS[specs.condition]}
+                      </Link>
+                    </dd>
                   </div>
                 )}
                 {specs.widthCm && (
@@ -202,7 +425,32 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
                 <h3 className="font-serif text-lg text-ink mt-4">Livraison &amp; retrait</h3>
                 <ul className="mt-3 space-y-2 text-sm text-ink-soft">
                   <li>· Retrait gratuit au showroom de La Penne-sur-Huveaune (sur RDV)</li>
-                  <li>· Livraison sur devis : Marseille, Aubagne, Aix, La Ciotat, Toulon, Avignon</li>
+                  <li>
+                    · Livraison sur devis :{' '}
+                    <Link href="/bureau-occasion-marseille" className="hover:text-gold-dark underline underline-offset-2">
+                      Marseille
+                    </Link>
+                    ,{' '}
+                    <Link href="/bureau-occasion-aubagne" className="hover:text-gold-dark underline underline-offset-2">
+                      Aubagne
+                    </Link>
+                    ,{' '}
+                    <Link href="/bureau-occasion-aix-en-provence" className="hover:text-gold-dark underline underline-offset-2">
+                      Aix
+                    </Link>
+                    ,{' '}
+                    <Link href="/bureau-occasion-la-ciotat" className="hover:text-gold-dark underline underline-offset-2">
+                      La Ciotat
+                    </Link>
+                    ,{' '}
+                    <Link href="/bureau-occasion-toulon" className="hover:text-gold-dark underline underline-offset-2">
+                      Toulon
+                    </Link>
+                    ,{' '}
+                    <Link href="/bureau-occasion-avignon" className="hover:text-gold-dark underline underline-offset-2">
+                      Avignon
+                    </Link>
+                  </li>
                   <li>· Aide au déchargement et placement inclus dans la livraison</li>
                   <li>· Délai habituel : 5 à 10 jours ouvrés selon la zone</li>
                 </ul>
@@ -212,7 +460,12 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
                 <ShieldCheck className="h-6 w-6 text-gold" strokeWidth={1.5} />
                 <h3 className="font-serif text-lg text-ink mt-4">Garantie 6 mois</h3>
                 <ul className="mt-3 space-y-2 text-sm text-ink-soft">
-                  <li>· Contrôle qualité 7 points avant mise en vente</li>
+                  <li>
+                    · Contrôle qualité 7 points avant mise en vente{' '}
+                    <Link href="/charte-qualite" className="text-gold-dark underline underline-offset-2 hover:text-gold">
+                      voir la charte
+                    </Link>
+                  </li>
                   <li>· Mécanismes, vérin, accoudoirs, plateau : couverts</li>
                   <li>· Intervention sur site ou remplacement pièce détachée</li>
                   <li>· 14 jours de rétractation pour les particuliers</li>
@@ -229,16 +482,31 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
                 en circulation et les émissions de CO₂ évitées par rapport
                 à un équivalent neuf. Utile pour vos rapports RSE, bilans
                 carbone et appels d&apos;offres incluant des critères
-                d&apos;économie circulaire.
+                d&apos;économie circulaire.{' '}
+                <Link
+                  href="/attestation-rse"
+                  className="text-gold-dark underline underline-offset-2 hover:text-gold"
+                >
+                  En savoir plus
+                </Link>
+                .
               </p>
             </div>
 
             <div className="pt-6 border-t border-line flex flex-wrap items-center gap-6 text-sm text-ink-mute">
-              <span className="font-medium text-ink uppercase tracking-widest text-xs">Une question ?</span>
-              <a href={`tel:${legal.telephoneTel}`} className="inline-flex items-center gap-2 hover:text-gold-dark">
+              <span className="font-medium text-ink uppercase tracking-widest text-xs">
+                Une question ?
+              </span>
+              <a
+                href={`tel:${legal.telephoneTel}`}
+                className="inline-flex items-center gap-2 hover:text-gold-dark"
+              >
                 <Phone className="h-4 w-4" /> {legal.telephone}
               </a>
-              <a href={`mailto:${legal.email}`} className="inline-flex items-center gap-2 hover:text-gold-dark">
+              <a
+                href={`mailto:${legal.email}`}
+                className="inline-flex items-center gap-2 hover:text-gold-dark"
+              >
                 <Mail className="h-4 w-4" /> {legal.email}
               </a>
             </div>
