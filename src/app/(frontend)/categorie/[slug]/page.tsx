@@ -10,6 +10,7 @@ import {
 } from '@/lib/categories-data'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
+import { CategoryFAQ } from '@/components/category/CategoryFAQ'
 import {
   getProductsByCategory,
   getProductsByCategoryDeep,
@@ -354,8 +355,9 @@ export default async function CategoryPage({
         </section>
       )}
 
-      {/* FAQ — seulement si on a des données statiques */}
-      {staticData && staticData.faq.length > 0 && (
+      {/* FAQ — priorité aux données statiques riches, sinon fallback
+          générique CategoryFAQ (7 questions génériques + maillage) */}
+      {staticData && staticData.faq.length > 0 ? (
         <section className="container py-16 md:py-20 max-w-3xl">
           <Reveal>
             <div className="text-center mb-10">
@@ -383,6 +385,12 @@ export default async function CategoryPage({
             ))}
           </div>
         </section>
+      ) : (
+        <CategoryFAQ
+          categoryName={name}
+          fromPriceLabel={fromPriceLabel !== 'Découvrir' ? fromPriceLabel : undefined}
+          productCount={products.length}
+        />
       )}
 
       {related.length > 0 && (

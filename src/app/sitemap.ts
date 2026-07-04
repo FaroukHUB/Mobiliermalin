@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { CATEGORIES } from '@/lib/categories-data'
+import { BLOG_ARTICLES } from '@/lib/blog-articles'
 import {
   getAllCategories,
   getAllProductSlugs,
@@ -101,6 +102,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // idem
   }
 
+  // 5) Articles de blog (piliers éditoriaux, sitemap le plus stable)
+  const blogRoutes: MetadataRoute.Sitemap = BLOG_ARTICLES.map((a) => ({
+    url: `${siteUrl}/blog/${a.slug}`,
+    lastModified: new Date(a.updatedAt),
+    changeFrequency: 'monthly',
+    priority: 0.6,
+  }))
+
   // Déduplique par URL (au cas où une catégorie hardcodée existerait aussi en Sanity)
   const seen = new Set<string>()
   const all = [
@@ -108,6 +117,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...hardcodedCategoryRoutes,
     ...sanityCategoryRoutes,
     ...productRoutes,
+    ...blogRoutes,
   ].filter((entry) => {
     if (seen.has(entry.url)) return false
     seen.add(entry.url)
