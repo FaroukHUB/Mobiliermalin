@@ -13,6 +13,7 @@
   "dependencies": {
     "@react-pdf/renderer": "^4.5.1",
     "@sanity/image-url": "^1",
+    "@sanity/ui": "^2.16.22",
     "@sanity/vision": "^3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

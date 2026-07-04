@@ -9,6 +9,7 @@ import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './sanity/schemas'
 import { sendQuoteAction } from './sanity/actions/sendQuoteAction'
 import { downloadInvoiceAction } from './sanity/actions/downloadInvoiceAction'
+import { Dashboard } from './sanity/dashboard/Dashboard'
 import { projectId, dataset, apiVersion } from './sanity/env'
 import {
   LOCAL_PAGES,
@@ -79,6 +80,18 @@ export default defineConfig({
         S.list()
           .title('Mobilier Malin')
           .items([
+            // Tableau de bord — s'affiche par défaut à l'arrivée dans le
+            // Studio, remplace le panneau blanc vide.
+            S.listItem()
+              .id('dashboard')
+              .title('Tableau de bord')
+              .icon(() => '🏠')
+              .child(
+                S.component(Dashboard)
+                  .id('dashboard')
+                  .title('Tableau de bord — Mobilier Malin'),
+              ),
+            S.divider(),
             // Singleton : Réglages du site
             S.listItem()
               .title('Réglages du site')
