@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Bureaux d\'occasion à Aix-en-Provence — Mobilier Malin',
     description:
-      'Bureaux reconditionnés livrés sur le bassin aixois depuis notre atelier. Cabinets, startups, professions libérales — garantie 6 mois.',
+      'Bureaux reconditionnés livrés sur le bassin aixois depuis notre atelier de La Penne-sur-Huveaune. Cabinets, startups, professions libérales — contrôle qualité 7 points.',
     url: `${siteUrl}/bureau-occasion-aix-en-provence`,
     type: 'website',
   },
@@ -322,8 +322,8 @@ export default async function AixEnProvencePage() {
           <Reveal delay={80}>
             <p>
               Notre offre se situe entre les deux : du mobilier de marque
-              (Steelcase, Haworth, Vitra) inspecté, nettoyé et garanti six mois,
-              à un tiers ou un quart du prix neuf. Les bureaux qu&apos;on remet
+              (Steelcase, Haworth, Vitra) inspecté et nettoyé dans notre
+              atelier local, à un tiers ou un quart du prix neuf. Les bureaux qu&apos;on remet
               en circulation sont récupérés sur des chantiers de réaménagement
               régionaux — beaucoup proviennent justement d&apos;entreprises
               aixoises qui changent leurs plateaux tous les sept à dix ans.

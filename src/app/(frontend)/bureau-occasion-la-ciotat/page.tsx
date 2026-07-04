@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Vente de bureaux d\'occasion à La Ciotat — Mobilier Malin',
     description:
-      'Livraison rapide à La Ciotat (25 min par l\'A50). Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
+      'Livraison rapide à La Ciotat (25 min par l\'A50). Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
     url: `${siteUrl}/bureau-occasion-la-ciotat`,
     type: 'website',
   },
@@ -231,8 +231,8 @@ export default async function LaCiotatPage() {
               d&apos;y livrer rapidement, à un tarif maîtrisé, et de
               revenir facilement si un ajustement est nécessaire après
               installation. Nos bureaux d&apos;occasion reconditionnés —
-              Steelcase, Vitra, Haworth, Herman Miller — sont garantis
-              six mois et livrés directement sur votre lieu de travail.
+              Steelcase, Vitra, Haworth, Herman Miller — sont préparés dans
+              notre atelier local et livrés directement sur votre lieu de travail.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -357,9 +357,10 @@ export default async function LaCiotatPage() {
                 </h3>
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                   Le jour J, nous nous présentons à l&apos;adresse convenue,
-                  déchargeons et plaçons les bureaux. La garantie six mois
-                  est activée à la remise — un défaut, un mécanisme qui
-                  faiblit, nous intervenons.
+                  déchargeons et plaçons les bureaux. Notre équipe technique
+                  reste joignable après achat — un défaut, un mécanisme qui
+                  faiblit, on reprend contact avec la personne de
+                  l&apos;atelier qui a préparé la pièce.
                 </p>
               </article>
             </Reveal>

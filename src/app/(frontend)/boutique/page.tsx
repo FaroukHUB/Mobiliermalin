@@ -103,8 +103,8 @@ export default async function BoutiquePage() {
           <div className="gold-divider mx-0 mt-8" />
           <p className="mt-8 text-lg text-ink-soft leading-relaxed max-w-2xl">
             Toutes nos pièces inspectées, nettoyées et reconditionnées dans
-            nos ateliers d&apos;Aubagne. Steelcase, Herman Miller, Haworth, Vitra
-            — garanties 6 mois, livraison France entière.
+            notre atelier de La Penne-sur-Huveaune. Steelcase, Herman Miller,
+            Haworth, Vitra — livraison France entière.
           </p>
         </div>
       </section>

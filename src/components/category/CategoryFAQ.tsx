@@ -46,25 +46,27 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
   })
 
   qa.push({
-    q: `Comment garantissez-vous l'état des ${lower} vendus ?`,
-    a: `Chaque pièce passe par un contrôle qualité en 7 points en atelier : structure, mécanismes, vérins, revêtement, nettoyage, sécurité et finition esthétique. Les pièces sont ensuite classées selon notre grille 5 niveaux (neuf, excellent, très bon, bon, correct). Toutes bénéficient d'une garantie de 6 mois pièces et main-d'œuvre.`,
+    q: `Où contrôlez-vous les ${lower} avant la vente ?`,
+    a: `Tout se passe dans notre propre atelier à La Penne-sur-Huveaune (à 5 minutes d'Aubagne, 20 minutes de Marseille). Chaque pièce passe par un contrôle qualité en 7 points : structure, mécanismes, vérins, revêtement, nettoyage, sécurité et finition esthétique. Les pièces sont ensuite classées selon notre grille 5 niveaux (neuf, excellent, très bon, bon, correct). Pas de dropshipping ni de revente à l'aveugle — notre équipe technique intervient physiquement sur chaque produit et reste joignable directement après achat.`,
     aHtml: (
       <>
-        Chaque pièce passe par un{' '}
-        <strong className="text-ink">contrôle qualité en 7 points</strong> en
-        atelier : structure, mécanismes, vérins, revêtement, nettoyage,
-        sécurité et finition esthétique. Les pièces sont ensuite classées selon
-        notre grille 5 niveaux (neuf, excellent, très bon, bon, correct). Le
-        détail est publié dans notre{' '}
+        Tout se passe dans{' '}
+        <strong className="text-ink">notre propre atelier</strong> à La
+        Penne-sur-Huveaune (5 min d&apos;Aubagne, 20 min de Marseille). Chaque
+        pièce passe par un{' '}
+        <strong className="text-ink">contrôle qualité en 7 points</strong> :
+        structure, mécanismes, vérins, revêtement, nettoyage, sécurité et
+        finition esthétique. Les pièces sont ensuite classées selon notre
+        grille 5 niveaux (neuf, excellent, très bon, bon, correct). Le détail
+        est publié dans notre{' '}
         <Link
           href="/charte-qualite"
           className="text-gold-dark underline underline-offset-2 hover:text-gold"
         >
           charte qualité
         </Link>
-        . Toutes bénéficient d&apos;une{' '}
-        <strong className="text-ink">garantie de 6 mois</strong> pièces et
-        main-d&apos;œuvre.
+        . Pas de dropshipping ni de revente à l&apos;aveugle — notre équipe
+        reste joignable directement après achat.
       </>
     ),
   })

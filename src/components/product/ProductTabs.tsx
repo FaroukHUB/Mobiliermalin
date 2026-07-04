@@ -458,16 +458,19 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
 
               <div className="bg-ivory border-l-4 border-gold p-6">
                 <ShieldCheck className="h-6 w-6 text-gold" strokeWidth={1.5} />
-                <h3 className="font-serif text-lg text-ink mt-4">Garantie 6 mois</h3>
+                <h3 className="font-serif text-lg text-ink mt-4">Notre atelier local</h3>
                 <ul className="mt-3 space-y-2 text-sm text-ink-soft">
                   <li>
-                    · Contrôle qualité 7 points avant mise en vente{' '}
+                    · Atelier &amp; showroom à La Penne-sur-Huveaune —{' '}
+                    <em>pas de dropshipping</em>
+                  </li>
+                  <li>
+                    · Contrôle qualité 7 points sur place avant mise en vente{' '}
                     <Link href="/charte-qualite" className="text-gold-dark underline underline-offset-2 hover:text-gold">
                       voir la charte
                     </Link>
                   </li>
-                  <li>· Mécanismes, vérin, accoudoirs, plateau : couverts</li>
-                  <li>· Intervention sur site ou remplacement pièce détachée</li>
+                  <li>· Équipe locale joignable directement, pas de SAV externalisé</li>
                   <li>· 14 jours de rétractation pour les particuliers</li>
                 </ul>
               </div>

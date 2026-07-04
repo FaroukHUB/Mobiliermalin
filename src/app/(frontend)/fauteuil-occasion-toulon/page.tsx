@@ -35,7 +35,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Fauteuils de bureau d\'occasion livrés à Toulon — Mobilier Malin',
   description:
-    'Toulon est à 1 h de notre atelier par l\'A50. Nous y livrons régulièrement nos fauteuils ergonomiques reconditionnés Steelcase, Herman Miller, Vitra, garantis 6 mois.',
+    'Toulon est à 1 h de notre atelier par l\'A50. Nous y livrons régulièrement nos fauteuils ergonomiques reconditionnés Steelcase, Herman Miller, Vitra, préparés dans notre atelier local.',
   keywords: [
     'fauteuil bureau occasion Toulon',
     'fauteuil ergonomique Toulon',
@@ -226,7 +226,7 @@ export default async function FauteuilToulonPage() {
               Toulon est à une heure de notre atelier par l&apos;A50.
               Cette proximité nous permet d&apos;y livrer régulièrement
               nos fauteuils ergonomiques reconditionnés, sans surcoût
-              excessif et avec la même garantie six mois que sur
+              excessif et avec le même contrôle atelier que sur
               Marseille. Le fauteuil étant l&apos;une des pièces les
               plus simples à transporter, nous pouvons même livrer un
               siège isolé sans attendre une tournée groupée.

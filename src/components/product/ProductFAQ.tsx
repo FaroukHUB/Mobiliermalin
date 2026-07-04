@@ -48,21 +48,33 @@ function buildFAQ({ productName, brand, conditionLabel, categoryName, stock }: P
     ),
   })
 
-  // 2. Garantie
+  // 2. Atelier local (ex-garantie)
   qa.push({
-    q: `Y a-t-il une garantie sur ${productName} ?`,
-    a: `Oui, tous nos produits reconditionnés sont couverts par une garantie de 6 mois (pièces et main-d'œuvre) sur la mécanique, les vérins, les accoudoirs, les plateaux et tous les composants essentiels. Cette garantie s'applique aux professionnels comme aux particuliers, en plus des 14 jours de rétractation légale.`,
+    q: `Où et comment est préparé ${productName} avant la vente ?`,
+    a: `Chaque pièce est démontée, contrôlée et préparée dans notre propre atelier au 18 chemin Noël Robion, 13400 La Penne-sur-Huveaune. Pas de dropshipping ni de revente sans contrôle : notre équipe technique intervient sur chaque produit avant sa mise en vente. Vous pouvez d'ailleurs passer voir l'atelier et le showroom sur rendez-vous — nos clients particuliers comme professionnels sont libres d'essayer avant d'acheter, et de contacter directement l'équipe qui a préparé leur pièce.`,
     aHtml: (
       <>
-        Oui, tous nos produits reconditionnés sont couverts par une{' '}
-        <strong className="text-ink">garantie de 6 mois</strong> (pièces et
-        main-d&apos;œuvre) sur la mécanique, les vérins, les accoudoirs, les
-        plateaux et tous les composants essentiels. Cette garantie
-        s&apos;applique aux professionnels comme aux particuliers, en plus des{' '}
-        <Link href="/retractation" className="text-gold-dark underline underline-offset-2 hover:text-gold">
-          14 jours de rétractation
+        Chaque pièce est démontée, contrôlée et préparée dans{' '}
+        <strong className="text-ink">notre propre atelier</strong> au 18 chemin
+        Noël Robion, 13400 La Penne-sur-Huveaune. Pas de dropshipping ni de
+        revente sans contrôle : notre équipe technique intervient sur chaque
+        produit avant sa mise en vente. Vous pouvez d&apos;ailleurs passer voir
+        l&apos;atelier et le showroom{' '}
+        <Link
+          href="/contact"
+          className="text-gold-dark underline underline-offset-2 hover:text-gold"
+        >
+          sur rendez-vous
         </Link>{' '}
-        légale.
+        — nos clients sont libres d&apos;essayer avant d&apos;acheter, et de
+        contacter directement l&apos;équipe qui a préparé leur pièce. Les{' '}
+        <Link
+          href="/retractation"
+          className="text-gold-dark underline underline-offset-2 hover:text-gold"
+        >
+          garanties légales
+        </Link>{' '}
+        (conformité, vices cachés) s&apos;appliquent en plus.
       </>
     ),
   })

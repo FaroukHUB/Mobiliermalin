@@ -203,11 +203,11 @@ export const BLOG_ARTICLES: BlogArticle[] = [
         heading: '3. Reconditionné — la vraie catégorie',
         paragraphs: [
           'Le reconditionnement, au sens propre, implique un démontage partiel ou complet, un contrôle mécanique de chaque composant, le remplacement systématique des pièces d\'usure (vérin, glissières, roulettes, joints), un nettoyage professionnel (parfois désinfection ozone), et une remise en état esthétique (retouches, tension du tissu, etc.).',
-          'Un fauteuil reconditionné retrouve entre 85 % et 95 % de ses caractéristiques d\'origine. Il repart pour 8 à 12 ans d\'usage professionnel. C\'est aussi la catégorie qui bénéficie d\'une vraie garantie (6 mois pièces et main-d\'œuvre chez Mobilier Malin), parce que le revendeur connaît chaque pièce du produit.',
+          'Un fauteuil reconditionné retrouve entre 85 % et 95 % de ses caractéristiques d\'origine. Il repart pour 8 à 12 ans d\'usage professionnel. C\'est aussi la catégorie où le vendeur connaît physiquement chaque pièce, parce qu\'elle est passée par son propre atelier — chez Mobilier Malin, notre équipe technique intervient sur chaque produit à La Penne-sur-Huveaune avant sa mise en ligne.',
         ],
         bullets: [
           'Prix : 40-70 % du neuf.',
-          'Garantie : 6 mois pièces et main-d\'œuvre.',
+          'Contrôle : atelier propre, équipe technique joignable après achat.',
           'Contrôle : 7 points, mécanique interne + externe.',
           'Public : PME, cabinets, professionnels exigeants.',
         ],

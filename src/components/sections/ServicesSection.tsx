@@ -28,7 +28,7 @@ export function ServicesSection() {
           <ul className="mt-6 space-y-3">
             {[
               'Steelcase, Herman Miller, Haworth, Vitra',
-              'Contrôlé, nettoyé et garanti 6 mois',
+              'Contrôlé et préparé dans notre atelier local',
               'Livraison et installation incluses',
               'De 1 à 500+ postes équipés',
             ].map((b) => (

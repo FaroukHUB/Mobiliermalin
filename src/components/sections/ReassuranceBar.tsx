@@ -1,10 +1,10 @@
-import { ShieldCheck, Truck, Recycle, Award } from 'lucide-react'
+import { Wrench, Truck, Recycle, Award } from 'lucide-react'
 
 const ITEMS = [
   {
-    icon: ShieldCheck,
-    title: 'Garantie 6 mois',
-    sub: 'Sur tout le mobilier',
+    icon: Wrench,
+    title: 'Atelier local',
+    sub: 'La Penne-sur-Huveaune',
   },
   {
     icon: Truck,

@@ -14,7 +14,7 @@ const STEPS = [
   {
     num: '03',
     title: 'Mise en catalogue',
-    body: 'Photographie professionnelle, fiche détaillée avec dimensions, état, provenance. Garantie 6 mois activée.',
+    body: 'Photographie professionnelle, fiche détaillée avec dimensions, état, provenance. Fiche technique et attestation RSE générées.',
   },
   {
     num: '04',

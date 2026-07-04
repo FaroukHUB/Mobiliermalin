@@ -351,7 +351,7 @@ export function Header({ logo, categories = [], showcase = null }: HeaderProps =
 
             <div className="mt-10 pt-6 border-t border-line flex items-center justify-between flex-wrap gap-4">
               <p className="text-xs text-ink-mute uppercase tracking-widest">
-                Arrivages réguliers — pièces signées, garanties 6 mois
+                Arrivages réguliers — préparés dans notre atelier local
               </p>
               <Link
                 href="/boutique"

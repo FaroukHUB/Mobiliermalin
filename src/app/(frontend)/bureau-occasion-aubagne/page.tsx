@@ -42,7 +42,7 @@ const FALLBACK_HERO_ALT =
 export const metadata: Metadata = {
   title: 'Vente de bureaux d\'occasion à Aubagne — Showroom à 5 min, retrait sur place',
   description:
-    'Vente directe de bureaux d\'occasion à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). Magasin de mobilier de bureau professionnel : 200 pièces en stock, lundi-samedi sur rendez-vous. Bureaux droits, angle, bench, assis-debout reconditionnés. Garantie 6 mois.',
+    'Vente directe de bureaux d\'occasion à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). Magasin de mobilier de bureau professionnel : 200 pièces en stock, lundi-samedi sur rendez-vous. Bureaux droits, angle, bench, assis-debout reconditionnés dans notre atelier local.',
   keywords: [
     'vente bureaux aubagne',
     'vente bureau Aubagne',
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Vente de bureaux d\'occasion à Aubagne — Mobilier Malin',
     description:
-      'Vente directe de bureaux d\'occasion à 5 minutes d\'Aubagne. Magasin de mobilier de bureau professionnel reconditionné, garantie 6 mois.',
+      'Vente directe de bureaux d\'occasion à 5 minutes d\'Aubagne. Magasin de mobilier de bureau professionnel reconditionné dans notre atelier local.',
     url: `${siteUrl}/bureau-occasion-aubagne`,
     type: 'website',
   },
@@ -347,8 +347,9 @@ export default async function AubagneBureauPage() {
               </p>
               <p className="mt-5 text-ink-soft leading-relaxed">
                 Notre atelier est juste à côté — vous pouvez voir d&apos;où sort
-                le mobilier, comment on le contrôle, pourquoi on dit qu&apos;il
-                est garanti 6 mois. Pas d&apos;effet vitrine. Tout est ouvert.
+                le mobilier, comment on le démonte, comment on le contrôle
+                point par point avant chaque vente. Pas d&apos;effet vitrine.
+                Tout est ouvert.
               </p>
             </div>
           </Reveal>
@@ -421,8 +422,8 @@ export default async function AubagneBureauPage() {
                 Aubagne — Gémenos — La Penne-sur-Huveaune — Roquevaire —
                 Cassis. La différence : du mobilier signé Steelcase, Vitra,
                 Haworth ou Herman Miller à des prix qui ressemblent à ceux
-                d&apos;un dépôt-vente, mais avec contrôle technique et
-                garantie 6 mois.
+                d&apos;un dépôt-vente, mais avec un vrai contrôle technique
+                dans notre atelier avant chaque vente.
               </p>
             </Reveal>
 

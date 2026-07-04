@@ -29,7 +29,7 @@ const SITE_URL =
 
 const STORE_NAME = 'Mobilier Malin'
 const STORE_DESCRIPTION =
-  'Mobilier de bureau professionnel reconditionné à Marseille. Steelcase, Vitra, Haworth, Herman Miller — garantie 6 mois, livraison PACA.'
+  'Mobilier de bureau professionnel reconditionné à Marseille. Steelcase, Vitra, Haworth, Herman Miller — atelier & showroom à La Penne-sur-Huveaune, livraison PACA.'
 
 // ─── Utilitaires ───────────────────────────────────────────────────
 
@@ -146,7 +146,7 @@ function buildDescription(product: SanityProduct): string {
     .filter(Boolean)
     .join(' × ')
   if (dims) parts.push(dims)
-  parts.push('Garantie 6 mois. Livraison Marseille & PACA.')
+  parts.push('Contrôlé dans notre atelier à La Penne-sur-Huveaune. Livraison Marseille & PACA.')
   return parts.join(' — ')
 }
 

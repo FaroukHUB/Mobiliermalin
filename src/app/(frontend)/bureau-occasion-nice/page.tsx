@@ -37,7 +37,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Bureaux d\'occasion livrés à Nice — Mobilier Malin',
   description:
-    'Nous recevons de nombreuses demandes depuis Nice et la Côte d\'Azur. Pour y répondre, nous avons mis en place des journées de livraison dédiées. Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
+    'Nous recevons de nombreuses demandes depuis Nice et la Côte d\'Azur. Pour y répondre, nous avons mis en place des journées de livraison dédiées. Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
   keywords: [
     'bureau occasion Nice',
     'bureau d\'occasion Nice',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Bureaux d\'occasion livrés à Nice — Mobilier Malin',
     description:
-      'Journées de livraison dédiées à Nice et la Côte d\'Azur. Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
+      'Journées de livraison dédiées à Nice et la Côte d\'Azur. Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
     url: `${siteUrl}/bureau-occasion-nice`,
     type: 'website',
   },
@@ -358,10 +358,11 @@ export default async function NicePage() {
                 </h3>
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                   Le jour de la livraison, nous nous présentons à
-                  l&apos;adresse convenue. La garantie de six mois est
-                  activée à la remise des produits — un mécanisme qui
-                  faiblit, un défaut qui apparaît, nous intervenons.
-                  C&apos;est inclus, y compris à 200 km.
+                  l&apos;adresse convenue. Notre équipe technique reste
+                  joignable après achat — un mécanisme qui faiblit, un
+                  défaut qui apparaît, on reprend contact avec la
+                  personne de l&apos;atelier qui a préparé la pièce.
+                  Même à 200 km.
                 </p>
               </article>
             </Reveal>

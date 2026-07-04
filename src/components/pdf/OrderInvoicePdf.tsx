@@ -502,8 +502,9 @@ export function OrderInvoicePdf({
           {LEGAL.showroom.ville} · SIREN {LEGAL.siren} · TVA{' '}
           {LEGAL.tvaIntracom}
           {'\n'}
-          Garantie 6 mois sur tous les produits. Retour sous 14 jours pour les
-          particuliers (loi Hamon).
+          Produits reconditionnés et contrôlés dans notre atelier de La
+          Penne-sur-Huveaune. Retour sous 14 jours pour les particuliers (loi
+          Hamon).
         </Text>
       </Page>
     </Document>

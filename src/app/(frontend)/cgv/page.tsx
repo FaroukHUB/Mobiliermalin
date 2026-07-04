@@ -195,7 +195,8 @@ export default function CGVPage() {
 
         <Section title="Article 9 — Garanties légales">
           <p>
-            Les produits vendus bénéficient&nbsp;:
+            Les produits vendus bénéficient des garanties légales suivantes,
+            applicables de plein droit&nbsp;:
           </p>
           <ul className="mt-4 space-y-3 text-[15px]">
             <li>
@@ -209,17 +210,15 @@ export default function CGVPage() {
               (art. 1641 et suivants du Code civil) — 2 ans à compter de la
               découverte du vice.
             </li>
-            <li>
-              <strong className="text-ink">Garantie commerciale Mobilier Malin</strong>{' '}
-              — 6 mois supplémentaires sur les mécanismes (vérins, bras,
-              accoudoirs, plateaux) au-delà des garanties légales ci-dessus.
-            </li>
           </ul>
           <p className="mt-4">
-            Pour exercer une garantie, le Client contacte Mobilier Malin par
-            email en décrivant le défaut constaté, accompagné si possible de
-            photographies. Une solution (réparation, échange, remboursement)
-            est proposée sous 5 jours ouvrés.
+            Pour exercer une garantie légale, le Client contacte Mobilier
+            Malin par email en décrivant le défaut constaté, accompagné si
+            possible de photographies. Une solution (réparation, échange,
+            remboursement) est proposée sous 5 jours ouvrés. Nos produits
+            reconditionnés étant contrôlés dans notre atelier de La
+            Penne-sur-Huveaune avant mise en vente, notre équipe technique
+            connaît chaque pièce livrée et reste directement joignable.
           </p>
         </Section>
 

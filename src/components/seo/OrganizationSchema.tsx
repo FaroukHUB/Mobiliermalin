@@ -17,7 +17,7 @@ export function OrganizationSchema() {
         url: siteUrl,
         logo: `${siteUrl}/logo.png`,
         description:
-          "Mobilier de bureau d'exception reconditionné. Steelcase, Herman Miller, Haworth, Vitra à -60% du prix neuf. Garanti 6 mois. Livraison France.",
+          "Mobilier de bureau d'exception reconditionné. Steelcase, Herman Miller, Haworth, Vitra à -60% du prix neuf. Atelier & showroom à La Penne-sur-Huveaune, livraison France.",
         founder: {
           '@type': 'Person',
           name: 'Djamel Djennad',

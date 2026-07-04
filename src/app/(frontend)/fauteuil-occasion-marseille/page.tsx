@@ -37,7 +37,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Fauteuils de bureau d\'occasion à Marseille — Steelcase, Herman Miller, Vitra',
   description:
-    'Fauteuils ergonomiques reconditionnés à Marseille : Steelcase Leap, Herman Miller Aeron, Vitra ID. Inspectés mécanisme par mécanisme, garantis 6 mois, essayables au showroom.',
+    'Fauteuils ergonomiques reconditionnés à Marseille : Steelcase Leap, Herman Miller Aeron, Vitra ID. Inspectés mécanisme par mécanisme dans notre atelier local, essayables au showroom.',
   keywords: [
     'fauteuil bureau occasion Marseille',
     'fauteuil ergonomique Marseille',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Fauteuils de bureau d\'occasion à Marseille — Mobilier Malin',
     description:
-      'Steelcase, Herman Miller, Vitra reconditionnés. Inspectés mécanisme par mécanisme, garantis 6 mois.',
+      'Steelcase, Herman Miller, Vitra reconditionnés. Inspectés mécanisme par mécanisme dans notre atelier local.',
     url: `${siteUrl}/fauteuil-occasion-marseille`,
     type: 'website',
   },
@@ -174,7 +174,7 @@ export default async function FauteuilMarseillePage() {
     '@id': `${siteUrl}/#localbusiness-fauteuil-marseille`,
     name: 'Mobilier Malin — Fauteuils de bureau d\'occasion (Marseille)',
     description:
-      'Vente de fauteuils de bureau ergonomiques reconditionnés Steelcase, Herman Miller, Haworth, Vitra à Marseille. Inspectés en atelier, garantis 6 mois.',
+      'Vente de fauteuils de bureau ergonomiques reconditionnés Steelcase, Herman Miller, Haworth, Vitra à Marseille. Inspectés dans notre atelier de La Penne-sur-Huveaune.',
     url: `${siteUrl}/fauteuil-occasion-marseille`,
     telephone: LEGAL.telephoneTel,
     email: LEGAL.email,
@@ -264,7 +264,7 @@ export default async function FauteuilMarseillePage() {
               ergonomiques Steelcase, Herman Miller, Vitra et Haworth — les
               modèles conçus dès l&apos;origine pour tenir vingt ans en
               environnement professionnel. Inspectés mécanisme par mécanisme
-              dans notre atelier de La Penne-sur-Huveaune, garantis six mois.
+              dans notre atelier de La Penne-sur-Huveaune, par notre équipe.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -320,7 +320,7 @@ export default async function FauteuilMarseillePage() {
               L&apos;occasion reconditionnée résout cette équation : nous
               proposons exactement les mêmes modèles iconiques, vérifiés un
               à un dans notre atelier, à un tiers ou un quart de leur prix
-              neuf. Avec une garantie de six mois pour couvrir l&apos;usage.
+              neuf. Contrôlés par notre équipe technique, joignable après achat.
             </p>
           </Reveal>
         </div>

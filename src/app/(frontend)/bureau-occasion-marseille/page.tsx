@@ -44,7 +44,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Bureaux d\'occasion à Marseille — Reconditionnés, livrés, garantis',
   description:
-    'Bureaux droits, bureaux d\'angle, bench et assis-debout d\'occasion reconditionnés. Steelcase, Haworth, Vitra. Atelier La Penne-sur-Huveaune, livraison Marseille, garantie 6 mois.',
+    'Bureaux droits, bureaux d\'angle, bench et assis-debout d\'occasion reconditionnés. Steelcase, Haworth, Vitra. Atelier & showroom La Penne-sur-Huveaune, livraison Marseille.',
   keywords: [
     'bureau occasion Marseille',
     'bureau d\'occasion Marseille',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Bureaux d\'occasion à Marseille — Mobilier Malin',
     description:
-      'Bureaux droits, angle, bench et assis-debout reconditionnés. Showroom La Penne-sur-Huveaune, livraison Marseille, garantie 6 mois.',
+      'Bureaux droits, angle, bench et assis-debout reconditionnés. Atelier & showroom La Penne-sur-Huveaune, livraison Marseille.',
     url: `${siteUrl}/bureau-occasion-marseille`,
     type: 'website',
   },
@@ -261,7 +261,7 @@ export default async function MarseillePage() {
               de La Penne-sur-Huveaune, à 15 minutes de la Joliette. Plateaux
               mélaminé chêne, blanc, gris ou bois véritable, signés Steelcase,
               Haworth, Vitra. Livraison Marseille, retrait au showroom,
-              garantie 6 mois.
+              contrôle qualité 7 points sur place avant chaque vente.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -319,7 +319,7 @@ export default async function MarseillePage() {
               postes premium, le bench collaboratif qui aligne 4 à 8 postes
               sur un même plan, et l&apos;assis-debout électrique qui transforme
               l&apos;ergonomie au quotidien. Chacun a son public à Marseille —
-              et chacun est garanti 6 mois.
+              et chacun passe par notre atelier avant de partir.
             </p>
           </Reveal>
         </div>

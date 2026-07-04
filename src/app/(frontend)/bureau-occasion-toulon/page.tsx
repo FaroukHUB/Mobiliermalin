@@ -37,7 +37,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Bureaux d\'occasion livrés à Toulon — Mobilier Malin',
   description:
-    'Toulon est sur notre zone de livraison habituelle (1 h par l\'A50 depuis La Penne-sur-Huveaune). Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois. Livraison sous quelques jours.',
+    'Toulon est sur notre zone de livraison habituelle (1 h par l\'A50 depuis La Penne-sur-Huveaune). Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local. Livraison sous quelques jours.',
   keywords: [
     'bureau occasion Toulon',
     'bureau d\'occasion Toulon',
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Bureaux d\'occasion livrés à Toulon — Mobilier Malin',
     description:
-      'Livraison régulière à Toulon et dans l\'ouest du Var (1 h par l\'A50). Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
+      'Livraison régulière à Toulon et dans l\'ouest du Var (1 h par l\'A50). Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
     url: `${siteUrl}/bureau-occasion-toulon`,
     type: 'website',
   },
@@ -361,10 +361,10 @@ export default async function ToulonPage() {
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                   Le jour de la livraison, nous nous présentons à
                   l&apos;adresse convenue, déchargeons et plaçons les
-                  bureaux à l&apos;endroit voulu. La garantie de six mois
-                  est activée à la remise — un défaut qui apparaît, un
-                  mécanisme qui faiblit, nous intervenons. C&apos;est
-                  inclus.
+                  bureaux à l&apos;endroit voulu. Notre équipe technique
+                  reste joignable après achat — un défaut qui apparaît,
+                  un mécanisme qui faiblit, on reprend contact avec la
+                  personne de l&apos;atelier qui a préparé la pièce.
                 </p>
               </article>
             </Reveal>

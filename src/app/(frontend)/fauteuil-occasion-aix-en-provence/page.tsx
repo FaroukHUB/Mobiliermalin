@@ -317,10 +317,10 @@ export default async function FauteuilAixPage() {
           <Reveal delay={160}>
             <p>
               Nous proposons ces mêmes modèles, reconditionnés un à un dans
-              notre atelier, à un tiers ou un quart de leur prix neuf. La
-              garantie de six mois couvre l&apos;usage. Et nous livrons sur
-              tout le Pays d&apos;Aix, en moins d&apos;une heure depuis La
-              Penne-sur-Huveaune.
+              notre atelier, à un tiers ou un quart de leur prix neuf. Notre
+              équipe technique reste joignable directement après achat. Et
+              nous livrons sur tout le Pays d&apos;Aix, en moins d&apos;une
+              heure depuis La Penne-sur-Huveaune.
             </p>
           </Reveal>
         </div>

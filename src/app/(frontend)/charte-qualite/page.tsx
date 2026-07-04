@@ -20,7 +20,7 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Charte qualité — Notre méthode de reconditionnement',
   description:
-    'Découvrez les 5 niveaux d\'état que nous attribuons à notre mobilier de bureau reconditionné, notre processus en 7 étapes, et le détail de notre garantie 6 mois.',
+    'Découvrez les 5 niveaux d\'état que nous attribuons à notre mobilier de bureau reconditionné et notre processus en 7 étapes, appliqué dans notre atelier de La Penne-sur-Huveaune.',
   alternates: { canonical: '/charte-qualite' },
 }
 
@@ -33,7 +33,7 @@ const DEFAULT_HERO = {
 }
 
 const DEFAULT_INTRO =
-  'Acheter du mobilier d\'occasion en ligne, c\'est faire confiance à une grille de notation qu\'on ne voit pas. Chez Mobilier Malin, on a tranché : 5 niveaux d\'état, des critères objectifs, et la même garantie pour tous. Pas de jargon, pas de fausses promesses. Vous savez exactement ce que vous recevrez avant de cliquer sur "Acheter".'
+  'Acheter du mobilier d\'occasion en ligne, c\'est faire confiance à une grille de notation qu\'on ne voit pas. Chez Mobilier Malin, on a tranché : 5 niveaux d\'état, des critères objectifs, et un contrôle physique dans notre atelier avant chaque mise en vente. Pas de jargon, pas de fausses promesses, pas de dropshipping. Vous savez exactement ce que vous recevrez avant de cliquer sur "Acheter".'
 
 const CONDITION_FALLBACK_COLORS: Record<string, string> = {
   new: 'border-gold bg-gold/5',
@@ -55,7 +55,7 @@ export default async function QualityGuidePage() {
   const intro = guide.introText || DEFAULT_INTRO
   const conditions = guide.conditions || []
   const processSteps = guide.processSteps || []
-  const warrantyTitle = guide.warrantyTitle || 'La garantie 6 mois — ce qu\'elle couvre'
+  const warrantyTitle = guide.warrantyTitle || 'Notre engagement atelier — ce qu\'il couvre'
   const warrantyIntro = guide.warrantyIntro || ''
   const warrantyCovered = guide.warrantyCovered || []
   const warrantyNotCovered = guide.warrantyNotCovered || []

@@ -174,10 +174,10 @@ export async function POST(req: NextRequest) {
       ? 'Retrait au showroom Mobilier Malin'
       : 'Livraison à domicile Mobilier Malin',
   )
-  // Footer légal + rappels de garantie
+  // Footer légal facture Stripe
   params.append(
     'invoice_creation[invoice_data][footer]',
-    'Garantie 6 mois — Retour sous 14 jours pour les particuliers (loi Hamon). Mobilier Malin, La Penne-sur-Huveaune.',
+    'Produits reconditionnés et contrôlés dans notre atelier de La Penne-sur-Huveaune. Retour sous 14 jours pour les particuliers (loi Hamon). Mobilier Malin — SARL 2 M.',
   )
   // Metadata dupliquée sur la facture (cart_summary récupérable côté admin)
   params.append(

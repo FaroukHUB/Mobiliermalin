@@ -296,7 +296,7 @@ export default async function BlogArticlePage({
           </h2>
           <p className="mt-4 text-ink-soft leading-relaxed">
             Fauteuils, bureaux, armoires, tables de réunion — nos pièces
-            reconditionnées, contrôlées et garanties 6 mois.
+            reconditionnées et contrôlées dans notre atelier local.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link href="/boutique" className="btn-gold inline-flex items-center gap-2">

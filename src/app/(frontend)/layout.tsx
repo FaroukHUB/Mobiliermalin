@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: '%s | Mobilier Malin',
     },
     description:
-      'Mobilier de bureau d\'occasion reconditionné : Steelcase, Herman Miller, Haworth, Vitra. Atelier à La Penne-sur-Huveaune, livraison Marseille & PACA, garantie 6 mois.',
+      'Mobilier de bureau d\'occasion reconditionné : Steelcase, Herman Miller, Haworth, Vitra. Atelier & showroom à La Penne-sur-Huveaune, contrôle qualité 7 points, livraison Marseille & PACA.',
     keywords: [
       'mobilier de bureau d\'occasion',
       'mobilier bureau reconditionné',
@@ -71,7 +71,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Mobilier Malin',
       title: 'Mobilier de bureau d\'occasion reconditionné — Mobilier Malin',
       description:
-        'Steelcase, Herman Miller, Haworth, Vitra reconditionnés. Showroom à La Penne-sur-Huveaune, livraison Marseille & PACA, garantie 6 mois.',
+        'Steelcase, Herman Miller, Haworth, Vitra reconditionnés. Atelier & showroom à La Penne-sur-Huveaune, contrôle qualité 7 points, livraison Marseille & PACA.',
     },
     robots: {
       index: true,

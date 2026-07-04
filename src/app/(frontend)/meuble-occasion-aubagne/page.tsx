@@ -41,7 +41,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Magasin de meubles d\'occasion à Aubagne — Showroom à 5 min, retrait sur place',
   description:
-    'Magasin de meubles d\'occasion professionnels à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). 200 pièces en stock : bureaux, fauteuils, armoires, rangements. Marques pro reconditionnées, garantie 6 mois. Lundi-samedi sur rendez-vous.',
+    'Magasin de meubles d\'occasion professionnels à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). 200 pièces en stock : bureaux, fauteuils, armoires, rangements. Marques pro reconditionnées dans notre atelier local. Lundi-samedi sur rendez-vous.',
   keywords: [
     'magasin meuble aubagne',
     'magasin meuble bureau Aubagne',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Magasin de meubles d\'occasion à Aubagne — Mobilier Malin',
     description:
-      'Magasin de meubles d\'occasion professionnels à 5 minutes d\'Aubagne. Bureaux, fauteuils, armoires reconditionnés, garantis 6 mois.',
+      'Magasin de meubles d\'occasion professionnels à 5 minutes d\'Aubagne. Bureaux, fauteuils, armoires reconditionnés dans notre atelier local.',
     url: `${siteUrl}/meuble-occasion-aubagne`,
     type: 'website',
   },
@@ -335,10 +335,10 @@ export default async function MeubleOccasionAubagnePage() {
               remplacement des pièces défectueuses, nettoyage
               professionnel, remontage, test. Rien n&apos;est exposé sans
               avoir passé cette étape. Ça change tout par rapport à un
-              achat sur Le Bon Coin ou en dépôt-vente classique : garantie
-              six mois, conseil par une équipe qui connaît chaque marque,
-              aide au chargement, livraison possible sur tout le secteur
-              Aubagne-Marseille.
+              achat sur Le Bon Coin ou en dépôt-vente classique : équipe
+              technique locale joignable après achat, conseil par une équipe
+              qui connaît chaque marque, aide au chargement, livraison
+              possible sur tout le secteur Aubagne-Marseille.
             </p>
           </Reveal>
 
@@ -479,8 +479,8 @@ export default async function MeubleOccasionAubagnePage() {
                 environ deux cents pièces : bureaux droits et en angle,
                 fauteuils ergonomiques, armoires métalliques, caissons,
                 cloisons acoustiques, espaces détente. L&apos;atelier est
-                juste à côté — vous voyez d&apos;où sortent les meubles et
-                pourquoi nous garantissons six mois.
+                juste à côté — vous voyez d&apos;où sortent les meubles,
+                comment on les démonte et les contrôle avant chaque vente.
               </p>
               <ul className="mt-8 space-y-3 text-sm text-ivory/80">
                 <li className="flex items-start gap-3">

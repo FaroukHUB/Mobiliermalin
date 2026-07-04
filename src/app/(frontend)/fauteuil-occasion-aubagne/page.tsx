@@ -37,7 +37,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Fauteuils de bureau d\'occasion à Aubagne — Essai libre au showroom',
   description:
-    'Showroom Aubagne (La Penne-sur-Huveaune) : essayez côte à côte plusieurs fauteuils ergonomiques avant d\'acheter. Steelcase, Herman Miller, Vitra reconditionnés, garantis 6 mois.',
+    'Showroom Aubagne (La Penne-sur-Huveaune) : essayez côte à côte plusieurs fauteuils ergonomiques avant d\'acheter. Steelcase, Herman Miller, Vitra reconditionnés dans notre atelier local.',
   keywords: [
     'fauteuil bureau occasion Aubagne',
     'fauteuil ergonomique Aubagne',
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Fauteuils de bureau d\'occasion à Aubagne — Mobilier Malin',
     description:
-      'Essayez côte à côte avant d\'acheter. Steelcase, Herman Miller, Vitra reconditionnés, garantis 6 mois.',
+      'Essayez côte à côte avant d\'acheter. Steelcase, Herman Miller, Vitra reconditionnés dans notre atelier local.',
     url: `${siteUrl}/fauteuil-occasion-aubagne`,
     type: 'website',
   },
@@ -167,7 +167,7 @@ export default async function FauteuilAubagnePage() {
     '@id': `${siteUrl}/#furniturestore-fauteuil-aubagne`,
     name: 'Mobilier Malin — Fauteuils de bureau d\'occasion (Aubagne)',
     description:
-      'Showroom de fauteuils ergonomiques reconditionnés à La Penne-sur-Huveaune, à proximité immédiate d\'Aubagne. Essai libre avant achat, garantie 6 mois.',
+      'Atelier & showroom de fauteuils ergonomiques reconditionnés à La Penne-sur-Huveaune, à proximité immédiate d\'Aubagne. Essai libre avant achat, contrôle qualité 7 points sur place.',
     url: `${siteUrl}/fauteuil-occasion-aubagne`,
     telephone: LEGAL.telephoneTel,
     email: LEGAL.email,

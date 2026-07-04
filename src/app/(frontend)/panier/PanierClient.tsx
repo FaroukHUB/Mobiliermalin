@@ -361,11 +361,11 @@ export function PanierClient() {
                 <ul className="mt-8 pt-6 border-t border-line space-y-3 text-xs text-ink-mute">
                   <li className="flex items-start gap-2">
                     <ShieldCheck className="h-3.5 w-3.5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
-                    <span>Garantie 6 mois sur tous les produits</span>
+                    <span>Contrôlé dans notre atelier local avant expédition</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Store className="h-3.5 w-3.5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
-                    <span>Showroom La Penne-sur-Huveaune (13821)</span>
+                    <span>Atelier &amp; showroom La Penne-sur-Huveaune</span>
                   </li>
                 </ul>
               </div>

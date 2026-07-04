@@ -37,7 +37,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Bureaux d\'occasion livrés à Orange — Mobilier Malin',
   description:
-    'Nous livrons à Orange et dans le nord du Vaucluse (1 h 30 par l\'A7) lors de nos tournées régulières. Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
+    'Nous livrons à Orange et dans le nord du Vaucluse (1 h 30 par l\'A7) lors de nos tournées régulières. Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
   keywords: [
     'bureau occasion Orange',
     'bureau d\'occasion Orange',
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Bureaux d\'occasion livrés à Orange — Mobilier Malin',
     description:
-      'Livraison régulière à Orange et dans le nord du Vaucluse (1 h 30 par l\'A7). Bureaux pro reconditionnés, garantis 6 mois.',
+      'Livraison régulière à Orange et dans le nord du Vaucluse (1 h 30 par l\'A7). Bureaux pro reconditionnés dans notre atelier de La Penne-sur-Huveaune.',
     url: `${siteUrl}/bureau-occasion-orange`,
     type: 'website',
   },
@@ -357,9 +357,10 @@ export default async function OrangePage() {
                 </h3>
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                   Le jour J, nous nous présentons à l&apos;adresse convenue.
-                  La garantie six mois est activée à la remise — un défaut
-                  qui apparaît, un mécanisme qui faiblit, nous intervenons.
-                  C&apos;est inclus, même à 150 km.
+                  Notre équipe technique reste joignable après achat — un
+                  défaut qui apparaît, un mécanisme qui faiblit, on reprend
+                  contact avec la personne de l&apos;atelier qui a préparé
+                  la pièce. Même à 150 km.
                 </p>
               </article>
             </Reveal>

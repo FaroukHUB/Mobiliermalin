@@ -68,7 +68,7 @@ export const CATEGORIES: CategoryStaticData[] = [
     name: 'Fauteuils ergonomiques',
     shortTagline: 'Fauteuils Steelcase, Haworth, Herman Miller reconditionnés',
     longDescription:
-      "Sièges ergonomiques de marques premium, inspectés et restaurés en atelier : nettoyage profond, remplacement des pièces d'usure (vérins, accoudoirs, tissus si nécessaire), test complet des réglages (hauteur, lombaire, accoudoirs, synchrone). Garantie 6 mois.",
+      "Sièges ergonomiques de marques premium, inspectés et restaurés dans notre atelier de La Penne-sur-Huveaune : nettoyage profond, remplacement des pièces d'usure (vérins, accoudoirs, tissus si nécessaire), test complet des réglages (hauteur, lombaire, accoudoirs, synchrone).",
     fromPriceLabel: 'À partir de 24 €',
     priceRange: { min: 24, max: 144 },
     variants: ['Steelcase', 'HÅG', 'Herman Miller', 'Haworth', 'Majencia', 'Avec accoudoirs', 'Synchrone', 'Filet/résille', 'Tissu'],
@@ -92,8 +92,8 @@ export const CATEGORIES: CategoryStaticData[] = [
         a: 'Privilégiez les marques premium (Steelcase, HÅG, Herman Miller) qui durent largement vingt ans. Le test : asseyez-vous, ajustez la hauteur, vérifiez le soutien lombaire, basculez en synchrone. Sur place à Aubagne, vous essayez avant d\'acheter.',
       },
       {
-        q: 'Y a-t-il une garantie ?',
-        a: 'Oui, 6 mois pièces et main-d\'œuvre sur tous les défauts qui ne seraient pas dus à un usage anormal. Si une pièce casse pendant cette période, on remplace ou on rembourse.',
+        q: 'Où sont préparés vos fauteuils avant la vente ?',
+        a: 'Dans notre propre atelier au 18 chemin Noël Robion, à La Penne-sur-Huveaune (5 min d\'Aubagne, 20 min de Marseille). Chaque siège est démonté, contrôlé, nettoyé et testé par notre équipe technique avant sa mise en vente — pas de dropshipping, pas de revente à l\'aveugle. Vous pouvez d\'ailleurs passer voir l\'atelier sur rendez-vous.',
       },
       {
         q: 'Puis-je acheter en gros pour mes équipes ?',

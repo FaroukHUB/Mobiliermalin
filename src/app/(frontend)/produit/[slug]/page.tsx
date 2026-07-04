@@ -49,7 +49,7 @@ export async function generateMetadata({
     description:
       product.seo?.metaDescription ||
       product.shortDescription ||
-      `${product.name} reconditionné, garanti 6 mois. Livraison Marseille, PACA, France.`,
+      `${product.name} reconditionné, préparé dans notre atelier local. Livraison Marseille, PACA, France.`,
     alternates: { canonical: `/produit/${slug}` },
     openGraph: {
       title: product.name,

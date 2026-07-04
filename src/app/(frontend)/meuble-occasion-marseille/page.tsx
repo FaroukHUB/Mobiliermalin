@@ -37,9 +37,9 @@ export const revalidate = 86400
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export const metadata: Metadata = {
-  title: 'Meubles d\'occasion à Marseille — Showroom, livraison, garantie 6 mois',
+  title: 'Meubles d\'occasion à Marseille — Atelier & showroom, livraison',
   description:
-    'Magasin de meubles d\'occasion à 10 min de Marseille : bureaux, fauteuils, armoires, rangements professionnels reconditionnés Steelcase, Vitra, Haworth. Garantie 6 mois, livraison sur Marseille.',
+    'Magasin de meubles d\'occasion à 10 min de Marseille : bureaux, fauteuils, armoires, rangements professionnels reconditionnés Steelcase, Vitra, Haworth dans notre atelier local. Livraison sur Marseille.',
   keywords: [
     'meuble occasion marseille',
     'meubles occasion marseille',
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Meubles d\'occasion à Marseille — Mobilier Malin',
     description:
-      'Magasin de meubles d\'occasion à 10 min de Marseille. Bureaux, fauteuils, armoires reconditionnés, garantis 6 mois.',
+      'Magasin de meubles d\'occasion à 10 min de Marseille. Bureaux, fauteuils, armoires reconditionnés dans notre atelier local.',
     url: `${siteUrl}/meuble-occasion-marseille`,
     type: 'website',
   },
@@ -260,9 +260,9 @@ export default async function MeubleOccasionMarseillePage() {
               Marseille. Nous y reconditionnons en permanence des
               bureaux, fauteuils, armoires, rangements et cloisons
               professionnels de marques reconnues — Steelcase, Herman
-              Miller, Vitra, Haworth. Chaque pièce est garantie six mois,
-              et nous livrons sur l&apos;ensemble des arrondissements
-              marseillais.
+              Miller, Vitra, Haworth. Chaque pièce passe par notre atelier
+              avant sa mise en vente, et nous livrons sur l&apos;ensemble
+              des arrondissements marseillais.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -317,13 +317,13 @@ export default async function MeubleOccasionMarseillePage() {
 
           <Reveal delay={80}>
             <p>
-              Cette différence change tout pour vous : vous bénéficiez
-              d&apos;une garantie de six mois sur le produit, du conseil
-              d&apos;une équipe qui connaît chaque marque (Steelcase,
-              Vitra, Haworth, Herman Miller, Majencia, USM Haller), et
-              d&apos;un service de livraison sur tout Marseille — du
-              Vieux-Port aux quartiers nord, en passant par le Prado et
-              La Valentine.
+              Cette différence change tout pour vous : chaque pièce passe
+              par un contrôle qualité 7 points dans notre atelier local
+              avant sa mise en vente, vous bénéficiez du conseil d&apos;une
+              équipe qui connaît chaque marque (Steelcase, Vitra, Haworth,
+              Herman Miller, Majencia, USM Haller), et d&apos;un service de
+              livraison sur tout Marseille — du Vieux-Port aux quartiers
+              nord, en passant par le Prado et La Valentine.
             </p>
           </Reveal>
 

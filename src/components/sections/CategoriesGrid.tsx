@@ -77,7 +77,7 @@ export function CategoriesGrid({ categories = [] }: CategoriesGridProps = {}) {
           <div className="gold-divider mt-6" />
           <p className="mt-6 text-ink-mute">
             Chaque pièce est inspectée, nettoyée et reconditionnée avant
-            livraison. Marques premium, état contrôlé, garantie 6 mois.
+            livraison. Marques premium, contrôlés dans notre atelier local.
           </p>
         </div>
       </Reveal>

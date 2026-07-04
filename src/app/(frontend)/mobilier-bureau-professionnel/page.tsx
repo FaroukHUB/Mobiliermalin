@@ -215,8 +215,8 @@ export default async function MobilierBureauProfessionnelPage() {
               équipez votre entreprise en mobilier professionnel
               reconditionné des plus grandes marques. Steelcase, Herman
               Miller, Vitra, Haworth, Majencia, USM Haller : prix divisés
-              par trois par rapport au neuf, garantie six mois,
-              attestation RSE incluse.
+              par trois par rapport au neuf, contrôle qualité 7 points
+              dans notre atelier local, attestation RSE incluse.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -503,12 +503,13 @@ export default async function MobilierBureauProfessionnelPage() {
             <article className="bg-ivory-light border-l-4 border-gold p-7 h-full">
               <ShieldCheck className="h-7 w-7 text-gold" strokeWidth={1.5} />
               <h3 className="font-serif text-xl text-ink mt-5">
-                Garantie six mois
+                Notre atelier local
               </h3>
               <p className="mt-3 text-sm text-ink-soft leading-relaxed">
-                Si un mécanisme faiblit, un vérin lâche, une pièce
-                s&apos;abîme dans les six mois, nous intervenons. Pour
-                vous, c&apos;est zéro risque sur l&apos;investissement.
+                Chaque pièce est démontée, contrôlée et préparée dans
+                notre atelier à La Penne-sur-Huveaune. Pas de dropshipping.
+                Notre équipe technique reste joignable directement après
+                achat, sans passer par un SAV externalisé.
               </p>
             </article>
           </Reveal>

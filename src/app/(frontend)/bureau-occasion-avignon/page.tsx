@@ -37,7 +37,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Bureaux d\'occasion livrés à Avignon — Mobilier Malin',
   description:
-    'Nous livrons régulièrement nos bureaux d\'occasion à Avignon et dans tout le Vaucluse (1 h 15 par l\'A7). Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
+    'Nous livrons régulièrement nos bureaux d\'occasion à Avignon et dans tout le Vaucluse (1 h 15 par l\'A7). Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
   keywords: [
     'bureau occasion Avignon',
     'bureau d\'occasion Avignon',
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Bureaux d\'occasion livrés à Avignon — Mobilier Malin',
     description:
-      'Livraison régulière dans le Vaucluse (1 h 15 par l\'A7). Bureaux Steelcase, Vitra, Haworth reconditionnés, garantis 6 mois.',
+      'Livraison régulière dans le Vaucluse (1 h 15 par l\'A7). Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
     url: `${siteUrl}/bureau-occasion-avignon`,
     type: 'website',
   },
@@ -234,7 +234,7 @@ export default async function AvignonPage() {
               cité des Papes et le Vaucluse — Villeneuve-lès-Avignon, Le
               Pontet, Sorgues, Cavaillon, Carpentras. Nos bureaux
               reconditionnés Steelcase, Vitra, Haworth et Herman Miller
-              sont garantis six mois.
+              passent par notre atelier local avant chaque livraison.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -359,9 +359,10 @@ export default async function AvignonPage() {
                 </h3>
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                   Le jour J, nous nous présentons à l&apos;adresse convenue.
-                  La garantie six mois est activée à la remise — un défaut
-                  qui apparaît, un mécanisme qui faiblit, nous intervenons.
-                  C&apos;est inclus, même à 100 km.
+                  Notre équipe technique reste joignable après achat — un
+                  défaut qui apparaît, un mécanisme qui faiblit, on reprend
+                  contact avec la personne de l&apos;atelier qui a préparé
+                  la pièce. Même à 100 km.
                 </p>
               </article>
             </Reveal>
