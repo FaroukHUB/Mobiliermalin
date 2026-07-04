@@ -198,6 +198,56 @@ export default defineConfig({
               .icon(() => '📁')
               .child(S.documentTypeList('category').title('Catégories')),
             S.divider(),
+            // Blog — articles éditoriaux (guides, comparatifs, actu)
+            S.listItem()
+              .title('Blog')
+              .icon(() => '📰')
+              .child(
+                S.list()
+                  .title('Blog — articles')
+                  .items([
+                    S.listItem()
+                      .title('✅ Articles publiés')
+                      .child(
+                        S.documentList()
+                          .title('Publiés')
+                          .filter('_type == "blogPost" && status == "published"')
+                          .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('📝 Brouillons')
+                      .child(
+                        S.documentList()
+                          .title('Brouillons')
+                          .filter('_type == "blogPost" && status == "draft"')
+                          .defaultOrdering([{ field: '_updatedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('⭐ Mis en avant sur la home')
+                      .child(
+                        S.documentList()
+                          .title('Mis en avant')
+                          .filter('_type == "blogPost" && featured == true')
+                          .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('🗄️ Archivés')
+                      .child(
+                        S.documentList()
+                          .title('Archivés')
+                          .filter('_type == "blogPost" && status == "archived"'),
+                      ),
+                    S.divider(),
+                    S.listItem()
+                      .title('Tous les articles')
+                      .child(
+                        S.documentTypeList('blogPost')
+                          .title('Tous les articles')
+                          .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]),
+                      ),
+                  ]),
+              ),
+            S.divider(),
             // Commandes (paiements Stripe) — auto-créées par le webhook
             S.listItem()
               .title('Commandes')

@@ -13,6 +13,7 @@ import { ProcessSection } from '@/components/sections/ProcessSection'
 import { ShowroomSection } from '@/components/sections/ShowroomSection'
 import { ImpactSection } from '@/components/sections/ImpactSection'
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
+import { BlogSection } from '@/components/sections/BlogSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
 import { SHOP_URL } from '@/lib/config'
 import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProducts, getExceptionProducts, urlFor, type SanityImage } from '@/lib/sanity'
@@ -133,6 +134,7 @@ export default async function HomePage() {
       <ShowroomSection image={sanityImageToMedia(settings.showroomImage, 'Showroom Aubagne')} />
       <ImpactSection />
       <TestimonialsSection />
+      <BlogSection />
       <NewsletterSection />
     </>
   )

@@ -49,6 +49,7 @@ const SECONDARY_NAV = [
     { label: 'Charte qualité', href: '/charte-qualite' },
   ]},
   { label: 'Notre démarche', href: '/notre-demarche' },
+  { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
 ] as const
 
@@ -193,6 +194,12 @@ export function Header({ logo, categories = [], showcase = null }: HeaderProps =
             className="px-4 py-2 text-sm text-ink hover:text-gold-dark transition"
           >
             Notre démarche
+          </Link>
+          <Link
+            href="/blog"
+            className="px-4 py-2 text-sm text-ink hover:text-gold-dark transition"
+          >
+            Blog
           </Link>
           <Link
             href="/contact"
@@ -504,6 +511,13 @@ export function Header({ logo, categories = [], showcase = null }: HeaderProps =
             className="py-3 text-base text-ink border-b border-line"
           >
             Notre démarche
+          </Link>
+          <Link
+            href="/blog"
+            onClick={() => setMobileOpen(false)}
+            className="py-3 text-base text-ink border-b border-line"
+          >
+            Blog
           </Link>
           <Link
             href="/contact"

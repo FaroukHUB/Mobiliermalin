@@ -7,6 +7,7 @@ import { quote } from './quote'
 import { qualityGuide } from './qualityGuide'
 import { localPage } from './localPage'
 import { order } from './order'
+import { blogPost } from './blogPost'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   product as unknown as SchemaTypeDefinition,
@@ -17,4 +18,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   qualityGuide as unknown as SchemaTypeDefinition,
   localPage as unknown as SchemaTypeDefinition,
   order as unknown as SchemaTypeDefinition,
+  blogPost as unknown as SchemaTypeDefinition,
 ]
