@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Fauteuils de bureau d\'occasion à Aix-en-Provence — Mobilier Malin',
     description:
-      'Sièges ergonomiques reconditionnés pour les professions assises du Pays d\'Aix. Garantie 6 mois.',
+      'Sièges ergonomiques reconditionnés pour les professions assises du Pays d\'Aix, préparés dans notre atelier local.',
     url: `${siteUrl}/fauteuil-occasion-aix-en-provence`,
     type: 'website',
   },

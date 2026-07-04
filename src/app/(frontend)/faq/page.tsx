@@ -70,8 +70,8 @@ const FAQS = [
     category: 'Garanties & service après-vente',
     items: [
       {
-        q: 'Quelle est la garantie sur le mobilier reconditionné ?',
-        a: "Six mois de garantie commerciale Mobilier Malin sur les mécanismes (vérins, accoudoirs, plateaux), en plus des garanties légales — garantie de conformité (12 mois sur les biens d'occasion) et garantie des vices cachés (2 ans). Un mécanisme qui faiblit pendant cette période, on règle le problème.",
+        q: 'Comment est préparé votre mobilier reconditionné ?',
+        a: "Chaque pièce est démontée, contrôlée et préparée dans notre propre atelier au 18 chemin Noël Robion, à La Penne-sur-Huveaune. Contrôle qualité en 7 points avant chaque mise en vente. Notre équipe technique reste joignable directement après achat, sans passer par un SAV externalisé. Les garanties légales (conformité 12 mois sur les biens d'occasion, vices cachés 2 ans) s'appliquent de plein droit.",
       },
       {
         q: 'Que se passe-t-il si un produit arrive endommagé ?',

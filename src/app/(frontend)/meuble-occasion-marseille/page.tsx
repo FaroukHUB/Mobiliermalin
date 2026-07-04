@@ -166,7 +166,7 @@ export default async function MeubleOccasionMarseillePage() {
     '@id': `${siteUrl}/#furniturestore-marseille`,
     name: 'Mobilier Malin — Meubles d\'occasion à Marseille',
     description:
-      'Magasin de meubles d\'occasion professionnels à 10 min de Marseille (La Penne-sur-Huveaune). Bureaux, fauteuils, armoires, rangements reconditionnés Steelcase, Herman Miller, Vitra, Haworth. Garantie 6 mois.',
+      'Magasin de meubles d\'occasion professionnels à 10 min de Marseille (La Penne-sur-Huveaune). Bureaux, fauteuils, armoires, rangements reconditionnés Steelcase, Herman Miller, Vitra, Haworth dans notre atelier local.',
     url: `${siteUrl}/meuble-occasion-marseille`,
     telephone: LEGAL.telephoneTel,
     email: LEGAL.email,
@@ -277,7 +277,7 @@ export default async function MeubleOccasionMarseillePage() {
 
             <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-ivory/70">
               <span className="inline-flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-gold" /> Garantie 6 mois
+                <ShieldCheck className="h-4 w-4 text-gold" /> Atelier local
               </span>
               <span className="inline-flex items-center gap-2">
                 <Truck className="h-4 w-4 text-gold" /> Livraison Marseille
@@ -517,9 +517,9 @@ export default async function MeubleOccasionMarseillePage() {
                 </div>
                 <div className="border-l-4 border-gold bg-ivory/5 p-6">
                   <ShieldCheck className="h-6 w-6 text-gold" strokeWidth={1.5} />
-                  <p className="mt-3 text-2xl font-serif text-ivory">6 mois</p>
+                  <p className="mt-3 text-2xl font-serif text-ivory">7 points</p>
                   <p className="text-xs uppercase tracking-widest text-ivory/60 mt-1">
-                    de garantie
+                    de contrôle en atelier
                   </p>
                 </div>
                 <div className="border-l-4 border-gold bg-ivory/5 p-6">

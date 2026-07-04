@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Fauteuils de bureau d\'occasion livrés à Toulon — Mobilier Malin',
     description:
-      'Fauteuils ergonomiques reconditionnés livrés à Toulon et dans l\'ouest du Var. Steelcase, Herman Miller, Vitra. Garantie 6 mois.',
+      'Fauteuils ergonomiques reconditionnés livrés à Toulon et dans l\'ouest du Var. Steelcase, Herman Miller, Vitra, préparés dans notre atelier local.',
     url: `${siteUrl}/fauteuil-occasion-toulon`,
     type: 'website',
   },

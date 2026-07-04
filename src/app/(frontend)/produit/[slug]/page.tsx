@@ -341,7 +341,7 @@ export default async function ProductPage({
             <ul className="mt-8 space-y-3 text-sm">
               <li className="flex items-start gap-3 text-ink-soft">
                 <ShieldCheck className="h-4 w-4 text-gold mt-1 shrink-0" strokeWidth={1.5} />
-                <span>Garantie <strong className="text-ink">6 mois</strong>, contrôle qualité 7 points</span>
+                <span><strong className="text-ink">Contrôle qualité 7 points</strong> dans notre atelier local</span>
               </li>
               <li className="flex items-start gap-3 text-ink-soft">
                 <Truck className="h-4 w-4 text-gold mt-1 shrink-0" strokeWidth={1.5} />

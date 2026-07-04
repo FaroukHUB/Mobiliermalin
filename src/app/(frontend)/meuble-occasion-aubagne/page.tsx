@@ -172,7 +172,7 @@ export default async function MeubleOccasionAubagnePage() {
     '@id': `${siteUrl}/#furniturestore-aubagne`,
     name: 'Mobilier Malin — Magasin de meubles d\'occasion à Aubagne',
     description:
-      'Magasin de meubles d\'occasion professionnels à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). Bureaux, fauteuils, armoires, rangements reconditionnés Steelcase, Herman Miller, Vitra, Haworth. Garantie 6 mois, retrait sur place ou livraison.',
+      'Magasin de meubles d\'occasion professionnels à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). Bureaux, fauteuils, armoires, rangements reconditionnés Steelcase, Herman Miller, Vitra, Haworth dans notre atelier local. Retrait sur place ou livraison.',
     url: `${siteUrl}/meuble-occasion-aubagne`,
     telephone: LEGAL.telephoneTel,
     email: LEGAL.email,
@@ -269,8 +269,9 @@ export default async function MeubleOccasionAubagnePage() {
               permanence environ deux cents pièces de mobilier
               professionnel reconditionné : bureaux, fauteuils ergonomiques,
               armoires, rangements, cloisons. Marques pro uniquement
-              (Steelcase, Vitra, Haworth, Herman Miller), garantie six
-              mois, accueil sur rendez-vous du lundi au samedi.
+              (Steelcase, Vitra, Haworth, Herman Miller), préparés dans
+              notre atelier local, accueil sur rendez-vous du lundi au
+              samedi.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -291,7 +292,7 @@ export default async function MeubleOccasionAubagnePage() {
 
             <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-ivory/70">
               <span className="inline-flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-gold" /> Garantie 6 mois
+                <ShieldCheck className="h-4 w-4 text-gold" /> Atelier local
               </span>
               <span className="inline-flex items-center gap-2">
                 <Award className="h-4 w-4 text-gold" /> Marques pro
@@ -530,9 +531,9 @@ export default async function MeubleOccasionAubagnePage() {
                 </div>
                 <div className="border-l-4 border-gold bg-ivory/5 p-6">
                   <ShieldCheck className="h-6 w-6 text-gold" strokeWidth={1.5} />
-                  <p className="mt-3 text-2xl font-serif text-ivory">6 mois</p>
+                  <p className="mt-3 text-2xl font-serif text-ivory">7 points</p>
                   <p className="text-xs uppercase tracking-widest text-ivory/60 mt-1">
-                    de garantie
+                    de contrôle en atelier
                   </p>
                 </div>
                 <div className="border-l-4 border-gold bg-ivory/5 p-6">

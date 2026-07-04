@@ -38,7 +38,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Mobilier de bureau professionnel d\'occasion — Steelcase, Vitra, Haworth',
   description:
-    'Mobilier de bureau professionnel d\'occasion reconditionné : bureaux, fauteuils ergonomiques, armoires, cloisons des plus grandes marques (Steelcase, Vitra, Haworth, Herman Miller, Majencia). Garantie 6 mois, livraison France, attestation RSE.',
+    'Mobilier de bureau professionnel d\'occasion reconditionné : bureaux, fauteuils ergonomiques, armoires, cloisons des plus grandes marques (Steelcase, Vitra, Haworth, Herman Miller, Majencia). Contrôle qualité 7 points dans notre atelier local, livraison France, attestation RSE.',
   keywords: [
     'mobilier de bureau professionnel',
     'mobilier professionnel',
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Mobilier de bureau professionnel d\'occasion — Mobilier Malin',
     description:
-      'Mobilier de bureau professionnel reconditionné des plus grandes marques. Garantie 6 mois, livraison France, attestation RSE.',
+      'Mobilier de bureau professionnel reconditionné des plus grandes marques dans notre atelier local. Livraison France, attestation RSE.',
     url: `${siteUrl}/mobilier-bureau-professionnel`,
     type: 'website',
   },
@@ -158,7 +158,7 @@ export default async function MobilierBureauProfessionnelPage() {
     '@type': 'CollectionPage',
     name: 'Mobilier de bureau professionnel d\'occasion',
     description:
-      'Mobilier de bureau professionnel d\'occasion reconditionné des plus grandes marques : Steelcase, Herman Miller, Vitra, Haworth, Majencia, USM Haller. Bureaux, fauteuils, armoires, cloisons. Garantie 6 mois.',
+      'Mobilier de bureau professionnel d\'occasion reconditionné des plus grandes marques : Steelcase, Herman Miller, Vitra, Haworth, Majencia, USM Haller. Bureaux, fauteuils, armoires, cloisons — préparés dans notre atelier local.',
     url: `${siteUrl}/mobilier-bureau-professionnel`,
     isPartOf: {
       '@type': 'WebSite',
@@ -231,7 +231,7 @@ export default async function MobilierBureauProfessionnelPage() {
 
             <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-ivory/70">
               <span className="inline-flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-gold" /> Garantie 6 mois
+                <ShieldCheck className="h-4 w-4 text-gold" /> Atelier local
               </span>
               <span className="inline-flex items-center gap-2">
                 <Truck className="h-4 w-4 text-gold" /> Livraison France

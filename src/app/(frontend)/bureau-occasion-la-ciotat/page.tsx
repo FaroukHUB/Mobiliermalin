@@ -37,7 +37,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Vente de bureaux d\'occasion à La Ciotat — Showroom à 25 min, livraison incluse',
   description:
-    'La Ciotat est à 25 minutes de notre atelier par l\'A50. Vente directe et livraison rapide de bureaux d\'occasion Steelcase, Vitra, Haworth reconditionnés. Garantie 6 mois.',
+    'La Ciotat est à 25 minutes de notre atelier par l\'A50. Vente directe et livraison rapide de bureaux d\'occasion Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
   keywords: [
     'vente de meuble d\'occasion à la ciotat',
     'vente meuble la ciotat',

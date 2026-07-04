@@ -11,7 +11,7 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Boutique — Catalogue de mobilier de bureau reconditionné',
   description:
-    'Découvrez tout notre catalogue de mobilier de bureau premium reconditionné : bureaux, fauteuils, armoires, tables de réunion, caissons. Marques Steelcase, Herman Miller, Haworth, Vitra. Garantis 6 mois.',
+    'Découvrez tout notre catalogue de mobilier de bureau premium reconditionné : bureaux, fauteuils, armoires, tables de réunion, caissons. Marques Steelcase, Herman Miller, Haworth, Vitra, préparés dans notre atelier local.',
   alternates: { canonical: '/boutique' },
 }
 

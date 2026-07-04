@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Fauteuils de bureau d\'occasion livrés à Nice — Mobilier Malin',
     description:
-      'Fauteuils ergonomiques reconditionnés livrés à Nice. Steelcase, Herman Miller, Vitra. Garantie 6 mois.',
+      'Fauteuils ergonomiques reconditionnés livrés à Nice. Steelcase, Herman Miller, Vitra, préparés dans notre atelier local.',
     url: `${siteUrl}/fauteuil-occasion-nice`,
     type: 'website',
   },

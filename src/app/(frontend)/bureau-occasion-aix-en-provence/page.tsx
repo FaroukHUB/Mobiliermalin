@@ -41,7 +41,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Bureaux d\'occasion à Aix-en-Provence — Livrés depuis notre atelier',
   description:
-    'Bureaux reconditionnés Steelcase, Haworth, Vitra pour cabinets, startups et professions libérales d\'Aix. Livraison Pôle d\'Activités, La Duranne, Arbois, centre. Garantie 6 mois, devis sous 24 h.',
+    'Bureaux reconditionnés Steelcase, Haworth, Vitra pour cabinets, startups et professions libérales d\'Aix. Livraison Pôle d\'Activités, La Duranne, Arbois, centre. Contrôle qualité 7 points dans notre atelier local, devis sous 24 h.',
   keywords: [
     'bureau occasion Aix-en-Provence',
     'bureau d\'occasion Aix',

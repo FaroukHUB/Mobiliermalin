@@ -50,7 +50,7 @@ export async function generateMetadata({
     description:
       sanityCat?.description ||
       staticCat?.shortTagline ||
-      `${name} reconditionnés. Garantis 6 mois. Livraison France.`,
+      `${name} reconditionnés dans notre atelier local. Livraison France.`,
     alternates: { canonical: `/categorie/${slug}` },
   }
 }
