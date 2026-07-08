@@ -10,7 +10,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const EXAMPLE_JSON = `{
   "name": "Table mange-debout plateau verre",
@@ -60,6 +60,41 @@ export default function ImportLbcPage() {
   const [json, setJson] = useState('')
   const [result, setResult] = useState<Result | null>(null)
   const [loading, setLoading] = useState(false)
+  const [autoLoadInfo, setAutoLoadInfo] = useState<string>('')
+
+  // Auto-load JSON from URL param ?src=...
+  // Ex: /admin/import-lbc?src=/imports/table-mange-debout-verre-chrome.json
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    const src = params.get('src')
+    if (!src) return
+    // Sécurité : autorise uniquement les chemins internes /imports/*
+    if (!src.startsWith('/imports/') || !src.endsWith('.json')) {
+      setAutoLoadInfo(`⚠️ Source refusée : ${src} (autorisé : /imports/*.json)`)
+      return
+    }
+    setAutoLoadInfo(`⏳ Chargement de ${src}…`)
+    fetch(src)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.text()
+      })
+      .then((text) => {
+        // Prettify pour lecture facile
+        try {
+          const obj = JSON.parse(text)
+          setJson(JSON.stringify(obj, null, 2))
+          setAutoLoadInfo(`✅ Chargé depuis ${src} — vérifie le contenu puis clique Importer`)
+        } catch {
+          setJson(text)
+          setAutoLoadInfo(`⚠️ Chargé mais JSON invalide — corrige à la main`)
+        }
+      })
+      .catch((err) => {
+        setAutoLoadInfo(`❌ Impossible de charger ${src} : ${err.message}`)
+      })
+  }, [])
 
   const submit = async () => {
     setLoading(true)
@@ -109,6 +144,32 @@ export default function ImportLbcPage() {
         sera créé en <strong>brouillon</strong> dans Sanity — tu n&apos;auras
         plus qu&apos;à ouvrir la fiche pour y ajouter les photos et publier.
       </p>
+
+      {autoLoadInfo && (
+        <div
+          style={{
+            padding: 12,
+            marginBottom: 20,
+            background: autoLoadInfo.startsWith('✅')
+              ? '#eaf8ef'
+              : autoLoadInfo.startsWith('⏳')
+                ? '#fef7e6'
+                : '#fbeaea',
+            border: `1px solid ${
+              autoLoadInfo.startsWith('✅')
+                ? '#2b915d'
+                : autoLoadInfo.startsWith('⏳')
+                  ? '#c58720'
+                  : '#b23d3d'
+            }`,
+            borderRadius: 4,
+            fontSize: 13,
+            fontFamily: 'monospace',
+          }}
+        >
+          {autoLoadInfo}
+        </div>
+      )}
 
       <label
         style={{
