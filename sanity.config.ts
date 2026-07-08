@@ -10,6 +10,11 @@ import { schemaTypes } from './sanity/schemas'
 import { sendQuoteAction } from './sanity/actions/sendQuoteAction'
 import { downloadInvoiceAction } from './sanity/actions/downloadInvoiceAction'
 import { Dashboard } from './sanity/dashboard/Dashboard'
+import {
+  ProductGridView,
+  CategoryGridView,
+  BlogGridView,
+} from './sanity/dashboard/MediaGrid'
 import { projectId, dataset, apiVersion } from './sanity/env'
 import {
   LOCAL_PAGES,
@@ -177,6 +182,16 @@ export default defineConfig({
                 S.list()
                   .title('Mobilier')
                   .items([
+                    // Vue galerie visuelle (grille de cartes avec image)
+                    S.listItem()
+                      .id('productGrid')
+                      .title('🖼️ Vue galerie (avec images)')
+                      .child(
+                        S.component(ProductGridView)
+                          .id('productGrid')
+                          .title('Galerie produits'),
+                      ),
+                    S.divider(),
                     S.listItem()
                       .title('🌟 Mis en avant sur la home')
                       .child(
@@ -195,7 +210,7 @@ export default defineConfig({
                       ),
                     S.divider(),
                     S.listItem()
-                      .title('Tous les produits')
+                      .title('Tous les produits (vue liste)')
                       .child(
                         S.documentTypeList('product')
                           .title('Tous les produits')
@@ -209,7 +224,26 @@ export default defineConfig({
             S.listItem()
               .title('Catégories')
               .icon(() => '📁')
-              .child(S.documentTypeList('category').title('Catégories')),
+              .child(
+                S.list()
+                  .title('Catégories')
+                  .items([
+                    S.listItem()
+                      .id('categoryGrid')
+                      .title('🖼️ Vue galerie (avec images)')
+                      .child(
+                        S.component(CategoryGridView)
+                          .id('categoryGrid')
+                          .title('Galerie catégories'),
+                      ),
+                    S.divider(),
+                    S.listItem()
+                      .title('Toutes les catégories (vue liste)')
+                      .child(
+                        S.documentTypeList('category').title('Toutes les catégories'),
+                      ),
+                  ]),
+              ),
             S.divider(),
             // Blog — articles éditoriaux (guides, comparatifs, actu)
             S.listItem()
@@ -219,6 +253,15 @@ export default defineConfig({
                 S.list()
                   .title('Blog — articles')
                   .items([
+                    S.listItem()
+                      .id('blogGrid')
+                      .title('🖼️ Vue galerie (avec images)')
+                      .child(
+                        S.component(BlogGridView)
+                          .id('blogGrid')
+                          .title('Galerie articles blog'),
+                      ),
+                    S.divider(),
                     S.listItem()
                       .title('✅ Articles publiés')
                       .child(
