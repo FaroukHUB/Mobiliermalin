@@ -112,26 +112,34 @@ function extractAd() {
     )
     const desc = descCandidates[0]?.innerText?.trim() || ''
 
-    // ─── VILLE (regex code postal FR) ─────────────────────────────
-    const bodyText = document.body.innerText
-    const cityMatch = bodyText.match(
-      /([A-ZÀ-Ÿ][a-zà-ÿ\-']+(?:[\s-]+[A-ZÀ-Ÿa-zà-ÿ\-']+)*)\s+(\d{5})/,
-    )
-    const location = cityMatch ? `${cityMatch[1].trim()} ${cityMatch[2]}` : ''
+    // ─── CATÉGORIE (déduite du titre par mots-clés) ───────────────
+    // Correspondance mot-clé → slug catégorie du site Mobilier Malin
+    const CAT_RULES = [
+      { patterns: ['bureau assis-debout', 'assis debout', 'assis-debout'], slug: 'bureaux-individuels', label: 'Bureau assis-debout' },
+      { patterns: ['bureau angle', 'bureau d\'angle'], slug: 'bureaux-individuels', label: 'Bureau d\'angle' },
+      { patterns: ['bench', 'benching'], slug: 'bureaux-individuels', label: 'Bench collaboratif' },
+      { patterns: ['bureau'], slug: 'bureaux-individuels', label: 'Bureau individuel' },
+      { patterns: ['fauteuil ergonomique', 'siège ergonomique', 'siege ergonomique', 'fauteuil de bureau', 'fauteuil bureau'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil ergonomique' },
+      { patterns: ['aeron', 'leap', 'gesture', 'think', 'zody', 'embody', 'sayl', 'vitra id'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil ergonomique' },
+      { patterns: ['fauteuil'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil' },
+      { patterns: ['chaise de formation', 'chaise formation', 'chaise tablette', 'écritoire'], slug: 'chaises-formation', label: 'Chaise de formation' },
+      { patterns: ['chaise accueil', 'chaise réunion', 'chaise reunion', 'chaise visiteur', 'chaise conférence'], slug: 'chaises-accueil-reunion', label: 'Chaise d\'accueil / réunion' },
+      { patterns: ['chaise'], slug: 'chaises-accueil-reunion', label: 'Chaise' },
+      { patterns: ['table réunion', 'table de réunion', 'table conférence'], slug: 'tables-de-reunion', label: 'Table de réunion' },
+      { patterns: ['armoire', 'rangement métallique', 'meuble rangement'], slug: 'armoires-rangements', label: 'Armoire / rangement' },
+      { patterns: ['caisson', 'tiroir'], slug: 'caissons', label: 'Caisson' },
+      { patterns: ['canapé', 'canape', 'lounge', 'pouf', 'espace détente', 'espace detente'], slug: 'espaces-detente', label: 'Espace détente' },
+    ]
 
-    // ─── CATÉGORIE (fil d'ariane ou détection texte) ──────────────
-    let breadcrumb = qAll(
-      '[data-qa-id="breadcrumb_link"], nav[aria-label*="ariane" i] a, nav ol li a',
-    )
-      .map((el) => el.innerText.trim())
-      .filter(Boolean)
-      .join(' > ')
-
-    // Fallback : regex sur URL du chemin
-    if (!breadcrumb) {
-      const urlPath = location.href
-      const cats = urlPath.match(/\/ad\/([^/]+)\//)
-      if (cats) breadcrumb = cats[1].replace(/-/g, ' ')
+    const titleLower = title.toLowerCase()
+    let categorySlug = ''
+    let categoryLabel = '(non détectée — à choisir dans Sanity)'
+    for (const rule of CAT_RULES) {
+      if (rule.patterns.some((p) => titleLower.includes(p))) {
+        categorySlug = rule.slug
+        categoryLabel = rule.label
+        break
+      }
     }
 
     // ─── PHOTOS (contourne le lazy-load) ──────────────────────────
@@ -195,11 +203,10 @@ function extractAd() {
 
     // ─── SORTIE FORMATÉE ──────────────────────────────────────────
     const output = `--- ANNONCE LEBONCOIN ---
-URL : ${location.href}
+URL : ${window.location.href}
 Titre : ${title}
 Prix : ${priceMain}${priceCompare ? ' (barré : ' + priceCompare + ')' : ''}${discount ? ' — ' + discount : ''}
-Ville : ${location}
-Catégorie : ${breadcrumb || '(non détectée)'}
+Catégorie déduite : ${categoryLabel}${categorySlug ? ' → /categorie/' + categorySlug : ''}
 
 Description :
 ${desc}
@@ -247,12 +254,11 @@ ${imgs.join('\n')}
       `
 
       toast.innerHTML = ok
-        ? `<strong style="color:#c8a25b">✅ Annonce copiée (v1.1)</strong><br>` +
+        ? `<strong style="color:#c8a25b">✅ Annonce copiée (v1.2)</strong><br>` +
           `<span style="opacity:0.85; font-weight: 400;">` +
           `Titre : ${title.slice(0, 60)}${title.length > 60 ? '…' : ''}<br>` +
           `Prix : ${priceMain}<br>` +
-          `Ville : ${location || '(vide)'}<br>` +
-          `Cat : ${breadcrumb.slice(0, 40) || '(vide)'}<br>` +
+          `Catégorie : ${categoryLabel.slice(0, 40)}<br>` +
           `Photos : ${imgs.length} • Desc : ${desc.length} car.<br>` +
           `<em style="opacity:0.7">Colle (Cmd+V) dans Claude</em></span>`
         : `<strong>❌ Erreur clipboard</strong><br>` +
