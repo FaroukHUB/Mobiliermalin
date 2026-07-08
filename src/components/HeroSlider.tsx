@@ -21,6 +21,13 @@ export type HeroSlide = {
   textPosition?: 'left' | 'center' | 'right'
   textColor?: 'light' | 'dark'
   overlayOpacity?: number
+  /**
+   * Mode "bannière complète" : quand true, l'image est affichée entière
+   * (object-contain), sans voile ni textes du site superposés, et la
+   * bannière entière est cliquable vers ctaPrimaryHref. À utiliser pour
+   * les bannières Canva / Photoshop dont le texte est déjà intégré.
+   */
+  fullBanner?: boolean
 }
 
 interface HeroSliderProps {
@@ -126,6 +133,52 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
   const textColorClass = slide.textColor === 'dark' ? 'text-ink' : 'text-ivory'
   const overlay = Math.min(80, Math.max(0, slide.overlayOpacity ?? 35)) / 100
   const TitleTag = isFirst ? 'h1' : 'h2'
+
+  // ─── MODE BANNIÈRE COMPLÈTE ────────────────────────────────────
+  // L'image contient déjà tout le contenu marketing (texte, CTA
+  // visuel, prix). On l'affiche entière (object-contain) sur fond
+  // neutre, sans voile ni texte du site. La bannière entière est
+  // cliquable vers ctaPrimaryHref.
+  if (slide.fullBanner) {
+    const bannerContent = (
+      <div className="relative flex-[0_0_100%] min-w-0">
+        <div className="relative w-full bg-ivory-dark aspect-[16/7] md:aspect-[21/9] max-h-[820px]">
+          {slide.imageMobile && (
+            <Image
+              src={slide.imageMobile.url}
+              alt={slide.imageMobile.alt || slide.title}
+              fill
+              priority={isFirst}
+              sizes="100vw"
+              className="object-contain md:hidden"
+            />
+          )}
+          <Image
+            src={slide.image.url}
+            alt={slide.image.alt || slide.title}
+            fill
+            priority={isFirst}
+            sizes="100vw"
+            className={cn('object-contain', slide.imageMobile && 'hidden md:block')}
+          />
+        </div>
+      </div>
+    )
+    // Si CTA principal → toute la bannière est cliquable
+    if (slide.ctaPrimaryHref) {
+      return (
+        <Link
+          href={slide.ctaPrimaryHref}
+          aria-label={slide.title}
+          className="flex-[0_0_100%] min-w-0"
+        >
+          {bannerContent}
+        </Link>
+      )
+    }
+    return bannerContent
+  }
+  // ─── FIN MODE BANNIÈRE COMPLÈTE ────────────────────────────────
 
   // Gradient directionnel : sombre du cote du texte, transparent de l'autre cote.
   // Pour textColor=light on assombrit, pour textColor=dark on eclaircit.

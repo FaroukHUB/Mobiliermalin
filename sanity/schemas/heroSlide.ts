@@ -86,7 +86,15 @@ export const heroSlide = {
       type: 'number',
       validation: (R: Rule) => R.min(0).max(80),
       initialValue: 35,
-      description: 'Améliore la lisibilité du texte sur les images chargées.',
+      description: 'Améliore la lisibilité du texte sur les images chargées. Ignoré en mode "bannière complète".',
+    },
+    {
+      name: 'fullBanner',
+      title: '🎨 Mode "bannière complète"',
+      type: 'boolean',
+      initialValue: false,
+      description:
+        "COCHER SI votre image contient déjà tout le contenu marketing (texte, prix, CTA visuel). Dans ce cas : l'image est affichée entière (aucune coupure), le voile sombre et les textes du site sont cachés, et le clic sur toute la bannière déclenche le lien du bouton principal ci-dessous. À utiliser pour les bannières Canva / Photoshop toutes prêtes.",
     },
     {
       name: 'order',

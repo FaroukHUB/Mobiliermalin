@@ -136,6 +136,7 @@ export default async function HomePage() {
         textPosition: s.textPosition,
         textColor: s.textColor,
         overlayOpacity: s.overlayOpacity,
+        fullBanner: s.fullBanner,
       }))
     : FALLBACK_SLIDES
 

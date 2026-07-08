@@ -507,6 +507,7 @@ export type SanityHeroSlide = {
   textPosition?: 'left' | 'center' | 'right'
   textColor?: 'light' | 'dark'
   overlayOpacity?: number
+  fullBanner?: boolean
   order?: number
   status: 'published' | 'draft'
 }
@@ -520,7 +521,7 @@ export async function getHeroSlides(): Promise<SanityHeroSlide[]> {
       _id, title, subtitle,
       image, imageMobile,
       ctaPrimaryLabel, ctaPrimaryHref, ctaSecondaryLabel, ctaSecondaryHref,
-      textPosition, textColor, overlayOpacity, order, status
+      textPosition, textColor, overlayOpacity, fullBanner, order, status
     }`,
     {},
     [],
