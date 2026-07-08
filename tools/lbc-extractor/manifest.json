@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Mobilier Malin — Copier annonce Leboncoin",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Extrait une annonce Leboncoin (titre, prix, description, photos) et la copie dans le presse-papier au format prêt à coller dans Claude.",
   "permissions": ["scripting", "activeTab"],
   "host_permissions": ["https://www.leboncoin.fr/*"],

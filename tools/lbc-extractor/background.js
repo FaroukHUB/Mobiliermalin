@@ -192,6 +192,7 @@ function extractAd() {
       { patterns: ['bureau'], slug: 'bureaux-individuels', label: 'Bureau individuel' },
       // Autres catégories
       { patterns: ['table réunion', 'table de réunion', 'table conférence'], slug: 'tables-de-reunion', label: 'Table de réunion' },
+      { patterns: ['mange debout', 'mange-debout', 'table haute', 'table mange debout'], slug: 'espaces-detente', label: 'Mange-debout / table haute' },
       { patterns: ['armoire', 'rangement métallique', 'meuble rangement'], slug: 'armoires-rangements', label: 'Armoire / rangement' },
       { patterns: ['caisson', 'tiroir'], slug: 'caissons', label: 'Caisson' },
       { patterns: ['tabouret', 'canapé', 'canape', 'lounge', 'pouf', 'espace détente', 'espace detente'], slug: 'espaces-detente', label: 'Espace détente' },
@@ -289,6 +290,8 @@ function extractAd() {
 
     const bestByHash = new Map()
     for (const url of rawImgs) {
+      // Retire les thumbnails d'autres annonces (bo-thumb = liste vendeur)
+      if (url.includes('bo-thumb')) continue
       const hashMatch = url.match(
         /\/images\/[a-f0-9]{2}\/[a-f0-9]{2}\/[a-f0-9]{2}\/([a-f0-9-]{20,})/i,
       )
