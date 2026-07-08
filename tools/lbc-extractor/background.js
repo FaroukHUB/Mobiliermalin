@@ -110,25 +110,91 @@ function extractAd() {
     descCandidates.sort(
       (a, b) => (b.innerText?.length || 0) - (a.innerText?.length || 0),
     )
-    const desc = descCandidates[0]?.innerText?.trim() || ''
+    let desc = descCandidates[0]?.innerText?.trim() || ''
 
-    // ─── CATÉGORIE (déduite du titre par mots-clés) ───────────────
-    // Correspondance mot-clé → slug catégorie du site Mobilier Malin
+    // ─── NETTOYAGE DESCRIPTION ────────────────────────────────────
+    // Isole le VRAI corps de description : coupe avant "Description"
+    // (le heading) et après "Voir moins" / "Localisation" / autres
+    // pollutions de la page vendeur.
+    const descStartMarkers = ['\nDescription\n', 'Description\n']
+    for (const m of descStartMarkers) {
+      const idx = desc.indexOf(m)
+      if (idx !== -1) {
+        desc = desc.substring(idx + m.length)
+        break
+      }
+    }
+    const descEndMarkers = [
+      'Voir moins',
+      '\nLocalisation\n',
+      '\nVendu par',
+      'Signaler l',
+      'Les annonces de ce pro',
+      'BoosterGérer',
+      '\nInfos vendeur',
+    ]
+    for (const m of descEndMarkers) {
+      const idx = desc.indexOf(m)
+      if (idx !== -1) desc = desc.substring(0, idx)
+    }
+    desc = desc.trim()
+
+    // ─── INFORMATIONS CLÉS (structurées Leboncoin) ────────────────
+    // Leboncoin affiche des infos clés type "État: Très bon état",
+    // "Marque: Habitat", "Couleur: Gris". On les extrait pour les
+    // pré-remplir dans Sanity.
+    const infoKeys = [
+      'État',
+      'Marque',
+      'Matière',
+      'Couleur',
+      'Quantité',
+      'Produit',
+      'Pièce',
+      'Type',
+      'Modèle',
+      'Dimensions',
+      'Style',
+    ]
+    const infos = {}
+    // Parcourt les DL / DT-DD ou couples label/valeur adjacents
+    const bodyLines = document.body.innerText.split('\n').map((l) => l.trim())
+    for (let i = 0; i < bodyLines.length - 1; i++) {
+      if (infoKeys.includes(bodyLines[i]) && bodyLines[i + 1] && bodyLines[i + 1].length < 100) {
+        // Ignore les valeurs génériques inutiles
+        const val = bodyLines[i + 1]
+        if (val && val !== 'Non renseignée' && val !== '-') {
+          infos[bodyLines[i]] = val
+        }
+      }
+    }
+
+    // ─── CATÉGORIE (chaises AVANT bureau — plus spécifiques d'abord) ─
     const CAT_RULES = [
+      // Marques et modèles emblématiques de fauteuils ergonomiques (les plus spécifiques)
+      { patterns: ['aeron', 'leap v2', 'leap', 'gesture', 'think', 'zody', 'embody', 'sayl', 'vitra id', 'hag capisco', 'håg capisco', 'ergohuman'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil ergonomique (modèle iconique)' },
+      // Fauteuils ergonomiques
+      { patterns: ['fauteuil ergonomique', 'siège ergonomique', 'siege ergonomique', 'fauteuil de bureau ergonomique'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil ergonomique' },
+      // Chaises (spécifiques d'abord)
+      { patterns: ['chaise de formation', 'chaise formation', 'chaise tablette', 'écritoire', 'chaise conférence'], slug: 'chaises-formation', label: 'Chaise de formation' },
+      { patterns: ['chaise accueil', 'chaise d\'accueil', 'chaise réunion', 'chaise de réunion', 'chaise reunion', 'chaise visiteur'], slug: 'chaises-accueil-reunion', label: 'Chaise d\'accueil / réunion' },
+      // Chaise bureau : plutôt fauteuil-like → chaises accueil (car "chaise" prime sur "bureau")
+      { patterns: ['chaise bureau', 'chaise de bureau'], slug: 'chaises-accueil-reunion', label: 'Chaise de bureau (accueil / poste secondaire)' },
+      // Fauteuils génériques
+      { patterns: ['fauteuil de bureau', 'fauteuil bureau', 'fauteuil pivotant'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil de bureau' },
+      { patterns: ['fauteuil'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil' },
+      // Chaise générique (si aucune des règles ci-dessus n'a matché)
+      { patterns: ['chaise'], slug: 'chaises-accueil-reunion', label: 'Chaise' },
+      // Bureaux (types spécifiques d'abord)
       { patterns: ['bureau assis-debout', 'assis debout', 'assis-debout'], slug: 'bureaux-individuels', label: 'Bureau assis-debout' },
       { patterns: ['bureau angle', 'bureau d\'angle'], slug: 'bureaux-individuels', label: 'Bureau d\'angle' },
       { patterns: ['bench', 'benching'], slug: 'bureaux-individuels', label: 'Bench collaboratif' },
       { patterns: ['bureau'], slug: 'bureaux-individuels', label: 'Bureau individuel' },
-      { patterns: ['fauteuil ergonomique', 'siège ergonomique', 'siege ergonomique', 'fauteuil de bureau', 'fauteuil bureau'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil ergonomique' },
-      { patterns: ['aeron', 'leap', 'gesture', 'think', 'zody', 'embody', 'sayl', 'vitra id'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil ergonomique' },
-      { patterns: ['fauteuil'], slug: 'fauteuils-ergonomiques', label: 'Fauteuil' },
-      { patterns: ['chaise de formation', 'chaise formation', 'chaise tablette', 'écritoire'], slug: 'chaises-formation', label: 'Chaise de formation' },
-      { patterns: ['chaise accueil', 'chaise réunion', 'chaise reunion', 'chaise visiteur', 'chaise conférence'], slug: 'chaises-accueil-reunion', label: 'Chaise d\'accueil / réunion' },
-      { patterns: ['chaise'], slug: 'chaises-accueil-reunion', label: 'Chaise' },
+      // Autres catégories
       { patterns: ['table réunion', 'table de réunion', 'table conférence'], slug: 'tables-de-reunion', label: 'Table de réunion' },
       { patterns: ['armoire', 'rangement métallique', 'meuble rangement'], slug: 'armoires-rangements', label: 'Armoire / rangement' },
       { patterns: ['caisson', 'tiroir'], slug: 'caissons', label: 'Caisson' },
-      { patterns: ['canapé', 'canape', 'lounge', 'pouf', 'espace détente', 'espace detente'], slug: 'espaces-detente', label: 'Espace détente' },
+      { patterns: ['tabouret', 'canapé', 'canape', 'lounge', 'pouf', 'espace détente', 'espace detente'], slug: 'espaces-detente', label: 'Espace détente' },
     ]
 
     const titleLower = title.toLowerCase()
@@ -185,7 +251,7 @@ function extractAd() {
     )
 
     // Filtre les URLs qui ressemblent à des photos d'annonce Leboncoin
-    const imgs = [...imageUrls]
+    const rawImgs = [...imageUrls]
       .filter(
         (s) =>
           s &&
@@ -197,21 +263,65 @@ function extractAd() {
             s.includes('/pictures/') ||
             s.includes('/ac_')),
       )
-      // Retire les tout petits thumbnails
       .filter((s) => !/\/(favicon|logo|thumb-mini)/i.test(s))
-      .slice(0, 20)
+
+    // ─── DÉDOUBLONNAGE par hash d'image ───────────────────────────
+    // Leboncoin sert la même image en 4-5 tailles (ad-thumb, ad-large,
+    // classified-1200x800-webp, classified-1200x800-jpg,
+    // classified-800x533-webp...). On extrait le hash d'image de
+    // l'URL et on garde uniquement la meilleure qualité par image.
+    //
+    // URL type : /images/cd/94/35/cd94355e58b900d4f492446d1553f51baef3e982.jpg?rule=classified-1200x800-webp
+    // Hash : cd94355e58b900d4f492446d1553f51baef3e982
+
+    const qualityRank = (url) => {
+      // Plus élevé = meilleure qualité
+      if (url.includes('classified-1200x800-webp')) return 100
+      if (url.includes('classified-1200x800-jpg')) return 90
+      if (url.includes('classified-800x533-webp')) return 80
+      if (url.includes('classified-800x533-jpg')) return 70
+      if (url.includes('ad-large')) return 60
+      if (url.includes('ad-image')) return 50
+      if (url.includes('ad-thumb')) return 30
+      if (url.includes('bo-thumb')) return 20
+      return 40
+    }
+
+    const bestByHash = new Map()
+    for (const url of rawImgs) {
+      const hashMatch = url.match(
+        /\/images\/[a-f0-9]{2}\/[a-f0-9]{2}\/[a-f0-9]{2}\/([a-f0-9-]{20,})/i,
+      )
+      if (!hashMatch) continue
+      const hash = hashMatch[1]
+      const rank = qualityRank(url)
+      const current = bestByHash.get(hash)
+      if (!current || rank > current.rank) {
+        bestByHash.set(hash, { url, rank })
+      }
+    }
+
+    const imgs = [...bestByHash.values()].map((v) => v.url).slice(0, 15)
 
     // ─── SORTIE FORMATÉE ──────────────────────────────────────────
+    // ─── SORTIE FORMATÉE ──────────────────────────────────────────
+    const infosLines = Object.entries(infos)
+      .map(([k, v]) => `  • ${k} : ${v}`)
+      .join('\n')
+
     const output = `--- ANNONCE LEBONCOIN ---
 URL : ${window.location.href}
 Titre : ${title}
 Prix : ${priceMain}${priceCompare ? ' (barré : ' + priceCompare + ')' : ''}${discount ? ' — ' + discount : ''}
 Catégorie déduite : ${categoryLabel}${categorySlug ? ' → /categorie/' + categorySlug : ''}
 
+Infos clés Leboncoin :
+${infosLines || '  (aucune information structurée détectée)'}
+
 Description :
 ${desc}
 
-Photos (${imgs.length}) :
+Photos (${imgs.length} uniques) :
 ${imgs.join('\n')}
 --- FIN ---`
 
@@ -254,12 +364,13 @@ ${imgs.join('\n')}
       `
 
       toast.innerHTML = ok
-        ? `<strong style="color:#c8a25b">✅ Annonce copiée (v1.2)</strong><br>` +
+        ? `<strong style="color:#c8a25b">✅ Annonce copiée (v1.3)</strong><br>` +
           `<span style="opacity:0.85; font-weight: 400;">` +
           `Titre : ${title.slice(0, 60)}${title.length > 60 ? '…' : ''}<br>` +
           `Prix : ${priceMain}<br>` +
           `Catégorie : ${categoryLabel.slice(0, 40)}<br>` +
-          `Photos : ${imgs.length} • Desc : ${desc.length} car.<br>` +
+          `Infos : ${Object.keys(infos).length} champs • Photos : ${imgs.length} uniques<br>` +
+          `Desc : ${desc.length} car.<br>` +
           `<em style="opacity:0.7">Colle (Cmd+V) dans Claude</em></span>`
         : `<strong>❌ Erreur clipboard</strong><br>` +
           `<span style="opacity:0.85; font-weight: 400;">Ouvre la console (F12) → texte brut affiché.</span>`
