@@ -187,6 +187,59 @@ export const CATEGORIES: CategoryStaticData[] = [
     fallbackImageAlt: 'Chaises de réunion design alignées',
   },
   {
+    slug: 'chaises-formation',
+    name: 'Chaises de formation',
+    shortTagline: 'Chaises pliantes, empilables ou à tablette pour salles de formation',
+    longDescription:
+      'Chaises spécifiquement pensées pour les salles de formation, les amphithéâtres, les centres de formation et les organismes de conférences. Modèles à tablette écritoire escamotable, chaises pliantes pour salles polyvalentes, sièges empilables avec porte-documents intégré. Confort assis longue durée sans compromis sur la compacité de rangement.',
+    fromPriceLabel: 'À partir de 45 €',
+    priceRange: { min: 45, max: 180 },
+    variants: [
+      'Avec tablette écritoire',
+      'Pliante',
+      'Empilable',
+      'Porte-documents',
+      'Avec accoudoirs',
+      'Sans accoudoirs',
+      'Coloris variés',
+    ],
+    highlights: [
+      {
+        title: 'Tablette écritoire escamotable',
+        body: 'Modèles avec tablette rabattable côté droit ou gauche selon droitier / gaucher. Surface d\'écriture confortable pour prise de notes ou ordinateur portable.',
+      },
+      {
+        title: 'Lots homogènes disponibles',
+        body: 'Idéal pour équiper une salle complète : lots de 20 à 100 chaises identiques régulièrement en stock, issus de centres de formation ou d\'universités.',
+      },
+      {
+        title: 'Rangement optimisé',
+        body: 'Empilables jusqu\'à 10 unités, pliantes pour un stockage minimal — parfait pour salles polyvalentes utilisées à d\'autres fins entre les sessions.',
+      },
+    ],
+    faq: [
+      {
+        q: 'Quelle différence avec les chaises de réunion classiques ?',
+        a: 'Les chaises de formation intègrent souvent une tablette écritoire, un porte-documents sous l\'assise ou des équipements spécifiques (repose-pieds, réglages ergonomiques) car elles sont conçues pour des sessions de 4 à 8 heures. Une chaise de réunion classique vise plutôt du confort ponctuel de 1 à 2 heures.',
+      },
+      {
+        q: 'Puis-je équiper toute ma salle de formation (30 à 100 postes) ?',
+        a: 'Oui, c\'est notre spécialité sur cette catégorie. Nous récupérons régulièrement du mobilier d\'organismes de formation, d\'universités et de centres de conférences en renouvellement. Contactez-nous en indiquant le volume et le modèle recherché — nous pouvons souvent proposer un lot homogène sous 2 à 4 semaines.',
+      },
+      {
+        q: 'Les tablettes sont-elles adaptées pour un ordinateur portable ?',
+        a: 'Oui, les modèles récents (post-2010) ont des tablettes de 30 × 40 cm minimum, adaptées à un laptop 14-15 pouces et à la prise de notes. Précisez à la commande si vous voulez uniquement des modèles compatibles laptop.',
+      },
+      {
+        q: 'Livrez-vous et installez-vous les salles de formation complètes ?',
+        a: 'Oui, l\'installation est incluse pour toute commande professionnelle sur Marseille, Aubagne, Aix, Toulon et le reste de la région PACA. Nous pouvons également reprendre votre ancien mobilier de formation avec une prestation de vidage / rachat.',
+      },
+    ],
+    fallbackImage:
+      'https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=1400&q=80',
+    fallbackImageAlt: 'Salle de formation équipée en chaises avec tablettes',
+  },
+  {
     slug: 'tables-de-reunion',
     name: 'Tables de réunion',
     shortTagline: 'Tables rondes, ovales, carrées, rectangulaires',

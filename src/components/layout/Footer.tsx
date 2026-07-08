@@ -12,6 +12,7 @@ const CATEGORIES = [
   { label: 'Fauteuils ergonomiques', href: '/categorie/fauteuils-ergonomiques' },
   { label: 'Armoires & rangements', href: '/categorie/armoires-rangements' },
   { label: 'Chaises d\'accueil & réunion', href: '/categorie/chaises-accueil-reunion' },
+  { label: 'Chaises de formation', href: '/categorie/chaises-formation' },
   { label: 'Tables de réunion', href: '/categorie/tables-de-reunion' },
   { label: 'Espaces détente', href: '/categorie/espaces-detente' },
   { label: 'Caissons de bureau', href: '/categorie/caissons' },
