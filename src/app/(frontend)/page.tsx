@@ -108,10 +108,27 @@ export default async function HomePage() {
         id: s._id,
         title: s.title,
         subtitle: s.subtitle,
-        image: { url: urlFor(s.image).width(2000).url(), alt: s.image.alt || s.title },
+        // .fit('crop') active le hotspot défini dans Sanity :
+        // même quand on crop en format paysage large (desktop) ou
+        // portrait haut (mobile), la zone focale choisie par Djamel
+        // reste visible au centre du cadrage.
+        image: {
+          url: urlFor(s.image).width(2560).height(1000).fit('crop').url(),
+          alt: s.image.alt || s.title,
+        },
+        // Si Djamel n'a PAS uploadé une image mobile dédiée, on
+        // recadre automatiquement l'image desktop en portrait
+        // (800×1000) autour du hotspot — la zone importante reste
+        // toujours visible sur téléphone.
         imageMobile: s.imageMobile
-          ? { url: urlFor(s.imageMobile).width(1000).url(), alt: s.imageMobile.alt || s.title }
-          : undefined,
+          ? {
+              url: urlFor(s.imageMobile).width(800).height(1000).fit('crop').url(),
+              alt: s.imageMobile.alt || s.title,
+            }
+          : {
+              url: urlFor(s.image).width(800).height(1000).fit('crop').url(),
+              alt: s.image.alt || s.title,
+            },
         ctaPrimaryLabel: s.ctaPrimaryLabel,
         ctaPrimaryHref: s.ctaPrimaryHref,
         ctaSecondaryLabel: s.ctaSecondaryLabel,
