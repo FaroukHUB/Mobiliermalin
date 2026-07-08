@@ -7,6 +7,11 @@ const BRANDS = [
   { name: 'Vitra', style: 'font-sans font-black uppercase tracking-tight text-2xl' },
   { name: 'USM Haller', style: 'font-mono uppercase text-xl tracking-wider' },
   { name: 'Majencia', style: 'font-serif text-2xl' },
+  // Nouvelles signatures — griffes italiennes, suisses, espagnoles
+  { name: 'ICF', style: 'font-serif font-medium tracking-[0.3em] text-2xl' },
+  { name: 'Zuco', style: 'font-mono uppercase text-xl tracking-widest' },
+  { name: 'Actiu', style: 'font-sans font-black uppercase text-2xl tracking-tight' },
+  { name: 'Urban Mesh', style: 'font-sans font-light uppercase tracking-[0.2em] text-xl' },
 ]
 
 export function BrandsSection() {
@@ -20,14 +25,14 @@ export function BrandsSection() {
               Les signatures du mobilier de bureau premium
             </h2>
             <p className="mt-4 text-sm text-ink-mute leading-relaxed">
-              Reconditionné dans nos ateliers d&apos;Aubagne, vendu jusqu&apos;à
-              −60 % du prix neuf.
+              Reconditionné dans notre atelier de La Penne-sur-Huveaune,
+              vendu jusqu&apos;à −60 % du prix neuf.
             </p>
           </div>
         </Reveal>
 
         <Reveal delay={120}>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-px bg-line border border-line">
+          <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-px bg-line border border-line">
             {BRANDS.map((b) => (
               <div
                 key={b.name}
@@ -41,7 +46,8 @@ export function BrandsSection() {
 
         <Reveal delay={300}>
           <p className="mt-8 text-center text-xs uppercase tracking-widest text-ink-mute">
-            …et d&apos;autres signatures à découvrir au showroom d&apos;Aubagne.
+            …et d&apos;autres signatures à découvrir au showroom de
+            La Penne-sur-Huveaune.
           </p>
         </Reveal>
       </div>
