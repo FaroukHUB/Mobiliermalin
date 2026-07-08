@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="20" fill="#1a1a1a"/>
+  <text x="50%" y="42%" text-anchor="middle" font-family="Georgia, serif" font-size="52" font-weight="bold" fill="#c8a25b">MM</text>
+  <text x="50%" y="70%" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#f5efe4">LBC</text>
+  <text x="50%" y="90%" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#c8a25b">📋</text>
+</svg>
