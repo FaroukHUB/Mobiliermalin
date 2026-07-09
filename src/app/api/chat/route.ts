@@ -122,9 +122,26 @@ export async function POST(req: Request) {
 
   // Boucle tool use : jusqu'à MAX_TOOL_ITERATIONS
   let finalText = ''
+  let lastAnyContent = ''
   try {
     for (let iter = 0; iter < MAX_TOOL_ITERATIONS; iter++) {
-      const msg = await callGemini(conversation, true)
+      // À la dernière itération : on force Gemini à répondre en texte
+      // (pas d'outils dispo) pour éviter une boucle infinie de tool_calls
+      const useTools = iter < MAX_TOOL_ITERATIONS - 1
+      const msg = await callGemini(conversation, useTools)
+
+      console.log(`[chat] iter ${iter} :`, {
+        hasContent: !!msg.content,
+        contentLength: msg.content?.length || 0,
+        toolCallsCount: msg.tool_calls?.length || 0,
+        useToolsThisRound: useTools,
+      })
+
+      // Capture tout contenu texte au passage (au cas où on doit fallback)
+      if (msg.content && msg.content.trim()) {
+        lastAnyContent = msg.content
+      }
+
       conversation.push(msg)
 
       // Si l'assistant a demandé des outils : exécute et boucle
@@ -134,8 +151,10 @@ export async function POST(req: Request) {
           try {
             args = JSON.parse(tc.function.arguments || '{}')
           } catch {
+            console.warn('[chat] tool_call args invalides:', tc.function.arguments)
             args = {}
           }
+          console.log(`[chat] → tool_call ${tc.function.name}`, args)
           const result = await executeToolCall(tc.function.name, args)
           conversation.push({
             role: 'tool',
@@ -150,6 +169,11 @@ export async function POST(req: Request) {
       // Sinon on a une réponse texte finale
       finalText = msg.content || ''
       break
+    }
+    // Fallback : si aucun finalText mais on a capturé du texte en cours
+    // de route (Gemini a mélangé tool_calls + content), on l'utilise.
+    if (!finalText && lastAnyContent) {
+      finalText = lastAnyContent
     }
   } catch (err) {
     console.error('[chat] Gemini error:', err)
