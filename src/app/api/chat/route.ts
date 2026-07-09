@@ -27,15 +27,19 @@ import { SYSTEM_PROMPT, TOOLS_SCHEMA, executeToolCall } from '@/lib/chat-context
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Google Gemini via API compatible OpenAI — gratuite jusqu'à 15 req/min.
-// Ce endpoint accepte le même format que xAI/OpenAI, donc quasi aucun
-// changement de code par rapport à la version Grok.
+// Google Gemini via API compatible OpenAI — free tier généreux.
+// Endpoint compatible OpenAI = quasi aucun changement de code.
 const GEMINI_ENDPOINT =
   'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
-// gemini-2.5-flash : modèle courant recommandé pour le free tier
-// (1500 requests/jour, 15 requests/minute, tool use supporté)
-const MODEL = 'gemini-2.5-flash'
-const MAX_TOOL_ITERATIONS = 5
+// gemini-2.0-flash : meilleur ratio qualité / rate-limit free tier
+//   → 15 requêtes/min, 1M tokens/min, 1500 requêtes/jour
+//   → tool use supporté, français excellent
+// Alternative si on veut plus de RPM : gemini-2.0-flash-lite (30 rpm)
+const MODEL = 'gemini-2.0-flash'
+// Réduit de 5 à 3 pour économiser les appels API sur le free tier.
+// Une question typique fait : 1 appel (LLM décide de search) + 1 tool
+// (search_products) + 1 appel (LLM rédige la réponse) = 3 iterations.
+const MAX_TOOL_ITERATIONS = 3
 
 type Msg = {
   role: 'system' | 'user' | 'assistant' | 'tool'
@@ -67,10 +71,17 @@ async function callGemini(messages: Msg[], useTools: boolean) {
 
   if (!res.ok) {
     const err = await res.text().catch(() => '')
-    // Log complet côté serveur pour diagnostiquer
     console.error(`[gemini] ${res.status} error:`, err)
-    // Message brut renvoyé à l'utilisateur pour permettre le diagnostic
-    throw new Error(`Gemini ${res.status} : ${err.slice(0, 600)}`)
+    // Message utilisateur friendly pour 429 (rate limit)
+    if (res.status === 429) {
+      // Extrait le "Please retry in Xs" si présent dans l'erreur
+      const retryMatch = err.match(/Please retry in ([\d.]+)s/)
+      const seconds = retryMatch ? Math.ceil(parseFloat(retryMatch[1])) : 60
+      throw new Error(
+        `Le service est momentanément saturé — beaucoup de conversations en cours. Réessaie dans ${seconds} secondes (limite du plan gratuit Gemini).`,
+      )
+    }
+    throw new Error(`Gemini ${res.status} : ${err.slice(0, 400)}`)
   }
   const data = await res.json()
   return data.choices?.[0]?.message as Msg
