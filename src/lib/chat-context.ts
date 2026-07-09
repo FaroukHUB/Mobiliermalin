@@ -234,7 +234,7 @@ async function searchProducts(args: ToolCallArgs) {
     return {
       count: 0,
       message:
-        "Aucun produit ne correspond à cette recherche dans le stock actuellement en ligne. Le stock évolue chaque semaine — l'utilisateur peut nous contacter pour connaître les arrivages à venir.",
+        'Aucun produit ne correspond exactement à cette recherche dans le stock actuellement listé en ligne. IMPORTANT — Notre stock évolue chaque semaine et beaucoup de pièces ne sont pas encore listées sur le site. Tu dois : (1) proposer à l\'utilisateur de reformuler ou d\'élargir sa recherche (retirer le filtre marque, augmenter le prix max, essayer une catégorie proche) ; (2) l\'encourager fortement à nous contacter directement — au 06 76 61 70 53, sur WhatsApp (bouton vert en bas à droite du site) ou par email mobiliermalin@gmail.com — parce que notre équipe connaît le stock atelier qui n\'est pas encore en ligne ; (3) l\'inviter à consulter la boutique complète sur /boutique. Ne jamais répondre juste "je n\'ai rien" sec — toujours proposer une alternative constructive.',
     }
   }
 
