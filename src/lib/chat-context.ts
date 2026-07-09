@@ -195,7 +195,13 @@ async function searchProducts(args: ToolCallArgs) {
   const brand = args.brand ? String(args.brand).toLowerCase() : null
   const maxPrice = typeof args.maxPrice === 'number' ? args.maxPrice : null
 
-  // GROQ query : produits publiés, en stock, filtre catégorie + marque + prix
+  // Construit les params ET la query dynamiquement
+  const params: Record<string, string | number> = {}
+  if (query) params.query = `*${query}*`
+  if (brand) params.brand = `*${brand}*`
+  if (categorySlug) params.categorySlug = categorySlug
+  if (maxPrice !== null) params.maxPrice = maxPrice
+
   const results = await sanityClient
     .fetch<
       Array<{
@@ -220,12 +226,7 @@ async function searchProducts(args: ToolCallArgs) {
         _id, name, slug, price, salePrice, stock, brand, condition, shortDescription,
         category->{ name, slug }
       }`,
-      {
-        ...(query && { query: `*${query}*` }),
-        ...(brand && { brand: `*${brand}*` }),
-        ...(categorySlug && { categorySlug }),
-        ...(maxPrice !== null && { maxPrice }),
-      },
+      params,
     )
     .catch(() => [] as never[])
 
