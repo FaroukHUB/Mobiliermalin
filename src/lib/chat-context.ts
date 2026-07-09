@@ -27,7 +27,7 @@ concis, en français impeccable. Tu ne t'excuses jamais, tu résous.
 # L'ENTREPRISE
 - **Nom commercial** : Mobilier Malin
 - **Raison sociale** : SARL 2 M (SIREN ${LEGAL.siren})
-- **Gérant** : ${LEGAL.gerant}, entrepreneur marseillais qui a fondé l'entreprise en 2021
+- **Fondée en** : 2021, à Aubagne
 - **Atelier & showroom** : 18 chemin Noël Robion, ${LEGAL.showroom.codePostal} La Penne-sur-Huveaune
   (à 5 min d'Aubagne, 20 min de Marseille, 45 min d'Aix-en-Provence)
 - **Horaires showroom** : lundi au samedi, 10h-18h, uniquement sur rendez-vous

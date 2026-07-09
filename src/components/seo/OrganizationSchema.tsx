@@ -18,10 +18,6 @@ export function OrganizationSchema() {
         logo: `${siteUrl}/logo.png`,
         description:
           "Mobilier de bureau d'exception reconditionné. Steelcase, Herman Miller, Haworth, Vitra à -60% du prix neuf. Atelier & showroom à La Penne-sur-Huveaune, livraison France.",
-        founder: {
-          '@type': 'Person',
-          name: 'Djamel Djennad',
-        },
         foundingDate: '2021',
         sameAs: [
           'https://www.facebook.com/mobiliermalin',

@@ -144,7 +144,7 @@ export default async function RootLayout({
   }))
 
   // Produit à afficher dans la 4e colonne du mega-menu.
-  // Priorité au produit sélectionné par Djamel dans Réglages →
+  // Priorité au produit sélectionné par l'admin dans Réglages →
   // Navigation → Produit vedette du menu. Si vide, fallback automatique
   // sur le dernier produit publié (lib/sanity.ts:getMenuShowcaseProduct).
   // → Aucun conflit avec le toggle "Produit en avant" qui pilote la

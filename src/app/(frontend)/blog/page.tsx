@@ -36,7 +36,7 @@ const FR_DATE = new Intl.DateTimeFormat('fr-FR', {
 
 /**
  * Article unifié pour l'affichage — provient soit de Sanity soit
- * du registre hardcodé (fallback tant que Djamel n'a rien publié).
+ * du registre hardcodé (fallback tant que l'admin n'a rien publié).
  */
 type UnifiedArticle = {
   slug: string

@@ -265,7 +265,7 @@ export default function RSEPage() {
               </div>
               <div className="border-t border-line pt-4 flex justify-between text-xs text-ink-mute">
                 <span>Délivrée le {new Date().toLocaleDateString('fr-FR')}</span>
-                <span>Djamel Djennad</span>
+                <span>Mobilier Malin</span>
               </div>
             </div>
           </Reveal>

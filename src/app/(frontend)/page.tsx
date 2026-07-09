@@ -112,7 +112,7 @@ export default async function HomePage() {
         if (s.fullBanner) {
           // MODE BANNIÈRE COMPLÈTE — on préserve l'image native (pas
           // de crop côté serveur) pour respecter à 100 % le design
-          // Canva/Photoshop de Djamel. On sert l'URL sans crop, en
+          // Canva/Photoshop de l'admin. On sert l'URL sans crop, en
           // largeur maximale pour la qualité, et on passe les
           // dimensions natives au composant qui calculera le ratio.
           return {

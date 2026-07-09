@@ -139,7 +139,7 @@ export default async function MarseillePage() {
     getLocalPage(PAGE_KEY),
   ])
 
-  // Image hero : priorité au champ Sanity si Djamel a uploadé, sinon fallback Unsplash
+  // Image hero : priorité au champ Sanity si l'admin a uploadé, sinon fallback Unsplash
   const heroImageUrl = localPage.heroImage
     ? urlFor(localPage.heroImage).width(2000).url()
     : FALLBACK_HERO_URL

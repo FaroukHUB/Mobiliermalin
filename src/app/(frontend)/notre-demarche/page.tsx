@@ -5,7 +5,7 @@ import { Quote, Recycle, ShieldCheck, Coins } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Notre démarche — réemploi du mobilier de bureau',
   description:
-    "Mobilier Malin a été fondée en 2021 à Aubagne par Djamel Djennad pour donner une seconde vie au mobilier d'entreprise. Notre histoire, nos valeurs, notre engagement RSE.",
+    "Mobilier Malin a été fondée en 2021 à Aubagne pour donner une seconde vie au mobilier de bureau d'entreprise. Notre histoire, nos valeurs, notre engagement RSE.",
   alternates: { canonical: '/notre-demarche' },
 }
 
@@ -15,7 +15,7 @@ const TIMELINE = [
     title: 'Le déclic',
     subtitle: 'Une idée née sur le terrain',
     body:
-      "Lors de missions de déménagement professionnel à Marseille, Djamel Djennad constate une réalité simple : d'importants volumes de mobilier de bureau de qualité, encore parfaitement utilisables, n'ont pas de filière organisée pour leur seconde vie. L'idée germe : créer ce maillon manquant.",
+      "Lors de missions de déménagement professionnel à Marseille, notre fondateur constate une réalité simple : d'importants volumes de mobilier de bureau de qualité, encore parfaitement utilisables, n'ont pas de filière organisée pour leur seconde vie. L'idée germe : créer ce maillon manquant.",
   },
   {
     year: '2021',
@@ -153,10 +153,7 @@ export default function NotreDemarchePage() {
             que ces pièces méritent de continuer à servir. »
           </blockquote>
           <div className="h-px w-12 bg-gold mx-auto my-8" />
-          <p className="font-serif text-lg text-gold">Djamel Djennad</p>
-          <p className="text-xs uppercase tracking-widest text-ivory/60 mt-1">
-            Gérant fondateur
-          </p>
+          <p className="font-serif text-lg text-gold">L&apos;équipe Mobilier Malin</p>
         </div>
       </section>
 
