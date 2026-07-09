@@ -125,28 +125,39 @@ export const TOOLS_SCHEMA = [
     function: {
       name: 'search_products',
       description:
-        "Cherche des produits dans le catalogue Sanity de Mobilier Malin. À utiliser dès qu'un utilisateur mentionne un besoin de mobilier (fauteuil, bureau, armoire, etc.) ou une marque ou un budget. Retourne les 5 meilleurs résultats.",
+        "OBLIGATOIRE : appelle cette fonction dès qu'un utilisateur mentionne un type de mobilier (bureau, fauteuil, chaise, armoire, table, etc.) OU une marque OU un budget. Ne réponds JAMAIS sur les produits/prix/stocks sans l'avoir appelée. Elle interroge le catalogue Sanity en temps réel. IMPORTANT : privilégie categorySlug plutôt que query quand le type de mobilier est clair — ex: si l'utilisateur dit 'bureau', utilise categorySlug='bureaux-individuels' PAS query='bureau'.",
       parameters: {
         type: 'object',
         properties: {
           query: {
             type: 'string',
             description:
-              'Termes de recherche libre (nom du produit, marque, caractéristique). Ex: "fauteuil ergonomique Steelcase", "bureau assis-debout", "armoire métallique grise"',
+              'Termes de recherche libre. À utiliser SEULEMENT si l\'utilisateur mentionne un nom de modèle spécifique (ex: "Leap V2", "Aeron"), une couleur, une caractéristique ("assis-debout", "à roulettes"). NE PAS mettre le type de mobilier ici (utiliser categorySlug à la place).',
           },
           categorySlug: {
             type: 'string',
             description:
-              'Filtre par catégorie. Slugs disponibles : bureaux-individuels, fauteuils-ergonomiques, chaises-accueil-reunion, chaises-formation, tables-de-reunion, armoires-rangements, caissons, espaces-detente',
+              'Filtre par catégorie. À privilégier dès que possible. Mappings français → slug : "bureau" ou "bureaux" → "bureaux-individuels" | "fauteuil" ou "siège" → "fauteuils-ergonomiques" | "chaise réunion/accueil/visiteur" → "chaises-accueil-reunion" | "chaise formation" → "chaises-formation" | "table réunion" → "tables-de-reunion" | "armoire" ou "rangement" → "armoires-rangements" | "caisson" → "caissons" | "canapé, pouf, tabouret, mange-debout" → "espaces-detente"',
+            enum: [
+              'bureaux-individuels',
+              'fauteuils-ergonomiques',
+              'chaises-accueil-reunion',
+              'chaises-formation',
+              'tables-de-reunion',
+              'armoires-rangements',
+              'caissons',
+              'espaces-detente',
+            ],
           },
           brand: {
             type: 'string',
             description:
-              "Filtre par marque. Ex: Steelcase, Herman Miller, Haworth, Vitra, USM Haller, Majencia, ICF, Zuco, Actiu, Urban Mesh, Habitat",
+              "Filtre par marque. Utiliser SEULEMENT si l'utilisateur a explicitement cité la marque. Ex: Steelcase, Herman Miller, Haworth, Vitra, USM Haller, Majencia, ICF, Zuco, Actiu, Urban Mesh, Habitat",
           },
           maxPrice: {
             type: 'number',
-            description: 'Prix maximum en euros TTC',
+            description:
+              "Prix maximum en euros TTC. Si l'utilisateur dit 'budget 200€' ou 'moins de 200€', mettre 200. Ne pas définir si aucun budget mentionné.",
           },
         },
       },
@@ -190,17 +201,50 @@ export async function executeToolCall(name: string, args: ToolCallArgs) {
 }
 
 async function searchProducts(args: ToolCallArgs) {
-  const query = String(args.query || '').toLowerCase().trim()
+  const rawQuery = String(args.query || '').trim()
   const categorySlug = args.categorySlug ? String(args.categorySlug) : null
-  const brand = args.brand ? String(args.brand).toLowerCase() : null
+  const brand = args.brand ? String(args.brand).trim() : null
   const maxPrice = typeof args.maxPrice === 'number' ? args.maxPrice : null
 
-  // Construit les params ET la query dynamiquement
-  const params: Record<string, string | number> = {}
-  if (query) params.query = `*${query}*`
-  if (brand) params.brand = `*${brand}*`
+  // Log pour diagnostiquer les paramètres envoyés par le LLM
+  console.log('[chat/search_products] args reçus:', {
+    rawQuery,
+    categorySlug,
+    brand,
+    maxPrice,
+  })
+
+  // ─── Construction de la query GROQ ─────────────────────────────
+  // GROQ `match` est un opérateur word-level, case-insensitive, qui
+  // accepte le wildcard `*` en SUFFIXE uniquement (pas en préfixe).
+  // Exemple : `name match "bureau*"` matche "bureau", "Bureau", "bureaux"
+  //
+  // Stratégie : on splitte la query en mots et chaque mot devient un
+  // pattern "mot*" qui doit apparaître dans name/description/brand.
+
+  const queryWords = rawQuery
+    .split(/\s+/)
+    .filter((w) => w.length >= 2)
+    .map((w) => w + '*')
+
+  const params: Record<string, string | number | string[]> = {}
+  if (queryWords.length > 0) params.queryWords = queryWords
+  if (brand) params.brand = brand + '*'
   if (categorySlug) params.categorySlug = categorySlug
   if (maxPrice !== null) params.maxPrice = maxPrice
+
+  const groqQuery = `*[_type == "product" && status == "published"
+       ${brand ? '&& brand match $brand' : ''}
+       ${categorySlug ? '&& category->slug.current == $categorySlug' : ''}
+       ${maxPrice ? '&& (coalesce(salePrice, price) <= $maxPrice)' : ''}
+       ${queryWords.length > 0 ? '&& (name match $queryWords || shortDescription match $queryWords || brand match $queryWords || category->name match $queryWords)' : ''}
+     ] | order(_updatedAt desc) [0...8] {
+      _id, name, slug, price, salePrice, stock, brand, condition, shortDescription,
+      category->{ name, slug }
+    }`
+
+  console.log('[chat/search_products] GROQ query:', groqQuery.replace(/\s+/g, ' '))
+  console.log('[chat/search_products] params:', params)
 
   const results = await sanityClient
     .fetch<
@@ -216,19 +260,13 @@ async function searchProducts(args: ToolCallArgs) {
         shortDescription?: string
         category?: { name?: string; slug?: { current: string } }
       }>
-    >(
-      `*[_type == "product" && status == "published"
-         ${brand ? '&& lower(brand) match $brand' : ''}
-         ${categorySlug ? '&& category->slug.current == $categorySlug' : ''}
-         ${maxPrice ? '&& (coalesce(salePrice, price) <= $maxPrice)' : ''}
-         ${query ? '&& (lower(name) match $query || lower(shortDescription) match $query || lower(brand) match $query)' : ''}
-       ] | order(_updatedAt desc) [0...5] {
-        _id, name, slug, price, salePrice, stock, brand, condition, shortDescription,
-        category->{ name, slug }
-      }`,
-      params,
-    )
-    .catch(() => [] as never[])
+    >(groqQuery, params)
+    .catch((err) => {
+      console.error('[chat/search_products] Sanity error:', err)
+      return [] as never[]
+    })
+
+  console.log('[chat/search_products] ' + results.length + ' résultats')
 
   if (results.length === 0) {
     return {
