@@ -200,13 +200,39 @@ export async function executeToolCall(name: string, args: ToolCallArgs) {
   }
 }
 
+type SanityProductResult = {
+  _id: string
+  name: string
+  slug: { current: string }
+  price: number
+  salePrice?: number
+  stock: number
+  brand?: string
+  condition?: string
+  shortDescription?: string
+  category?: { name?: string; slug?: { current: string } }
+}
+
+// Mots-clés implicites déduits d'un slug de catégorie — utilisés comme
+// fallback text-search quand aucun produit n'a la catégorie assignée
+// dans Sanity (cas fréquent après import automatique).
+const CATEGORY_KEYWORDS: Record<string, string[]> = {
+  'bureaux-individuels': ['bureau'],
+  'fauteuils-ergonomiques': ['fauteuil', 'siege', 'siège'],
+  'chaises-accueil-reunion': ['chaise'],
+  'chaises-formation': ['chaise', 'formation'],
+  'tables-de-reunion': ['table'],
+  'armoires-rangements': ['armoire', 'rangement'],
+  caissons: ['caisson'],
+  'espaces-detente': ['tabouret', 'canapé', 'pouf', 'mange-debout'],
+}
+
 async function searchProducts(args: ToolCallArgs) {
   const rawQuery = String(args.query || '').trim()
   const categorySlug = args.categorySlug ? String(args.categorySlug) : null
   const brand = args.brand ? String(args.brand).trim() : null
   const maxPrice = typeof args.maxPrice === 'number' ? args.maxPrice : null
 
-  // Log pour diagnostiquer les paramètres envoyés par le LLM
   console.log('[chat/search_products] args reçus:', {
     rawQuery,
     categorySlug,
@@ -214,59 +240,71 @@ async function searchProducts(args: ToolCallArgs) {
     maxPrice,
   })
 
-  // ─── Construction de la query GROQ ─────────────────────────────
-  // GROQ `match` est un opérateur word-level, case-insensitive, qui
-  // accepte le wildcard `*` en SUFFIXE uniquement (pas en préfixe).
-  // Exemple : `name match "bureau*"` matche "bureau", "Bureau", "bureaux"
-  //
-  // Stratégie : on splitte la query en mots et chaque mot devient un
-  // pattern "mot*" qui doit apparaître dans name/description/brand.
+  // Prépare les mots-clés de recherche : combine query utilisateur +
+  // mots-clés implicites de la catégorie (ex: bureaux-individuels → "bureau")
+  const words = rawQuery.split(/\s+/).filter((w) => w.length >= 2)
+  if (categorySlug && CATEGORY_KEYWORDS[categorySlug]) {
+    for (const kw of CATEGORY_KEYWORDS[categorySlug]) {
+      if (!words.map((w) => w.toLowerCase()).includes(kw.toLowerCase())) {
+        words.push(kw)
+      }
+    }
+  }
+  const queryWords = words.map((w) => w + '*')
 
-  const queryWords = rawQuery
-    .split(/\s+/)
-    .filter((w) => w.length >= 2)
-    .map((w) => w + '*')
+  // ─── Stratégie multi-passes ────────────────────────────────────
+  // 1er essai : filtres stricts (catégorie + prix + marque + mots)
+  // 2e essai : sans catégorie (Djamel peut avoir importé sans la
+  //   référence catégorie assignée)
+  // 3e essai : uniquement les mots-clés et prix (broader search)
 
-  const params: Record<string, string | number | string[]> = {}
-  if (queryWords.length > 0) params.queryWords = queryWords
-  if (brand) params.brand = brand + '*'
-  if (categorySlug) params.categorySlug = categorySlug
-  if (maxPrice !== null) params.maxPrice = maxPrice
+  async function runQuery(
+    useCat: boolean,
+    useBrand: boolean,
+    useWords: boolean,
+  ): Promise<SanityProductResult[]> {
+    const params: Record<string, string | number | string[]> = {}
+    if (useCat && categorySlug) params.categorySlug = categorySlug
+    if (useBrand && brand) params.brand = brand + '*'
+    if (useWords && queryWords.length > 0) params.queryWords = queryWords
+    if (maxPrice !== null) params.maxPrice = maxPrice
 
-  const groqQuery = `*[_type == "product" && status == "published"
-       ${brand ? '&& brand match $brand' : ''}
-       ${categorySlug ? '&& category->slug.current == $categorySlug' : ''}
-       ${maxPrice ? '&& (coalesce(salePrice, price) <= $maxPrice)' : ''}
-       ${queryWords.length > 0 ? '&& (name match $queryWords || shortDescription match $queryWords || brand match $queryWords || category->name match $queryWords)' : ''}
-     ] | order(_updatedAt desc) [0...8] {
-      _id, name, slug, price, salePrice, stock, brand, condition, shortDescription,
-      category->{ name, slug }
-    }`
+    const groqQuery = `*[_type == "product" && status == "published"
+         ${useBrand && brand ? '&& brand match $brand' : ''}
+         ${useCat && categorySlug ? '&& category->slug.current == $categorySlug' : ''}
+         ${maxPrice ? '&& (coalesce(salePrice, price) <= $maxPrice)' : ''}
+         ${useWords && queryWords.length > 0 ? '&& (name match $queryWords || shortDescription match $queryWords || brand match $queryWords || category->name match $queryWords)' : ''}
+       ] | order(_updatedAt desc) [0...8] {
+        _id, name, slug, price, salePrice, stock, brand, condition, shortDescription,
+        category->{ name, slug }
+      }`
 
-  console.log('[chat/search_products] GROQ query:', groqQuery.replace(/\s+/g, ' '))
-  console.log('[chat/search_products] params:', params)
-
-  const results = await sanityClient
-    .fetch<
-      Array<{
-        _id: string
-        name: string
-        slug: { current: string }
-        price: number
-        salePrice?: number
-        stock: number
-        brand?: string
-        condition?: string
-        shortDescription?: string
-        category?: { name?: string; slug?: { current: string } }
-      }>
-    >(groqQuery, params)
-    .catch((err) => {
+    try {
+      const r = await sanityClient.fetch<SanityProductResult[]>(groqQuery, params)
+      console.log(
+        `[chat/search_products] pass useCat=${useCat} useBrand=${useBrand} useWords=${useWords} → ${r.length} résultats`,
+      )
+      return r
+    } catch (err) {
       console.error('[chat/search_products] Sanity error:', err)
-      return [] as never[]
-    })
+      return []
+    }
+  }
 
-  console.log('[chat/search_products] ' + results.length + ' résultats')
+  // Pass 1 : tout strict
+  let results = await runQuery(!!categorySlug, !!brand, queryWords.length > 0)
+
+  // Pass 2 : sans catégorie (cas produits importés sans référence catégorie)
+  if (results.length === 0 && categorySlug) {
+    results = await runQuery(false, !!brand, queryWords.length > 0)
+  }
+
+  // Pass 3 : sans marque non plus, juste mots + prix
+  if (results.length === 0 && brand) {
+    results = await runQuery(false, false, queryWords.length > 0)
+  }
+
+  console.log('[chat/search_products] ' + results.length + ' résultats finaux')
 
   if (results.length === 0) {
     return {
