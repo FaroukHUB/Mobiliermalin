@@ -17,7 +17,7 @@ export async function GET() {
     ok: hasKey,
     hasKey,
     provider: 'google-gemini',
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     error: hasKey
       ? null
       : 'GEMINI_API_KEY absent — récupérer sur aistudio.google.com/apikey puis ajouter dans Vercel Env Vars, puis redéployer.',

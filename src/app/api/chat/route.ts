@@ -32,7 +32,9 @@ export const dynamic = 'force-dynamic'
 // changement de code par rapport à la version Grok.
 const GEMINI_ENDPOINT =
   'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
-const MODEL = 'gemini-2.0-flash'
+// gemini-2.5-flash : modèle courant recommandé pour le free tier
+// (1500 requests/jour, 15 requests/minute, tool use supporté)
+const MODEL = 'gemini-2.5-flash'
 const MAX_TOOL_ITERATIONS = 5
 
 type Msg = {
@@ -65,13 +67,10 @@ async function callGemini(messages: Msg[], useTools: boolean) {
 
   if (!res.ok) {
     const err = await res.text().catch(() => '')
-    // Rate limiting : message plus clair pour l'utilisateur
-    if (res.status === 429) {
-      throw new Error(
-        `Beaucoup de conversations en cours. Réessaie dans une minute — le service est actuellement saturé.`,
-      )
-    }
-    throw new Error(`Gemini ${res.status} : ${err.slice(0, 500)}`)
+    // Log complet côté serveur pour diagnostiquer
+    console.error(`[gemini] ${res.status} error:`, err)
+    // Message brut renvoyé à l'utilisateur pour permettre le diagnostic
+    throw new Error(`Gemini ${res.status} : ${err.slice(0, 600)}`)
   }
   const data = await res.json()
   return data.choices?.[0]?.message as Msg
