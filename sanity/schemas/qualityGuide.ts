@@ -7,7 +7,7 @@ import type { Rule } from 'sanity'
  * Explique les 5 états de mobilier, le processus de reconditionnement,
  * la garantie, la FAQ.
  *
- * Tous les champs sont éditables depuis le Studio (Djamel peut reformuler).
+ * Tous les champs sont éditables depuis le Studio (l'admin peut reformuler).
  * Les valeurs initiales sont pré-remplies pour démarrer immédiatement.
  */
 export const qualityGuide = {
@@ -54,7 +54,7 @@ export const qualityGuide = {
       type: 'image',
       options: { hotspot: true },
       group: 'hero',
-      description: 'Idéalement : Djamel ou l\'équipe inspectant un fauteuil dans l\'atelier.',
+      description: 'Idéalement : notre équipe inspectant un fauteuil dans l\'atelier.',
     },
 
     // ───────── INTRO ─────────

@@ -41,9 +41,9 @@ export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; e
 
   // Reply-to par défaut = boîte de réception réelle (mobiliermalin@gmail.com)
   // Comme ça les emails envoyés depuis contact@mobiliermalin.com (alias DKIM
-  // sans boîte) ont leurs réponses routées vers une vraie boîte que Djamel lit.
+  // sans boîte) ont leurs réponses routées vers une vraie boîte que l'admin lit.
   // L'appelant peut surcharger via input.replyTo (ex: pour le contact form où
-  // on veut que Djamel puisse répondre directement au client).
+  // on veut que l'admin puisse répondre directement au client).
   const defaultReplyTo = process.env.BREVO_REPLY_TO_EMAIL
     ? {
         email: process.env.BREVO_REPLY_TO_EMAIL,
@@ -229,7 +229,7 @@ export type PickupAdminNotificationInput = {
 }
 
 /**
- * Email envoyé à Djamel/Mobilier Malin après chaque paiement retrait
+ * Email envoyé à l'admin Mobilier Malin après chaque paiement retrait
  * confirmé. Contient tout le détail commande pour qu'il prépare le
  * produit avant l'arrivée du client.
  */

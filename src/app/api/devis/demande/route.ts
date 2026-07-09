@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
     console.warn('[devis/demande] SANITY_WRITE_TOKEN absent — demande non enregistrée dans Sanity')
   }
 
-  // 2) Email à Djamel (best-effort)
+  // 2) Email à l'admin (best-effort)
   if (isBrevoConfigured()) {
     const elevatorLabel = body.elevator === 'yes' ? 'Oui' : body.elevator === 'no' ? 'Non' : 'Inconnu'
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'

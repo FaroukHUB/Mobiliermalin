@@ -2,7 +2,7 @@ import type { Rule } from 'sanity'
 
 /**
  * Document Commande — créé automatiquement par le webhook Stripe à
- * chaque paiement confirmé. Djamel n'a jamais besoin de créer un doc
+ * chaque paiement confirmé. l'admin n'a jamais besoin de créer un doc
  * manuellement ; il consulte, met à jour le statut, télécharge la
  * facture Stripe.
  */

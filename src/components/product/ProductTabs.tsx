@@ -45,7 +45,7 @@ type TabKey = 'description' | 'specs' | 'livraison'
 
 // ─────────────────────────────────────────────────────────────
 // Pré-traitement de la description Sanity.
-// Le client (Djamel) écrit souvent en paragraphes plats avec des
+// Le client (admin) écrit souvent en paragraphes plats avec des
 // emojis ✔️ / ✓ / → en début de ligne, sans utiliser les listes
 // natives de Sanity. On détecte ces patterns et on transforme :
 //   – "✔️ Item"          → item d'une liste stylée
@@ -123,7 +123,7 @@ function parseDescription(blocks: PortableTextBlock[]): ParsedNode[] {
   return nodes
 }
 
-// Composants PortableText de secours (si un jour Djamel utilise
+// Composants PortableText de secours (si un jour l'admin utilise
 // vraiment les styles natifs Sanity au lieu du texte plat).
 const portableTextComponents: PortableTextComponents = {
   block: {
@@ -307,7 +307,7 @@ export function ProductTabs({ description, specs, legal }: ProductTabsProps) {
                 )
               })}
 
-              {/* Fallback : rendu PortableText brut si jamais Djamel utilise
+              {/* Fallback : rendu PortableText brut si jamais l'admin utilise
                   vraiment des styles Sanity — on l'affiche masqué pour
                   garder les marks/liens si présents un jour. */}
               <div className="hidden">

@@ -5,7 +5,7 @@
  * partir d'une extraction Leboncoin) et crée le document Sanity
  * correspondant en brouillon (status: 'draft').
  *
- * Djamel/Farouk n'a plus qu'à ouvrir le brouillon, uploader les
+ * l'admin n'a plus qu'à ouvrir le brouillon, uploader les
  * photos et publier.
  *
  * Sécurité :

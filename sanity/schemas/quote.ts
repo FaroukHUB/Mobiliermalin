@@ -5,7 +5,7 @@ import type { Rule } from 'sanity'
  *
  * Workflow :
  *  1. Client soumet le formulaire → document créé avec status=pending
- *  2. Djamel ouvre Studio, ajoute frais livraison + options, click "Envoyer"
+ *  2. l'admin ouvre Studio, ajoute frais livraison + options, click "Envoyer"
  *  3. Status passe à "sent" + PDF + email client
  *  4. Client accepte + paye → status=accepted + stripeSessionId
  */
@@ -131,7 +131,7 @@ export const quote = {
       title: 'Frais de livraison HT (€)',
       type: 'number',
       group: 'fees',
-      description: 'À renseigner par Djamel selon l\'adresse',
+      description: 'À renseigner selon l\'adresse de livraison du client.',
       initialValue: 0,
       validation: (R: Rule) => R.min(0),
     },

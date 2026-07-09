@@ -254,7 +254,7 @@ async function searchProducts(args: ToolCallArgs) {
 
   // ─── Stratégie multi-passes ────────────────────────────────────
   // 1er essai : filtres stricts (catégorie + prix + marque + mots)
-  // 2e essai : sans catégorie (Djamel peut avoir importé sans la
+  // 2e essai : sans catégorie (l'admin peut avoir importé sans la
   //   référence catégorie assignée)
   // 3e essai : uniquement les mots-clés et prix (broader search)
 

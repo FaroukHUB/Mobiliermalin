@@ -13,7 +13,7 @@
  * Actions si tout est OK :
  *  - Créer le booking Cal.eu
  *  - Envoyer email de confirmation au client
- *  - Envoyer email récapitulatif à Djamel
+ *  - Envoyer email récapitulatif à l'admin
  *  - Mettre à jour la metadata de la session Stripe pour tracer le créneau
  *    (source de vérité pour les prochaines visites de la page succès)
  */

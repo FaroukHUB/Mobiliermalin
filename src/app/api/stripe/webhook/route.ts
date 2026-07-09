@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
         tags: ['quote-accepted-customer'],
       })
     }
-    // Email notification Djamel
+    // Email notification admin
     if (quoteNumero) {
       await sendEmail({
         to: { email: LEGAL.email, name: 'Mobilier Malin' },
@@ -191,7 +191,7 @@ export async function POST(req: NextRequest) {
   //        0. Crée le doc Sanity `order` (idempotent, ne dupliquera pas)
   //        1. Crée le booking Cal.eu SI un créneau a été fourni
   //        2. Email confirmation client — TOUJOURS
-  //        3. Email notification admin Djamel — TOUJOURS
+  //        3. Email notification admin — TOUJOURS
   if (event.type === 'checkout.session.completed' && isPickup && customerEmail) {
     // 0) Création du document Sanity order avec facture URL + articles
     const stripeSecret = process.env.STRIPE_SECRET_KEY
@@ -271,8 +271,8 @@ export async function POST(req: NextRequest) {
       console.log('[stripe-webhook] confirmation email sent to', customerEmail)
     }
 
-    // 3) Email notification admin (Djamel) — TOUJOURS
-    // Ajoute le récap panier si présent, pour que Djamel sache ce qui a été commandé.
+    // 3) Email notification admin  — TOUJOURS
+    // Ajoute le récap panier si présent, pour que l'admin sache ce qui a été commandé.
     const adminProductLine = cartSummary
       ? `${orderTitle}\n\nDétail du panier :\n${cartSummary.split(' | ').map((l) => `  · ${l}`).join('\n')}`
       : orderTitle

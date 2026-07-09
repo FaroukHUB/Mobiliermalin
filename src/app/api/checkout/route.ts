@@ -203,7 +203,7 @@ export async function POST(req: NextRequest) {
   params.append('metadata[distinct_products]', String(lineItems.length))
   params.append('metadata[total_items]', String(totalItems))
 
-  // Résumé lisible des articles pour Djamel (limité à 500 chars pour Stripe metadata)
+  // Résumé lisible des articles pour l'admin (limité à 500 chars pour Stripe metadata)
   const summary = lineItems
     .map((it) => `${it.quantity}× ${it.name}`)
     .join(' | ')

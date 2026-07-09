@@ -1,7 +1,7 @@
 /**
  * Tableau de bord Sanity Studio — Mobilier Malin.
  *
- * S'affiche à droite quand Djamel arrive sur le Studio, à la place
+ * S'affiche à droite quand l'admin arrive sur le Studio, à la place
  * du panneau vide par défaut. Combine :
  *   - KPI temps réel (compte de produits, commandes, articles, devis…)
  *   - Actions rapides pour créer un nouveau contenu

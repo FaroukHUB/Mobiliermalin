@@ -6,7 +6,7 @@ import { LOCAL_PAGES } from '../localPagesRegistry'
  * combinant une catégorie et une ville (ex: bureau × Marseille).
  *
  * Chaque page React (/bureau-occasion-marseille, /fauteuil-occasion-marseille,
- * etc.) fetch son document par pageKey. Si Djamel n'a rien uploadé,
+ * etc.) fetch son document par pageKey. Si l'admin n'a rien uploadé,
  * un fallback hardcodé prend le relais (Unsplash, texte par défaut).
  *
  * Les pages sont créées via la sidebar "Pages locales (SEO)" — chaque

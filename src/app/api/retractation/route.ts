@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     timeStyle: 'short',
   })
 
-  // ─── Email à l'admin (Djamel) ───
+  // ─── Email à l'admin  ───
   const adminSubject = `[Rétractation] ${name} — commande ${orderNumber || orderDate}`
 
   const adminHtml = `

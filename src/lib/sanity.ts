@@ -189,7 +189,7 @@ export async function getRelatedProducts(
 }
 
 /**
- * Produits "Featured" pour la home (curation Djamel via toggle featured).
+ * Produits "Featured" pour la home (curation admin via toggle featured).
  */
 export async function getFeaturedProducts(limit: number = 6): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
@@ -206,7 +206,7 @@ export async function getFeaturedProducts(limit: number = 6): Promise<SanityProd
 
 /**
  * Pièces d'exception (section premium sur la home).
- * Curation Djamel via toggle "Pièce d'exception" sur le produit.
+ * Curation admin via toggle "Pièce d'exception" sur le produit.
  * Indépendant du toggle "Mettre en avant" — un produit peut être les deux.
  */
 export async function getExceptionProducts(limit: number = 3): Promise<SanityProduct[]> {
@@ -306,7 +306,7 @@ export type SanityLocalPage = {
 
 /**
  * Récupère le contenu Sanity d'une page locale par son pageKey.
- * Si le document n'existe pas (Djamel n'a rien créé) → renvoie un objet
+ * Si le document n'existe pas (l'admin n'a rien créé) → renvoie un objet
  * vide, le composant React utilise alors ses fallbacks hardcodés.
  */
 export async function getLocalPage(pageKey: string): Promise<SanityLocalPage> {
@@ -429,10 +429,10 @@ export async function getSiteSettings(): Promise<SanitySiteSettings> {
  * Produit vedette pour le mega-menu (4e colonne du Catalogue).
  *
  * Priorité :
- *   1. Le produit explicitement sélectionné par Djamel dans
+ *   1. Le produit explicitement sélectionné par l'admin dans
  *      Réglages → Navigation → Produit vedette du menu
  *   2. Fallback : dernier produit publié (le mega-menu reste vivant
- *      même si Djamel n'a rien configuré)
+ *      même si l'admin n'a rien configuré)
  *
  * Indépendant du toggle "Produit en avant" qui alimente la section
  * "Coups de cœur" de la home — pas de conflit entre les 2 zones.
