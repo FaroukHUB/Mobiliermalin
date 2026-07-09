@@ -136,32 +136,56 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
 
   // ─── MODE BANNIÈRE COMPLÈTE ────────────────────────────────────
   // L'image contient déjà tout le contenu marketing (texte, CTA
-  // visuel, prix). On l'affiche entière (object-contain) sur fond
-  // neutre, sans voile ni texte du site. La bannière entière est
-  // cliquable vers ctaPrimaryHref.
+  // visuel, prix). On l'affiche ENTIÈRE, à sa proportion réelle,
+  // sans coupure ni bandes vides. Aucun voile ni texte du site
+  // superposé. La bannière entière est cliquable vers ctaPrimaryHref.
   if (slide.fullBanner) {
+    // Utilise l'image mobile dédiée si présente, sinon on affiche
+    // la desktop des deux côtés. Chaque image est rendue avec ses
+    // dimensions natives → le container s'auto-adapte au ratio.
+    const desktopW = slide.image.width || 2560
+    const desktopH = slide.image.height || 1000
+    const mobileW = slide.imageMobile?.width || 1000
+    const mobileH = slide.imageMobile?.height || 1000
+
     const bannerContent = (
-      <div className="relative flex-[0_0_100%] min-w-0">
-        <div className="relative w-full bg-ivory-dark aspect-[16/7] md:aspect-[21/9] max-h-[820px]">
-          {slide.imageMobile && (
+      <div className="relative flex-[0_0_100%] min-w-0 bg-ivory-dark">
+        {slide.imageMobile ? (
+          <>
+            {/* Mobile : image dédiée à son ratio natif */}
             <Image
               src={slide.imageMobile.url}
               alt={slide.imageMobile.alt || slide.title}
-              fill
+              width={mobileW}
+              height={mobileH}
               priority={isFirst}
               sizes="100vw"
-              className="object-contain md:hidden"
+              className="block md:hidden w-full h-auto"
             />
-          )}
+            {/* Desktop : image dédiée à son ratio natif */}
+            <Image
+              src={slide.image.url}
+              alt={slide.image.alt || slide.title}
+              width={desktopW}
+              height={desktopH}
+              priority={isFirst}
+              sizes="100vw"
+              className="hidden md:block w-full h-auto"
+            />
+          </>
+        ) : (
+          // Une seule image utilisée sur mobile ET desktop, à son
+          // ratio natif → aucune coupure, aucune bande vide.
           <Image
             src={slide.image.url}
             alt={slide.image.alt || slide.title}
-            fill
+            width={desktopW}
+            height={desktopH}
             priority={isFirst}
             sizes="100vw"
-            className={cn('object-contain', slide.imageMobile && 'hidden md:block')}
+            className="w-full h-auto"
           />
-        </div>
+        )}
       </div>
     )
     // Si CTA principal → toute la bannière est cliquable

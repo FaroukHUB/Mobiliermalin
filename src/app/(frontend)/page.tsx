@@ -104,40 +104,75 @@ export default async function HomePage() {
   ])
 
   const slides: HeroSlide[] = sanitySlides.length
-    ? sanitySlides.map((s) => ({
-        id: s._id,
-        title: s.title,
-        subtitle: s.subtitle,
-        // .fit('crop') active le hotspot défini dans Sanity :
-        // même quand on crop en format paysage large (desktop) ou
-        // portrait haut (mobile), la zone focale choisie par Djamel
-        // reste visible au centre du cadrage.
-        image: {
-          url: urlFor(s.image).width(2560).height(1000).fit('crop').url(),
-          alt: s.image.alt || s.title,
-        },
-        // Si Djamel n'a PAS uploadé une image mobile dédiée, on
-        // recadre automatiquement l'image desktop en portrait
-        // (800×1000) autour du hotspot — la zone importante reste
-        // toujours visible sur téléphone.
-        imageMobile: s.imageMobile
-          ? {
-              url: urlFor(s.imageMobile).width(800).height(1000).fit('crop').url(),
-              alt: s.imageMobile.alt || s.title,
-            }
-          : {
-              url: urlFor(s.image).width(800).height(1000).fit('crop').url(),
+    ? sanitySlides.map((s) => {
+        // Dimensions natives des assets (si récupérées via metadata)
+        const desktopDim = s.image.asset?.metadata?.dimensions
+        const mobileDim = s.imageMobile?.asset?.metadata?.dimensions
+
+        if (s.fullBanner) {
+          // MODE BANNIÈRE COMPLÈTE — on préserve l'image native (pas
+          // de crop côté serveur) pour respecter à 100 % le design
+          // Canva/Photoshop de Djamel. On sert l'URL sans crop, en
+          // largeur maximale pour la qualité, et on passe les
+          // dimensions natives au composant qui calculera le ratio.
+          return {
+            id: s._id,
+            title: s.title,
+            subtitle: s.subtitle,
+            image: {
+              url: urlFor(s.image).width(2560).auto('format').url(),
               alt: s.image.alt || s.title,
+              width: desktopDim?.width,
+              height: desktopDim?.height,
             },
-        ctaPrimaryLabel: s.ctaPrimaryLabel,
-        ctaPrimaryHref: s.ctaPrimaryHref,
-        ctaSecondaryLabel: s.ctaSecondaryLabel,
-        ctaSecondaryHref: s.ctaSecondaryHref,
-        textPosition: s.textPosition,
-        textColor: s.textColor,
-        overlayOpacity: s.overlayOpacity,
-        fullBanner: s.fullBanner,
-      }))
+            imageMobile: s.imageMobile
+              ? {
+                  url: urlFor(s.imageMobile).width(1000).auto('format').url(),
+                  alt: s.imageMobile.alt || s.title,
+                  width: mobileDim?.width,
+                  height: mobileDim?.height,
+                }
+              : undefined,
+            ctaPrimaryLabel: s.ctaPrimaryLabel,
+            ctaPrimaryHref: s.ctaPrimaryHref,
+            ctaSecondaryLabel: s.ctaSecondaryLabel,
+            ctaSecondaryHref: s.ctaSecondaryHref,
+            textPosition: s.textPosition,
+            textColor: s.textColor,
+            overlayOpacity: s.overlayOpacity,
+            fullBanner: true,
+          }
+        }
+
+        // Mode classique : crop côté serveur avec hotspot pour un
+        // rendu paysage sur desktop / portrait auto sur mobile.
+        return {
+          id: s._id,
+          title: s.title,
+          subtitle: s.subtitle,
+          image: {
+            url: urlFor(s.image).width(2560).height(1000).fit('crop').url(),
+            alt: s.image.alt || s.title,
+          },
+          imageMobile: s.imageMobile
+            ? {
+                url: urlFor(s.imageMobile).width(800).height(1000).fit('crop').url(),
+                alt: s.imageMobile.alt || s.title,
+              }
+            : {
+                url: urlFor(s.image).width(800).height(1000).fit('crop').url(),
+                alt: s.image.alt || s.title,
+              },
+          ctaPrimaryLabel: s.ctaPrimaryLabel,
+          ctaPrimaryHref: s.ctaPrimaryHref,
+          ctaSecondaryLabel: s.ctaSecondaryLabel,
+          ctaSecondaryHref: s.ctaSecondaryHref,
+          textPosition: s.textPosition,
+          textColor: s.textColor,
+          overlayOpacity: s.overlayOpacity,
+          fullBanner: false,
+        }
+      })
     : FALLBACK_SLIDES
 
   return (

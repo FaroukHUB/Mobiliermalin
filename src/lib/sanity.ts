@@ -30,7 +30,19 @@ export function urlFor(source: SanityImageSource) {
 
 export type SanityImage = {
   _key?: string
-  asset: { _ref: string; _type?: string }
+  asset: {
+    _ref: string
+    _type?: string
+    // Populated only when the query explicitly dereferences the asset,
+    // e.g. `image { ..., asset->{ metadata { dimensions } } }`.
+    metadata?: {
+      dimensions?: {
+        width: number
+        height: number
+        aspectRatio: number
+      }
+    }
+  }
   alt?: string
   hotspot?: { x: number; y: number; height: number; width: number }
 }
@@ -516,10 +528,20 @@ export type SanityHeroSlide = {
  * Slides du hero d'accueil (uniquement publiées, triées).
  */
 export async function getHeroSlides(): Promise<SanityHeroSlide[]> {
+  // On récupère les dimensions natives des assets pour connaître le
+  // ratio réel de l'image — nécessaire au mode "bannière complète"
+  // qui adapte le container au ratio de l'image (aucune coupure).
   return safeFetch<SanityHeroSlide[]>(
     `*[_type == "heroSlide" && status == "published"] | order(order asc) {
       _id, title, subtitle,
-      image, imageMobile,
+      image {
+        ...,
+        asset->{ _id, _type, metadata { dimensions { width, height, aspectRatio } } }
+      },
+      imageMobile {
+        ...,
+        asset->{ _id, _type, metadata { dimensions { width, height, aspectRatio } } }
+      },
       ctaPrimaryLabel, ctaPrimaryHref, ctaSecondaryLabel, ctaSecondaryHref,
       textPosition, textColor, overlayOpacity, fullBanner, order, status
     }`,
