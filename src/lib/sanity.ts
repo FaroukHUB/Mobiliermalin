@@ -395,6 +395,11 @@ export type SanitySiteSettings = {
   logoOnLight?: SanityImage
   logoOnDark?: SanityImage
   favicon?: SanityImage
+  // Carrousel d'accueil (autoplay)
+  heroAutoplayEnabled?: boolean
+  heroAutoplayDelay?: number  // en secondes (2 à 30)
+  heroStopOnHover?: boolean
+  // Images de sections
   manifesteImage?: SanityImage
   lldSectionImage?: SanityImage
   showroomImage?: SanityImage
@@ -410,6 +415,7 @@ export async function getSiteSettings(): Promise<SanitySiteSettings> {
   const result = await safeFetch<SanitySiteSettings | null>(
     `*[_type == "siteSettings"][0] {
       siteName, logoOnLight, logoOnDark, favicon,
+      heroAutoplayEnabled, heroAutoplayDelay, heroStopOnHover,
       manifesteImage, lldSectionImage, showroomImage,
       lldHeroImage, rseHeroImage
     }`,

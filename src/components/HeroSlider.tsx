@@ -32,23 +32,32 @@ export type HeroSlide = {
 
 interface HeroSliderProps {
   slides: HeroSlide[]
+  autoplayEnabled?: boolean
   autoplayDelay?: number
+  stopOnHover?: boolean
 }
 
-export function HeroSlider({ slides, autoplayDelay = 6000 }: HeroSliderProps) {
+export function HeroSlider({
+  slides,
+  autoplayEnabled = true,
+  autoplayDelay = 5000,
+  stopOnHover = false,
+}: HeroSliderProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'start', skipSnaps: false },
-    [
-      Autoplay({
-        delay: autoplayDelay,
-        // L'autoplay reprend apres une interaction (clic / swipe).
-        // Sinon il s'arretait definitivement, ce qui donnait l'impression
-        // que le slider "n'etait pas automatique".
-        stopOnInteraction: false,
-        stopOnMouseEnter: true,
-        playOnInit: true,
-      }),
-    ],
+    autoplayEnabled
+      ? [
+          Autoplay({
+            delay: autoplayDelay,
+            // L'autoplay reprend apres une interaction (clic / swipe).
+            stopOnInteraction: false,
+            // Configurable côté Sanity : sur desktop, laisser à false
+            // sinon le survol accidentel de la souris met en pause.
+            stopOnMouseEnter: stopOnHover,
+            playOnInit: true,
+          }),
+        ]
+      : [],
   )
   const [selectedIndex, setSelectedIndex] = useState(0)
 

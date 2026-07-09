@@ -177,7 +177,12 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSlider slides={slides} />
+      <HeroSlider
+        slides={slides}
+        autoplayEnabled={settings.heroAutoplayEnabled ?? true}
+        autoplayDelay={(settings.heroAutoplayDelay ?? 5) * 1000}
+        stopOnHover={settings.heroStopOnHover ?? false}
+      />
       <FeaturedProducts products={featuredProducts} />
       <ReassuranceBar />
       <ManifesteSection image={sanityImageToMedia(settings.manifesteImage, 'Notre manifeste')} />

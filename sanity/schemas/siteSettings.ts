@@ -6,6 +6,7 @@ export const siteSettings = {
   type: 'document',
   groups: [
     { name: 'identity', title: 'Identité', default: true },
+    { name: 'hero', title: "🎞️ Carrousel d'accueil" },
     { name: 'sections', title: 'Images des sections' },
     { name: 'pagesHero', title: 'Hero des pages internes' },
     { name: 'navigation', title: 'Navigation (menu)' },
@@ -44,6 +45,36 @@ export const siteSettings = {
       type: 'image',
       group: 'identity',
       description: 'Petite icône carrée 32×32 ou 512×512 px.',
+    },
+
+    // ─────────── Carrousel d'accueil (autoplay) ───────────
+    {
+      name: 'heroAutoplayEnabled',
+      title: 'Activer le défilement automatique',
+      description:
+        'Si coché, le carrousel passe à la slide suivante toutes les X secondes (voir vitesse ci-dessous). Le visiteur peut toujours utiliser les flèches ou cliquer sur les points en bas pour naviguer manuellement.',
+      type: 'boolean',
+      group: 'hero',
+      initialValue: true,
+    },
+    {
+      name: 'heroAutoplayDelay',
+      title: 'Vitesse du défilement (secondes)',
+      description:
+        'Nombre de secondes affichées entre chaque slide. Valeur recommandée : 5 à 8 secondes. Minimum 2 s, maximum 30 s.',
+      type: 'number',
+      group: 'hero',
+      initialValue: 5,
+      validation: (R: Rule) => R.min(2).max(30),
+    },
+    {
+      name: 'heroStopOnHover',
+      title: 'Mettre en pause au survol de la souris',
+      description:
+        'Si coché, l\'autoplay se met en pause quand le visiteur survole le carrousel avec sa souris (permet de lire un long titre sans qu\'il défile). ⚠️ À décocher si tu veux tester l\'autoplay sur ton ordinateur — sinon dès que ta souris survole, ça se met en pause.',
+      type: 'boolean',
+      group: 'hero',
+      initialValue: false,
     },
 
     // ─────────── Images des sections (page d'accueil) ───────────
