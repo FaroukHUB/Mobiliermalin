@@ -1,7 +1,7 @@
 /**
  * GET /api/chat/health
  *
- * Vérifie que la clé XAI_API_KEY est présente côté serveur.
+ * Vérifie que la clé GEMINI_API_KEY est présente côté serveur.
  * Utilisé pour valider la config Vercel après ajout de la variable
  * d'environnement.
  */
@@ -12,12 +12,14 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const hasKey = !!process.env.XAI_API_KEY
+  const hasKey = !!process.env.GEMINI_API_KEY
   return NextResponse.json({
     ok: hasKey,
     hasKey,
-    provider: 'xai',
-    model: 'grok-4-fast',
-    error: hasKey ? null : 'XAI_API_KEY absent — ajouter dans Vercel Env Vars puis redéployer.',
+    provider: 'google-gemini',
+    model: 'gemini-2.0-flash',
+    error: hasKey
+      ? null
+      : 'GEMINI_API_KEY absent — récupérer sur aistudio.google.com/apikey puis ajouter dans Vercel Env Vars, puis redéployer.',
   })
 }

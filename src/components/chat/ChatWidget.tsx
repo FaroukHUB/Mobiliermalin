@@ -316,8 +316,7 @@ export function ChatWidget() {
                 </button>
               </div>
               <p className="mt-2 text-[0.65rem] text-ink-mute text-center">
-                Assistant IA basé sur Grok — peut se tromper. Pour les commandes,
-                appelez le{' '}
+                Assistant IA — peut se tromper. Pour les commandes, appelez le{' '}
                 <Link
                   href="tel:+33676617053"
                   className="text-gold-dark hover:text-gold underline underline-offset-2"

@@ -2,9 +2,12 @@
  * POST /api/chat
  *
  * Endpoint principal du chatbot Malin.
- * Reçoit un historique de messages, appelle Grok (xAI), exécute les
- * appels d'outils (tool use) en boucle, et renvoie la réponse finale
- * en streaming (Server-Sent Events).
+ * Reçoit un historique de messages, appelle Google Gemini (compatible
+ * OpenAI), exécute les appels d'outils (tool use) en boucle, et renvoie
+ * la réponse finale en streaming (Server-Sent Events).
+ *
+ * Modèle : gemini-2.0-flash (gratuit, 15 req/min)
+ * Endpoint : Google AI Studio compatible OpenAI
  *
  * Body attendu :
  * {
@@ -24,8 +27,12 @@ import { SYSTEM_PROMPT, TOOLS_SCHEMA, executeToolCall } from '@/lib/chat-context
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const XAI_ENDPOINT = 'https://api.x.ai/v1/chat/completions'
-const MODEL = 'grok-4-fast'
+// Google Gemini via API compatible OpenAI — gratuite jusqu'à 15 req/min.
+// Ce endpoint accepte le même format que xAI/OpenAI, donc quasi aucun
+// changement de code par rapport à la version Grok.
+const GEMINI_ENDPOINT =
+  'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
+const MODEL = 'gemini-2.0-flash'
 const MAX_TOOL_ITERATIONS = 5
 
 type Msg = {
@@ -40,12 +47,12 @@ type Msg = {
   name?: string
 }
 
-async function callGrok(messages: Msg[], useTools: boolean) {
-  const res = await fetch(XAI_ENDPOINT, {
+async function callGemini(messages: Msg[], useTools: boolean) {
+  const res = await fetch(GEMINI_ENDPOINT, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.XAI_API_KEY}`,
+      Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
     },
     body: JSON.stringify({
       model: MODEL,
@@ -58,17 +65,24 @@ async function callGrok(messages: Msg[], useTools: boolean) {
 
   if (!res.ok) {
     const err = await res.text().catch(() => '')
-    throw new Error(`xAI ${res.status} : ${err.slice(0, 500)}`)
+    // Rate limiting : message plus clair pour l'utilisateur
+    if (res.status === 429) {
+      throw new Error(
+        `Beaucoup de conversations en cours. Réessaie dans une minute — le service est actuellement saturé.`,
+      )
+    }
+    throw new Error(`Gemini ${res.status} : ${err.slice(0, 500)}`)
   }
   const data = await res.json()
   return data.choices?.[0]?.message as Msg
 }
 
 export async function POST(req: Request) {
-  if (!process.env.XAI_API_KEY) {
+  if (!process.env.GEMINI_API_KEY) {
     return new Response(
       JSON.stringify({
-        error: 'XAI_API_KEY absent côté serveur. Ajouter dans Vercel Env Vars.',
+        error:
+          'GEMINI_API_KEY absent côté serveur. Ajouter dans Vercel Env Vars (récupérer sur aistudio.google.com/apikey).',
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     )
@@ -111,7 +125,7 @@ export async function POST(req: Request) {
   let finalText = ''
   try {
     for (let iter = 0; iter < MAX_TOOL_ITERATIONS; iter++) {
-      const msg = await callGrok(conversation, true)
+      const msg = await callGemini(conversation, true)
       conversation.push(msg)
 
       // Si l'assistant a demandé des outils : exécute et boucle
@@ -139,10 +153,11 @@ export async function POST(req: Request) {
       break
     }
   } catch (err) {
-    console.error('[chat] Grok error:', err)
+    console.error('[chat] Gemini error:', err)
     return new Response(
       JSON.stringify({
-        error: 'Erreur Grok : ' + (err instanceof Error ? err.message : 'inconnue'),
+        error:
+          'Erreur IA : ' + (err instanceof Error ? err.message : 'inconnue'),
       }),
       { status: 502, headers: { 'Content-Type': 'application/json' } },
     )
