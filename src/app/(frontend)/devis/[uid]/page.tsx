@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
+type LineItem = { name: string; unitPrice: number; quantity: number }
+
 type QuoteDoc = {
   _id: string
   numero: string
@@ -25,7 +27,10 @@ type QuoteDoc = {
     floor?: string
     elevator?: 'yes' | 'no' | 'unknown'
   }
-  product: { name: string; unitPrice: number; quantity: number }
+  // Devis legacy (formulaire client) — un seul produit
+  product?: LineItem
+  // Devis manuel (multi-produits) — array de lignes
+  lineItems?: LineItem[]
   shippingFee?: number
   options?: { label: string; price: number }[]
   tvaRate?: number
@@ -51,6 +56,7 @@ export default async function QuoteAcceptPage({
     `*[_type == "quote" && _id == $id][0] {
       _id, numero, status, validUntil, _createdAt,
       customer, shippingAddress, product,
+      lineItems[]{ name, unitPrice, quantity },
       shippingFee, options, tvaRate, pdfNotes
     }`,
     { id: uid },
@@ -61,9 +67,22 @@ export default async function QuoteAcceptPage({
   const tvaRate = quote.tvaRate ?? 20
   const shippingFee = quote.shippingFee ?? 0
   const options = quote.options ?? []
-  const productTotal = quote.product.unitPrice * quote.product.quantity
+
+  // Unifie legacy 'product' (1 ligne) et nouveau 'lineItems' (N lignes)
+  // en une seule liste pour l'affichage tableau.
+  const displayLines: LineItem[] =
+    Array.isArray(quote.lineItems) && quote.lineItems.length > 0
+      ? quote.lineItems
+      : quote.product
+        ? [quote.product]
+        : []
+
+  const linesTotal = displayLines.reduce(
+    (s, li) => s + li.unitPrice * li.quantity,
+    0,
+  )
   const optionsTotal = options.reduce((sum, o) => sum + o.price, 0)
-  const subtotalHt = productTotal + shippingFee + optionsTotal
+  const subtotalHt = linesTotal + shippingFee + optionsTotal
   const tvaAmount = subtotalHt * (tvaRate / 100)
   const totalTtc = subtotalHt + tvaAmount
 
@@ -172,12 +191,16 @@ export default async function QuoteAcceptPage({
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
-            <tr>
-              <td className="px-6 py-3 text-ink">{quote.product.name}</td>
-              <td className="px-3 py-3 text-center text-ink">{quote.product.quantity}</td>
-              <td className="px-3 py-3 text-right text-ink">{eur(quote.product.unitPrice)}</td>
-              <td className="px-6 py-3 text-right text-ink font-medium">{eur(productTotal)}</td>
-            </tr>
+            {displayLines.map((li, i) => (
+              <tr key={i}>
+                <td className="px-6 py-3 text-ink">{li.name}</td>
+                <td className="px-3 py-3 text-center text-ink">{li.quantity}</td>
+                <td className="px-3 py-3 text-right text-ink">{eur(li.unitPrice)}</td>
+                <td className="px-6 py-3 text-right text-ink font-medium">
+                  {eur(li.unitPrice * li.quantity)}
+                </td>
+              </tr>
+            ))}
             {shippingFee > 0 && (
               <tr>
                 <td className="px-6 py-3 text-ink">
