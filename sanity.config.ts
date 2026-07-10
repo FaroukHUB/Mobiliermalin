@@ -15,6 +15,7 @@ import {
   CategoryGridView,
   BlogGridView,
 } from './sanity/dashboard/MediaGrid'
+import { NouveauDevisLink } from './sanity/dashboard/NouveauDevisLink'
 import { projectId, dataset, apiVersion } from './sanity/env'
 import {
   LOCAL_PAGES,
@@ -362,6 +363,17 @@ export default defineConfig({
                 S.list()
                   .title('Devis livraison')
                   .items([
+                    // Raccourci vers la page dédiée /admin/nouveau-devis
+                    S.listItem()
+                      .id('nouveauDevisLink')
+                      .title('➕ Créer un nouveau devis')
+                      .icon(() => '📄')
+                      .child(
+                        S.component(NouveauDevisLink)
+                          .id('nouveauDevisLink')
+                          .title('Créer un nouveau devis'),
+                      ),
+                    S.divider(),
                     S.listItem()
                       .title('🟡 À traiter (nouveaux)')
                       .child(
