@@ -5,13 +5,18 @@ export const dynamic = 'force-dynamic'
 
 const STRIPE_API = 'https://api.stripe.com/v1'
 
+type LineItem = { name: string; unitPrice: number; quantity: number }
+
 type QuoteDoc = {
   _id: string
   numero: string
   status: string
   validUntil?: string
   customer: { name: string; email: string }
-  product: { name: string; unitPrice: number; quantity: number }
+  // Devis legacy (formulaire client) — un seul produit
+  product?: { name: string; unitPrice: number; quantity: number }
+  // Devis manuel (multi-produits) — array de lignes
+  lineItems?: LineItem[]
   shippingFee?: number
   options?: { label: string; price: number }[]
   tvaRate?: number
@@ -43,6 +48,7 @@ export async function POST(
     `*[_type == "quote" && _id == $id][0] {
       _id, numero, status, validUntil,
       customer, product,
+      lineItems[]{ name, unitPrice, quantity },
       shippingFee, options, tvaRate
     }`,
     { id: uid },
@@ -67,12 +73,18 @@ export async function POST(
   }
 
   // 3) Calcul du total TTC en centimes
+  // Priorité : lineItems (devis manuel multi-produits) > product (devis legacy)
   const tvaRate = quote.tvaRate ?? 20
   const shippingFee = quote.shippingFee ?? 0
   const options = quote.options ?? []
-  const productTotal = quote.product.unitPrice * quote.product.quantity
+  const linesTotal =
+    Array.isArray(quote.lineItems) && quote.lineItems.length > 0
+      ? quote.lineItems.reduce((s, li) => s + li.unitPrice * li.quantity, 0)
+      : quote.product
+        ? quote.product.unitPrice * quote.product.quantity
+        : 0
   const optionsTotal = options.reduce((sum, o) => sum + o.price, 0)
-  const subtotalHt = productTotal + shippingFee + optionsTotal
+  const subtotalHt = linesTotal + shippingFee + optionsTotal
   const tvaAmount = subtotalHt * (tvaRate / 100)
   const totalTtc = Math.round((subtotalHt + tvaAmount) * 100) // en centimes
 
@@ -99,9 +111,18 @@ export async function POST(
 
   // Une seule ligne avec le total TTC (la TVA est déjà incluse dans le total)
   stripeParams.append('line_items[0][price_data][currency]', 'eur')
+  // Label produit : nom du 1er lineItem, ou du legacy product, ou "Devis" seul
+  const firstItemName =
+    (Array.isArray(quote.lineItems) && quote.lineItems.length > 0
+      ? quote.lineItems[0].name
+      : quote.product?.name) || 'Devis Mobilier Malin'
+  const itemCount =
+    Array.isArray(quote.lineItems) && quote.lineItems.length > 1
+      ? ` (+${quote.lineItems.length - 1} autre${quote.lineItems.length > 2 ? 's' : ''})`
+      : ''
   stripeParams.append(
     'line_items[0][price_data][product_data][name]',
-    `Devis ${quote.numero} — ${quote.product.name}`,
+    `Devis ${quote.numero} — ${firstItemName}${itemCount}`,
   )
   stripeParams.append(
     'line_items[0][price_data][product_data][description]',

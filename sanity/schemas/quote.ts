@@ -101,12 +101,17 @@ export const quote = {
       validation: (R: Rule) => R.required(),
     },
 
-    // ───── Produit ─────
+    // ───── Produit unique (legacy — venant du formulaire client) ─────
+    // Rétrocompatibilité : les anciens devis créés via /demander-devis
+    // utilisent ce champ. Les devis créés manuellement depuis
+    // /admin/nouveau-devis utilisent 'lineItems' à la place.
     {
       name: 'product',
-      title: 'Produit demandé',
+      title: 'Produit demandé (legacy — devis venu du formulaire client)',
       type: 'object',
       group: 'product',
+      hidden: ({ document }: { document?: { lineItems?: unknown[] } }) =>
+        Array.isArray(document?.lineItems) && document.lineItems.length > 0,
       fields: [
         {
           name: 'ref',
@@ -117,12 +122,88 @@ export const quote = {
           description:
             'Lien vers le produit Sanity (auto-rempli depuis la demande). Référence faible : le produit peut être supprimé sans casser ce devis.',
         },
-        { name: 'name', title: 'Nom du produit', type: 'string', validation: (R: Rule) => R.required() },
+        { name: 'name', title: 'Nom du produit', type: 'string' },
         { name: 'slug', title: 'Slug', type: 'string' },
-        { name: 'unitPrice', title: 'Prix unitaire HT (€)', type: 'number', validation: (R: Rule) => R.required().min(0) },
-        { name: 'quantity', title: 'Quantité', type: 'number', initialValue: 1, validation: (R: Rule) => R.required().min(1) },
+        { name: 'unitPrice', title: 'Prix unitaire HT (€)', type: 'number', validation: (R: Rule) => R.min(0) },
+        { name: 'quantity', title: 'Quantité', type: 'number', initialValue: 1, validation: (R: Rule) => R.min(1) },
       ],
-      validation: (R: Rule) => R.required(),
+    },
+
+    // ───── Lignes de devis (nouveau — devis créés manuellement) ─────
+    // Chaque devis créé depuis /admin/nouveau-devis peut contenir
+    // plusieurs lignes : catalogue Sanity OU ligne libre (custom).
+    {
+      name: 'lineItems',
+      title: 'Lignes de produits',
+      type: 'array',
+      group: 'product',
+      description:
+        'Utilisé pour les devis créés manuellement (multi-produits). Chaque ligne = un produit + quantité + prix unitaire HT.',
+      of: [
+        {
+          type: 'object',
+          name: 'lineItem',
+          fields: [
+            {
+              name: 'ref',
+              title: 'Produit du catalogue (facultatif)',
+              type: 'reference',
+              to: [{ type: 'product' }],
+              weak: true,
+              description:
+                "Lien vers le produit Sanity si la ligne provient du catalogue. Laisser vide pour une ligne libre.",
+            },
+            {
+              name: 'name',
+              title: 'Nom du produit ou libellé',
+              type: 'string',
+              validation: (R: Rule) => R.required(),
+            },
+            {
+              name: 'slug',
+              title: 'Slug produit (facultatif)',
+              type: 'string',
+            },
+            {
+              name: 'unitPrice',
+              title: 'Prix unitaire HT (€)',
+              type: 'number',
+              validation: (R: Rule) => R.required().min(0),
+            },
+            {
+              name: 'quantity',
+              title: 'Quantité',
+              type: 'number',
+              initialValue: 1,
+              validation: (R: Rule) => R.required().min(1),
+            },
+          ],
+          preview: {
+            select: { title: 'name', unit: 'unitPrice', qty: 'quantity' },
+            prepare({
+              title,
+              unit,
+              qty,
+            }: {
+              title?: string
+              unit?: number
+              qty?: number
+            }) {
+              const total =
+                typeof unit === 'number' && typeof qty === 'number'
+                  ? unit * qty
+                  : null
+              return {
+                title: title || '(sans nom)',
+                subtitle:
+                  total !== null
+                    ? `${qty} × ${unit} € HT = ${total} € HT`
+                    : undefined,
+              }
+            },
+          },
+        },
+      ],
     },
 
     // ───── Frais livraison & options ─────
