@@ -84,7 +84,10 @@ export default function NouveauDevisPage() {
 
   // Options + frais
   const [options, setOptions] = useState<Option[]>([])
-  const [shippingFee, setShippingFee] = useState(0)
+  // ⚠️ shippingFeeTTC : ce que voit / saisit l'admin (ce qu'on annonce
+  // au client). Converti en HT côté calculs pour que la TVA reste
+  // cohérente avec le reste (lignes produits en HT + options en HT).
+  const [shippingFeeTTC, setShippingFeeTTC] = useState(0)
   const [tvaRate, setTvaRate] = useState(20)
   const [validUntilDays, setValidUntilDays] = useState(30)
   const [pdfNotes, setPdfNotes] = useState('')
@@ -123,11 +126,13 @@ export default function NouveauDevisPage() {
     return () => clearTimeout(timer)
   }, [searchIndex, searchQuery, secret])
 
-  // Totaux
+  // Totaux — la livraison saisie en TTC est convertie en HT en interne
+  // pour additionner tout en HT, puis TVA appliquée sur l'ensemble.
+  const shippingFeeHt = (shippingFeeTTC || 0) / (1 + tvaRate / 100)
   const subtotalHt =
     lineItems.reduce((s, li) => s + (li.unitPrice || 0) * (li.quantity || 0), 0) +
     options.reduce((s, o) => s + (o.price || 0), 0) +
-    (shippingFee || 0)
+    shippingFeeHt
   const tvaAmount = subtotalHt * (tvaRate / 100)
   const totalTtc = subtotalHt + tvaAmount
 
@@ -200,7 +205,7 @@ export default function NouveauDevisPage() {
             slug: li.slug,
             refId: li.refId,
           })),
-          shippingFee,
+          shippingFee: shippingFeeHt,
           options: options.map((o) => ({ label: o.label, price: o.price })),
           tvaRate,
           validUntilDays,
@@ -492,15 +497,15 @@ export default function NouveauDevisPage() {
       </Section>
 
       <Section title="4. Livraison & options">
-        <Field label="Frais de livraison HT (€)">
+        <Field label="Frais de livraison TTC (€)">
           <input
             type="number"
             min={0}
             step={0.01}
-            value={shippingFee || ''}
-            onChange={(e) => setShippingFee(parseFloat(e.target.value) || 0)}
+            value={shippingFeeTTC || ''}
+            onChange={(e) => setShippingFeeTTC(parseFloat(e.target.value) || 0)}
             style={inputStyle}
-            placeholder="0 pour un retrait gratuit"
+            placeholder="0 pour un retrait gratuit — TTC (le prix annoncé au client)"
           />
         </Field>
         {options.map((o) => (
