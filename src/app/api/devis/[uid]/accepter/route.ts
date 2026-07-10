@@ -141,6 +141,28 @@ export async function POST(
     `Acceptation devis ${quote.numero}`,
   )
 
+  // ─── FACTURATION AUTOMATIQUE STRIPE ────────────────────────────
+  // Après paiement, Stripe génère automatiquement une facture PDF
+  // officielle (avec toutes les mentions légales tirées des Business
+  // Settings du compte Stripe : SIRET, TVA, adresse) et l'envoie au
+  // client par email dans les minutes qui suivent.
+  //
+  // Prérequis côté Stripe Dashboard : Settings → Business → Details
+  // (nom légal, SIRET, TVA intracom) doivent être remplis.
+  stripeParams.append('invoice_creation[enabled]', 'true')
+  stripeParams.append(
+    'invoice_creation[invoice_data][description]',
+    `Devis ${quote.numero} accepté — Mobilier Malin`,
+  )
+  stripeParams.append(
+    'invoice_creation[invoice_data][footer]',
+    'Produits reconditionnés et contrôlés dans notre atelier de La Penne-sur-Huveaune. Retour sous 14 jours pour les particuliers (loi Hamon). Mobilier Malin — SARL 2 M.',
+  )
+  stripeParams.append(
+    'invoice_creation[invoice_data][metadata][quote_numero]',
+    quote.numero,
+  )
+
   // 5) Création de la session Stripe
   try {
     const res = await fetch(`${STRIPE_API}/checkout/sessions`, {
