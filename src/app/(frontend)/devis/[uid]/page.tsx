@@ -201,16 +201,20 @@ export default async function QuoteAcceptPage({
                 </td>
               </tr>
             ))}
-            {shippingFee > 0 && (
-              <tr>
-                <td className="px-6 py-3 text-ink">
-                  Livraison à {quote.shippingAddress.city}
-                </td>
-                <td className="px-3 py-3 text-center text-ink">1</td>
-                <td className="px-3 py-3 text-right text-ink">{eur(shippingFee)}</td>
-                <td className="px-6 py-3 text-right text-ink font-medium">{eur(shippingFee)}</td>
-              </tr>
-            )}
+            <tr className="bg-ivory-dark/40">
+              <td className="px-6 py-3 text-ink">
+                {shippingFee > 0
+                  ? `Livraison à ${quote.shippingAddress.city}`
+                  : `Retrait au showroom — La Penne-sur-Huveaune (gratuit)`}
+              </td>
+              <td className="px-3 py-3 text-center text-ink">1</td>
+              <td className="px-3 py-3 text-right text-ink">
+                {shippingFee > 0 ? eur(shippingFee) : '—'}
+              </td>
+              <td className="px-6 py-3 text-right text-ink font-medium">
+                {shippingFee > 0 ? eur(shippingFee) : 'Offert'}
+              </td>
+            </tr>
             {options.map((opt, i) => (
               <tr key={i}>
                 <td className="px-6 py-3 text-ink">{opt.label}</td>

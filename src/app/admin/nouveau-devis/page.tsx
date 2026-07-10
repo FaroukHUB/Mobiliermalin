@@ -19,7 +19,7 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type Product = {
   id: string
@@ -101,6 +101,7 @@ export default function NouveauDevisPage() {
 
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<Result | null>(null)
+  const resultRef = useRef<HTMLDivElement>(null)
 
   // Recherche debounced
   useEffect(() => {
@@ -215,11 +216,35 @@ export default function NouveauDevisPage() {
       })
       const data: Result = await res.json()
       setResult(data)
+      // Auto-scroll vers la bannière de résultat après envoi
+      setTimeout(() => {
+        resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
     } catch (err) {
       setResult({ ok: false, error: err instanceof Error ? err.message : 'Erreur réseau' })
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const resetForm = () => {
+    setName('')
+    setEmail('')
+    setPhone('')
+    setCompany('')
+    setStreet('')
+    setPostalCode('')
+    setCity('')
+    setFloor('')
+    setElevator('unknown')
+    setInstructions('')
+    setLineItems([{ id: rid(), name: '', unitPrice: 0, quantity: 1 }])
+    setOptions([])
+    setShippingFeeTTC(0)
+    setPdfNotes('')
+    setInternalNotes('')
+    setResult(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
@@ -661,60 +686,138 @@ export default function NouveauDevisPage() {
 
       {result && (
         <div
+          ref={resultRef}
           style={{
             marginTop: 24,
-            padding: 20,
-            borderRadius: 6,
-            background: result.ok ? '#eaf8ef' : '#fbeaea',
-            border: `1px solid ${result.ok ? '#2b915d' : '#b23d3d'}`,
+            padding: 32,
+            borderRadius: 8,
+            background: result.ok
+              ? 'linear-gradient(135deg, #2b915d 0%, #1f6b45 100%)'
+              : '#fbeaea',
+            border: `2px solid ${result.ok ? '#1f6b45' : '#b23d3d'}`,
+            color: result.ok ? 'white' : '#1a1a1a',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+            animation: 'quoteResult 0.4s ease-out',
           }}
         >
+          <style>{`
+            @keyframes quoteResult {
+              from { opacity: 0; transform: translateY(20px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+          `}</style>
           {result.ok ? (
             <>
-              <h3 style={{ margin: '0 0 12px', color: '#2b915d' }}>
-                ✅ Devis créé : {result.numero}
-              </h3>
-              <ul style={{ margin: 0, paddingLeft: 20, lineHeight: 1.8 }}>
-                <li>
-                  Email au client :{' '}
-                  {result.emailSent ? (
-                    <strong>✅ envoyé à {email}</strong>
-                  ) : (
-                    <strong style={{ color: '#c33' }}>
-                      ⚠️ échec ({result.emailError || 'inconnu'})
-                    </strong>
-                  )}
-                </li>
-                <li>
-                  Total facturé : <strong>{fmt(result.totalTtc)} € TTC</strong>
-                </li>
-                <li>
-                  Lien de consultation client :{' '}
-                  <a
-                    href={result.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: '#c58720' }}
-                  >
-                    {result.url}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={`/studio/desk/quote;${result.uid}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: '#c58720' }}
-                  >
-                    → Ouvrir dans le Studio
-                  </a>
-                </li>
-              </ul>
+              <div style={{ fontSize: 48, textAlign: 'center', marginBottom: 8 }}>
+                🎉
+              </div>
+              <h2
+                style={{
+                  fontFamily: 'Georgia, serif',
+                  fontSize: 28,
+                  margin: '0 0 8px',
+                  textAlign: 'center',
+                  color: 'white',
+                }}
+              >
+                Devis envoyé au client !
+              </h2>
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: 16,
+                  opacity: 0.92,
+                  margin: '0 0 24px',
+                }}
+              >
+                Numéro <strong>{result.numero}</strong> — Total{' '}
+                <strong>{fmt(result.totalTtc)} € TTC</strong>
+              </p>
+
+              <div
+                style={{
+                  background: 'rgba(255,255,255,0.14)',
+                  borderRadius: 6,
+                  padding: 20,
+                  marginBottom: 20,
+                }}
+              >
+                <div style={{ fontSize: 14, lineHeight: 2 }}>
+                  <div>
+                    📧 Email au client :{' '}
+                    {result.emailSent ? (
+                      <strong>✅ envoyé à {email}</strong>
+                    ) : (
+                      <strong style={{ color: '#ffb0b0' }}>
+                        ⚠️ échec ({result.emailError || 'inconnu'})
+                      </strong>
+                    )}
+                  </div>
+                  <div>
+                    🔗 Lien client :{' '}
+                    <a
+                      href={result.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: '#ffe0a0', textDecoration: 'underline' }}
+                    >
+                      Ouvrir
+                    </a>
+                  </div>
+                  <div>
+                    🎨 Dans Sanity :{' '}
+                    <a
+                      href={`/studio/desk/quote;${result.uid}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: '#ffe0a0', textDecoration: 'underline' }}
+                    >
+                      Voir le doc
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={resetForm}
+                style={{
+                  width: '100%',
+                  padding: '14px 24px',
+                  fontSize: 15,
+                  fontWeight: 600,
+                  background: 'white',
+                  color: '#1f6b45',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                  letterSpacing: 0.3,
+                }}
+              >
+                ➕ Créer un nouveau devis
+              </button>
             </>
           ) : (
             <>
-              <h3 style={{ margin: '0 0 8px', color: '#b23d3d' }}>❌ Erreur</h3>
-              <p style={{ margin: 0 }}>{result.error}</p>
+              <h3
+                style={{
+                  margin: '0 0 8px',
+                  color: '#b23d3d',
+                  fontSize: 20,
+                }}
+              >
+                ❌ Erreur — le devis n&apos;a pas été créé
+              </h3>
+              <p style={{ margin: 0, fontSize: 14 }}>{result.error}</p>
+              <p
+                style={{
+                  margin: '12px 0 0',
+                  fontSize: 12,
+                  color: '#666',
+                  fontStyle: 'italic',
+                }}
+              >
+                Rien n&apos;a été envoyé au client. Corrige et réessaie.
+              </p>
             </>
           )}
         </div>
