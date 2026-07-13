@@ -22,6 +22,18 @@ type LineItem = {
   name: string
   unitPrice: number
   quantity: number
+  slug?: string
+  refId?: string
+}
+
+type Product = {
+  id: string
+  name: string
+  slug: string
+  priceEur: number
+  stock: number
+  brand?: string
+  condition?: string
 }
 
 type Result =
@@ -71,6 +83,48 @@ export default function NouvelleFacturePage() {
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<Result | null>(null)
   const resultRef = useRef<HTMLDivElement>(null)
+
+  // Autocomplete produits (mode détaillé)
+  const [searchIndex, setSearchIndex] = useState<number | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<Product[]>([])
+  const [searching, setSearching] = useState(false)
+
+  // Debounced search
+  useEffect(() => {
+    if (searchIndex === null || !searchQuery.trim() || !secret) {
+      setSearchResults([])
+      return
+    }
+    const timer = setTimeout(async () => {
+      setSearching(true)
+      try {
+        const res = await fetch(
+          `/api/admin/products-search?q=${encodeURIComponent(searchQuery)}`,
+          { headers: { 'x-admin-secret': secret } },
+        )
+        const data = await res.json()
+        setSearchResults(data.products || [])
+      } catch {
+        setSearchResults([])
+      } finally {
+        setSearching(false)
+      }
+    }, 250)
+    return () => clearTimeout(timer)
+  }, [searchIndex, searchQuery, secret])
+
+  const selectProduct = (index: number, product: Product) => {
+    const target = lineItems[index]
+    updateLine(target.id, {
+      name: product.name,
+      unitPrice: product.priceEur,
+      slug: product.slug,
+      refId: product.id,
+    })
+    setSearchIndex(null)
+    setSearchQuery('')
+  }
 
   useEffect(() => {
     if (result?.ok) {
@@ -126,6 +180,8 @@ export default function NouvelleFacturePage() {
           name: li.name,
           unitPrice: li.unitPrice,
           quantity: li.quantity,
+          slug: li.slug,
+          refId: li.refId,
         }))
       : [
           {
@@ -335,27 +391,88 @@ export default function NouvelleFacturePage() {
         ) : (
           <>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {lineItems.map((li) => (
+              {lineItems.map((li, i) => (
                 <div
                   key={li.id}
                   style={{
                     border: '1px solid #e5e2d8',
                     borderRadius: 6,
                     padding: 12,
-                    background: '#fafaf7',
+                    background: li.refId ? '#faf6ec' : '#fafaf7',
+                    position: 'relative',
                   }}
                 >
                   <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
-                    <Field label="Désignation" flex={3}>
+                    <div style={{ flex: 3, position: 'relative', marginBottom: 12 }}>
+                      <label style={labelStyle}>
+                        Désignation {li.refId && '(catalogue)'}
+                      </label>
                       <input
                         value={li.name}
-                        onChange={(e) =>
-                          updateLine(li.id, { name: e.target.value })
-                        }
+                        onChange={(e) => {
+                          updateLine(li.id, {
+                            name: e.target.value,
+                            refId: undefined,
+                            slug: undefined,
+                          })
+                          setSearchIndex(i)
+                          setSearchQuery(e.target.value)
+                        }}
+                        onFocus={() => {
+                          setSearchIndex(i)
+                          setSearchQuery(li.name)
+                        }}
                         style={inputStyle}
-                        placeholder="Ex : Fauteuil Steelcase Leap V2"
+                        placeholder="Tape pour rechercher dans le catalogue…"
                       />
-                    </Field>
+                      {searchIndex === i && searchResults.length > 0 && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: 0,
+                            right: 0,
+                            background: 'white',
+                            border: '1px solid #e5e2d8',
+                            borderRadius: 4,
+                            marginTop: 2,
+                            maxHeight: 260,
+                            overflowY: 'auto',
+                            zIndex: 10,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                          }}
+                        >
+                          {searchResults.map((p) => (
+                            <div
+                              key={p.id}
+                              onClick={() => selectProduct(i, p)}
+                              style={{
+                                padding: '10px 12px',
+                                cursor: 'pointer',
+                                borderBottom: '1px solid #f2efe6',
+                                fontSize: 13,
+                              }}
+                              onMouseEnter={(e) =>
+                                (e.currentTarget.style.background = '#fbf6e8')
+                              }
+                              onMouseLeave={(e) =>
+                                (e.currentTarget.style.background = 'white')
+                              }
+                            >
+                              <div style={{ fontWeight: 500 }}>{p.name}</div>
+                              <div style={{ color: '#888', fontSize: 12, marginTop: 2 }}>
+                                {p.brand || 'Sans marque'} · {p.priceEur} € · Stock {p.stock}
+                              </div>
+                            </div>
+                          ))}
+                          {searching && (
+                            <div style={{ padding: '10px 12px', color: '#888', fontSize: 12 }}>
+                              Recherche…
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     <Field label="Prix HT (€)" flex={1}>
                       <input
                         type="number"
