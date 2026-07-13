@@ -24,12 +24,29 @@ export const quote = {
   fields: [
     // ───── Identité & statut ─────
     {
+      name: 'documentType',
+      title: 'Type de document',
+      type: 'string',
+      group: 'identity',
+      options: {
+        list: [
+          { value: 'quote', title: '📋 Devis (proposition à valider)' },
+          { value: 'invoice', title: '🧾 Facture (paiement direct)' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'quote',
+      readOnly: true,
+      description:
+        'Devis = le client doit accepter avant de payer. Facture = paiement direct (client déjà d\'accord).',
+    },
+    {
       name: 'numero',
-      title: 'Numéro de devis',
+      title: 'Numéro',
       type: 'string',
       group: 'identity',
       readOnly: true,
-      description: 'Auto-généré au format DEV-YYYY-XXXX',
+      description: 'Auto-généré : DEV-YYYY-XXXX pour les devis, FAC-YYYY-XXXX pour les factures.',
     },
     {
       name: 'status',

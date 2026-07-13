@@ -53,6 +53,7 @@ type OptionIn = {
 }
 
 type Payload = {
+  documentType?: 'quote' | 'invoice'
   customer?: {
     name?: string
     email?: string
@@ -76,18 +77,20 @@ type Payload = {
   internalNotes?: string
 }
 
-async function generateQuoteNumero(): Promise<string> {
+async function generateNumero(documentType: 'quote' | 'invoice'): Promise<string> {
   const year = new Date().getFullYear()
+  const prefix = documentType === 'invoice' ? 'FAC' : 'DEV'
   const client = getWriteClient()
-  if (!client) return `DEV-${year}-0001`
+  if (!client) return `${prefix}-${year}-0001`
   const count = await client.fetch<number>(
-    `count(*[_type == "quote" && numero match "DEV-${year}-*"])`,
+    `count(*[_type == "quote" && numero match "${prefix}-${year}-*"])`,
   )
   const next = (count || 0) + 1
-  return `DEV-${year}-${String(next).padStart(4, '0')}`
+  return `${prefix}-${year}-${String(next).padStart(4, '0')}`
 }
 
 function buildClientEmailHtml(args: {
+  documentType: 'quote' | 'invoice'
   customerName: string
   numero: string
   total: number
@@ -98,6 +101,15 @@ function buildClientEmailHtml(args: {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
+  const isInvoice = args.documentType === 'invoice'
+  const docLabel = isInvoice ? 'facture' : 'devis'
+  const introLine = isInvoice
+    ? `Comme convenu, voici votre facture pour <strong style="color: #1a1a1a;">${priceStr} € TTC</strong>. Le paiement en ligne par carte bancaire est disponible directement via le bouton ci-dessous.`
+    : `Suite à notre échange, voici votre devis personnalisé pour <strong style="color: #1a1a1a;">${priceStr} € TTC</strong>.`
+  const validityLine = isInvoice
+    ? ''
+    : `<p style="color: #4a4a4a; line-height: 1.6; font-size: 16px;">Ce devis est valide jusqu'au <strong style="color: #1a1a1a;">${args.validUntil}</strong>. Vous pouvez le consulter en détail et régler directement en ligne par carte bancaire via le lien ci-dessous.</p>`
+  const ctaLabel = isInvoice ? 'Payer la facture' : 'Consulter et régler le devis'
   return `<!DOCTYPE html>
 <html>
 <body style="font-family: Georgia, serif; background: #f5f4f0; padding: 40px 20px; color: #1a1a1a; margin: 0;">
@@ -106,37 +118,28 @@ function buildClientEmailHtml(args: {
       Mobilier Malin
     </p>
     <h1 style="font-family: Georgia, serif; font-size: 28px; margin: 0 0 24px; color: #1a1a1a;">
-      Votre devis n° ${args.numero}
+      Votre ${docLabel} n° ${args.numero}
     </h1>
 
     <p style="color: #4a4a4a; line-height: 1.6; font-size: 16px;">
       Bonjour ${args.customerName || ''},
     </p>
 
-    <p style="color: #4a4a4a; line-height: 1.6; font-size: 16px;">
-      Suite à notre échange, voici votre devis personnalisé pour
-      <strong style="color: #1a1a1a;">${priceStr} € TTC</strong>.
-    </p>
+    <p style="color: #4a4a4a; line-height: 1.6; font-size: 16px;">${introLine}</p>
 
-    <p style="color: #4a4a4a; line-height: 1.6; font-size: 16px;">
-      Ce devis est valide jusqu'au
-      <strong style="color: #1a1a1a;">${args.validUntil}</strong>.
-      Vous pouvez le consulter en détail et régler directement en ligne
-      par carte bancaire via le lien ci-dessous.
-    </p>
+    ${validityLine}
 
     <div style="text-align: center; margin: 32px 0;">
       <a href="${args.viewUrl}"
          style="background: #c8a25b; color: white; padding: 14px 32px;
                 text-decoration: none; font-weight: 600; font-family: sans-serif;
                 letter-spacing: 0.5px; display: inline-block; border-radius: 2px;">
-        Consulter et régler le devis
+        ${ctaLabel}
       </a>
     </div>
 
     <p style="color: #6a6a6a; font-size: 14px; line-height: 1.6;">
-      Une question sur le devis ? Répondez simplement à cet email, ou
-      contactez-nous au ${LEGAL.telephone}.
+      Une question ? Répondez simplement à cet email, ou contactez-nous au ${LEGAL.telephone}.
     </p>
 
     <hr style="border: none; border-top: 1px solid #e6e2d8; margin: 32px 0;" />
@@ -230,8 +233,12 @@ export async function POST(req: Request) {
     shippingFee
   const totalTtc = subtotalHt * (1 + tvaRate / 100)
 
+  // Détermine le type de doc (devis vs facture)
+  const documentType: 'quote' | 'invoice' =
+    body.documentType === 'invoice' ? 'invoice' : 'quote'
+
   // Génère le numéro et la date de validité
-  const numero = await generateQuoteNumero()
+  const numero = await generateNumero(documentType)
   const validUntilDays = body.validUntilDays || 30
   const validUntilDate = new Date(Date.now() + validUntilDays * 86400_000)
   const validUntilISO = validUntilDate.toISOString().split('T')[0]
@@ -240,6 +247,7 @@ export async function POST(req: Request) {
   const now = new Date().toISOString()
   const doc: Record<string, unknown> = {
     _type: 'quote',
+    documentType,
     numero,
     status: 'sent',
     validUntil: validUntilISO,
@@ -279,10 +287,11 @@ export async function POST(req: Request) {
     )
   }
 
-  // Envoie l'email au client
+  // Envoie l'email au client (adapté selon le type de doc)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
   const viewUrl = `${siteUrl}/devis/${created._id}`
   const html = buildClientEmailHtml({
+    documentType,
     customerName: body.customer!.name!.trim(),
     numero,
     total: totalTtc,
@@ -290,11 +299,16 @@ export async function POST(req: Request) {
     viewUrl,
   })
 
+  const emailSubject =
+    documentType === 'invoice'
+      ? `Votre facture Mobilier Malin ${numero}`
+      : `Votre devis Mobilier Malin ${numero}`
+
   const emailResult = await sendEmail({
     to: { email: body.customer!.email!.trim(), name: body.customer!.name!.trim() },
-    subject: `Votre devis Mobilier Malin ${numero}`,
+    subject: emailSubject,
     htmlContent: html,
-    tags: ['quote', 'manual-quote'],
+    tags: [documentType === 'invoice' ? 'invoice' : 'quote', 'manual'],
   })
 
   return NextResponse.json({

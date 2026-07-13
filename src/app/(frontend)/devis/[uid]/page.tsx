@@ -17,6 +17,7 @@ type QuoteDoc = {
   _id: string
   numero: string
   status: string
+  documentType?: 'quote' | 'invoice'
   validUntil?: string
   _createdAt: string
   customer: { name: string; email: string; phone?: string; company?: string }
@@ -54,7 +55,7 @@ export default async function QuoteAcceptPage({
 
   const quote = await sanityClient.fetch<QuoteDoc | null>(
     `*[_type == "quote" && _id == $id][0] {
-      _id, numero, status, validUntil, _createdAt,
+      _id, numero, status, documentType, validUntil, _createdAt,
       customer, shippingAddress, product,
       lineItems[]{ name, unitPrice, quantity },
       shippingFee, options, tvaRate, pdfNotes
@@ -90,17 +91,23 @@ export default async function QuoteAcceptPage({
   const isExpired = validUntil ? validUntil.getTime() < Date.now() : false
   const isAccepted = quote.status === 'accepted'
   const isRefused = quote.status === 'refused'
+  const isInvoice = quote.documentType === 'invoice'
+  const docLabel = isInvoice ? 'Facture' : 'Devis'
 
   return (
     <section className="container py-12 md:py-16 max-w-3xl">
-      <p className="eyebrow text-center">Devis personnalisé</p>
+      <p className="eyebrow text-center">
+        {isInvoice ? 'Facture à régler' : 'Devis personnalisé'}
+      </p>
       <h1 className="text-display mt-3 font-serif text-center leading-[1.05]">
-        Devis {quote.numero}
+        {docLabel} {quote.numero}
       </h1>
       <div className="gold-divider mx-auto mt-6" />
       <p className="mt-6 text-center text-ink-soft leading-relaxed">
-        Bonjour {quote.customer.name.split(' ')[0]}, voici le récapitulatif de
-        votre devis. Cliquez sur « Accepter et payer » en bas pour valider.
+        Bonjour {quote.customer.name.split(' ')[0]},{' '}
+        {isInvoice
+          ? 'voici votre facture. Cliquez sur « Payer maintenant » en bas pour régler par carte bancaire.'
+          : 'voici le récapitulatif de votre devis. Cliquez sur « Accepter et payer » en bas pour valider.'}
       </p>
 
       {/* Statut */}
@@ -262,6 +269,7 @@ export default async function QuoteAcceptPage({
             numero={quote.numero}
             totalTtc={totalTtc}
             customerEmail={quote.customer.email}
+            documentType={quote.documentType}
           />
           <p className="mt-4 text-center text-xs text-ink-mute leading-relaxed">
             Paiement sécurisé via Stripe. En cliquant, vous acceptez les CGV jointes

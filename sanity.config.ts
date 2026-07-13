@@ -16,6 +16,7 @@ import {
   BlogGridView,
 } from './sanity/dashboard/MediaGrid'
 import { NouveauDevisLink } from './sanity/dashboard/NouveauDevisLink'
+import { NouvelleFactureLink } from './sanity/dashboard/NouvelleFactureLink'
 import { projectId, dataset, apiVersion } from './sanity/env'
 import {
   LOCAL_PAGES,
@@ -372,6 +373,16 @@ export default defineConfig({
                         S.component(NouveauDevisLink)
                           .id('nouveauDevisLink')
                           .title('Créer un nouveau devis'),
+                      ),
+                    // Raccourci vers /admin/nouvelle-facture (paiement direct)
+                    S.listItem()
+                      .id('nouvelleFactureLink')
+                      .title('🧾 Créer une nouvelle facture')
+                      .icon(() => '💳')
+                      .child(
+                        S.component(NouvelleFactureLink)
+                          .id('nouvelleFactureLink')
+                          .title('Créer une nouvelle facture'),
                       ),
                     S.divider(),
                     S.listItem()

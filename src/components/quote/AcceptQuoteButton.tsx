@@ -8,6 +8,7 @@ interface AcceptQuoteButtonProps {
   numero: string
   totalTtc: number
   customerEmail: string
+  documentType?: 'quote' | 'invoice'
 }
 
 export function AcceptQuoteButton({
@@ -15,7 +16,11 @@ export function AcceptQuoteButton({
   numero,
   totalTtc,
   customerEmail,
+  documentType = 'quote',
 }: AcceptQuoteButtonProps) {
+  const isInvoice = documentType === 'invoice'
+  const buttonLabel = isInvoice ? 'Payer maintenant' : 'Accepter et payer'
+  const docLabel = isInvoice ? 'Facture' : 'Devis'
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -65,7 +70,7 @@ export function AcceptQuoteButton({
         ) : (
           <>
             <ShieldCheck className="h-5 w-5" strokeWidth={1.5} />
-            Accepter et payer {totalStr} €
+            {buttonLabel} {totalStr} €
           </>
         )}
       </button>
@@ -76,7 +81,7 @@ export function AcceptQuoteButton({
         </div>
       )}
       <p className="mt-3 text-center text-xs text-ink-mute">
-        Devis {numero} · Le paiement sera prélevé sur votre carte associée à{' '}
+        {docLabel} {numero} · Le paiement sera prélevé sur votre carte associée à{' '}
         <strong>{customerEmail}</strong>
       </p>
     </div>
