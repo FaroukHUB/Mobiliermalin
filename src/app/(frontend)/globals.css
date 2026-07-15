@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────
+ * Reveal animation — CSS-only (aucun JS, aucun IntersectionObserver).
+ * Piloté par `animation-timeline: view()` (Chrome 115+, FF 129+, Safari 26+).
+ * Sur navigateurs plus anciens → contenu visible immédiatement (fallback
+ * via @supports). Meilleur pour SEO et perf.
+ * ───────────────────────────────────────────────────────────── */
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-offset, 8px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      opacity: 0;
+      animation: reveal-in 700ms ease-out forwards;
+      animation-delay: var(--reveal-delay, 0ms);
+      animation-timeline: view();
+      /* Déclenche l'anim entre 0% et 40% d'entrée dans le viewport */
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+/* Fallback : navigateur ne supporte pas animation-timeline, ou l'utilisateur
+   préfère reduce-motion, ou le composant est marqué immediate → visible d'emblée. */
+.reveal-immediate {
+  opacity: 1;
+  animation: none !important;
+}
+
 @layer base {
   :root {
     --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

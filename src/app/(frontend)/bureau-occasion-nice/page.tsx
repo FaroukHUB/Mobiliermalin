@@ -35,7 +35,8 @@ export const revalidate = 86400
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export const metadata: Metadata = {
-  title: 'Bureaux d\'occasion livrés à Nice — Mobilier Malin',
+  // Template layout ajoute « | Mobilier Malin ».
+  title: 'Bureaux d\'occasion livrés à Nice — Côte d\'Azur',
   description:
     'Nous recevons de nombreuses demandes depuis Nice et la Côte d\'Azur. Pour y répondre, nous avons mis en place des journées de livraison dédiées. Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
   keywords: [

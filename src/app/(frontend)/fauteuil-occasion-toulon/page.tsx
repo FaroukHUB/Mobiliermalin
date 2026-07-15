@@ -33,7 +33,8 @@ export const revalidate = 86400
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export const metadata: Metadata = {
-  title: 'Fauteuils de bureau d\'occasion livrés à Toulon — Mobilier Malin',
+  // Template layout ajoute « | Mobilier Malin ».
+  title: 'Fauteuils de bureau d\'occasion livrés à Toulon — Var',
   description:
     'Toulon est à 1 h de notre atelier par l\'A50. Nous y livrons régulièrement nos fauteuils ergonomiques reconditionnés Steelcase, Herman Miller, Vitra, préparés dans notre atelier local.',
   keywords: [

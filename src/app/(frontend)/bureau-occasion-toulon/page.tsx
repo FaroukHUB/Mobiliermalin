@@ -35,7 +35,8 @@ export const revalidate = 86400
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export const metadata: Metadata = {
-  title: 'Bureaux d\'occasion livrés à Toulon — Mobilier Malin',
+  // Template layout ajoute « | Mobilier Malin ».
+  title: 'Bureaux d\'occasion livrés à Toulon — Var, Côte varoise',
   description:
     'Toulon est sur notre zone de livraison habituelle (1 h par l\'A50 depuis La Penne-sur-Huveaune). Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local. Livraison sous quelques jours.',
   keywords: [

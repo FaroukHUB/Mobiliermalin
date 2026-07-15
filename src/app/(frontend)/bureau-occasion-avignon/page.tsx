@@ -35,7 +35,8 @@ export const revalidate = 86400
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export const metadata: Metadata = {
-  title: 'Bureaux d\'occasion livrés à Avignon — Mobilier Malin',
+  // Template layout ajoute « | Mobilier Malin ».
+  title: 'Bureaux d\'occasion livrés à Avignon — Vaucluse',
   description:
     'Nous livrons régulièrement nos bureaux d\'occasion à Avignon et dans tout le Vaucluse (1 h 15 par l\'A7). Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
   keywords: [

@@ -33,7 +33,8 @@ export const revalidate = 86400
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export const metadata: Metadata = {
-  title: 'Fauteuils de bureau d\'occasion livrés à Nice — Mobilier Malin',
+  // Template layout ajoute « | Mobilier Malin ».
+  title: 'Fauteuils de bureau d\'occasion livrés à Nice — Côte d\'Azur',
   description:
     'Nous livrons nos fauteuils ergonomiques reconditionnés à Nice et sur la Côte d\'Azur. Steelcase, Herman Miller, Vitra inspectés dans notre atelier de La Penne-sur-Huveaune.',
   keywords: [

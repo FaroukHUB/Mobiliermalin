@@ -14,8 +14,8 @@ import { urlFor } from '@/lib/sanity'
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title:
-    'Blog & conseils — mobilier de bureau reconditionné | Mobilier Malin',
+  // Le template layout ajoute déjà « | Mobilier Malin ».
+  title: 'Blog & conseils — mobilier de bureau reconditionné',
   description:
     'Guides d\'achat, comparatifs de marques, analyses RSE. Nos conseils pour bien choisir votre mobilier de bureau professionnel reconditionné.',
   alternates: { canonical: '/blog' },

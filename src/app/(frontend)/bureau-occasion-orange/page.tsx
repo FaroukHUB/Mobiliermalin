@@ -35,7 +35,8 @@ export const revalidate = 86400
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 export const metadata: Metadata = {
-  title: 'Bureaux d\'occasion livrés à Orange — Mobilier Malin',
+  // Template layout ajoute « | Mobilier Malin ».
+  title: 'Bureaux d\'occasion livrés à Orange — Nord Vaucluse',
   description:
     'Nous livrons à Orange et dans le nord du Vaucluse (1 h 30 par l\'A7) lors de nos tournées régulières. Bureaux Steelcase, Vitra, Haworth reconditionnés dans notre atelier local.',
   keywords: [

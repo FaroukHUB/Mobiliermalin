@@ -20,8 +20,11 @@ import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProdu
 
 export const revalidate = 60
 
+// Pas de `title` local ici → Next utilise `title.default` du layout racine,
+// qui n'est PAS soumis au template. Évite « … — Mobilier Malin | Mobilier
+// Malin » en SERP sur la home (duplication de marque = perte de mots-clés
+// utiles).
 export const metadata: Metadata = {
-  title: 'Mobilier de bureau d\'occasion reconditionné — Mobilier Malin',
   description:
     'Mobilier de bureau d\'occasion reconditionné : Steelcase, Herman Miller, Haworth, Vitra. Atelier & showroom à La Penne-sur-Huveaune, contrôle qualité 7 points, livraison Marseille & PACA.',
   alternates: { canonical: '/' },

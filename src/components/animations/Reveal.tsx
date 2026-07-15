@@ -1,17 +1,30 @@
-'use client'
-
-import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
+
+/**
+ * Reveal — CSS-only, server component, zéro JS.
+ *
+ * Historique : la V1 utilisait un IntersectionObserver + useState. Avec 365
+ * instances dans le codebase (audit 2026-07), ça générait 365 hydratations
+ * client + 365 observers en mémoire → coût CWV/INP non négligeable.
+ *
+ * V2 : animation-timeline: view() (Chrome 115+, Firefox 129+, Safari 26+).
+ * Sur navigateurs sans support → contenu visible immédiatement (fallback
+ * gracieux via @supports, cf. globals.css .reveal). Aucune régression SEO —
+ * au contraire : le contenu est SSR-rendable et lisible par les crawlers.
+ *
+ * API 100 % identique à la V1 : aucun fichier appelant à modifier.
+ */
 
 interface RevealProps {
   children: React.ReactNode
   className?: string
+  /** Délai avant début d'animation en ms. Défaut : 0 */
   delay?: number
-  /** Distance en pixels du slide-up. Defaut: 8 (sobre) */
+  /** Distance en pixels du slide-up. Défaut : 8 (sobre) */
   offset?: number
-  /** Quand on entre dans le viewport (0..1) */
+  /** @deprecated Ignoré en V2 (l'`animation-range` CSS pilote le seuil). */
   threshold?: number
-  /** Garde l'animation au-dessus du fold (1ere section visible immediatement) */
+  /** Rend le contenu visible immédiatement (au-dessus du fold) */
   immediate?: boolean
   as?: 'div' | 'section' | 'article' | 'aside' | 'header' | 'footer'
 }
@@ -21,53 +34,18 @@ export function Reveal({
   className,
   delay = 0,
   offset = 8,
-  threshold = 0.12,
   immediate = false,
   as: Tag = 'div',
 }: RevealProps) {
-  const ref = useRef<HTMLElement>(null)
-  const [visible, setVisible] = useState(immediate)
-
-  useEffect(() => {
-    if (immediate) return
-
-    const node = ref.current
-    if (!node) return
-
-    // Respecte la preference utilisateur "reduce-motion"
-    if (typeof window !== 'undefined') {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      if (reduce) {
-        setVisible(true)
-        return
-      }
-    }
-
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          obs.disconnect()
-        }
-      },
-      { threshold, rootMargin: '0px 0px -40px 0px' },
-    )
-    obs.observe(node)
-    return () => obs.disconnect()
-  }, [threshold, immediate])
+  const style: React.CSSProperties = {
+    ['--reveal-delay' as string]: `${delay}ms`,
+    ['--reveal-offset' as string]: `${offset}px`,
+  }
 
   return (
     <Tag
-      ref={ref as React.RefObject<HTMLDivElement>}
-      className={cn(
-        'transition-[transform,opacity] duration-700 ease-out motion-reduce:transition-none',
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0',
-        className,
-      )}
-      style={{
-        transitionDelay: `${delay}ms`,
-        transform: visible ? 'translateY(0)' : `translateY(${offset}px)`,
-      }}
+      className={cn('reveal', immediate && 'reveal-immediate', className)}
+      style={style}
     >
       {children}
     </Tag>
