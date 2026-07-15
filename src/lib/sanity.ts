@@ -59,6 +59,25 @@ export type SanityCategory = {
   children?: SanityCategory[]
   googleProductCategoryId?: number
   googleProductCategoryPath?: string
+  // Champs pilier (Sprint 3) — optionnels, remplis progressivement par Farouk
+  heroImage?: SanityImage
+  pillarIntro?: unknown[] // PortableText
+  keyAdvantages?: Array<{ title: string; description?: string; icon?: string }>
+  buyingGuide?: unknown[] // PortableText
+  comparisonRows?: Array<{
+    criterion: string
+    entryLevel?: string
+    midRange?: string
+    premium?: string
+  }>
+  commonMistakes?: Array<{ mistake: string; solution?: string }>
+  faq?: Array<{ question: string; answer: string }>
+  relatedGuideClusters?: Array<{
+    _id: string
+    name: string
+    slug: { current: string }
+    tagline?: string
+  }>
 }
 
 export type SanityProduct = {
@@ -410,6 +429,10 @@ export async function getCategoryBySlugSanity(slug: string): Promise<SanityCateg
   return safeFetch<SanityCategory | null>(
     `*[_type == "category" && slug.current == $slug][0] {
       _id, name, slug, description, image, variants, order,
+      heroImage, pillarIntro, keyAdvantages, buyingGuide,
+      comparisonRows, commonMistakes, faq,
+      "relatedGuideClusters": relatedGuideClusters[]->{ _id, name, slug, tagline },
+      googleProductCategoryId, googleProductCategoryPath,
       parent->{_id, name, slug},
       "children": *[_type == "category" && parent._ref == ^._id] | order(order asc, name asc) {
         _id, name, slug, description, image, variants, order

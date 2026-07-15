@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronRight, ArrowRight, Check } from 'lucide-react'
+import { ArrowRight, Check, ShieldCheck, Truck, Star, Sparkles, Award, TrendingUp } from 'lucide-react'
+import { PortableText, type PortableTextBlock } from 'next-sanity'
 import {
   CATEGORIES,
   getCategoryBySlug as getStaticCategory,
@@ -11,6 +12,8 @@ import {
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { CategoryFAQ } from '@/components/category/CategoryFAQ'
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { categoryBreadcrumb } from '@/lib/breadcrumbs'
 import {
   getProductsByCategory,
   getProductsByCategoryDeep,
@@ -19,6 +22,11 @@ import {
   type SanityProduct,
   type SanityCategory,
 } from '@/lib/sanity'
+
+// Icônes disponibles pour keyAdvantages
+const ICON_MAP: Record<string, typeof ShieldCheck> = {
+  ShieldCheck, Truck, Star, Sparkles, Award, TrendingUp, Check,
+}
 
 export const revalidate = 60
 export const dynamicParams = true // accept slugs not in generateStaticParams
@@ -127,69 +135,71 @@ export default async function CategoryPage({
       ? sanityCat.variants
       : staticData?.variants || []
 
-  const breadcrumbSchema = {
+  // JSON-LD CollectionPage (page pilier) + ItemList produits.
+  // FAQPage émis plus bas UNIQUEMENT si sanityCat.faq contient des questions
+  // visibles dans l'UI (règle : jamais de FAQ balisée absente de la page).
+  const collectionSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Boutique',
-        item: `${siteUrl}/boutique`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name,
-        item: `${siteUrl}/categorie/${slug}`,
-      },
-    ],
+    '@type': 'CollectionPage',
+    '@id': `${siteUrl}/categorie/${slug}#collection`,
+    name,
+    ...(sanityCat?.description && { description: sanityCat.description }),
+    url: `${siteUrl}/categorie/${slug}`,
+    isPartOf: { '@id': `${siteUrl}/#website` },
   }
+  if (products.length > 0) {
+    collectionSchema.mainEntity = {
+      '@type': 'ItemList',
+      numberOfItems: products.length,
+      itemListElement: products.slice(0, 20).map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${siteUrl}/produit/${p.slug.current}`,
+      })),
+    }
+  }
+  const faqSchema =
+    sanityCat?.faq && sanityCat.faq.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: sanityCat.faq.map((qa) => ({
+            '@type': 'Question',
+            name: qa.question,
+            acceptedAnswer: { '@type': 'Answer', text: qa.answer },
+          })),
+        }
+      : null
+
+  // Nouveau hero image dédié pilier, fallback sur heroImage existant
+  const pillarHeroImage = sanityCat?.heroImage
+    ? urlFor(sanityCat.heroImage).width(2000).height(900).fit('crop').url()
+    : null
 
   return (
     <>
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqSchema ? [collectionSchema, faqSchema] : collectionSchema),
+        }}
+      />
+
+      <Breadcrumbs
+        items={categoryBreadcrumb({
+          name,
+          slug: { current: slug },
+          parent: sanityCat?.parent
+            ? { name: sanityCat.parent.name, slug: sanityCat.parent.slug }
+            : null,
+        })}
       />
 
       {/* Hero */}
       <section className="bg-ivory-dark border-b border-line">
-        <div className="container py-12 md:py-16">
-          <nav aria-label="Fil d'Ariane" className="text-xs text-ink-mute">
-            <ol className="flex items-center gap-2 flex-wrap">
-              <li>
-                <Link href="/" className="hover:text-gold-dark">
-                  Accueil
-                </Link>
-              </li>
-              <ChevronRight className="h-3 w-3" />
-              <li>
-                <Link href="/boutique" className="hover:text-gold-dark">
-                  Boutique
-                </Link>
-              </li>
-              {sanityCat?.parent && (
-                <>
-                  <ChevronRight className="h-3 w-3" />
-                  <li>
-                    <Link
-                      href={`/categorie/${sanityCat.parent.slug.current}`}
-                      className="hover:text-gold-dark"
-                    >
-                      {sanityCat.parent.name}
-                    </Link>
-                  </li>
-                </>
-              )}
-              <ChevronRight className="h-3 w-3" />
-              <li className="text-ink">{name}</li>
-            </ol>
-          </nav>
-
-          <div className="mt-8 grid lg:grid-cols-[1fr_400px] gap-10 lg:gap-16 items-center">
+        <div className="container py-8 md:py-14">
+          <div className="grid lg:grid-cols-[1fr_400px] gap-10 lg:gap-16 items-center">
             <div>
               <p className="eyebrow">{fromPriceLabel}</p>
               <h1 className="text-display mt-3 font-serif leading-[1.05]">
@@ -241,6 +251,139 @@ export default async function CategoryPage({
           </div>
         </div>
       </section>
+
+      {/* ═════════════ SECTIONS PILIER (conditionnelles Sanity) ═════════════ */}
+
+      {/* Hero image pilier */}
+      {pillarHeroImage && (
+        <section className="container max-w-6xl mt-10">
+          <div className="relative aspect-[21/9] bg-ivory-dark overflow-hidden">
+            <Image
+              src={pillarHeroImage}
+              alt={sanityCat?.heroImage?.alt || name}
+              fill
+              priority
+              sizes="(min-width: 1024px) 1200px, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Introduction pilier (contenu SEO riche) */}
+      {sanityCat?.pillarIntro && Array.isArray(sanityCat.pillarIntro) && sanityCat.pillarIntro.length > 0 && (
+        <section className="container py-12 md:py-16 max-w-3xl">
+          <div className="prose prose-lg max-w-none text-ink-soft leading-relaxed">
+            <PortableText value={sanityCat.pillarIntro as PortableTextBlock[]} />
+          </div>
+        </section>
+      )}
+
+      {/* Points clés (avantages) */}
+      {sanityCat?.keyAdvantages && sanityCat.keyAdvantages.length > 0 && (
+        <section className="bg-ivory-dark border-y border-line">
+          <div className="container py-12 md:py-16 max-w-6xl">
+            <div className={`grid gap-6 ${sanityCat.keyAdvantages.length <= 3 ? 'md:grid-cols-3' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
+              {sanityCat.keyAdvantages.map((adv, i) => {
+                const Icon = (adv.icon && ICON_MAP[adv.icon]) || Check
+                return (
+                  <div key={i} className="bg-ivory p-6 border border-line">
+                    <Icon className="h-6 w-6 text-gold" strokeWidth={1.5} />
+                    <h3 className="font-serif text-lg text-ink mt-4">
+                      {adv.title}
+                    </h3>
+                    {adv.description && (
+                      <p className="mt-2 text-sm text-ink-soft leading-relaxed">
+                        {adv.description}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Guide d'achat */}
+      {sanityCat?.buyingGuide && Array.isArray(sanityCat.buyingGuide) && sanityCat.buyingGuide.length > 0 && (
+        <section className="container py-14 md:py-20 max-w-3xl">
+          <div className="text-center mb-10">
+            <p className="eyebrow">Guide d'achat</p>
+            <h2 className="text-h1 font-serif mt-3">
+              Comment choisir votre {name.toLowerCase()}
+            </h2>
+            <div className="gold-divider mx-auto mt-6" />
+          </div>
+          <div className="prose prose-lg max-w-none text-ink-soft leading-relaxed">
+            <PortableText value={sanityCat.buyingGuide as PortableTextBlock[]} />
+          </div>
+        </section>
+      )}
+
+      {/* Tableau comparatif */}
+      {sanityCat?.comparisonRows && sanityCat.comparisonRows.length > 0 && (
+        <section className="container py-14 md:py-20 max-w-5xl">
+          <div className="text-center mb-10">
+            <p className="eyebrow">Comparatif</p>
+            <h2 className="text-h1 font-serif mt-3">Entrée de gamme, milieu ou premium ?</h2>
+            <div className="gold-divider mx-auto mt-6" />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border border-line">
+              <thead className="bg-ink text-ivory">
+                <tr>
+                  <th className="text-left px-4 py-3 font-serif">Critère</th>
+                  <th className="text-left px-4 py-3 font-serif">Entrée de gamme</th>
+                  <th className="text-left px-4 py-3 font-serif">Milieu de gamme</th>
+                  <th className="text-left px-4 py-3 font-serif">Haut de gamme</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {sanityCat.comparisonRows.map((row, i) => (
+                  <tr key={i} className={i % 2 === 0 ? 'bg-ivory' : 'bg-ivory-light'}>
+                    <td className="px-4 py-3 font-medium text-ink">{row.criterion}</td>
+                    <td className="px-4 py-3 text-ink-soft">{row.entryLevel || '—'}</td>
+                    <td className="px-4 py-3 text-ink-soft">{row.midRange || '—'}</td>
+                    <td className="px-4 py-3 text-ink-soft">{row.premium || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* Erreurs fréquentes */}
+      {sanityCat?.commonMistakes && sanityCat.commonMistakes.length > 0 && (
+        <section className="bg-ivory-dark border-y border-line">
+          <div className="container py-14 md:py-20 max-w-4xl">
+            <div className="text-center mb-10">
+              <p className="eyebrow">Erreurs fréquentes</p>
+              <h2 className="text-h1 font-serif mt-3">Ce qu'il faut éviter</h2>
+              <div className="gold-divider mx-auto mt-6" />
+            </div>
+            <div className="space-y-4">
+              {sanityCat.commonMistakes.map((m, i) => (
+                <div key={i} className="bg-ivory border-l-4 border-gold p-5">
+                  <p className="font-serif text-lg text-ink">
+                    <span className="text-gold-dark uppercase text-xs tracking-widest font-medium mr-2">
+                      ❌
+                    </span>
+                    {m.mistake}
+                  </p>
+                  {m.solution && (
+                    <p className="mt-2 text-sm text-ink-soft leading-relaxed pl-5">
+                      <span className="text-green-700 font-medium">✓ </span>
+                      {m.solution}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Sous-catégories (si la catégorie est un parent) */}
       {hasChildren && (
@@ -368,9 +511,66 @@ export default async function CategoryPage({
         </section>
       )}
 
-      {/* FAQ — priorité aux données statiques riches, sinon fallback
-          générique CategoryFAQ (7 questions génériques + maillage) */}
-      {staticData && staticData.faq.length > 0 ? (
+      {/* Cocon éditorial : clusters de guides liés à cette catégorie */}
+      {sanityCat?.relatedGuideClusters && sanityCat.relatedGuideClusters.length > 0 && (
+        <section className="container py-14 md:py-20 max-w-5xl">
+          <div className="text-center mb-10">
+            <p className="eyebrow">Approfondir</p>
+            <h2 className="text-h1 font-serif mt-3">Nos guides sur le sujet</h2>
+            <div className="gold-divider mx-auto mt-6" />
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {sanityCat.relatedGuideClusters.map((c) => (
+              <Link
+                key={c._id}
+                href={`/guides/${c.slug.current}`}
+                className="group block bg-ivory border border-line hover:border-gold p-5 transition-colors"
+              >
+                <p className="eyebrow text-gold-dark">Cluster</p>
+                <h3 className="font-serif text-lg text-ink mt-2 group-hover:text-gold-dark transition-colors">
+                  {c.name}
+                </h3>
+                {c.tagline && (
+                  <p className="mt-2 text-sm text-ink-soft leading-relaxed line-clamp-2">
+                    {c.tagline}
+                  </p>
+                )}
+                <span className="mt-3 inline-flex items-center gap-1 text-xs uppercase tracking-widest text-gold-dark font-medium">
+                  Voir les guides
+                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* FAQ — priorité : (1) Sanity pilier, (2) statique riche, (3) fallback générique */}
+      {sanityCat?.faq && sanityCat.faq.length > 0 ? (
+        <section className="container py-16 md:py-20 max-w-3xl">
+          <div className="text-center mb-10">
+            <p className="eyebrow">Questions fréquentes</p>
+            <h2 className="text-h1 mt-2 font-serif">À propos des {name.toLowerCase()}</h2>
+          </div>
+          <div className="space-y-3">
+            {sanityCat.faq.map((qa, i) => (
+              <details key={i} className="group bg-ivory-light border border-line">
+                <summary className="cursor-pointer p-5 md:p-6 flex items-center justify-between gap-4 list-none">
+                  <span className="font-serif text-base md:text-lg text-ink leading-snug">
+                    {qa.question}
+                  </span>
+                  <span className="text-gold text-2xl transition-transform group-open:rotate-45 leading-none shrink-0">
+                    +
+                  </span>
+                </summary>
+                <div className="px-5 md:px-6 pb-5 md:pb-6 text-sm md:text-base text-ink-soft leading-relaxed whitespace-pre-line">
+                  {qa.answer}
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      ) : staticData && staticData.faq.length > 0 ? (
         <section className="container py-16 md:py-20 max-w-3xl">
           <Reveal>
             <div className="text-center mb-10">
