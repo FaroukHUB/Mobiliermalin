@@ -17,7 +17,7 @@
  * (hidden dans le Studio) pour rollback rapide.
  */
 
-import { createClient } from '@sanity/client'
+import { createClient } from 'next-sanity'
 import { existsSync, mkdirSync, appendFileSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -168,7 +168,8 @@ async function runDryRun() {
   )
   const catMap = await fetchCategoriesById(Array.from(catRefs))
   const invalid = plan.filter(
-    (p) => p.fromCategoryRef && !catMap.has(p.fromCategoryRef),
+    (p): p is typeof p & { fromCategoryRef: string } =>
+      !!p.fromCategoryRef && !catMap.has(p.fromCategoryRef),
   )
   if (invalid.length > 0) {
     console.log(`\n⚠  Références catégorie invalides (${invalid.length}) :`)

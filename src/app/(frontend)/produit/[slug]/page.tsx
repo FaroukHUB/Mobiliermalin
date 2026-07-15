@@ -2,10 +2,12 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { type PortableTextBlock } from 'next-sanity'
-import { ChevronRight, Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
+import { Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
 import { getProductBySlug, getAllProductSlugs, getRelatedProducts, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
 import { buildProductSchema } from '@/lib/product-schema'
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { productBreadcrumb } from '@/lib/breadcrumbs'
 import { DeliveryChoice } from '@/components/product/DeliveryChoice'
 import { ProductGallery } from '@/components/product/ProductGallery'
 import { ProductTabs } from '@/components/product/ProductTabs'
@@ -107,30 +109,8 @@ export default async function ProductPage({
   // warranty, shippingDetails et returnPolicy référencés par @id.
   const productSchema = buildProductSchema(product)
 
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
-      { '@type': 'ListItem', position: 2, name: 'Boutique', item: `${siteUrl}/boutique` },
-      ...(category
-        ? [
-            {
-              '@type': 'ListItem',
-              position: 3,
-              name: category.name,
-              item: `${siteUrl}/categorie/${category.slug.current}`,
-            },
-          ]
-        : []),
-      {
-        '@type': 'ListItem',
-        position: category ? 4 : 3,
-        name: product.name,
-        item: `${siteUrl}/produit/${slug}`,
-      },
-    ],
-  }
+  // BreadcrumbList schema : émis par le composant <Breadcrumbs> ci-dessous
+  // via lib/breadcrumbs.productBreadcrumb() — source unique de vérité.
 
   const isInStock = product.stock > 0
   const hasSale = !!product.salePrice && product.salePrice < product.price
@@ -151,39 +131,10 @@ export default async function ProductPage({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([productSchema, breadcrumbSchema]),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
 
-      {/* Breadcrumb */}
-      <section className="bg-ivory-dark border-b border-line">
-        <div className="container py-4">
-          <nav aria-label="Fil d'Ariane" className="text-xs text-ink-mute">
-            <ol className="flex items-center gap-2 flex-wrap">
-              <li>
-                <Link href="/" className="hover:text-gold-dark">Accueil</Link>
-              </li>
-              <ChevronRight className="h-3 w-3" />
-              <li>
-                <Link href="/boutique" className="hover:text-gold-dark">Boutique</Link>
-              </li>
-              {category && (
-                <>
-                  <ChevronRight className="h-3 w-3" />
-                  <li>
-                    <Link href={`/categorie/${category.slug.current}`} className="hover:text-gold-dark">
-                      {category.name}
-                    </Link>
-                  </li>
-                </>
-              )}
-              <ChevronRight className="h-3 w-3" />
-              <li className="text-ink truncate max-w-[200px]">{product.name}</li>
-            </ol>
-          </nav>
-        </div>
-      </section>
+      <Breadcrumbs items={productBreadcrumb(product)} className="bg-ivory-dark border-b border-line" />
 
       <section className="container py-10 md:py-16">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
