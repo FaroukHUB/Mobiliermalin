@@ -53,19 +53,32 @@ const ARMREST_LABELS: Record<string, string> = {
  * Convertit une URL YouTube ou Vimeo en VideoObject partiel.
  * Extrait l'ID pour construire thumbnail YouTube automatique.
  */
-function buildVideoObject(url: string, name: string, description?: string) {
+/**
+ * Construit un VideoObject uniquement si les champs REQUIS par Google sont
+ * tous présents (URL + description + uploadDate). Sans description ou date
+ * de publication réelles, on renvoie null → aucun VideoObject émis.
+ * Ne jamais fabriquer une uploadDate = today, ce serait mentir à Google.
+ */
+function buildVideoObject(
+  url: string,
+  productName: string,
+  description?: string,
+  uploadDate?: string,
+): Record<string, unknown> | null {
+  if (!description || !uploadDate) return null
+
   // YouTube
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
   if (ytMatch) {
     const id = ytMatch[1]
     return {
       '@type': 'VideoObject',
-      name: `Présentation vidéo — ${name}`,
-      description: description || `Vidéo de présentation du produit ${name}.`,
+      name: `Présentation vidéo — ${productName}`,
+      description,
       thumbnailUrl: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
       contentUrl: url,
       embedUrl: `https://www.youtube.com/embed/${id}`,
-      uploadDate: new Date().toISOString().slice(0, 10),
+      uploadDate,
     }
   }
   // Vimeo
@@ -73,21 +86,15 @@ function buildVideoObject(url: string, name: string, description?: string) {
   if (vimMatch) {
     return {
       '@type': 'VideoObject',
-      name: `Présentation vidéo — ${name}`,
-      description: description || `Vidéo de présentation du produit ${name}.`,
+      name: `Présentation vidéo — ${productName}`,
+      description,
       contentUrl: url,
       embedUrl: `https://player.vimeo.com/video/${vimMatch[1]}`,
-      uploadDate: new Date().toISOString().slice(0, 10),
+      uploadDate,
     }
   }
-  // Fallback : URL brute
-  return {
-    '@type': 'VideoObject',
-    name: `Présentation vidéo — ${name}`,
-    description: description || `Vidéo de présentation du produit ${name}.`,
-    contentUrl: url,
-    uploadDate: new Date().toISOString().slice(0, 10),
-  }
+  // URL brute : pas de thumbnail = pas de VideoObject valide
+  return null
 }
 
 /**
@@ -188,10 +195,13 @@ export function buildProductSchema(product: SanityProduct): Record<string, unkno
       }
     : undefined
 
-  // priceValidUntil : today + 30j (cohérent avec la loi Omnibus si prix promo)
-  const priceValidUntil = new Date(Date.now() + 30 * 24 * 3600 * 1000)
-    .toISOString()
-    .slice(0, 10)
+  // priceValidUntil : émis UNIQUEMENT si une vraie date de fin de promo
+  // existe dans Sanity. Ne jamais fabriquer une date pour "remplir le
+  // champ" — Google interprète ça comme un signal de promo permanente
+  // trompeuse. Champ Sanity `priceValidUntil` à ajouter.
+  const priceValidUntil = (product as { priceValidUntil?: string }).priceValidUntil
+    ? String((product as { priceValidUntil?: string }).priceValidUntil).slice(0, 10)
+    : undefined
 
   // availability enum
   const availability =
@@ -219,19 +229,15 @@ export function buildProductSchema(product: SanityProduct): Record<string, unkno
       priceCurrency: 'EUR',
       valueAddedTaxIncluded: true,
     },
-    priceValidUntil,
+    ...(priceValidUntil && { priceValidUntil }),
     itemCondition,
     availability,
     seller: { '@id': `${SITE_URL}/#organization` },
     businessFunction: 'https://schema.org/Sell',
-    eligibleCustomerType: [
-      'https://schema.org/Business',
-      'https://schema.org/Consumer',
-    ],
-    // Réf. politique retour définie une seule fois dans OrganizationSchema
-    hasMerchantReturnPolicy: { '@id': `${SITE_URL}/#return-policy` },
-    // Réf. livraison définie une seule fois dans OrganizationSchema
-    shippingDetails: { '@id': `${SITE_URL}/#shipping-fr` },
+    // ⚠ hasMerchantReturnPolicy et shippingDetails retirés temporairement
+    // — à réactiver quand Sanity siteSettings aura les vrais champs de
+    // politique retour/livraison saisis par l'admin. Les définir ici sans
+    // données réelles = risque de désapprobation Merchant Center.
   }
   if (product.stock > 0) {
     offer.inventoryLevel = {
@@ -280,21 +286,20 @@ export function buildProductSchema(product: SanityProduct): Record<string, unkno
     ...(additionalProperty.length > 0 && { additionalProperty }),
     ...(hasCertification.length > 0 && { hasCertification }),
     ...(sameAs.length > 0 && { sameAs }),
-    // Audience B2B/B2C clarifiée pour Merchant Center et AI Overviews
-    audience: {
-      '@type': 'BusinessAudience',
-      audienceType: 'Entreprises, professions libérales, associations, particuliers',
-    },
     offers: offer,
   }
 
-  // Vidéo (Rich Results carrousel vidéo)
+  // Vidéo : émise UNIQUEMENT si toutes les données requises sont présentes
+  // dans Sanity (videoUrl + videoDescription + videoUploadDate).
   if (product.videoUrl) {
-    productSchema.video = buildVideoObject(
+    const videoUploadDate = (product as { videoUploadDate?: string }).videoUploadDate
+    const video = buildVideoObject(
       product.videoUrl,
       product.name,
       product.videoDescription,
+      videoUploadDate,
     )
+    if (video) productSchema.video = video
   }
 
   return productSchema

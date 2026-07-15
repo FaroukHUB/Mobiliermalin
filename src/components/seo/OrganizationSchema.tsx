@@ -84,59 +84,13 @@ export function OrganizationSchema({ logoUrl, imageUrl }: Props = {}) {
           reviewCount: '9',
         },
       },
-      // Politique de retour globale (référencée par @id dans les Offers Product).
-      // Cohérent avec l'art. L221-18 du Code de la consommation : 14 jours
-      // minimum pour B2C vente à distance. Google Merchant Center 2024+ exige
-      // cette info pour la France.
-      // ⚠ TODO vérif : `returnPolicyCategory` et `returnFees` valeurs enum à
-      // confirmer sur developers.google.com/search/docs/appearance/structured-data/merchant-return-policy
-      {
-        '@type': 'MerchantReturnPolicy',
-        '@id': `${siteUrl}/#return-policy`,
-        applicableCountry: 'FR',
-        returnPolicyCountry: 'FR',
-        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-        merchantReturnDays: 14,
-        returnMethod: 'https://schema.org/ReturnByMail',
-        returnFees: 'https://schema.org/ReturnShippingFees',
-        returnShippingFeesAmount: {
-          '@type': 'MonetaryAmount',
-          value: 49,
-          currency: 'EUR',
-        },
-      },
-      // Frais de livraison France référencés globalement.
-      // ⚠ TODO vérif : format `shippingDestination` avec plusieurs régions
-      // (DROM à traiter séparément avec addressCountry différent).
-      {
-        '@type': 'OfferShippingDetails',
-        '@id': `${siteUrl}/#shipping-fr`,
-        name: 'Livraison France métropolitaine',
-        shippingRate: {
-          '@type': 'MonetaryAmount',
-          value: 49,
-          currency: 'EUR',
-        },
-        shippingDestination: {
-          '@type': 'DefinedRegion',
-          addressCountry: 'FR',
-        },
-        deliveryTime: {
-          '@type': 'ShippingDeliveryTime',
-          handlingTime: {
-            '@type': 'QuantitativeValue',
-            minValue: 1,
-            maxValue: 3,
-            unitCode: 'DAY',
-          },
-          transitTime: {
-            '@type': 'QuantitativeValue',
-            minValue: 2,
-            maxValue: 5,
-            unitCode: 'DAY',
-          },
-        },
-      },
+      // ⚠ MerchantReturnPolicy et OfferShippingDetails retirés temporairement
+      // (revert 15/07/2026) : les valeurs 14j / 49€ / 2-5j étaient hardcodées
+      // sans validation métier. À réimplémenter quand Sanity siteSettings
+      // aura les vrais champs de politique retour + livraison saisis par
+      // l'admin (durée, tarif, méthode, minimums, zones).
+      // Les Offers Product référencent encore ces @id — Google ignorera
+      // proprement les références non résolues jusqu'à la remise en place.
       {
         '@type': 'WebSite',
         '@id': `${siteUrl}/#website`,
