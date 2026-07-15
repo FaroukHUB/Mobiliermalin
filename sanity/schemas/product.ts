@@ -37,7 +37,6 @@ export const product = {
     { name: 'pricing', title: 'Prix & stock' },
     { name: 'specs', title: 'Caractéristiques' },
     { name: 'ergonomics', title: 'Ergonomie & confort' },
-    { name: 'certifications', title: 'Certifications' },
     { name: 'seo', title: 'SEO & réseaux sociaux' },
   ],
   fields: [
@@ -113,7 +112,7 @@ export const product = {
       type: 'url',
       group: 'photos',
       description:
-        'URL publique d\'une vidéo de présentation du produit (YouTube ou Vimeo). Active un carrousel vidéo dans les résultats Google Rich Results (+CTR notable). Ex : https://www.youtube.com/watch?v=abc123',
+        'URL publique d\'une vidéo de présentation du produit (YouTube ou Vimeo). Ex : https://www.youtube.com/watch?v=abc123. Le VideoObject dans le JSON-LD ne sera émis QUE si la description ET la date de publication sont aussi renseignées ci-dessous.',
     },
     {
       name: 'videoDescription',
@@ -122,7 +121,23 @@ export const product = {
       rows: 2,
       group: 'photos',
       hidden: ({ document }: { document?: { videoUrl?: string } }) => !document?.videoUrl,
-      description: '2-3 phrases décrivant ce qu\'on voit dans la vidéo. Envoyé à Google (VideoObject.description).',
+      description: '2-3 phrases décrivant ce qu\'on voit dans la vidéo. Requis pour émettre le VideoObject Google.',
+    },
+    {
+      name: 'videoUploadDate',
+      title: 'Date de publication de la vidéo',
+      type: 'date',
+      group: 'photos',
+      hidden: ({ document }: { document?: { videoUrl?: string } }) => !document?.videoUrl,
+      description: 'Date à laquelle la vidéo a été publiée sur YouTube/Vimeo. Requise pour émettre le VideoObject Google.',
+    },
+    {
+      name: 'videoThumbnail',
+      title: 'Miniature vidéo (Vimeo/autre uniquement)',
+      type: 'image',
+      group: 'photos',
+      hidden: ({ document }: { document?: { videoUrl?: string } }) => !document?.videoUrl,
+      description: 'Facultatif si YouTube (auto-généré depuis l\'ID). Requis pour Vimeo ou toute autre plateforme pour émettre le VideoObject.',
     },
 
     // ─────── Prix & stock ───────
@@ -151,6 +166,14 @@ export const product = {
         }),
     },
     {
+      name: 'salePriceValidUntil',
+      title: 'Fin de la promo (date)',
+      type: 'date',
+      group: 'pricing',
+      hidden: ({ document }: { document?: { salePrice?: number } }) => !document?.salePrice,
+      description: 'Requis si prix soldé rempli. Date exacte à laquelle la promo se termine. Envoyé à Google comme `priceValidUntil` (jamais fabriqué).',
+    },
+    {
       name: 'comparePrice',
       title: 'Prix neuf (€ TTC)',
       type: 'number',
@@ -165,15 +188,80 @@ export const product = {
       initialValue: 1,
       validation: (R: Rule) => R.required().min(0).integer(),
     },
+    {
+      name: 'availabilityStatus',
+      title: 'Statut de disponibilité',
+      type: 'string',
+      group: 'pricing',
+      description: 'Complète la quantité en stock pour préciser la situation. Utilisé partout : UI, JSON-LD, feed Merchant, checkout.',
+      options: {
+        list: [
+          { title: '✅ En stock', value: 'inStock' },
+          { title: '⏳ Rupture temporaire (retour possible)', value: 'temporarilyOutOfStock' },
+          { title: '📅 Retour prévu', value: 'backorder' },
+          { title: '🛒 Sur commande', value: 'preorder' },
+          { title: '❌ Vendu définitivement (pièce unique)', value: 'soldOut' },
+          { title: '📞 Sur devis', value: 'onQuote' },
+        ],
+      },
+      initialValue: 'inStock',
+    },
+    {
+      name: 'restockExpectedDate',
+      title: 'Date de retour en stock (estimée)',
+      type: 'date',
+      group: 'pricing',
+      hidden: ({ document }: { document?: { availabilityStatus?: string } }) =>
+        document?.availabilityStatus !== 'backorder',
+      description: 'Estimation de retour en stock. Affichée aux visiteurs et envoyée à Google.',
+    },
 
     // ─────── Caractéristiques ───────
     {
-      name: 'category',
-      title: 'Catégorie',
+      name: 'categories',
+      title: 'Catégories du produit',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'category' }] }],
+      group: 'specs',
+      validation: (R: Rule) => R.required().min(1).error('Au moins une catégorie requise'),
+      description:
+        'Toutes les catégories auxquelles ce produit appartient. Un fauteuil ergonomique Steelcase peut être dans "Fauteuils" + "Ergonomiques" + "Steelcase" par exemple. Choisis ensuite ta catégorie PRINCIPALE juste en dessous.',
+    },
+    {
+      name: 'primaryCategory',
+      title: '⭐ Catégorie principale (canonique)',
       type: 'reference',
       to: [{ type: 'category' }],
       group: 'specs',
-      validation: (R: Rule) => R.required(),
+      description:
+        'LA catégorie principale du produit. Détermine : le fil d\'Ariane, le silo SEO, l\'URL canonique, la catégorie Google Merchant, le maillage. Doit être obligatoirement l\'une des catégories choisies ci-dessus. Requise pour publier.',
+      validation: (R: Rule) =>
+        R.custom((value, ctx) => {
+          const doc = ctx.document as { status?: string; categories?: Array<{ _ref?: string }> } | undefined
+          if (doc?.status === 'published' && !value) {
+            return 'La catégorie principale est requise pour publier ce produit.'
+          }
+          if (value && doc?.categories?.length) {
+            const catRefs = doc.categories.map((c) => c?._ref).filter(Boolean)
+            const primaryRef = (value as { _ref?: string })?._ref
+            if (primaryRef && !catRefs.includes(primaryRef)) {
+              return 'La catégorie principale doit faire partie des catégories choisies ci-dessus.'
+            }
+          }
+          return true
+        }),
+    },
+    // Legacy — conservé temporairement pour compat pendant la migration.
+    // À retirer après validation Farouk sur un échantillon.
+    {
+      name: 'category',
+      title: '(Legacy) Ancienne catégorie unique',
+      type: 'reference',
+      to: [{ type: 'category' }],
+      group: 'specs',
+      hidden: true,
+      description:
+        'Champ historique conservé pendant la période de migration. Utilise `categories[]` et `primaryCategory` à la place. Sera retiré prochainement.',
     },
     {
       name: 'brand',
@@ -244,57 +332,20 @@ export const product = {
       description:
         'Référence officielle du modèle chez le fabricant. Ex : "462A00" pour un Steelcase Leap V2. Permet à Google Shopping et aux assistants IA (ChatGPT, Perplexity) de relier ta fiche au produit d\'origine. Trouvable sur la plaque signalétique sous le meuble.',
     },
+    // primaryCategory est défini plus haut (avec validation croisée categories[])
     {
-      name: 'primaryCategory',
-      title: '⭐ Catégorie principale (pour breadcrumb & URL canonique)',
-      type: 'reference',
-      to: [{ type: 'category' }],
-      group: 'specs',
-      description:
-        'La catégorie principale qui définit le fil d\'Ariane et l\'URL du produit. Si un produit appartient à plusieurs catégories (ex: fauteuil ET ergonomique ET Steelcase), tu peux les mettre dans le champ "Catégorie" plus haut, MAIS il faut choisir ici LA catégorie principale pour éviter que Google indexe deux fois la même fiche. Laisser vide = utilise la catégorie du champ ci-dessus.',
-    },
-    {
-      name: 'originalReleaseYear',
-      title: 'Année de sortie du modèle original',
+      name: 'googleProductCategoryOverride',
+      title: 'Override — Google Product Category',
       type: 'number',
       group: 'specs',
       description:
-        'Année où le fabricant a lancé ce modèle pour la première fois. Ex : Steelcase Leap V2 = 2006. Aide Google et les IA à comprendre l\'ancienneté du modèle (utile pour valoriser les pièces "vintage design" ou icônes design).',
-      validation: (R: Rule) => R.integer().min(1900).max(new Date().getFullYear()),
+        'Facultatif. Par défaut le produit hérite de la Google Product Category de sa catégorie principale. Ne renseigne cet override QUE si ce produit spécifique a une catégorie Google plus précise que sa catégorie Sanity.',
+      validation: (R: Rule) => R.integer().positive(),
     },
-    {
-      name: 'warrantyMonths',
-      title: 'Garantie (en mois)',
-      type: 'number',
-      group: 'specs',
-      initialValue: 12,
-      description:
-        'Nombre de mois de garantie sur ce produit reconditionné. Défaut 12 mois. Google affiche cette info en snippet marchand. Attention : la garantie légale de conformité 24 mois (particuliers) s\'applique de toute façon.',
-      validation: (R: Rule) => R.integer().min(0).max(60),
-    },
-    {
-      name: 'countryOfOrigin',
-      title: 'Pays d\'origine du fabricant',
-      type: 'string',
-      group: 'specs',
-      description:
-        'Pays où la marque est basée (pas où le produit est vendu). Ex : Steelcase = US, Vitra = CH, Herman Miller = US, Haworth = US, Majencia = FR. Format ISO 2 lettres.',
-      options: {
-        list: [
-          { title: 'États-Unis (US)', value: 'US' },
-          { title: 'Suisse (CH)', value: 'CH' },
-          { title: 'Allemagne (DE)', value: 'DE' },
-          { title: 'France (FR)', value: 'FR' },
-          { title: 'Italie (IT)', value: 'IT' },
-          { title: 'Espagne (ES)', value: 'ES' },
-          { title: 'Royaume-Uni (GB)', value: 'GB' },
-          { title: 'Norvège (NO)', value: 'NO' },
-          { title: 'Suède (SE)', value: 'SE' },
-          { title: 'Danemark (DK)', value: 'DK' },
-          { title: 'Pays-Bas (NL)', value: 'NL' },
-        ],
-      },
-    },
+    // Retirés (14/07/2026, principe zéro donnée inventée) :
+    // - originalReleaseYear : Farouk ne peut pas remplir systématiquement
+    // - countryOfOrigin : dérivé de la marque = fabrication trompeuse
+    // - warrantyMonths : à réintroduire quand garantie commerciale confirmée
 
     // ─────── Ergonomie & confort (utilisé dans additionalProperty[]) ───────
     {
@@ -359,28 +410,9 @@ export const product = {
       initialValue: false,
     },
 
-    // ─────── Certifications (hasCertification[] dans JSON-LD) ───────
-    {
-      name: 'certifications',
-      title: 'Labels & certifications',
-      type: 'array',
-      group: 'certifications',
-      description:
-        'Labels et certifications du produit ou du fabricant : NF Environnement, PEFC, FSC, Ecovadis, Ange Bleu, etc. Affiché sur la fiche + envoyé dans le schéma Google (hasCertification).',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            { name: 'name', title: 'Nom du label', type: 'string' },
-            { name: 'issuedBy', title: 'Organisme émetteur', type: 'string' },
-            { name: 'url', title: 'Lien vers la page officielle du label', type: 'url' },
-          ],
-          preview: {
-            select: { title: 'name', subtitle: 'issuedBy' },
-          },
-        },
-      ],
-    },
+    // Retiré (14/07/2026) : certifications[] — aucun label concret disponible
+    // sur le catalogue actuel. Réintroduire quand des certifs réelles existent
+    // pour des produits identifiés.
 
     {
       name: 'featured',

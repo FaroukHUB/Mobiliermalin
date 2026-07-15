@@ -59,6 +59,22 @@ export const category = {
       description: 'Plus petit = affiché en premier.',
       initialValue: 0,
     },
+    // ─── Google Merchant Center ───
+    {
+      name: 'googleProductCategoryId',
+      title: 'Google Product Category — ID',
+      type: 'number',
+      description:
+        'ID numérique de la taxonomie Google Merchant Center pour cette catégorie. Ex : 6360 = "Meubles > Meubles de bureau > Chaises de bureau". Voir la taxonomie officielle : https://www.google.com/basepages/producttype/taxonomy-with-ids.fr-FR.txt. Utilisé uniquement pour le feed Merchant (google_product_category). Les produits de cette catégorie hériteront de cet ID automatiquement.',
+      validation: (R: Rule) => R.integer().positive(),
+    },
+    {
+      name: 'googleProductCategoryPath',
+      title: 'Google Product Category — Chemin (pour lisibilité admin)',
+      type: 'string',
+      description:
+        'Chemin lisible de la catégorie Google (ex: "Meubles > Meubles de bureau > Chaises de bureau"). Facultatif — sert uniquement à te souvenir de ce que représente l\'ID ci-dessus.',
+    },
   ],
   preview: {
     select: { title: 'name', media: 'image' },

@@ -57,6 +57,8 @@ export type SanityCategory = {
   order?: number
   parent?: { _id: string; name: string; slug: { current: string } } | null
   children?: SanityCategory[]
+  googleProductCategoryId?: number
+  googleProductCategoryPath?: string
 }
 
 export type SanityProduct = {
@@ -68,14 +70,28 @@ export type SanityProduct = {
   description?: unknown[] // PortableText
   price: number
   salePrice?: number
+  salePriceValidUntil?: string // ISO date — requis si salePrice défini
   comparePrice?: number
   stock: number
+  availabilityStatus?:
+    | 'inStock'
+    | 'temporarilyOutOfStock'
+    | 'backorder'
+    | 'preorder'
+    | 'soldOut'
+    | 'onQuote'
+  restockExpectedDate?: string
   images: SanityImage[]
   // Vidéo (VideoObject dans le JSON-LD Product)
   videoUrl?: string
   videoDescription?: string
+  videoUploadDate?: string
+  videoThumbnail?: SanityImage
+  // Catégories : legacy `category` (single) + nouveaux `categories[]` / `primaryCategory`
   category?: SanityCategory
-  primaryCategory?: SanityCategory // O3 — catégorie canonique breadcrumb/URL
+  categories?: SanityCategory[]
+  primaryCategory?: SanityCategory
+  googleProductCategoryOverride?: number
   brand?: string
   condition?: 'new' | 'excellent' | 'very-good' | 'good' | 'fair'
   widthCm?: number
@@ -86,9 +102,6 @@ export type SanityProduct = {
   color?: string
   sku?: string
   mpn?: string
-  originalReleaseYear?: number
-  warrantyMonths?: number
-  countryOfOrigin?: string
   // Ergonomie / additionalProperty[]
   maxUserWeightKg?: number
   seatHeightMinCm?: number
@@ -97,8 +110,6 @@ export type SanityProduct = {
   hasLumbarAdjustment?: boolean
   hasHeadrest?: boolean
   desktopMotorized?: boolean
-  // Certifications
-  certifications?: Array<{ name: string; issuedBy?: string; url?: string }>
   featured?: boolean
   featuredOrder?: number
   exception?: boolean
@@ -119,18 +130,19 @@ export type SanityProduct = {
 
 const PRODUCT_FIELDS = `
   _id, name, slug, status, shortDescription, description,
-  price, salePrice, comparePrice, stock,
+  price, salePrice, salePriceValidUntil, comparePrice, stock,
+  availabilityStatus, restockExpectedDate,
   images[]{_key, asset, alt, hotspot},
-  videoUrl, videoDescription,
-  category->{_id, name, slug, description, image, variants, order},
-  primaryCategory->{_id, name, slug, description, image, variants, order},
+  videoUrl, videoDescription, videoUploadDate, videoThumbnail,
+  category->{_id, name, slug, description, image, variants, order, googleProductCategoryId, googleProductCategoryPath},
+  categories[]->{_id, name, slug, description, image, variants, order, googleProductCategoryId, googleProductCategoryPath},
+  primaryCategory->{_id, name, slug, description, image, variants, order, googleProductCategoryId, googleProductCategoryPath},
+  googleProductCategoryOverride,
   brand, condition,
   widthCm, depthCm, heightCm, weightKg,
   material, color, sku, mpn,
-  originalReleaseYear, warrantyMonths, countryOfOrigin,
   maxUserWeightKg, seatHeightMinCm, seatHeightMaxCm,
   armrestType, hasLumbarAdjustment, hasHeadrest, desktopMotorized,
-  certifications,
   featured, featuredOrder, exception, exceptionOrder,
   seo,
   _createdAt, _updatedAt
