@@ -1,11 +1,27 @@
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 
 /**
- * Schema.org JSON-LD : Organization + LocalBusiness.
- * Crucial pour le SEO local (apparition dans Google Maps, Knowledge Graph,
- * rich snippets avec note Google, etc.)
+ * Schema.org JSON-LD : Organization + LocalBusiness + WebSite.
+ *
+ * Crucial pour le SEO local (Google Maps, Knowledge Graph, rich snippets
+ * avec note Google). Injecté depuis (frontend)/layout.tsx.
+ *
+ * Les URLs `logoUrl` et `imageUrl` viennent de Sanity (settings.logoOnLight
+ * + settings.ogImage). Fallbacks vers /logo.png et /og-image.jpg pour
+ * conserver la validité du schema tant que ces fichiers ne sont pas
+ * uploadés dans Sanity — mais tout admin peut les remplacer via Studio
+ * sans redéploiement.
  */
-export function OrganizationSchema() {
+
+type Props = {
+  logoUrl?: string
+  imageUrl?: string
+}
+
+export function OrganizationSchema({ logoUrl, imageUrl }: Props = {}) {
+  const logo = logoUrl || `${siteUrl}/logo.png`
+  const image = imageUrl || logoUrl || `${siteUrl}/og-image.jpg`
+
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -15,7 +31,7 @@ export function OrganizationSchema() {
         name: 'Mobilier Malin',
         legalName: 'SARL 2 M',
         url: siteUrl,
-        logo: `${siteUrl}/logo.png`,
+        logo,
         description:
           "Mobilier de bureau d'exception reconditionné. Steelcase, Herman Miller, Haworth, Vitra à -60% du prix neuf. Atelier & showroom à La Penne-sur-Huveaune, livraison France.",
         foundingDate: '2021',
@@ -37,7 +53,7 @@ export function OrganizationSchema() {
         '@type': 'LocalBusiness',
         '@id': `${siteUrl}/#localbusiness`,
         name: 'Mobilier Malin',
-        image: `${siteUrl}/og-image.jpg`,
+        image,
         url: siteUrl,
         telephone: '+33-6-76-61-70-53',
         email: 'mobiliermalin@gmail.com',
@@ -75,6 +91,9 @@ export function OrganizationSchema() {
         name: 'Mobilier Malin',
         publisher: { '@id': `${siteUrl}/#organization` },
         inLanguage: 'fr-FR',
+        // NOTE : SearchAction laissé tant que la route /boutique?q= n'est pas
+        // gérée côté serveur. À retirer OU implémenter le handler ?q pour
+        // activer réellement la SiteLinks Search Box.
         potentialAction: {
           '@type': 'SearchAction',
           target: {

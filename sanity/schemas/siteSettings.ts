@@ -46,6 +46,15 @@ export const siteSettings = {
       group: 'identity',
       description: 'Petite icône carrée 32×32 ou 512×512 px.',
     },
+    {
+      name: 'ogImage',
+      title: 'Image de partage réseaux sociaux (Open Graph)',
+      description:
+        "Image affichée quand quelqu'un partage un lien du site sur Facebook, WhatsApp, LinkedIn, Slack, etc. Format 1200×630 px paysage, JPG ou PNG. Doit contenir le logo + un visuel showroom/produit. Utilisée aussi pour le schéma LocalBusiness lu par Google.",
+      type: 'image',
+      group: 'identity',
+      options: { hotspot: true },
+    },
 
     // ─────────── Carrousel d'accueil (autoplay) ───────────
     {

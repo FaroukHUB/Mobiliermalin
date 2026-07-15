@@ -43,6 +43,16 @@ export async function generateMetadata({
   const name = sanityCat?.name || staticCat?.name
   if (!name) return { title: 'Catégorie introuvable' }
 
+  // SEO O5 : si la catégorie est vide (aucun produit publié), on la
+  // noindex pour éviter le thin content. `follow: true` préserve la
+  // circulation du PageRank vers les catégories sœurs / hub / home.
+  // React dédup automatiquement le fetch produits avec le composant.
+  const hasChildren = (sanityCat?.children?.length ?? 0) > 0
+  const products = hasChildren
+    ? await getProductsByCategoryDeep(slug)
+    : await getProductsByCategory(slug)
+  const isEmpty = products.length === 0
+
   return {
     title: staticCat
       ? `${name} reconditionnés — ${staticCat.fromPriceLabel}`
@@ -52,6 +62,9 @@ export async function generateMetadata({
       staticCat?.shortTagline ||
       `${name} reconditionnés dans notre atelier local. Livraison France.`,
     alternates: { canonical: `/categorie/${slug}` },
+    ...(isEmpty && {
+      robots: { index: false, follow: true },
+    }),
   }
 }
 

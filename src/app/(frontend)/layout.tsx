@@ -131,6 +131,18 @@ export default async function RootLayout({
     ? { url: urlFor(settings.logoOnDark).height(200).url(), alt: settings.siteName || 'Mobilier Malin' }
     : undefined
 
+  // URLs pour le JSON-LD Organization / LocalBusiness (S1.9).
+  // Priorité : Sanity settings → showroomImage en fallback pour LocalBusiness.image
+  // → dernier recours : /logo.png et /og-image.jpg (fichiers à uploader dans public/).
+  const orgLogoUrl = settings.logoOnLight
+    ? urlFor(settings.logoOnLight).width(512).height(512).fit('max').format('png').url()
+    : undefined
+  const orgImageUrl = settings.ogImage
+    ? urlFor(settings.ogImage).width(1200).height(630).fit('crop').url()
+    : settings.showroomImage
+      ? urlFor(settings.showroomImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
   // Sérialise les catégories pour les passer au Header (client component)
   const menuCategories = categoryHierarchy.map(({ parent, children }) => ({
     id: parent._id,
@@ -181,7 +193,7 @@ export default async function RootLayout({
         </CartProvider>
         <WhatsAppButton />
         <ChatWidget />
-        <OrganizationSchema />
+        <OrganizationSchema logoUrl={orgLogoUrl} imageUrl={orgImageUrl} />
         <CookieConsent />
       </body>
     </html>
