@@ -33,10 +33,12 @@ export const product = {
   type: 'document',
   groups: [
     { name: 'main', title: 'Essentiel', default: true },
-    { name: 'photos', title: 'Photos' },
+    { name: 'photos', title: 'Photos & vidéo' },
     { name: 'pricing', title: 'Prix & stock' },
     { name: 'specs', title: 'Caractéristiques' },
-    { name: 'seo', title: 'SEO' },
+    { name: 'ergonomics', title: 'Ergonomie & confort' },
+    { name: 'certifications', title: 'Certifications' },
+    { name: 'seo', title: 'SEO & réseaux sociaux' },
   ],
   fields: [
     // ─────── Essentiel ───────
@@ -82,7 +84,7 @@ export const product = {
       group: 'main',
     },
 
-    // ─────── Photos ───────
+    // ─────── Photos & vidéo ───────
     {
       name: 'images',
       title: 'Photos du produit',
@@ -104,6 +106,23 @@ export const product = {
       validation: (R: Rule) => R.min(1).error('Au moins 1 photo obligatoire'),
       description:
         'Glissez-déposez vos photos. La première est la photo principale. Idéal : 5 photos minimum, fond uni clair.',
+    },
+    {
+      name: 'videoUrl',
+      title: 'URL vidéo (YouTube ou Vimeo)',
+      type: 'url',
+      group: 'photos',
+      description:
+        'URL publique d\'une vidéo de présentation du produit (YouTube ou Vimeo). Active un carrousel vidéo dans les résultats Google Rich Results (+CTR notable). Ex : https://www.youtube.com/watch?v=abc123',
+    },
+    {
+      name: 'videoDescription',
+      title: 'Description courte de la vidéo',
+      type: 'text',
+      rows: 2,
+      group: 'photos',
+      hidden: ({ document }: { document?: { videoUrl?: string } }) => !document?.videoUrl,
+      description: '2-3 phrases décrivant ce qu\'on voit dans la vidéo. Envoyé à Google (VideoObject.description).',
     },
 
     // ─────── Prix & stock ───────
@@ -203,12 +222,166 @@ export const product = {
       group: 'specs',
     },
     {
+      name: 'weightKg',
+      title: 'Poids (kg)',
+      type: 'number',
+      group: 'specs',
+      description: 'Utile pour calculer les frais de livraison palette + affiché dans Google Shopping.',
+      validation: (R: Rule) => R.positive(),
+    },
+    {
       name: 'sku',
       title: 'Référence interne (SKU)',
       type: 'string',
       group: 'specs',
       description: 'Optionnel — pour ta gestion de stock.',
     },
+    {
+      name: 'mpn',
+      title: 'Référence fabricant d\'origine (MPN)',
+      type: 'string',
+      group: 'specs',
+      description:
+        'Référence officielle du modèle chez le fabricant. Ex : "462A00" pour un Steelcase Leap V2. Permet à Google Shopping et aux assistants IA (ChatGPT, Perplexity) de relier ta fiche au produit d\'origine. Trouvable sur la plaque signalétique sous le meuble.',
+    },
+    {
+      name: 'primaryCategory',
+      title: '⭐ Catégorie principale (pour breadcrumb & URL canonique)',
+      type: 'reference',
+      to: [{ type: 'category' }],
+      group: 'specs',
+      description:
+        'La catégorie principale qui définit le fil d\'Ariane et l\'URL du produit. Si un produit appartient à plusieurs catégories (ex: fauteuil ET ergonomique ET Steelcase), tu peux les mettre dans le champ "Catégorie" plus haut, MAIS il faut choisir ici LA catégorie principale pour éviter que Google indexe deux fois la même fiche. Laisser vide = utilise la catégorie du champ ci-dessus.',
+    },
+    {
+      name: 'originalReleaseYear',
+      title: 'Année de sortie du modèle original',
+      type: 'number',
+      group: 'specs',
+      description:
+        'Année où le fabricant a lancé ce modèle pour la première fois. Ex : Steelcase Leap V2 = 2006. Aide Google et les IA à comprendre l\'ancienneté du modèle (utile pour valoriser les pièces "vintage design" ou icônes design).',
+      validation: (R: Rule) => R.integer().min(1900).max(new Date().getFullYear()),
+    },
+    {
+      name: 'warrantyMonths',
+      title: 'Garantie (en mois)',
+      type: 'number',
+      group: 'specs',
+      initialValue: 12,
+      description:
+        'Nombre de mois de garantie sur ce produit reconditionné. Défaut 12 mois. Google affiche cette info en snippet marchand. Attention : la garantie légale de conformité 24 mois (particuliers) s\'applique de toute façon.',
+      validation: (R: Rule) => R.integer().min(0).max(60),
+    },
+    {
+      name: 'countryOfOrigin',
+      title: 'Pays d\'origine du fabricant',
+      type: 'string',
+      group: 'specs',
+      description:
+        'Pays où la marque est basée (pas où le produit est vendu). Ex : Steelcase = US, Vitra = CH, Herman Miller = US, Haworth = US, Majencia = FR. Format ISO 2 lettres.',
+      options: {
+        list: [
+          { title: 'États-Unis (US)', value: 'US' },
+          { title: 'Suisse (CH)', value: 'CH' },
+          { title: 'Allemagne (DE)', value: 'DE' },
+          { title: 'France (FR)', value: 'FR' },
+          { title: 'Italie (IT)', value: 'IT' },
+          { title: 'Espagne (ES)', value: 'ES' },
+          { title: 'Royaume-Uni (GB)', value: 'GB' },
+          { title: 'Norvège (NO)', value: 'NO' },
+          { title: 'Suède (SE)', value: 'SE' },
+          { title: 'Danemark (DK)', value: 'DK' },
+          { title: 'Pays-Bas (NL)', value: 'NL' },
+        ],
+      },
+    },
+
+    // ─────── Ergonomie & confort (utilisé dans additionalProperty[]) ───────
+    {
+      name: 'maxUserWeightKg',
+      title: 'Charge maximale utilisateur (kg)',
+      type: 'number',
+      group: 'ergonomics',
+      description: 'Poids max supporté par le produit (surtout fauteuils). Info attendue par Google + IA.',
+      validation: (R: Rule) => R.positive().integer(),
+    },
+    {
+      name: 'seatHeightMinCm',
+      title: 'Hauteur d\'assise MIN (cm)',
+      type: 'number',
+      group: 'ergonomics',
+      description: 'Hauteur d\'assise minimale (fauteuil / tabouret réglable).',
+      validation: (R: Rule) => R.positive(),
+    },
+    {
+      name: 'seatHeightMaxCm',
+      title: 'Hauteur d\'assise MAX (cm)',
+      type: 'number',
+      group: 'ergonomics',
+      description: 'Hauteur d\'assise maximale.',
+      validation: (R: Rule) => R.positive(),
+    },
+    {
+      name: 'armrestType',
+      title: 'Type d\'accoudoirs',
+      type: 'string',
+      group: 'ergonomics',
+      options: {
+        list: [
+          { title: 'Sans accoudoirs', value: 'none' },
+          { title: 'Fixes', value: 'fixed' },
+          { title: '1D (hauteur)', value: '1D' },
+          { title: '2D (hauteur + largeur)', value: '2D' },
+          { title: '3D (hauteur + largeur + profondeur)', value: '3D' },
+          { title: '4D (3D + pivot latéral)', value: '4D' },
+        ],
+      },
+    },
+    {
+      name: 'hasLumbarAdjustment',
+      title: 'Soutien lombaire réglable',
+      type: 'boolean',
+      group: 'ergonomics',
+      initialValue: false,
+    },
+    {
+      name: 'hasHeadrest',
+      title: 'Appuie-tête',
+      type: 'boolean',
+      group: 'ergonomics',
+      initialValue: false,
+    },
+    {
+      name: 'desktopMotorized',
+      title: 'Réglage électrique de la hauteur (bureau assis-debout)',
+      type: 'boolean',
+      group: 'ergonomics',
+      initialValue: false,
+    },
+
+    // ─────── Certifications (hasCertification[] dans JSON-LD) ───────
+    {
+      name: 'certifications',
+      title: 'Labels & certifications',
+      type: 'array',
+      group: 'certifications',
+      description:
+        'Labels et certifications du produit ou du fabricant : NF Environnement, PEFC, FSC, Ecovadis, Ange Bleu, etc. Affiché sur la fiche + envoyé dans le schéma Google (hasCertification).',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'name', title: 'Nom du label', type: 'string' },
+            { name: 'issuedBy', title: 'Organisme émetteur', type: 'string' },
+            { name: 'url', title: 'Lien vers la page officielle du label', type: 'url' },
+          ],
+          preview: {
+            select: { title: 'name', subtitle: 'issuedBy' },
+          },
+        },
+      ],
+    },
+
     {
       name: 'featured',
       title: 'Mettre en avant sur la home',
@@ -275,6 +448,36 @@ export const product = {
             '🤖 Auto si vide : reprend la "Description courte" du produit, sinon fallback générique. Ne remplir que pour optimiser le clic depuis Google.',
           validation: (R: Rule) =>
             R.max(180).warning('Description trop longue : Google la tronquera au-delà de ~160 caractères.'),
+        },
+        {
+          name: 'ogImage',
+          title: 'Image de partage réseaux sociaux (Open Graph)',
+          type: 'image',
+          options: { hotspot: true },
+          description:
+            'Optionnel. Image affichée quand le produit est partagé (WhatsApp, Facebook, LinkedIn). Format 1200×630. Si vide, la 1re photo est utilisée. Remplir si tu veux un visuel avec texte lisible en petit format.',
+        },
+        {
+          name: 'canonicalUrl',
+          title: 'URL canonique (avancé)',
+          type: 'url',
+          description:
+            'Optionnel. Si ce produit est une variante d\'un autre produit hub (ex : même modèle en 3 couleurs), pointe vers l\'URL du produit principal. Google concentrera alors le PageRank sur ce hub. Laisser vide dans 99% des cas.',
+        },
+        {
+          name: 'noIndex',
+          title: 'Retirer de Google (noindex)',
+          type: 'boolean',
+          initialValue: false,
+          description:
+            'Coché = Google ne l\'indexera pas mais le produit reste visible sur ton site. Utile pour un produit en attente de photos, ou un stock épuisé qu\'on veut garder listé en interne sans polluer les résultats Google.',
+        },
+        {
+          name: 'productReferenceUrl',
+          title: 'Lien vers la page officielle du modèle (Wikipedia, site fabricant)',
+          type: 'url',
+          description:
+            '⚡ Astuce SEO/IA : URL Wikipedia ou page fabricant du modèle d\'origine. Ex : https://en.wikipedia.org/wiki/Aeron_chair pour un Herman Miller Aeron. Envoyé en `sameAs` du schéma produit → aide ChatGPT, Claude, Perplexity à te citer correctement en source (car ils reconnaissent l\'entité).',
         },
       ],
     },

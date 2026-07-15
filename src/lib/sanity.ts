@@ -71,20 +71,46 @@ export type SanityProduct = {
   comparePrice?: number
   stock: number
   images: SanityImage[]
+  // Vidéo (VideoObject dans le JSON-LD Product)
+  videoUrl?: string
+  videoDescription?: string
   category?: SanityCategory
+  primaryCategory?: SanityCategory // O3 — catégorie canonique breadcrumb/URL
   brand?: string
   condition?: 'new' | 'excellent' | 'very-good' | 'good' | 'fair'
   widthCm?: number
   depthCm?: number
   heightCm?: number
+  weightKg?: number
   material?: string
   color?: string
   sku?: string
+  mpn?: string
+  originalReleaseYear?: number
+  warrantyMonths?: number
+  countryOfOrigin?: string
+  // Ergonomie / additionalProperty[]
+  maxUserWeightKg?: number
+  seatHeightMinCm?: number
+  seatHeightMaxCm?: number
+  armrestType?: 'none' | 'fixed' | '1D' | '2D' | '3D' | '4D'
+  hasLumbarAdjustment?: boolean
+  hasHeadrest?: boolean
+  desktopMotorized?: boolean
+  // Certifications
+  certifications?: Array<{ name: string; issuedBy?: string; url?: string }>
   featured?: boolean
   featuredOrder?: number
   exception?: boolean
   exceptionOrder?: number
-  seo?: { metaTitle?: string; metaDescription?: string }
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+    ogImage?: SanityImage
+    canonicalUrl?: string
+    noIndex?: boolean
+    productReferenceUrl?: string
+  }
   _createdAt: string
   _updatedAt: string
 }
@@ -95,10 +121,17 @@ const PRODUCT_FIELDS = `
   _id, name, slug, status, shortDescription, description,
   price, salePrice, comparePrice, stock,
   images[]{_key, asset, alt, hotspot},
+  videoUrl, videoDescription,
   category->{_id, name, slug, description, image, variants, order},
+  primaryCategory->{_id, name, slug, description, image, variants, order},
   brand, condition,
-  widthCm, depthCm, heightCm,
-  material, color, sku, featured, featuredOrder, exception, exceptionOrder,
+  widthCm, depthCm, heightCm, weightKg,
+  material, color, sku, mpn,
+  originalReleaseYear, warrantyMonths, countryOfOrigin,
+  maxUserWeightKg, seatHeightMinCm, seatHeightMaxCm,
+  armrestType, hasLumbarAdjustment, hasHeadrest, desktopMotorized,
+  certifications,
+  featured, featuredOrder, exception, exceptionOrder,
   seo,
   _createdAt, _updatedAt
 `

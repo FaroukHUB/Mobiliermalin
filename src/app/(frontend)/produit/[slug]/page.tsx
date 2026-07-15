@@ -5,6 +5,7 @@ import { type PortableTextBlock } from 'next-sanity'
 import { ChevronRight, Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
 import { getProductBySlug, getAllProductSlugs, getRelatedProducts, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
+import { buildProductSchema } from '@/lib/product-schema'
 import { DeliveryChoice } from '@/components/product/DeliveryChoice'
 import { ProductGallery } from '@/components/product/ProductGallery'
 import { ProductTabs } from '@/components/product/ProductTabs'
@@ -43,6 +44,13 @@ export async function generateMetadata({
 
   const firstImage = product.images?.[0]
   const effectivePrice = product.salePrice && product.salePrice < product.price ? product.salePrice : product.price
+  // OG image : priorité au SEO override, sinon 1re photo produit
+  const ogSanityImage = product.seo?.ogImage || firstImage
+  const ogImageUrl = ogSanityImage
+    ? urlFor(ogSanityImage).width(1200).height(630).fit('crop').url()
+    : undefined
+  // Canonical : override SEO (variant → hub) sinon canonique standard
+  const canonicalPath = product.seo?.canonicalUrl || `/produit/${slug}`
   return {
     title:
       product.seo?.metaTitle || `${product.name} — ${formatPrice(effectivePrice)}`,
@@ -50,13 +58,14 @@ export async function generateMetadata({
       product.seo?.metaDescription ||
       product.shortDescription ||
       `${product.name} reconditionné, préparé dans notre atelier local. Livraison Marseille, PACA, France.`,
-    alternates: { canonical: `/produit/${slug}` },
+    alternates: { canonical: canonicalPath },
+    ...(product.seo?.noIndex && {
+      robots: { index: false, follow: true },
+    }),
     openGraph: {
       title: product.name,
       description: product.shortDescription,
-      images: firstImage
-        ? [{ url: urlFor(firstImage).width(1200).height(630).fit('crop').url() }]
-        : undefined,
+      images: ogImageUrl ? [{ url: ogImageUrl }] : undefined,
     },
   }
 }
@@ -70,7 +79,10 @@ export default async function ProductPage({
   const product = await getProductBySlug(slug)
   if (!product) notFound()
 
-  const category = product.category
+  // primaryCategory (O3) prioritaire pour breadcrumb & URL canonique — évite
+  // le duplicate content quand un produit appartient à plusieurs catégories.
+  // Fallback sur `category` (comportement historique).
+  const category = product.primaryCategory || product.category
   const conditionLabel = product.condition ? CONDITION_LABELS[product.condition] : null
 
   // Cross-sell : 4 pièces de la même catégorie (fallback : derniers publiés)
@@ -88,33 +100,12 @@ export default async function ProductPage({
     alt: img.alt || `${product.name} - vue ${i + 1}`,
   }))
 
-  // JSON-LD Product schema
-  const productSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    description: product.shortDescription,
-    image: product.images?.map((i) => urlFor(i).width(1200).url()),
-    sku: product.sku,
-    brand: product.brand
-      ? { '@type': 'Brand', name: product.brand }
-      : undefined,
-    offers: {
-      '@type': 'Offer',
-      url: `${siteUrl}/produit/${slug}`,
-      priceCurrency: 'EUR',
-      price: product.salePrice && product.salePrice < product.price ? product.salePrice : product.price,
-      availability:
-        product.stock > 0
-          ? 'https://schema.org/InStock'
-          : 'https://schema.org/OutOfStock',
-      itemCondition:
-        product.condition === 'new'
-          ? 'https://schema.org/NewCondition'
-          : 'https://schema.org/RefurbishedCondition',
-      seller: { '@type': 'Organization', name: 'Mobilier Malin' },
-    },
-  }
+  // JSON-LD Product schema — best-in-class (voir lib/product-schema.ts).
+  // Génère un balisage complet : identité (sku/mpn/brand.sameAs), attributs
+  // physiques (dimensions/poids), attributs ergonomiques (additionalProperty[]),
+  // certifications, vidéo (VideoObject), offer avec priceValidUntil dynamique,
+  // warranty, shippingDetails et returnPolicy référencés par @id.
+  const productSchema = buildProductSchema(product)
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
