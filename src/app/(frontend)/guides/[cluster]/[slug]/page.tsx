@@ -373,6 +373,73 @@ export default async function GuideArticlePage({
                       <div className="h-px w-16 bg-gold" />
                     </div>
                   ),
+                  // Tableau structuré (data-table) — responsive avec scroll horizontal
+                  dataTable: ({ value }) => {
+                    const headers: string[] = value?.headers || []
+                    const rows: Array<{ cells?: string[] }> = value?.rows || []
+                    if (headers.length === 0) return null
+                    return (
+                      <figure className="my-10 -mx-4 md:mx-0">
+                        {value?.caption && (
+                          <figcaption className="text-center font-serif text-lg text-ink mb-4">
+                            {value.caption}
+                          </figcaption>
+                        )}
+                        <div className="overflow-x-auto border border-line">
+                          <table className="w-full text-sm">
+                            <thead className="bg-ink text-ivory">
+                              <tr>
+                                {headers.map((h, i) => (
+                                  <th
+                                    key={i}
+                                    className="text-left px-4 py-3 font-serif whitespace-nowrap"
+                                  >
+                                    {h}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-line">
+                              {rows.map((row, ri) => (
+                                <tr
+                                  key={ri}
+                                  className={ri % 2 === 0 ? 'bg-ivory' : 'bg-ivory-light'}
+                                >
+                                  {(row.cells || []).map((cell, ci) => (
+                                    <td
+                                      key={ci}
+                                      className="px-4 py-3 text-ink-soft align-top"
+                                    >
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </figure>
+                    )
+                  },
+                  // HTML brut — usage avancé, avec sanitize minimal (retire les balises dangereuses)
+                  htmlEmbed: ({ value }) => {
+                    if (!value?.html) return null
+                    // Sanitize très basique : retire les balises interdites listées
+                    // dans la description schema (script, style, form, input).
+                    const clean = String(value.html)
+                      .replace(/<\s*script[\s\S]*?<\/\s*script\s*>/gi, '')
+                      .replace(/<\s*style[\s\S]*?<\/\s*style\s*>/gi, '')
+                      .replace(/<\s*form[\s\S]*?<\/\s*form\s*>/gi, '')
+                      .replace(/<\s*input[^>]*>/gi, '')
+                      .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+                    return (
+                      <div
+                        className="my-8 prose prose-lg max-w-none [&_table]:w-full [&_table]:border [&_table]:border-line [&_th]:bg-ink [&_th]:text-ivory [&_th]:p-3 [&_th]:font-serif [&_th]:text-left [&_td]:p-3 [&_td]:border-t [&_td]:border-line"
+                        // eslint-disable-next-line react/no-danger
+                        dangerouslySetInnerHTML={{ __html: clean }}
+                      />
+                    )
+                  },
                   // Produit associé (Sanity ref → carte cliquable)
                   productEmbed: ({ value }) => {
                     if (!value?.product) return null

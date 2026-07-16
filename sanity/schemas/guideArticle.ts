@@ -245,6 +245,95 @@ export const guideArticle = {
         },
         {
           type: 'object',
+          name: 'dataTable',
+          title: '📊 Tableau structuré',
+          description:
+            'Tableau responsive avec en-têtes et lignes. Rendu automatiquement stylé, safe, scrollable sur mobile.',
+          fields: [
+            {
+              name: 'caption',
+              type: 'string',
+              title: 'Titre du tableau (facultatif)',
+            },
+            {
+              name: 'headers',
+              type: 'array',
+              title: 'En-têtes de colonnes',
+              of: [{ type: 'string' }],
+              validation: (R: Rule) =>
+                R.required().min(1).error('Au moins une colonne requise'),
+              description: 'Un item par colonne. Ex : ["Critère", "Entrée", "Milieu", "Premium"]',
+            },
+            {
+              name: 'rows',
+              type: 'array',
+              title: 'Lignes',
+              of: [
+                {
+                  type: 'object',
+                  name: 'tableRow',
+                  title: 'Ligne',
+                  fields: [
+                    {
+                      name: 'cells',
+                      type: 'array',
+                      title: 'Cellules',
+                      of: [{ type: 'string' }],
+                      description: 'Une cellule par colonne, dans le même ordre que les en-têtes.',
+                    },
+                  ],
+                  preview: {
+                    select: { cells: 'cells' },
+                    prepare(s: { cells?: string[] }) {
+                      return {
+                        title: (s.cells || []).join(' · ').slice(0, 80) || '(vide)',
+                      }
+                    },
+                  },
+                },
+              ],
+              validation: (R: Rule) => R.required().min(1),
+            },
+          ],
+          preview: {
+            select: { caption: 'caption', rows: 'rows' },
+            prepare(s: { caption?: string; rows?: unknown[] }) {
+              return {
+                title: `📊 ${s.caption || 'Tableau'} (${s.rows?.length || 0} lignes)`,
+              }
+            },
+          },
+        },
+        {
+          type: 'object',
+          name: 'htmlEmbed',
+          title: '⚠️ HTML brut (avancé, à utiliser avec précaution)',
+          description:
+            'Insère du HTML directement dans l\'article. Utile pour du contenu très custom (tableau complexe, embed externe). ATTENTION : à réserver aux cas où le tableau structuré ne suffit pas, ne colle jamais de HTML dont tu ne comprends pas la source.',
+          fields: [
+            {
+              name: 'html',
+              type: 'text',
+              rows: 10,
+              title: 'Code HTML',
+              validation: (R: Rule) => R.required(),
+              description:
+                'Ex : <table>, <iframe> (attention SEO), etc. Balises interdites pour sécurité : script, style, form, input.',
+            },
+          ],
+          preview: {
+            select: { html: 'html' },
+            prepare(s: { html?: string }) {
+              return {
+                title:
+                  '⚠️ HTML — ' +
+                  (s.html?.replace(/<[^>]+>/g, '').slice(0, 60) || 'vide'),
+              }
+            },
+          },
+        },
+        {
+          type: 'object',
           name: 'productEmbed',
           title: '🛒 Encart produit (poussée conversion)',
           fields: [
