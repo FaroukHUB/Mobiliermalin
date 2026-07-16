@@ -58,7 +58,7 @@ export function FeaturedProductsCarousel({ cards }: FeaturedProductsCarouselProp
           {cards.map((card) => (
             <div
               key={card.id}
-              className="shrink-0 basis-[62%] sm:basis-[42%] md:basis-[38%] lg:basis-[30%] px-2 md:px-3"
+              className="shrink-0 basis-1/2 md:basis-1/3 lg:basis-1/4 px-2 md:px-3"
             >
               <ProductCard product={card} />
             </div>
