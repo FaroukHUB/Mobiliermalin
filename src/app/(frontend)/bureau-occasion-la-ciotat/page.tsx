@@ -166,21 +166,8 @@ export default async function LaCiotatPage() {
       { '@type': 'City', name: 'Roquefort-la-Bédoule' },
       { '@type': 'City', name: 'Aubagne' },
     ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '5',
-      reviewCount: '3',
-      bestRating: '5',
-      worstRating: '1',
-    },
-    review: REVIEWS.map((r) => ({
-      '@type': 'Review',
-      author: { '@type': 'Person', name: r.author },
-      datePublished: `${r.date}-01`,
-      reviewBody: r.text,
-      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-    })),
-  }
+    // aggregateRating + review[] retirés (Sprint 5) — voir bureau-nice.
+}
 
   return (
     <>

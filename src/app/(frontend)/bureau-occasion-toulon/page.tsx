@@ -167,24 +167,9 @@ export default async function ToulonPage() {
       { '@type': 'City', name: 'Sanary-sur-Mer' },
       { '@type': 'City', name: 'Hyères' },
     ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '5',
-      reviewCount: '3',
-      bestRating: '5',
-      worstRating: '1',
-    },
-    review: REVIEWS.map((r) => ({
-      '@type': 'Review',
-      author: { '@type': 'Person', name: r.author },
-      datePublished: `${r.date}-01`,
-      reviewBody: r.text,
-      reviewRating: {
-        '@type': 'Rating',
-        ratingValue: '5',
-        bestRating: '5',
-      },
-    })),
+    // aggregateRating + review[] retirés (Sprint 5) : rating agrégé
+    // maintenu uniquement au niveau Organization pour éviter la
+    // duplication ×8 pages ville détectée à l'audit initial.
   }
 
   return (
