@@ -2,11 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
-  ChevronRight,
   Phone,
   Mail,
   Truck,
-  Quote,
   ArrowRight,
   CalendarDays,
   MessageSquare,
@@ -22,6 +20,9 @@ import {
 } from '@/lib/sanity'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { LEGAL } from '@/lib/legal'
+import { CityReviews } from '@/components/city/CityReviews'
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { cityBreadcrumb } from '@/lib/breadcrumbs'
 
 const CATEGORY_SLUG = 'bureau'
 const PAGE_KEY = 'bureau-nice'
@@ -57,26 +58,9 @@ export const metadata: Metadata = {
   },
 }
 
-const REVIEWS = [
-  {
-    author: 'Hafid Soual',
-    date: '2025-12',
-    text: "J'ai équipé mes bureaux avec l'aide de Mobilier Malin ce qui m'a permis de réaliser de belles économies pour un matériel de qualité.",
-    context: 'Équipement complet',
-  },
-  {
-    author: 'Sirine M.',
-    date: '2025-12',
-    text: "Nous avons acheté du matériel professionnel juste incroyable. Les prix sont très attractifs et le vendeur est vraiment au top — petit message également pour les livreurs qui ont été au top.",
-    context: 'Achat + livraison',
-  },
-  {
-    author: 'Nono',
-    date: '2026-02',
-    text: "J'ai acheté un caisson avec dossiers suspendus, en bon état, en métal blanc comme je voulais. 30 € pas cher du tout.",
-    context: 'Achat unitaire',
-  },
-] as const
+// Reviews extraites dans lib/reviews.ts (source unique — Sprint 5).
+// Affichées via <CityReviews /> ci-dessous, sans balisage aggregateRating
+// dupliqué (le rating agrégé reste au niveau Organization).
 
 const CONDITION_KEYS: Record<string, string> = {
   new: 'new',
@@ -136,25 +120,21 @@ export default async function NicePage() {
     ],
   }
 
-  const localBusinessSchema = {
+  // Nice = ville T3 (livraison ponctuelle, aucune présence physique).
+  // → Service schema avec areaServed + provider ref Organization.
+  // → PAS de LocalBusiness (adresse mensongère éliminée).
+  // → PAS de aggregateRating/review dupliqué (reste au niveau Organization,
+  //    source unique de vérité). Le bloc reviews affiché visuellement
+  //    n'est pas balisé JSON-LD (voir composant <CityReviews>).
+  const serviceSchema = {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    '@id': `${siteUrl}/#localbusiness-nice`,
-    name: 'Mobilier Malin — Bureaux d\'occasion livrés à Nice',
+    '@type': 'Service',
+    '@id': `${siteUrl}/bureau-occasion-nice#service`,
+    name: 'Livraison de bureaux d\'occasion à Nice',
+    serviceType: 'Livraison de mobilier de bureau reconditionné',
     description:
-      'Livraison de mobilier de bureau reconditionné Steelcase, Herman Miller, Haworth, Vitra à Nice et sur la Côte d\'Azur depuis notre atelier de La Penne-sur-Huveaune.',
-    url: `${siteUrl}/bureau-occasion-nice`,
-    telephone: LEGAL.telephoneTel,
-    email: LEGAL.email,
-    priceRange: '€€',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: LEGAL.showroom.ligne1,
-      addressLocality: LEGAL.showroom.ville,
-      postalCode: LEGAL.showroom.codePostal,
-      addressRegion: 'Provence-Alpes-Côte d\'Azur',
-      addressCountry: 'FR',
-    },
+      'Livraison régulière de bureaux Steelcase, Herman Miller, Haworth, Vitra reconditionnés à Nice et sur la Côte d\'Azur depuis notre atelier de La Penne-sur-Huveaune.',
+    provider: { '@id': `${siteUrl}/#organization` },
     areaServed: [
       { '@type': 'City', name: 'Nice' },
       { '@type': 'City', name: 'Cagnes-sur-Mer' },
@@ -162,24 +142,6 @@ export default async function NicePage() {
       { '@type': 'City', name: 'Antibes' },
       { '@type': 'City', name: 'Sophia Antipolis' },
     ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '5',
-      reviewCount: '3',
-      bestRating: '5',
-      worstRating: '1',
-    },
-    review: REVIEWS.map((r) => ({
-      '@type': 'Review',
-      author: { '@type': 'Person', name: r.author },
-      datePublished: `${r.date}-01`,
-      reviewBody: r.text,
-      reviewRating: {
-        '@type': 'Rating',
-        ratingValue: '5',
-        bestRating: '5',
-      },
-    })),
   }
 
   return (
@@ -192,7 +154,11 @@ export default async function NicePage() {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+
+      <Breadcrumbs
+        items={cityBreadcrumb({ name: 'Bureaux à Nice', slug: 'bureau-occasion-nice' })}
       />
 
       {/* ═══ HERO ═══ */}
@@ -211,17 +177,7 @@ export default async function NicePage() {
         </div>
 
         <div className="container relative py-16 md:py-24 w-full">
-          <nav aria-label="Fil d'Ariane" className="text-xs text-ivory/60">
-            <ol className="flex items-center gap-2 flex-wrap">
-              <li>
-                <Link href="/" className="hover:text-gold">Accueil</Link>
-              </li>
-              <ChevronRight className="h-3 w-3" />
-              <li className="text-gold">Bureaux d&apos;occasion à Nice</li>
-            </ol>
-          </nav>
-
-          <div className="mt-10 max-w-3xl">
+          <div className="max-w-3xl">
             <p className="eyebrow text-gold">Nouveau — livraison Côte d&apos;Azur</p>
             <h1 className="text-display-xl mt-4 font-serif leading-[1.05] text-ivory">
               Nous livrons désormais nos bureaux d&apos;occasion à Nice
@@ -417,39 +373,12 @@ export default async function NicePage() {
         </section>
       )}
 
-      {/* ═══ AVIS GOOGLE ═══ */}
-      <section className="bg-ivory-dark border-y border-line">
-        <div className="container py-16 md:py-24">
-          <Reveal>
-            <div className="text-center max-w-2xl mx-auto mb-14">
-              <p className="eyebrow">Avis Google vérifiés</p>
-              <h2 className="text-display mt-3 font-serif">
-                Ce que disent les clients que nous équipons
-              </h2>
-              <div className="gold-divider mt-6" />
-            </div>
-          </Reveal>
+      {/* ═══ AVIS GOOGLE (composant partagé + data-nosnippet) ═══ */}
+      <CityReviews
+        heading="Nos clients qui parlent de nous"
+        intro="Avis vérifiés Google — équipe, livraison, produits."
+      />
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {REVIEWS.map((review, i) => (
-              <Reveal key={review.author} delay={i * 80}>
-                <article className="bg-ivory border border-line p-6 md:p-7 h-full flex flex-col">
-                  <Quote className="h-6 w-6 text-gold" strokeWidth={1.5} />
-                  <p className="mt-4 text-ink-soft leading-relaxed italic flex-1">
-                    « {review.text} »
-                  </p>
-                  <footer className="mt-5 pt-5 border-t border-line">
-                    <p className="font-serif text-base text-ink">{review.author}</p>
-                    <p className="text-xs text-ink-mute mt-1">
-                      ★★★★★ &nbsp;·&nbsp; {review.context}
-                    </p>
-                  </footer>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ═══ SOUS-CATÉGORIES BUREAU ═══ */}
       {featuredCategories.length > 0 && (
