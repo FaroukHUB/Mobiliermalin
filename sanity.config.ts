@@ -306,6 +306,56 @@ export default defineConfig({
                   ]),
               ),
             S.divider(),
+            // Cocon éditorial SEO — clusters + articles guides (Sprint 2)
+            S.listItem()
+              .title('Guides SEO — Clusters')
+              .icon(() => '📚')
+              .child(
+                S.documentTypeList('guideCluster')
+                  .title('Clusters de guides (silos)')
+                  .defaultOrdering([{ field: 'order', direction: 'asc' }]),
+              ),
+            S.listItem()
+              .title('Guides SEO — Articles')
+              .icon(() => '📄')
+              .child(
+                S.list()
+                  .title('Articles guides')
+                  .items([
+                    S.listItem()
+                      .title('✅ Publiés')
+                      .child(
+                        S.documentList()
+                          .title('Articles publiés')
+                          .filter('_type == "guideArticle" && status == "published"')
+                          .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('📝 Brouillons')
+                      .child(
+                        S.documentList()
+                          .title('Brouillons')
+                          .filter('_type == "guideArticle" && status == "draft"')
+                          .defaultOrdering([{ field: '_updatedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('🗄️ Archivés')
+                      .child(
+                        S.documentList()
+                          .title('Archivés')
+                          .filter('_type == "guideArticle" && status == "archived"'),
+                      ),
+                    S.divider(),
+                    S.listItem()
+                      .title('Tous les articles guides')
+                      .child(
+                        S.documentTypeList('guideArticle')
+                          .title('Tous les articles')
+                          .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]),
+                      ),
+                  ]),
+              ),
+            S.divider(),
             // Commandes (paiements Stripe) — auto-créées par le webhook
             S.listItem()
               .title('Commandes')
