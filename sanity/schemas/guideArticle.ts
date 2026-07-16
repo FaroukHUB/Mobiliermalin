@@ -185,12 +185,14 @@ export const guideArticle = {
               of: [
                 {
                   type: 'object',
-                  name: 'span',
+                  name: 'calloutSpan',
+                  title: 'Portion de texte',
                   fields: [
-                    { name: 'text', type: 'text', rows: 3 },
+                    { name: 'text', type: 'text', rows: 3, title: 'Texte' },
                     {
                       name: 'marks',
                       type: 'array',
+                      title: 'Formatage',
                       of: [{ type: 'string' }],
                       options: {
                         list: [
@@ -200,7 +202,12 @@ export const guideArticle = {
                       },
                     },
                   ],
-                  preview: { select: { title: 'text' } },
+                  preview: {
+                    select: { title: 'text' },
+                    prepare(s: { title?: string }) {
+                      return { title: s.title?.slice(0, 80) || '(vide)' }
+                    },
+                  },
                 },
               ],
               description:

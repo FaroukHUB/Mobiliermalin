@@ -134,11 +134,17 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
     // Callout > [type] contenu
     const calloutMatch = p.match(/^>\s*\[(info|warning|success|tip)\]\s*([\s\S]+)$/)
     if (calloutMatch) {
+      // Les items de content doivent utiliser `calloutSpan` (le type `span`
+      // est réservé par Sanity pour les blocks Portable Text). Le renderer
+      // page.tsx lit uniquement text + marks, indépendamment du _type.
+      const rawSpans = parseInlineMarks(
+        calloutMatch[2].replace(/\n>\s*/g, ' '),
+      )
       blocks.push({
         _type: 'callout',
         _key: nextKey(),
         variant: calloutMatch[1],
-        content: parseInlineMarks(calloutMatch[2].replace(/\n>\s*/g, ' ')),
+        content: rawSpans.map((s) => ({ ...s, _type: 'calloutSpan' })),
       })
       continue
     }
