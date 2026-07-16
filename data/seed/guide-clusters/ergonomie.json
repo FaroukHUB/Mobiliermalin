@@ -1,0 +1,13 @@
+{
+  "_type": "guideCluster-seed",
+  "slug": "ergonomie",
+  "name": "Ergonomie & bien-être au bureau",
+  "tagline": "Tout savoir pour s'asseoir 8 heures par jour sans se ruiner le dos.",
+  "description": "L'ergonomie du poste de travail n'est plus une option : les troubles musculo-squelettiques représentent 87% des maladies professionnelles reconnues en France (INRS, 2024). Ce cluster regroupe nos guides pratiques pour choisir, régler et utiliser correctement votre mobilier — que vous soyez responsable de l'aménagement d'un plateau de bureaux, dirigeant qui veut prendre soin de ses équipes, ou télétravailleur qui cherche à préserver son dos. Objectif : des postes réellement confortables, adaptés aux morphologies de chacun, sans surinvestir dans du neuf haut de gamme.",
+  "order": 1,
+  "relatedProductCategorySlugs": ["fauteuil", "bureau"],
+  "seo": {
+    "metaTitle": "Ergonomie bureau : guides pratiques mal de dos, TMS, réglages",
+    "metaDescription": "Guides ergonomie & bien-être au bureau. Réglages fauteuil, mal de dos, TMS, poste télétravail. Conseils pratiques par Mobilier Malin."
+  }
+}

@@ -36,6 +36,10 @@ const FALLBACK_HERO_ALT =
   'Espace bureau ouvert équipé en mobilier reconditionné — Marseille'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { LEGAL } from '@/lib/legal'
+import {
+  MarseillePillarSections,
+  FAQ_MARSEILLE,
+} from '@/components/city/MarseillePillarSections'
 
 export const revalidate = 86400 // 24h, pas besoin de revalider plus souvent
 
@@ -191,6 +195,18 @@ export default async function MarseillePage() {
     // aggregateRating + review[] retirés (Sprint 5) — voir bureau-nice.
 }
 
+  // FAQPage schema — émis UNIQUEMENT si les Q/R sont visibles dans l'UI
+  // (le composant <MarseillePillarSections /> les affiche).
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_MARSEILLE.map((qa) => ({
+      '@type': 'Question',
+      name: qa.q,
+      acceptedAnswer: { '@type': 'Answer', text: qa.a },
+    })),
+  }
+
   return (
     <>
       <script
@@ -202,6 +218,11 @@ export default async function MarseillePage() {
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
       {/* ═══ HERO ═══ */}
@@ -766,6 +787,9 @@ export default async function MarseillePage() {
           </div>
         </div>
       </section>
+
+      {/* ═══ CONTENU PILIER MARSEILLE (quartiers + cas usage + FAQ ville) ═══ */}
+      <MarseillePillarSections />
 
       {/* ═══ CTA FINAL ═══ */}
       <section className="bg-ivory-dark border-t border-line">

@@ -1,0 +1,13 @@
+{
+  "_type": "guideCluster-seed",
+  "slug": "marques",
+  "name": "Marques & modèles de mobilier pro",
+  "tagline": "La référence francophone sur Steelcase, Herman Miller, Vitra, Haworth et les icônes du mobilier de bureau.",
+  "description": "Choisir un fauteuil Herman Miller Aeron plutôt qu'un Steelcase Leap V2 n'est pas anodin : chaque grande marque a une philosophie, une gamme, des points forts et des faiblesses. Ce cluster décortique les modèles emblématiques du mobilier de bureau professionnel, avec des tests approfondis, des comparatifs honnêtes et des conseils pour choisir en occasion reconditionnée. Nous testons chaque référence après plusieurs jours d'usage en atelier avant de la reconditionner — nos avis sont ceux d'artisans, pas de commerciaux.",
+  "order": 2,
+  "relatedProductCategorySlugs": ["fauteuil", "bureau"],
+  "seo": {
+    "metaTitle": "Marques mobilier bureau : Steelcase, Herman Miller, Vitra, Haworth",
+    "metaDescription": "Guides et comparatifs des grandes marques de mobilier de bureau professionnel : Steelcase, Herman Miller, Vitra, Haworth, HÅG et plus."
+  }
+}
