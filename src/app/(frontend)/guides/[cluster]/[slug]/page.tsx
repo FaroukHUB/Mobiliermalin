@@ -398,7 +398,76 @@ export default async function GuideArticlePage({
           )}
         </div>
 
-        {/* FAQ inline (visible ET dans le JSON-LD FAQPage) */}
+        {/* Produits mis en avant — AVANT la FAQ (pousse à la conversion pendant que le lecteur est engagé) */}
+        {article.featuredProducts && article.featuredProducts.length > 0 && (
+          <section className="mt-14 pt-10 border-t border-line">
+            <h2 className="font-serif text-2xl text-ink mb-6 text-center">
+              Sélection de produits
+            </h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+              {article.featuredProducts.map((p) => {
+                const img = p.images?.[0]
+                  ? urlFor(p.images[0]).width(600).height(600).fit('crop').url()
+                  : null
+                const displayPrice =
+                  p.salePrice && p.salePrice < p.price ? p.salePrice : p.price
+                return (
+                  <Link
+                    key={p._id}
+                    href={`/produit/${p.slug.current}`}
+                    className="group flex flex-col bg-ivory border border-line hover:border-gold transition-colors overflow-hidden"
+                  >
+                    {img && (
+                      <div className="relative aspect-square bg-ivory-dark overflow-hidden">
+                        <Image
+                          src={img}
+                          alt={p.name}
+                          fill
+                          sizes="(min-width: 1024px) 25vw, 50vw"
+                          className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                        />
+                      </div>
+                    )}
+                    <div className="p-4">
+                      {p.brand && (
+                        <p className="text-xs uppercase tracking-widest text-ink-mute">
+                          {p.brand}
+                        </p>
+                      )}
+                      <h3 className="font-serif text-base text-ink mt-1 leading-tight">
+                        {p.name}
+                      </h3>
+                      <p className="mt-2 text-lg text-ink font-serif">
+                        {formatPrice(displayPrice)}
+                      </p>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* CTA catégorie principale (maillage descendant) */}
+        {article.primaryProductCategory && (
+          <section className="mt-14 pt-10 border-t border-line">
+            <div className="bg-ink text-ivory p-8 md:p-10 text-center">
+              <p className="eyebrow text-gold">Découvrir le catalogue</p>
+              <h3 className="font-serif text-2xl md:text-3xl mt-3">
+                Voir tous nos {article.primaryProductCategory.name.toLowerCase()}
+              </h3>
+              <Link
+                href={`/categorie/${article.primaryProductCategory.slug.current}`}
+                className="mt-6 inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-ink px-6 py-3 font-medium transition-colors"
+              >
+                Explorer la catégorie
+                <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {/* FAQ inline (visible ET dans le JSON-LD FAQPage) — après les CTA produits */}
         {article.faq && article.faq.length > 0 && (
           <section className="mt-14 pt-10 border-t border-line">
             <h2 className="font-serif text-2xl text-ink mb-6">
@@ -423,75 +492,6 @@ export default async function GuideArticlePage({
                   </div>
                 </details>
               ))}
-            </div>
-          </section>
-        )}
-
-        {/* CTA catégorie principale (maillage descendant) */}
-        {article.primaryProductCategory && (
-          <section className="mt-14 pt-10 border-t border-line">
-            <div className="bg-ink text-ivory p-8 md:p-10 text-center">
-              <p className="eyebrow text-gold">Découvrir le catalogue</p>
-              <h3 className="font-serif text-2xl md:text-3xl mt-3">
-                Voir tous nos {article.primaryProductCategory.name.toLowerCase()}
-              </h3>
-              <Link
-                href={`/categorie/${article.primaryProductCategory.slug.current}`}
-                className="mt-6 inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-ink px-6 py-3 font-medium transition-colors"
-              >
-                Explorer la catégorie
-                <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
-              </Link>
-            </div>
-          </section>
-        )}
-
-        {/* Produits mis en avant */}
-        {article.featuredProducts && article.featuredProducts.length > 0 && (
-          <section className="mt-14 pt-10 border-t border-line">
-            <h2 className="font-serif text-2xl text-ink mb-6 text-center">
-              Sélection de produits
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-6">
-              {article.featuredProducts.map((p) => {
-                const img = p.images?.[0]
-                  ? urlFor(p.images[0]).width(600).height(600).fit('crop').url()
-                  : null
-                const displayPrice =
-                  p.salePrice && p.salePrice < p.price ? p.salePrice : p.price
-                return (
-                  <Link
-                    key={p._id}
-                    href={`/produit/${p.slug.current}`}
-                    className="group flex flex-col bg-ivory border border-line hover:border-gold transition-colors overflow-hidden"
-                  >
-                    {img && (
-                      <div className="relative aspect-square bg-ivory-dark overflow-hidden">
-                        <Image
-                          src={img}
-                          alt={p.name}
-                          fill
-                          sizes="(min-width: 640px) 50vw, 100vw"
-                          className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                        />
-                      </div>
-                    )}
-                    <div className="p-4">
-                      {p.brand && (
-                        <p className="text-xs uppercase tracking-widest text-ink-mute">
-                          {p.brand}
-                        </p>
-                      )}
-                      <h3 className="font-serif text-base text-ink mt-1 leading-tight">
-                        {p.name}
-                      </h3>
-                      <p className="mt-2 text-lg text-ink font-serif">
-                        {formatPrice(displayPrice)}
-                      </p>
-                    </div>
-                  </Link>
-                )
-              })}
             </div>
           </section>
         )}
