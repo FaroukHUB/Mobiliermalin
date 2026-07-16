@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { ArrowRight, ChevronRight, Clock, Tag } from 'lucide-react'
+import { ArrowRight, Clock, Tag } from 'lucide-react'
 import {
   BLOG_ARTICLES,
   getAllBlogSlugs as getStaticBlogSlugs,
@@ -19,6 +19,8 @@ import {
 } from '@/lib/sanity-blog'
 import { urlFor } from '@/lib/sanity'
 import { BlogPortableText } from '@/components/blog/BlogPortableText'
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
+import { blogArticleBreadcrumb } from '@/lib/breadcrumbs'
 
 export const revalidate = 60
 export const dynamicParams = true
@@ -125,48 +127,21 @@ async function renderSanityPost(post: SanityBlogPost) {
     },
   }
 
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: post.title,
-        item: `${siteUrl}/blog/${post.slug.current}`,
-      },
-    ],
-  }
+  // BreadcrumbList émis par le composant <Breadcrumbs> ci-dessous
+  // (source unique de vérité, lib/breadcrumbs.blogArticleBreadcrumb).
 
   return (
     <>
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([articleSchema, breadcrumbSchema]),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
 
-      <section className="bg-ivory-dark border-b border-line">
-        <div className="container py-4">
-          <nav aria-label="Fil d'Ariane" className="text-xs text-ink-mute">
-            <ol className="flex items-center gap-2 flex-wrap">
-              <li>
-                <Link href="/" className="hover:text-gold-dark">Accueil</Link>
-              </li>
-              <ChevronRight className="h-3 w-3" />
-              <li>
-                <Link href="/blog" className="hover:text-gold-dark">Blog</Link>
-              </li>
-              <ChevronRight className="h-3 w-3" />
-              <li className="text-ink truncate max-w-[400px]">{post.title}</li>
-            </ol>
-          </nav>
-        </div>
-      </section>
+      <Breadcrumbs
+        items={blogArticleBreadcrumb({ title: post.title })}
+        className="bg-ivory-dark border-b border-line"
+      />
 
       <section className="container pt-12 md:pt-16 pb-8 max-w-3xl">
         <div className="flex items-center gap-3 text-[0.65rem] uppercase tracking-widest text-gold-dark font-medium flex-wrap">
@@ -330,48 +305,20 @@ function renderStaticArticle(article: BlogArticle) {
     },
   }
 
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: siteUrl },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: article.title,
-        item: `${siteUrl}/blog/${article.slug}`,
-      },
-    ],
-  }
+  // BreadcrumbList émis par le composant <Breadcrumbs> (source unique).
 
   return (
     <>
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([articleSchema, breadcrumbSchema]),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
 
-      <section className="bg-ivory-dark border-b border-line">
-        <div className="container py-4">
-          <nav aria-label="Fil d'Ariane" className="text-xs text-ink-mute">
-            <ol className="flex items-center gap-2 flex-wrap">
-              <li>
-                <Link href="/" className="hover:text-gold-dark">Accueil</Link>
-              </li>
-              <ChevronRight className="h-3 w-3" />
-              <li>
-                <Link href="/blog" className="hover:text-gold-dark">Blog</Link>
-              </li>
-              <ChevronRight className="h-3 w-3" />
-              <li className="text-ink truncate max-w-[400px]">{article.title}</li>
-            </ol>
-          </nav>
-        </div>
-      </section>
+      <Breadcrumbs
+        items={blogArticleBreadcrumb({ title: article.title })}
+        className="bg-ivory-dark border-b border-line"
+      />
 
       <section className="container pt-12 md:pt-16 pb-8 max-w-3xl">
         <div className="flex items-center gap-3 text-[0.65rem] uppercase tracking-widest text-gold-dark font-medium">

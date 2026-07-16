@@ -5,6 +5,7 @@ import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { getAllProducts, getAllCategories, urlFor, type SanityProduct, type SanityCategory } from '@/lib/sanity'
 import { CATEGORIES as STATIC_CATEGORIES } from '@/lib/categories-data'
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 
 export const revalidate = 60
 
@@ -93,6 +94,8 @@ export default async function BoutiquePage() {
 
   return (
     <>
+      <Breadcrumbs items={[{ name: 'Boutique' }]} />
+
       {/* Hero */}
       <section className="bg-ivory-dark border-b border-line">
         <div className="container py-12 md:py-16 max-w-4xl">

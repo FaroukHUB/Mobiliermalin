@@ -49,6 +49,7 @@ const SECONDARY_NAV = [
     { label: 'Charte qualité', href: '/charte-qualite' },
   ]},
   { label: 'Notre démarche', href: '/notre-demarche' },
+  { label: 'Guides', href: '/guides' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
 ] as const

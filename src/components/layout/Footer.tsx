@@ -28,14 +28,24 @@ const SERVICES = [
 ]
 
 const ZONES = [
+  { label: 'Toutes les zones desservies', href: '/zones-desservies' },
   { label: 'Bureaux Marseille', href: '/bureau-occasion-marseille' },
   { label: 'Bureaux Aubagne', href: '/bureau-occasion-aubagne' },
   { label: 'Bureaux Aix-en-Provence', href: '/bureau-occasion-aix-en-provence' },
   { label: 'Bureaux Nice', href: '/bureau-occasion-nice' },
   { label: 'Fauteuils Marseille', href: '/fauteuil-occasion-marseille' },
   { label: 'Fauteuils Aubagne', href: '/fauteuil-occasion-aubagne' },
-  { label: 'Fauteuils Aix-en-Provence', href: '/fauteuil-occasion-aix-en-provence' },
   { label: 'Fauteuils Nice', href: '/fauteuil-occasion-nice' },
+]
+
+// Guides d'achat — cocon éditorial (mis à jour Sprint 2/4)
+const GUIDES = [
+  { label: 'Tous les guides d\'achat', href: '/guides' },
+  { label: 'Ergonomie & bien-être', href: '/guides/ergonomie' },
+  { label: 'Achat B2B', href: '/guides/achat-b2b' },
+  { label: 'Marques & modèles', href: '/guides/marques' },
+  { label: 'RSE & réemploi', href: '/guides/rse-reemploi' },
+  { label: 'Entretien & réparation', href: '/guides/entretien' },
 ]
 
 const LEGAL = [
@@ -189,6 +199,19 @@ export function Footer({ logo }: FooterProps = {}) {
           </ul>
 
           <h3 className="text-xs font-medium text-ivory uppercase tracking-widest mb-5 mt-8">
+            Guides d&apos;achat
+          </h3>
+          <ul className="space-y-2.5 text-sm text-ivory/70">
+            {GUIDES.map((g) => (
+              <li key={g.href}>
+                <Link href={g.href} className="hover:text-gold transition">
+                  {g.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <h3 className="text-xs font-medium text-ivory uppercase tracking-widest mb-5 mt-8">
             Informations
           </h3>
           <ul className="space-y-2.5 text-sm text-ivory/70">
@@ -199,7 +222,7 @@ export function Footer({ logo }: FooterProps = {}) {
             </li>
             <li>
               <Link href="/blog" className="hover:text-gold transition">
-                Blog & conseils
+                Blog & actualités
               </Link>
             </li>
             <li>
