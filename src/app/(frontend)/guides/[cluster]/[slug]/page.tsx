@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
-import { ArrowRight, Clock, User } from 'lucide-react'
+import { ArrowRight, Clock, User, Info, AlertTriangle, CheckCircle2, Lightbulb } from 'lucide-react'
 import {
   getGuideArticleBySlug,
   getAllGuideArticleSlugs,
@@ -178,36 +178,204 @@ export default async function GuideArticlePage({
           </div>
         )}
 
-        {/* Corps de l'article */}
-        <div className="prose prose-lg mt-10 max-w-none text-ink-soft leading-relaxed">
+        {/* Corps de l'article — typography riche */}
+        <div className="mt-10 max-w-none">
           {article.body ? (
             <PortableText
               value={article.body as PortableTextBlock[]}
               components={{
+                block: {
+                  // H2 : titre visible, séparateur or, espace vertical clair
+                  h2: ({ children }) => (
+                    <h2 className="font-serif text-2xl md:text-3xl text-ink mt-14 mb-6 leading-tight scroll-mt-24">
+                      {children}
+                    </h2>
+                  ),
+                  // H3 : sous-titre distinct
+                  h3: ({ children }) => (
+                    <h3 className="font-serif text-xl md:text-2xl text-ink mt-10 mb-4 leading-snug">
+                      {children}
+                    </h3>
+                  ),
+                  h4: ({ children }) => (
+                    <h4 className="font-serif text-lg text-ink mt-8 mb-3 leading-snug">
+                      {children}
+                    </h4>
+                  ),
+                  // Paragraphe : lisible, respiration
+                  normal: ({ children }) => (
+                    <p className="text-base md:text-lg text-ink-soft leading-relaxed mb-6">
+                      {children}
+                    </p>
+                  ),
+                  // Blockquote design or, italique
+                  blockquote: ({ children }) => (
+                    <blockquote className="my-8 pl-6 border-l-4 border-gold italic text-lg text-ink leading-relaxed">
+                      {children}
+                    </blockquote>
+                  ),
+                },
+                marks: {
+                  strong: ({ children }) => (
+                    <strong className="font-semibold text-ink">{children}</strong>
+                  ),
+                  em: ({ children }) => (
+                    <em className="italic">{children}</em>
+                  ),
+                  link: ({ value, children }) => (
+                    <a
+                      href={value?.href}
+                      className="text-gold-dark underline underline-offset-2 hover:text-gold"
+                      target={value?.href?.startsWith('http') ? '_blank' : undefined}
+                      rel={value?.href?.startsWith('http') ? 'noopener' : undefined}
+                    >
+                      {children}
+                    </a>
+                  ),
+                },
+                list: {
+                  bullet: ({ children }) => (
+                    <ul className="my-6 space-y-2.5 pl-2">{children}</ul>
+                  ),
+                  number: ({ children }) => (
+                    <ol className="my-6 space-y-2.5 pl-2 list-decimal list-inside">
+                      {children}
+                    </ol>
+                  ),
+                },
+                listItem: {
+                  bullet: ({ children }) => (
+                    <li className="flex gap-3 text-base md:text-lg text-ink-soft leading-relaxed">
+                      <span
+                        className="text-gold shrink-0 mt-2 h-1.5 w-1.5 rounded-full bg-gold inline-block"
+                        aria-hidden="true"
+                      />
+                      <span className="flex-1">{children}</span>
+                    </li>
+                  ),
+                },
                 types: {
+                  // Image Sanity uploadée (via Studio)
                   image: ({ value }) => {
                     if (!value?.asset) return null
-                    const url = urlFor(value).width(1200).url()
+                    const url = urlFor(value).width(1600).url()
                     return (
-                      <figure className="my-8">
-                        <Image
-                          src={url}
-                          alt={value.alt || ''}
-                          width={1200}
-                          height={800}
-                          className="w-full h-auto"
-                        />
+                      <figure className="my-10 -mx-4 md:mx-0">
+                        <div className="relative aspect-[16/9] bg-ivory-dark overflow-hidden">
+                          <Image
+                            src={url}
+                            alt={value.alt || ''}
+                            fill
+                            sizes="(min-width: 768px) 720px, 100vw"
+                            className="object-cover"
+                          />
+                        </div>
                         {value.caption && (
-                          <figcaption className="mt-2 text-sm text-ink-mute text-center">
+                          <figcaption className="mt-3 text-sm text-ink-mute text-center italic">
                             {value.caption}
                           </figcaption>
                         )}
                       </figure>
                     )
                   },
+                  // Image via URL externe (Unsplash, etc.) — utilisée par le seed markdown
+                  inlineImage: ({ value }) => {
+                    if (!value?.url) return null
+                    return (
+                      <figure className="my-10 -mx-4 md:mx-0">
+                        <div className="relative aspect-[16/9] bg-ivory-dark overflow-hidden">
+                          <Image
+                            src={value.url}
+                            alt={value.alt || ''}
+                            fill
+                            sizes="(min-width: 768px) 720px, 100vw"
+                            className="object-cover"
+                            unoptimized
+                          />
+                        </div>
+                        {value.caption && (
+                          <figcaption className="mt-3 text-sm text-ink-mute text-center italic">
+                            {value.caption}
+                          </figcaption>
+                        )}
+                      </figure>
+                    )
+                  },
+                  // Callout (info / warning / success / tip)
+                  callout: ({ value }) => {
+                    const variant = value?.variant || 'info'
+                    const config = {
+                      info: {
+                        Icon: Info,
+                        bg: 'bg-blue-50',
+                        border: 'border-blue-300',
+                        iconColor: 'text-blue-700',
+                        label: 'Info',
+                      },
+                      warning: {
+                        Icon: AlertTriangle,
+                        bg: 'bg-amber-50',
+                        border: 'border-amber-300',
+                        iconColor: 'text-amber-700',
+                        label: 'Attention',
+                      },
+                      success: {
+                        Icon: CheckCircle2,
+                        bg: 'bg-green-50',
+                        border: 'border-green-300',
+                        iconColor: 'text-green-700',
+                        label: 'À retenir',
+                      },
+                      tip: {
+                        Icon: Lightbulb,
+                        bg: 'bg-gold/10',
+                        border: 'border-gold',
+                        iconColor: 'text-gold-dark',
+                        label: 'Astuce',
+                      },
+                    }[variant as 'info' | 'warning' | 'success' | 'tip']
+                    const { Icon, bg, border, iconColor, label } = config
+                    return (
+                      <aside
+                        className={`my-8 p-5 md:p-6 border-l-4 ${bg} ${border} flex gap-4`}
+                      >
+                        <Icon
+                          className={`h-5 w-5 md:h-6 md:w-6 ${iconColor} shrink-0 mt-1`}
+                          strokeWidth={1.75}
+                          aria-hidden="true"
+                        />
+                        <div className="flex-1">
+                          <p className="text-xs uppercase tracking-widest font-semibold text-ink-mute mb-2">
+                            {label}
+                          </p>
+                          <p className="text-ink leading-relaxed">
+                            {(value.content || []).map(
+                              (
+                                span: { text?: string; marks?: string[] },
+                                i: number,
+                              ) => {
+                                const isBold = span.marks?.includes('strong')
+                                const isItalic = span.marks?.includes('em')
+                                if (isBold)
+                                  return <strong key={i}>{span.text}</strong>
+                                if (isItalic) return <em key={i}>{span.text}</em>
+                                return <span key={i}>{span.text}</span>
+                              },
+                            )}
+                          </p>
+                        </div>
+                      </aside>
+                    )
+                  },
+                  // Séparateur horizontal
+                  divider: () => (
+                    <div className="my-12 flex items-center justify-center">
+                      <div className="h-px w-16 bg-gold" />
+                    </div>
+                  ),
+                  // Produit associé (Sanity ref → carte cliquable)
                   productEmbed: ({ value }) => {
                     if (!value?.product) return null
-                    // La fetch cross-ref serait à ajouter — pour l'instant simple lien
                     return (
                       <aside className="my-8 p-6 bg-ivory-dark border-l-4 border-gold">
                         <p className="text-sm text-ink-mute">

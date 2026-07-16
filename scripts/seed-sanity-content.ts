@@ -71,10 +71,92 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
   let keyN = 0
   const nextKey = () => `seed-${(++keyN).toString(36)}`
 
+  /**
+   * Parse un texte inline pour extraire les marks (gras, italique).
+   * Retourne un tableau de spans Portable Text.
+   * Utilisé aussi bien pour les paragraphes que pour les items de liste.
+   */
+  function parseInlineMarks(text: string): Array<Record<string, unknown>> {
+    const spans: Array<Record<string, unknown>> = []
+    const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
+    for (const part of parts) {
+      if (!part) continue
+      if (part.startsWith('**') && part.endsWith('**')) {
+        spans.push({
+          _type: 'span',
+          _key: nextKey(),
+          text: part.slice(2, -2),
+          marks: ['strong'],
+        })
+      } else if (part.startsWith('*') && part.endsWith('*')) {
+        spans.push({
+          _type: 'span',
+          _key: nextKey(),
+          text: part.slice(1, -1),
+          marks: ['em'],
+        })
+      } else {
+        spans.push({
+          _type: 'span',
+          _key: nextKey(),
+          text: part,
+          marks: [],
+        })
+      }
+    }
+    return spans
+  }
+
   for (const raw of paragraphs) {
     const p = raw.trim()
     if (!p) continue
 
+    // Séparateur horizontal ---
+    if (/^-{3,}$/.test(p)) {
+      blocks.push({
+        _type: 'divider',
+        _key: nextKey(),
+      })
+      continue
+    }
+    // Image inline ![alt](url) — ligne seule
+    const imgMatch = p.match(/^!\[([^\]]*)\]\(([^)]+)\)(?:\s*"([^"]+)")?$/)
+    if (imgMatch) {
+      blocks.push({
+        _type: 'inlineImage',
+        _key: nextKey(),
+        url: imgMatch[2],
+        alt: imgMatch[1],
+        ...(imgMatch[3] && { caption: imgMatch[3] }),
+      })
+      continue
+    }
+    // Callout > [type] contenu
+    const calloutMatch = p.match(/^>\s*\[(info|warning|success|tip)\]\s*([\s\S]+)$/)
+    if (calloutMatch) {
+      blocks.push({
+        _type: 'callout',
+        _key: nextKey(),
+        variant: calloutMatch[1],
+        content: parseInlineMarks(calloutMatch[2].replace(/\n>\s*/g, ' ')),
+      })
+      continue
+    }
+    // Blockquote > texte
+    if (p.split('\n').every((l) => l.trim().startsWith('>'))) {
+      const quoteText = p
+        .split('\n')
+        .map((l) => l.trim().replace(/^>\s?/, ''))
+        .join(' ')
+      blocks.push({
+        _type: 'block',
+        _key: nextKey(),
+        style: 'blockquote',
+        markDefs: [],
+        children: parseInlineMarks(quoteText),
+      })
+      continue
+    }
     // Titre H2
     if (p.startsWith('## ')) {
       blocks.push({
@@ -82,9 +164,7 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
         _key: nextKey(),
         style: 'h2',
         markDefs: [],
-        children: [
-          { _type: 'span', _key: nextKey(), text: p.slice(3), marks: [] },
-        ],
+        children: parseInlineMarks(p.slice(3)),
       })
       continue
     }
@@ -95,16 +175,14 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
         _key: nextKey(),
         style: 'h3',
         markDefs: [],
-        children: [
-          { _type: 'span', _key: nextKey(), text: p.slice(4), marks: [] },
-        ],
+        children: parseInlineMarks(p.slice(4)),
       })
       continue
     }
-    // Liste à puces (chaque ligne commence par "- ")
+    // Liste à puces (chaque ligne commence par "- ") — marks parsés dans chaque item
     if (p.split('\n').every((l) => l.trim().startsWith('- '))) {
       for (const line of p.split('\n')) {
-        const text = line.trim().slice(2)
+        const itemText = line.trim().slice(2)
         blocks.push({
           _type: 'block',
           _key: nextKey(),
@@ -112,17 +190,15 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
           listItem: 'bullet',
           level: 1,
           markDefs: [],
-          children: [
-            { _type: 'span', _key: nextKey(), text, marks: [] },
-          ],
+          children: parseInlineMarks(itemText),
         })
       }
       continue
     }
-    // Paragraphe normal (avec gras **texte** et italique *texte* basiques)
+    // Paragraphe normal (utilise parseInlineMarks partagé)
     const children: Array<Record<string, unknown>> = []
-    const parts = p.replace(/\n/g, ' ').split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
-    for (const part of parts) {
+    const legacyParts = p.replace(/\n/g, ' ').split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
+    for (const part of legacyParts) {
       if (!part) continue
       if (part.startsWith('**') && part.endsWith('**')) {
         children.push({
