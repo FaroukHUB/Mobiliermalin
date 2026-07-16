@@ -112,16 +112,134 @@ export const guideArticle = {
         { type: 'block' },
         {
           type: 'image',
+          title: '🖼 Image (upload depuis ton Mac)',
           options: { hotspot: true },
           fields: [
-            { name: 'alt', type: 'string', title: 'Texte alternatif' },
-            { name: 'caption', type: 'string', title: 'Légende' },
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Texte alternatif (SEO + accessibilité)',
+              description: 'Décris ce que montre l\'image en 5-15 mots. Ex : "Fauteuil Steelcase Leap V2 noir dans un bureau".',
+            },
+            { name: 'caption', type: 'string', title: 'Légende (facultative)' },
           ],
         },
         {
           type: 'object',
+          name: 'inlineImage',
+          title: '🌐 Image par URL externe (Unsplash, etc.)',
+          description:
+            'Utilisé par les articles seedés en masse. Pour remplacer par ta propre photo, préfère le type "Image (upload)" juste au-dessus.',
+          fields: [
+            {
+              name: 'url',
+              type: 'url',
+              title: 'URL de l\'image',
+              validation: (R: Rule) => R.required(),
+            },
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Texte alternatif',
+              validation: (R: Rule) => R.required(),
+            },
+            { name: 'caption', type: 'string', title: 'Légende (facultative)' },
+          ],
+          preview: {
+            select: { title: 'alt', subtitle: 'url', media: 'url' },
+            prepare(s: { title?: string; subtitle?: string }) {
+              return {
+                title: s.title || '(sans alt)',
+                subtitle: '🌐 ' + (s.subtitle || ''),
+              }
+            },
+          },
+        },
+        {
+          type: 'object',
+          name: 'callout',
+          title: '💡 Encart mis en avant',
+          description:
+            'Bloc coloré avec icône pour attirer l\'œil sur un point important.',
+          fields: [
+            {
+              name: 'variant',
+              type: 'string',
+              title: 'Style de l\'encart',
+              options: {
+                list: [
+                  { title: '🔵 Info (bleu)', value: 'info' },
+                  { title: '🟠 Attention (ambre)', value: 'warning' },
+                  { title: '🟢 À retenir (vert)', value: 'success' },
+                  { title: '🟡 Astuce (or)', value: 'tip' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'info',
+              validation: (R: Rule) => R.required(),
+            },
+            {
+              name: 'content',
+              type: 'array',
+              title: 'Contenu de l\'encart',
+              of: [
+                {
+                  type: 'object',
+                  name: 'span',
+                  fields: [
+                    { name: 'text', type: 'text', rows: 3 },
+                    {
+                      name: 'marks',
+                      type: 'array',
+                      of: [{ type: 'string' }],
+                      options: {
+                        list: [
+                          { title: 'Gras', value: 'strong' },
+                          { title: 'Italique', value: 'em' },
+                        ],
+                      },
+                    },
+                  ],
+                  preview: { select: { title: 'text' } },
+                },
+              ],
+              description:
+                'Une ou plusieurs portions de texte. Utilise le bouton + pour ajouter du contenu formaté.',
+            },
+          ],
+          preview: {
+            select: { variant: 'variant', content: 'content' },
+            prepare(s: { variant?: string; content?: Array<{ text?: string }> }) {
+              const label: Record<string, string> = {
+                info: '🔵 Info',
+                warning: '🟠 Attention',
+                success: '🟢 À retenir',
+                tip: '🟡 Astuce',
+              }
+              const firstText = s.content?.[0]?.text?.slice(0, 60) || '(vide)'
+              return { title: `${label[s.variant || 'info']} — ${firstText}` }
+            },
+          },
+        },
+        {
+          type: 'object',
+          name: 'divider',
+          title: '➖ Séparateur horizontal',
+          description: 'Trait or centré, à insérer entre deux grandes sections.',
+          fields: [
+            {
+              name: 'note',
+              type: 'string',
+              title: '(rien à remplir)',
+              hidden: true,
+            },
+          ],
+          preview: { prepare: () => ({ title: '— Séparateur —' }) },
+        },
+        {
+          type: 'object',
           name: 'productEmbed',
-          title: 'Encart produit (poussée conversion)',
+          title: '🛒 Encart produit (poussée conversion)',
           fields: [
             { name: 'product', type: 'reference', to: [{ type: 'product' }] },
             { name: 'accroche', type: 'string', title: 'Accroche personnalisée' },
