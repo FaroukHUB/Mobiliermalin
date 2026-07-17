@@ -74,6 +74,9 @@ export const sendQuoteAction: DocumentActionComponent = (props: DocumentActionPr
           numero?: string
           acceptUrl?: string
           totalTtc?: number
+          sentTo?: string
+          adminBcc?: string | null
+          brevoStatus?: number
           error?: string
         }
 
@@ -93,12 +96,16 @@ export const sendQuoteAction: DocumentActionComponent = (props: DocumentActionPr
                 maximumFractionDigits: 2,
               }) + ' €'
             : ''
+          const lines = [
+            `✅ Devis ${data.numero || ''} envoyé.`,
+            data.sentTo ? `Client : ${data.sentTo}` : '',
+            data.adminBcc ? `Copie admin (BCC) : ${data.adminBcc}` : '',
+            total ? `Montant TTC : ${total}` : '',
+            'Le statut est passé à "envoyé".',
+          ].filter(Boolean)
           setDialog({
             type: 'success',
-            message:
-              `Devis ${data.numero || ''} envoyé au client par email avec PDF en pièce jointe.` +
-              (total ? ` Montant TTC : ${total}.` : '') +
-              ' Le statut est passé à "envoyé".',
+            message: lines.join('\n'),
           })
           // Force Sanity à refetch le document après quelques ms
           setTimeout(() => {

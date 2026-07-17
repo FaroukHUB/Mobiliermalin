@@ -135,6 +135,15 @@ export async function POST(
   })
 
   const pdfBase64 = pdfBuffer.toString('base64')
+
+  // BCC admin : copie du devis client (même PDF, même contenu) vers la
+  // boîte admin pour traçabilité. Configurable via DEVIS_ADMIN_BCC_EMAIL,
+  // fallback sur LEGAL.email (mobiliermalin@gmail.com).
+  const adminBccEmail = process.env.DEVIS_ADMIN_BCC_EMAIL || LEGAL.email
+  const bcc = adminBccEmail
+    ? [{ email: adminBccEmail, name: 'Mobilier Malin (copie admin)' }]
+    : undefined
+
   let brevoStatus = 0
   let brevoBody = ''
   try {
@@ -148,6 +157,7 @@ export async function POST(
       body: JSON.stringify({
         sender: { name: brevoName, email: brevoSender },
         to: [{ email: quote.customer.email, name: quote.customer.name }],
+        bcc,
         replyTo: process.env.BREVO_REPLY_TO_EMAIL
           ? {
               email: process.env.BREVO_REPLY_TO_EMAIL,
@@ -203,6 +213,9 @@ export async function POST(
     numero: quote.numero,
     acceptUrl,
     totalTtc,
+    sentTo: quote.customer.email,
+    adminBcc: adminBccEmail || null,
+    brevoStatus,
   })
 }
 
