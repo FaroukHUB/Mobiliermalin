@@ -99,6 +99,21 @@ const nextConfig = {
       { source: '/product/:slug', destination: '/produit/:slug', permanent: true },
       { source: '/shop', destination: '/boutique', permanent: true },
       { source: '/shop/', destination: '/boutique', permanent: true },
+      // Résolution cannibalisation slug catégorie bureau
+      // (identifiée dans l'audit SEO initial). Le slug court `bureau`
+      // est la source de vérité Sanity (utilisé par les 8 pages ville
+      // via CATEGORY_SLUG). Le slug long `bureaux-individuels` était
+      // un fallback statique historique.
+      {
+        source: '/categorie/bureaux-individuels',
+        destination: '/categorie/bureau',
+        permanent: true,
+      },
+      {
+        source: '/categorie/bureaux-individuels/',
+        destination: '/categorie/bureau',
+        permanent: true,
+      },
     ]
   },
   // Sécurité + signal SEO : HSTS force https sur tous les liens

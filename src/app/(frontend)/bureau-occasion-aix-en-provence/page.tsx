@@ -26,6 +26,7 @@ import {
 } from '@/lib/sanity'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { LEGAL } from '@/lib/legal'
+import { RegionalToNationalLink } from '@/components/national/RegionalToNationalLink'
 
 const CATEGORY_SLUG = 'bureau'
 const PAGE_KEY = 'bureau-aix-en-provence'
@@ -225,7 +226,9 @@ export default async function AixEnProvencePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
       />
 
-      {/* ═══ HERO ═══ */}
+      
+      <RegionalToNationalLink landingHref="/bureau-professionnel-occasion" label="Voir aussi notre sélection nationale de bureaux professionnels d'occasion" />
+{/* ═══ HERO ═══ */}
       <section className="relative bg-ink text-ivory overflow-hidden min-h-[520px] md:min-h-[600px] flex items-center">
         <div className="absolute inset-0">
           <Image

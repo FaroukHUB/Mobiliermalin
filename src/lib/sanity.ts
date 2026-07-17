@@ -446,6 +446,19 @@ export async function getCategoryBySlugSanity(slug: string): Promise<SanityCateg
 /**
  * Produits d'une catégorie ET de ses sous-catégories (agrégation).
  */
+/**
+ * Produits d'une marque donnée (case-sensitive sur le nom Sanity).
+ * Utilisé par les landing pages nationales /marques/[brand].
+ */
+export async function getProductsByBrand(brand: string): Promise<SanityProduct[]> {
+  return safeFetch<SanityProduct[]>(
+    `*[_type == "product" && status == "published" && brand == $brand]
+      | order(featured desc, _createdAt desc) { ${PRODUCT_FIELDS} }`,
+    { brand },
+    [],
+  )
+}
+
 export async function getProductsByCategoryDeep(categorySlug: string): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
     `*[_type == "product" && status == "published" &&

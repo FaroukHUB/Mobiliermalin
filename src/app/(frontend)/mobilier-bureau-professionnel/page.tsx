@@ -627,6 +627,29 @@ export default async function MobilierBureauProfessionnelPage() {
             </Link>
           </div>
 
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-sm">
+            <Link
+              href="/bureau-professionnel-occasion"
+              className="text-ivory/80 hover:text-gold underline underline-offset-4"
+            >
+              Bureaux d'occasion
+            </Link>
+            <span className="text-ivory/30">•</span>
+            <Link
+              href="/fauteuil-ergonomique"
+              className="text-ivory/80 hover:text-gold underline underline-offset-4"
+            >
+              Fauteuils ergonomiques
+            </Link>
+            <span className="text-ivory/30">•</span>
+            <Link
+              href="/marques/steelcase"
+              className="text-ivory/80 hover:text-gold underline underline-offset-4"
+            >
+              Sélection Steelcase
+            </Link>
+          </div>
+
           <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-ivory/60">
             <a href={`tel:${LEGAL.telephoneTel}`} className="inline-flex items-center gap-2 hover:text-gold">
               <Phone className="h-4 w-4" /> {LEGAL.telephone}

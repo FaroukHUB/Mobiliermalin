@@ -20,6 +20,7 @@ import {
 } from '@/lib/sanity'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { LEGAL } from '@/lib/legal'
+import { RegionalToNationalLink } from '@/components/national/RegionalToNationalLink'
 
 const CATEGORY_SLUG = 'fauteuil'
 const PAGE_KEY = 'fauteuil-nice'
@@ -174,7 +175,9 @@ export default async function FauteuilNicePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
       />
 
-      {/* ═══ HERO ═══ */}
+      
+      <RegionalToNationalLink landingHref="/fauteuil-ergonomique" label="Voir aussi notre sélection nationale de fauteuils ergonomiques" />
+{/* ═══ HERO ═══ */}
       <section className="relative bg-ink text-ivory overflow-hidden min-h-[520px] md:min-h-[600px] flex items-center">
         <div className="absolute inset-0">
           <Image

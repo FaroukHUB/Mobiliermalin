@@ -54,6 +54,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Cocon sémantique — Sprint 2
     { url: `${siteUrl}/guides`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${siteUrl}/zones-desservies`, lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
+    // Landing pages nationales — Phase 1
+    { url: `${siteUrl}/fauteuil-ergonomique`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${siteUrl}/bureau-professionnel-occasion`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${siteUrl}/marques/steelcase`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${siteUrl}/retractation`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${siteUrl}/mentions-legales`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${siteUrl}/cgv`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },

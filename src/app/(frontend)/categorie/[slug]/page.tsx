@@ -511,6 +511,40 @@ export default async function CategoryPage({
         </section>
       )}
 
+      {/* Landing nationale liée à la catégorie (maillage vers pages "hub" nationales) */}
+      {(slug === 'fauteuil' || slug === 'fauteuils-ergonomiques') && (
+        <section className="container py-6 max-w-4xl">
+          <Link
+            href="/fauteuil-ergonomique"
+            className="group flex items-center justify-between gap-4 p-4 md:p-5 bg-ivory-light border border-line hover:border-gold transition-colors"
+          >
+            <span className="text-sm md:text-base text-ink font-medium">
+              Découvrir notre sélection nationale de fauteuils ergonomiques
+            </span>
+            <ArrowRight
+              className="h-4 w-4 text-gold shrink-0 group-hover:translate-x-1 transition-transform"
+              strokeWidth={1.5}
+            />
+          </Link>
+        </section>
+      )}
+      {slug === 'bureau' && (
+        <section className="container py-6 max-w-4xl">
+          <Link
+            href="/bureau-professionnel-occasion"
+            className="group flex items-center justify-between gap-4 p-4 md:p-5 bg-ivory-light border border-line hover:border-gold transition-colors"
+          >
+            <span className="text-sm md:text-base text-ink font-medium">
+              Découvrir notre sélection nationale de bureaux professionnels d'occasion
+            </span>
+            <ArrowRight
+              className="h-4 w-4 text-gold shrink-0 group-hover:translate-x-1 transition-transform"
+              strokeWidth={1.5}
+            />
+          </Link>
+        </section>
+      )}
+
       {/* Cocon éditorial : clusters de guides liés à cette catégorie */}
       {sanityCat?.relatedGuideClusters && sanityCat.relatedGuideClusters.length > 0 && (
         <section className="container py-14 md:py-20 max-w-5xl">

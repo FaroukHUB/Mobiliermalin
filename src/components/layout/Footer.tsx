@@ -27,6 +27,14 @@ const SERVICES = [
   { label: 'Demander un devis', href: '/contact' },
 ]
 
+// Sélections nationales (landing pages Phase 1)
+const NATIONAL_LANDING = [
+  { label: 'Fauteuil ergonomique', href: '/fauteuil-ergonomique' },
+  { label: "Bureau professionnel d'occasion", href: '/bureau-professionnel-occasion' },
+  { label: 'Mobilier Steelcase', href: '/marques/steelcase' },
+  { label: 'Mobilier de bureau pro', href: '/mobilier-bureau-professionnel' },
+]
+
 const ZONES = [
   { label: 'Toutes les zones desservies', href: '/zones-desservies' },
   { label: 'Bureaux Marseille', href: '/bureau-occasion-marseille' },
@@ -177,6 +185,19 @@ export function Footer({ logo }: FooterProps = {}) {
               <li key={s.href}>
                 <Link href={s.href} className="hover:text-gold transition">
                   {s.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <h3 className="text-xs font-medium text-ivory uppercase tracking-widest mb-5 mt-8">
+            Sélections
+          </h3>
+          <ul className="space-y-2.5 text-sm text-ivory/70">
+            {NATIONAL_LANDING.map((n) => (
+              <li key={n.href}>
+                <Link href={n.href} className="hover:text-gold transition">
+                  {n.label}
                 </Link>
               </li>
             ))}

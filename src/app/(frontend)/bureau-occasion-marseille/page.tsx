@@ -36,6 +36,7 @@ const FALLBACK_HERO_ALT =
   'Espace bureau ouvert équipé en mobilier reconditionné — Marseille'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { LEGAL } from '@/lib/legal'
+import { RegionalToNationalLink } from '@/components/national/RegionalToNationalLink'
 import {
   MarseillePillarSections,
   FAQ_MARSEILLE,
@@ -219,7 +220,9 @@ export default async function MarseillePage() {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
       />
-      <script
+      
+      <RegionalToNationalLink landingHref="/bureau-professionnel-occasion" label="Voir aussi notre sélection nationale de bureaux professionnels d'occasion" />
+<script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

@@ -23,6 +23,7 @@ import { LEGAL } from '@/lib/legal'
 import { CityReviews } from '@/components/city/CityReviews'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { cityBreadcrumb } from '@/lib/breadcrumbs'
+import { RegionalToNationalLink } from '@/components/national/RegionalToNationalLink'
 
 const CATEGORY_SLUG = 'bureau'
 const PAGE_KEY = 'bureau-nice'
@@ -160,6 +161,8 @@ export default async function NicePage() {
       <Breadcrumbs
         items={cityBreadcrumb({ name: 'Bureaux à Nice', slug: 'bureau-occasion-nice' })}
       />
+      <RegionalToNationalLink landingHref="/bureau-professionnel-occasion" label="Voir aussi notre sélection nationale de bureaux professionnels d'occasion" />
+
 
       {/* ═══ HERO ═══ */}
       <section className="relative bg-ink text-ivory overflow-hidden min-h-[520px] md:min-h-[600px] flex items-center">
