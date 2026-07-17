@@ -72,15 +72,68 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
   const nextKey = () => `seed-${(++keyN).toString(36)}`
 
   /**
-   * Parse un texte inline pour extraire les marks (gras, italique).
-   * Retourne un tableau de spans Portable Text.
-   * Utilisé aussi bien pour les paragraphes que pour les items de liste.
+   * Parse un texte inline pour extraire les marks (gras, italique, liens).
+   * Retourne { spans, markDefs } — Portable Text sépare les liens
+   * (markDefs avec href) des spans (marks référencent _key du markDef).
+   *
+   * Formats reconnus :
+   *   **gras** → mark 'strong'
+   *   *italique* → mark 'em'
+   *   [texte](url) → mark link avec markDef { href }
+   *   URL brute (http/https) → auto-linkée avec URL comme texte
    */
-  function parseInlineMarks(text: string): Array<Record<string, unknown>> {
+  function parseInlineMarks(text: string): {
+    spans: Array<Record<string, unknown>>
+    markDefs: Array<Record<string, unknown>>
+  } {
     const spans: Array<Record<string, unknown>> = []
-    const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
+    const markDefs: Array<Record<string, unknown>> = []
+
+    // Étape 1 : split sur les patterns markdown les plus complexes d'abord
+    // Pattern combiné : [texte](url) | **gras** | *italique* | URL brute
+    const combined =
+      /(\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*|https?:\/\/[^\s)]+)/g
+    const parts = text.split(combined)
+
     for (const part of parts) {
       if (!part) continue
+
+      // Lien markdown [texte](url)
+      const mdLink = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+      if (mdLink) {
+        const linkKey = nextKey()
+        markDefs.push({
+          _key: linkKey,
+          _type: 'link',
+          href: mdLink[2],
+        })
+        spans.push({
+          _type: 'span',
+          _key: nextKey(),
+          text: mdLink[1],
+          marks: [linkKey],
+        })
+        continue
+      }
+
+      // URL brute (auto-link avec URL comme texte)
+      if (/^https?:\/\//.test(part)) {
+        const linkKey = nextKey()
+        markDefs.push({
+          _key: linkKey,
+          _type: 'link',
+          href: part,
+        })
+        spans.push({
+          _type: 'span',
+          _key: nextKey(),
+          text: part,
+          marks: [linkKey],
+        })
+        continue
+      }
+
+      // Gras **texte**
       if (part.startsWith('**') && part.endsWith('**')) {
         spans.push({
           _type: 'span',
@@ -88,23 +141,30 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
           text: part.slice(2, -2),
           marks: ['strong'],
         })
-      } else if (part.startsWith('*') && part.endsWith('*')) {
+        continue
+      }
+
+      // Italique *texte*
+      if (part.startsWith('*') && part.endsWith('*')) {
         spans.push({
           _type: 'span',
           _key: nextKey(),
           text: part.slice(1, -1),
           marks: ['em'],
         })
-      } else {
-        spans.push({
-          _type: 'span',
-          _key: nextKey(),
-          text: part,
-          marks: [],
-        })
+        continue
       }
+
+      // Texte normal
+      spans.push({
+        _type: 'span',
+        _key: nextKey(),
+        text: part,
+        marks: [],
+      })
     }
-    return spans
+
+    return { spans, markDefs }
   }
 
   for (const raw of paragraphs) {
@@ -137,14 +197,15 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
       // Les items de content doivent utiliser `calloutSpan` (le type `span`
       // est réservé par Sanity pour les blocks Portable Text). Le renderer
       // page.tsx lit uniquement text + marks, indépendamment du _type.
-      const rawSpans = parseInlineMarks(
+      // Les liens dans un callout : dropped pour simplicité (rare cas).
+      const { spans } = parseInlineMarks(
         calloutMatch[2].replace(/\n>\s*/g, ' '),
       )
       blocks.push({
         _type: 'callout',
         _key: nextKey(),
         variant: calloutMatch[1],
-        content: rawSpans.map((s) => ({ ...s, _type: 'calloutSpan' })),
+        content: spans.map((s) => ({ ...s, _type: 'calloutSpan' })),
       })
       continue
     }
@@ -154,34 +215,37 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
         .split('\n')
         .map((l) => l.trim().replace(/^>\s?/, ''))
         .join(' ')
+      const { spans, markDefs } = parseInlineMarks(quoteText)
       blocks.push({
         _type: 'block',
         _key: nextKey(),
         style: 'blockquote',
-        markDefs: [],
-        children: parseInlineMarks(quoteText),
+        markDefs,
+        children: spans,
       })
       continue
     }
     // Titre H2
     if (p.startsWith('## ')) {
+      const { spans, markDefs } = parseInlineMarks(p.slice(3))
       blocks.push({
         _type: 'block',
         _key: nextKey(),
         style: 'h2',
-        markDefs: [],
-        children: parseInlineMarks(p.slice(3)),
+        markDefs,
+        children: spans,
       })
       continue
     }
     // Titre H3
     if (p.startsWith('### ')) {
+      const { spans, markDefs } = parseInlineMarks(p.slice(4))
       blocks.push({
         _type: 'block',
         _key: nextKey(),
         style: 'h3',
-        markDefs: [],
-        children: parseInlineMarks(p.slice(4)),
+        markDefs,
+        children: spans,
       })
       continue
     }
@@ -189,52 +253,27 @@ function mdToPortable(md: string): Array<Record<string, unknown>> {
     if (p.split('\n').every((l) => l.trim().startsWith('- '))) {
       for (const line of p.split('\n')) {
         const itemText = line.trim().slice(2)
+        const { spans, markDefs } = parseInlineMarks(itemText)
         blocks.push({
           _type: 'block',
           _key: nextKey(),
           style: 'normal',
           listItem: 'bullet',
           level: 1,
-          markDefs: [],
-          children: parseInlineMarks(itemText),
+          markDefs,
+          children: spans,
         })
       }
       continue
     }
-    // Paragraphe normal (utilise parseInlineMarks partagé)
-    const children: Array<Record<string, unknown>> = []
-    const legacyParts = p.replace(/\n/g, ' ').split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
-    for (const part of legacyParts) {
-      if (!part) continue
-      if (part.startsWith('**') && part.endsWith('**')) {
-        children.push({
-          _type: 'span',
-          _key: nextKey(),
-          text: part.slice(2, -2),
-          marks: ['strong'],
-        })
-      } else if (part.startsWith('*') && part.endsWith('*')) {
-        children.push({
-          _type: 'span',
-          _key: nextKey(),
-          text: part.slice(1, -1),
-          marks: ['em'],
-        })
-      } else {
-        children.push({
-          _type: 'span',
-          _key: nextKey(),
-          text: part,
-          marks: [],
-        })
-      }
-    }
+    // Paragraphe normal — utilise parseInlineMarks avec support liens
+    const { spans, markDefs } = parseInlineMarks(p.replace(/\n/g, ' '))
     blocks.push({
       _type: 'block',
       _key: nextKey(),
       style: 'normal',
-      markDefs: [],
-      children,
+      markDefs,
+      children: spans,
     })
   }
 
