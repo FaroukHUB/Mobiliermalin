@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowRight,
   ShieldCheck,
@@ -11,8 +12,11 @@ import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { NationalDeliveryBanner } from '@/components/national/NationalDeliveryBanner'
+import { EditorialPortableText } from '@/components/portable-text/EditorialPortableText'
+import type { PortableTextBlock } from 'next-sanity'
 import {
   getProductsByCategoryDeep,
+  getNationalLandingByKey,
   urlFor,
   type SanityProduct,
 } from '@/lib/sanity'
@@ -100,6 +104,14 @@ function sanityToCard(p: SanityProduct): ProductCardData {
 }
 
 export default async function BureauProfessionnelOccasionPage() {
+  const landing = await getNationalLandingByKey('bureau-professionnel-occasion')
+  const eyebrow = landing?.heroEyebrow || 'Sélection nationale'
+  const title = landing?.heroTitle || "Bureau professionnel d'occasion"
+  const intro = landing?.heroIntro || "Bureaux droits, bureaux d'angle, benchs open space et bureaux assis-debout, reconditionnés dans notre atelier local. Steelcase, Haworth, Vitra, Majencia et autres marques professionnelles, disponibles à l'unité ou en volume pour équiper un plateau complet."
+  const heroImageUrl = landing?.heroImage
+    ? urlFor(landing.heroImage).width(2400).height(1200).fit('crop').url()
+    : null
+  const sanityFaq = landing?.faq && landing.faq.length > 0 ? landing.faq : FAQ
   const products = await getProductsByCategoryDeep('bureau')
   const displayed = products.slice(0, 8)
   const productCards = displayed.map(sanityToCard)
@@ -128,7 +140,7 @@ export default async function BureauProfessionnelOccasionPage() {
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: FAQ.map((qa) => ({
+    mainEntity: sanityFaq.map((qa: { question: string; answer: string }) => ({
       '@type': 'Question',
       name: qa.question,
       acceptedAnswer: { '@type': 'Answer', text: qa.answer },
@@ -149,17 +161,13 @@ export default async function BureauProfessionnelOccasionPage() {
 
       {/* Hero */}
       <section className="container py-14 md:py-20 max-w-4xl text-center">
-        <p className="eyebrow">Sélection nationale</p>
+        <p className="eyebrow">{eyebrow}</p>
         <h1 className="text-display font-serif mt-4 leading-[1.05]">
-          Bureau professionnel d'occasion
+          {title}
         </h1>
         <div className="gold-divider mx-auto mt-6" />
-        <p className="mt-8 text-lg text-ink-soft leading-relaxed">
-          Bureaux droits, bureaux d'angle, benchs open space et bureaux
-          assis-debout, reconditionnés dans notre atelier local. Steelcase,
-          Haworth, Vitra, Majencia et autres marques professionnelles,
-          disponibles à l'unité ou en volume pour équiper un plateau
-          complet.
+        <p className="mt-8 text-lg text-ink-soft leading-relaxed whitespace-pre-line">
+          {intro}
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link href="/categorie/bureau" className="btn-primary">
@@ -171,6 +179,28 @@ export default async function BureauProfessionnelOccasionPage() {
           </Link>
         </div>
       </section>
+
+      {heroImageUrl && (
+        <section className="container max-w-6xl">
+          <div className="relative aspect-[21/9] bg-ivory-dark overflow-hidden">
+            <Image
+              src={heroImageUrl}
+              alt={landing?.heroImage?.alt || title}
+              fill
+              priority
+              sizes="(min-width: 1024px) 1200px, 100vw"
+              className="object-cover"
+              unoptimized={heroImageUrl.startsWith('http') && !heroImageUrl.includes('cdn.sanity.io')}
+            />
+          </div>
+        </section>
+      )}
+
+      {landing?.body && Array.isArray(landing.body) && landing.body.length > 0 && (
+        <section className="container py-12 md:py-16 max-w-3xl">
+          <EditorialPortableText value={landing.body as PortableTextBlock[]} />
+        </section>
+      )}
 
       {/* Arguments */}
       <section className="bg-ivory-dark border-y border-line">
@@ -300,7 +330,7 @@ export default async function BureauProfessionnelOccasionPage() {
           <div className="gold-divider mx-auto mt-6" />
         </div>
         <div className="space-y-3">
-          {FAQ.map((qa, i) => (
+          {sanityFaq.map((qa: { question: string; answer: string }, i: number) => (
             <details
               key={i}
               className="group bg-ivory-light border border-line hover:border-gold/40 transition-colors"

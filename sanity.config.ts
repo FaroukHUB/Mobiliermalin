@@ -23,6 +23,11 @@ import {
   LOCAL_PAGE_SECTIONS,
   localPageDocumentId,
 } from './sanity/localPagesRegistry'
+import {
+  NATIONAL_PAGES,
+  NATIONAL_PAGE_SECTIONS,
+  nationalPageDocumentId,
+} from './sanity/nationalPagesRegistry'
 
 const SINGLETON_TYPES = new Set(['siteSettings', 'qualityGuide'])
 const SINGLETON_ACTIONS = new Set(['publish', 'discardChanges', 'restore'])
@@ -42,11 +47,23 @@ export default defineConfig({
     // Templates de création pour les pages locales — pré-remplissent
     // le pageKey et le displayName selon l'entrée cliquée dans la sidebar.
     templates: (prev) => [
-      ...prev.filter((t) => t.schemaType !== 'localPage'),
+      ...prev.filter(
+        (t) => t.schemaType !== 'localPage' && t.schemaType !== 'nationalLandingPage',
+      ),
       ...LOCAL_PAGES.map((page) => ({
         id: `localPage-${page.key}`,
         title: page.title,
         schemaType: 'localPage',
+        parameters: [],
+        value: {
+          pageKey: page.key,
+          displayName: page.displayName,
+        },
+      })),
+      ...NATIONAL_PAGES.map((page) => ({
+        id: `nationalLandingPage-${page.key}`,
+        title: page.title,
+        schemaType: 'nationalLandingPage',
         parameters: [],
         value: {
           pageKey: page.key,
@@ -118,6 +135,53 @@ export default defineConfig({
                   .id('qualityGuide')
                   .schemaType('qualityGuide')
                   .documentId('qualityGuide'),
+              ),
+            // Pages nationales SEO — landings hors nom de ville
+            // Ex: /fauteuil-ergonomique, /bureau-professionnel-occasion, /marques/steelcase
+            S.listItem()
+              .title('Pages nationales (SEO)')
+              .icon(() => '🌐')
+              .child(
+                S.list()
+                  .title('Pages nationales — par type')
+                  .items(
+                    NATIONAL_PAGE_SECTIONS.flatMap((section) => {
+                      const pagesInSection = NATIONAL_PAGES.filter(
+                        (p) => p.section === section.key,
+                      )
+                      if (pagesInSection.length === 0) return []
+                      return [
+                        S.listItem()
+                          .id(`national-section-${section.key}`)
+                          .title(section.label)
+                          .icon(() => '📂')
+                          .child(
+                            S.list()
+                              .title(section.label)
+                              .items(
+                                pagesInSection.map((page) =>
+                                  S.listItem()
+                                    .id(page.key)
+                                    .title(page.title)
+                                    .icon(() => page.icon)
+                                    .child(
+                                      S.editor()
+                                        .id(page.key)
+                                        .title(page.title)
+                                        .schemaType('nationalLandingPage')
+                                        .documentId(
+                                          nationalPageDocumentId(page.key),
+                                        )
+                                        .initialValueTemplate(
+                                          `nationalLandingPage-${page.key}`,
+                                        ),
+                                    ),
+                                ),
+                              ),
+                          ),
+                      ]
+                    }),
+                  ),
               ),
             // Pages locales (catégorie × ville) — arborescence structurée
             // Toutes les pages attendues apparaissent, même sans document.

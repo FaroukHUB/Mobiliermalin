@@ -10,6 +10,7 @@ import { order } from './order'
 import { blogPost } from './blogPost'
 import { guideCluster } from './guideCluster'
 import { guideArticle } from './guideArticle'
+import { nationalLandingPage } from './nationalLandingPage'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   product as unknown as SchemaTypeDefinition,
@@ -23,4 +24,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   blogPost as unknown as SchemaTypeDefinition,
   guideCluster as unknown as SchemaTypeDefinition,
   guideArticle as unknown as SchemaTypeDefinition,
+  nationalLandingPage as unknown as SchemaTypeDefinition,
 ]

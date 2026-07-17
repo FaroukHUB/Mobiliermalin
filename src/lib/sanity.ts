@@ -447,6 +447,43 @@ export async function getCategoryBySlugSanity(slug: string): Promise<SanityCateg
  * Produits d'une catégorie ET de ses sous-catégories (agrégation).
  */
 /**
+ * Landing page nationale éditable (Sanity nationalLandingPage).
+ * Retourne null si aucun document Sanity — la page React affichera
+ * alors son contenu hardcodé de fallback.
+ */
+export type SanityNationalLanding = {
+  _id: string
+  pageKey: string
+  displayName?: string
+  heroEyebrow?: string
+  heroTitle?: string
+  heroIntro?: string
+  heroImage?: SanityImage
+  body?: unknown[]
+  faq?: Array<{ question: string; answer: string }>
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+    ogImage?: SanityImage
+    noIndex?: boolean
+  }
+}
+
+export async function getNationalLandingByKey(
+  pageKey: string,
+): Promise<SanityNationalLanding | null> {
+  return safeFetch<SanityNationalLanding | null>(
+    `*[_type == "nationalLandingPage" && pageKey == $pageKey][0] {
+      _id, pageKey, displayName,
+      heroEyebrow, heroTitle, heroIntro, heroImage,
+      body, faq, seo
+    }`,
+    { pageKey },
+    null,
+  )
+}
+
+/**
  * Produits d'une marque donnée (case-sensitive sur le nom Sanity).
  * Utilisé par les landing pages nationales /marques/[brand].
  */

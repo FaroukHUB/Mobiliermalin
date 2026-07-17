@@ -1,12 +1,16 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, ShieldCheck, Award, Sparkles, BookOpen } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { NationalDeliveryBanner } from '@/components/national/NationalDeliveryBanner'
+import { EditorialPortableText } from '@/components/portable-text/EditorialPortableText'
+import type { PortableTextBlock } from 'next-sanity'
 import {
   getProductsByCategoryDeep,
+  getNationalLandingByKey,
   urlFor,
   type SanityProduct,
 } from '@/lib/sanity'
@@ -95,14 +99,29 @@ function sanityToCard(p: SanityProduct): ProductCardData {
 }
 
 export default async function FauteuilErgonomiquePage() {
-  // On tente d'abord le slug enrichi "fauteuils-ergonomiques" puis
-  // fallback sur "fauteuil" (source Sanity historique).
-  let products = await getProductsByCategoryDeep('fauteuils-ergonomiques')
-  if (products.length === 0) {
-    products = await getProductsByCategoryDeep('fauteuil')
-  }
+  // Fetch Sanity landing (contenu éditable) + produits en parallèle
+  const [landing, primaryProducts] = await Promise.all([
+    getNationalLandingByKey('fauteuil-ergonomique'),
+    getProductsByCategoryDeep('fauteuils-ergonomiques'),
+  ])
+  const products =
+    primaryProducts.length > 0
+      ? primaryProducts
+      : await getProductsByCategoryDeep('fauteuil')
   const displayed = products.slice(0, 8)
   const productCards = displayed.map(sanityToCard)
+
+  // Overrides Sanity (fallback sur les valeurs hardcodées si le
+  // document n'existe pas ou n'est pas encore rempli).
+  const eyebrow = landing?.heroEyebrow || 'Sélection nationale'
+  const title = landing?.heroTitle || 'Fauteuil ergonomique reconditionné'
+  const intro =
+    landing?.heroIntro ||
+    "Sélection de fauteuils ergonomiques Steelcase, Herman Miller, Vitra et Haworth, remis en état dans notre atelier local. Des modèles conçus pour un usage professionnel intensif, disponibles avec livraison partout en France ou retrait au showroom."
+  const heroImageUrl = landing?.heroImage
+    ? urlFor(landing.heroImage).width(2400).height(1200).fit('crop').url()
+    : null
+  const sanityFaq = landing?.faq && landing.faq.length > 0 ? landing.faq : FAQ
 
   const collectionSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -128,7 +147,7 @@ export default async function FauteuilErgonomiquePage() {
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: FAQ.map((qa) => ({
+    mainEntity: sanityFaq.map((qa: { question: string; answer: string }) => ({
       '@type': 'Question',
       name: qa.question,
       acceptedAnswer: { '@type': 'Answer', text: qa.answer },
@@ -149,16 +168,13 @@ export default async function FauteuilErgonomiquePage() {
 
       {/* Hero */}
       <section className="container py-14 md:py-20 max-w-4xl text-center">
-        <p className="eyebrow">Sélection nationale</p>
+        <p className="eyebrow">{eyebrow}</p>
         <h1 className="text-display font-serif mt-4 leading-[1.05]">
-          Fauteuil ergonomique reconditionné
+          {title}
         </h1>
         <div className="gold-divider mx-auto mt-6" />
-        <p className="mt-8 text-lg text-ink-soft leading-relaxed">
-          Sélection de fauteuils ergonomiques Steelcase, Herman Miller,
-          Vitra et Haworth, remis en état dans notre atelier local. Des
-          modèles conçus pour un usage professionnel intensif, disponibles
-          avec livraison partout en France ou retrait au showroom.
+        <p className="mt-8 text-lg text-ink-soft leading-relaxed whitespace-pre-line">
+          {intro}
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link href="/boutique" className="btn-primary">
@@ -170,6 +186,29 @@ export default async function FauteuilErgonomiquePage() {
           </Link>
         </div>
       </section>
+
+      {heroImageUrl && (
+        <section className="container max-w-6xl">
+          <div className="relative aspect-[21/9] bg-ivory-dark overflow-hidden">
+            <Image
+              src={heroImageUrl}
+              alt={landing?.heroImage?.alt || title}
+              fill
+              priority
+              sizes="(min-width: 1024px) 1200px, 100vw"
+              className="object-cover"
+              unoptimized={heroImageUrl.startsWith('http') && !heroImageUrl.includes('cdn.sanity.io')}
+            />
+          </div>
+        </section>
+      )}
+
+      {/* Corps éditorial Sanity (rendu seulement si l'admin a rempli le champ body) */}
+      {landing?.body && Array.isArray(landing.body) && landing.body.length > 0 && (
+        <section className="container py-12 md:py-16 max-w-3xl">
+          <EditorialPortableText value={landing.body as PortableTextBlock[]} />
+        </section>
+      )}
 
       {/* Arguments */}
       <section className="bg-ivory-dark border-y border-line">
@@ -327,7 +366,7 @@ export default async function FauteuilErgonomiquePage() {
           <div className="gold-divider mx-auto mt-6" />
         </div>
         <div className="space-y-3">
-          {FAQ.map((qa, i) => (
+          {sanityFaq.map((qa: { question: string; answer: string }, i: number) => (
             <details
               key={i}
               className="group bg-ivory-light border border-line hover:border-gold/40 transition-colors"
