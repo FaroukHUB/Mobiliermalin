@@ -350,7 +350,22 @@ type GuideArticleSeed = {
   }
 }
 
-type AnySeed = CategorySeed | GuideClusterSeed | GuideArticleSeed
+type NationalLandingSeed = {
+  _type: 'nationalLandingPage-seed'
+  pageKey: string           // ex: "fauteuil-ergonomique"
+  displayName: string
+  heroEyebrow?: string
+  heroTitle?: string
+  heroIntro?: string
+  bodyMd?: string           // markdown → Portable Text
+  faq?: Array<{ question: string; answer: string }>
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+  }
+}
+
+type AnySeed = CategorySeed | GuideClusterSeed | GuideArticleSeed | NationalLandingSeed
 
 // ─── Processors ──────────────────────────────────────
 
@@ -507,6 +522,42 @@ async function processGuideArticle(seed: GuideArticleSeed) {
   }
 }
 
+async function processNationalLanding(seed: NationalLandingSeed) {
+  const docId = `nationalLanding.${seed.pageKey}`
+  const existing = await client.fetch<{ _id: string } | null>(
+    `*[_id == $id][0] { _id }`,
+    { id: docId },
+  )
+  const doc: Record<string, unknown> = {
+    _id: docId,
+    _type: 'nationalLandingPage',
+    pageKey: seed.pageKey,
+    displayName: seed.displayName,
+    ...(seed.heroEyebrow && { heroEyebrow: seed.heroEyebrow }),
+    ...(seed.heroTitle && { heroTitle: seed.heroTitle }),
+    ...(seed.heroIntro && { heroIntro: seed.heroIntro }),
+    ...(seed.bodyMd && { body: mdToPortable(seed.bodyMd) }),
+    ...(seed.seo && { seo: seed.seo }),
+  }
+  if (seed.faq?.length) {
+    doc.faq = seed.faq.map((qa, i) => ({
+      _key: `faq-${i}`,
+      _type: 'object',
+      ...qa,
+    }))
+  }
+  console.log(
+    `  → ${existing ? 'Update' : 'Create'} nationalLandingPage ${seed.pageKey}`,
+  )
+  if (!isDryRun) {
+    if (existing) {
+      await client.patch(docId).set(doc).commit()
+    } else {
+      await client.createOrReplace(doc as { _id: string; _type: string; [k: string]: unknown })
+    }
+  }
+}
+
 // ─── Runner ──────────────────────────────────────────
 
 async function processDir(subdir: string, processor: (s: AnySeed) => Promise<void>) {
@@ -544,6 +595,9 @@ async function main() {
   }
   if (!onlyArg || onlyArg === 'guides') {
     await processDir('guides', (s) => processGuideArticle(s as GuideArticleSeed))
+  }
+  if (!onlyArg || onlyArg === 'national') {
+    await processDir('national', (s) => processNationalLanding(s as NationalLandingSeed))
   }
   console.log(
     `\n${isDryRun ? '✅ Dry-run terminé (aucune écriture).' : '✅ Seed appliqué avec succès.'}`,
