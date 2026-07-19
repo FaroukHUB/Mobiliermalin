@@ -352,17 +352,30 @@ type GuideArticleSeed = {
 
 type NationalLandingSeed = {
   _type: 'nationalLandingPage-seed'
-  pageKey: string           // ex: "fauteuil-ergonomique"
+  pageKey: string
   displayName: string
   heroEyebrow?: string
   heroTitle?: string
   heroIntro?: string
-  bodyMd?: string           // markdown → Portable Text
+  bodyMd?: string
   faq?: Array<{ question: string; answer: string }>
   seo?: {
     metaTitle?: string
     metaDescription?: string
   }
+  // ─── V2 fields ───
+  author?: string
+  publishedAt?: string      // ISO date "2026-07-19"
+  lastUpdated?: string      // ISO date
+  readingTimeMinutes?: number
+  tldr?: string
+  audienceIntro?: Array<{ label: string; description?: string }>
+  keyStats?: Array<{ value: string; label: string; icon?: string; source?: string }>
+  caseStudies?: Array<{ clientType: string; context: string; solution: string; result?: string; quote?: string }>
+  pricingRanges?: Array<{ label: string; priceFrom: number; priceTo: number; newPriceRef?: string; notes?: string }>
+  deliveryTable?: Array<{ region: string; cities?: string; delay: string; notes?: string }>
+  glossary?: Array<{ term: string; definition: string }>
+  videoEmbed?: { url?: string; title?: string; description?: string; uploadDate?: string; thumbnailUrl?: string }
 }
 
 type AnySeed = CategorySeed | GuideClusterSeed | GuideArticleSeed | NationalLandingSeed
@@ -538,12 +551,61 @@ async function processNationalLanding(seed: NationalLandingSeed) {
     ...(seed.heroIntro && { heroIntro: seed.heroIntro }),
     ...(seed.bodyMd && { body: mdToPortable(seed.bodyMd) }),
     ...(seed.seo && { seo: seed.seo }),
+    // V2 fields
+    ...(seed.author && { author: seed.author }),
+    ...(seed.publishedAt && { publishedAt: seed.publishedAt }),
+    ...(seed.lastUpdated && { lastUpdated: seed.lastUpdated }),
+    ...(seed.readingTimeMinutes && { readingTimeMinutes: seed.readingTimeMinutes }),
+    ...(seed.tldr && { tldr: seed.tldr }),
+    ...(seed.videoEmbed && { videoEmbed: seed.videoEmbed }),
   }
   if (seed.faq?.length) {
     doc.faq = seed.faq.map((qa, i) => ({
       _key: `faq-${i}`,
       _type: 'object',
       ...qa,
+    }))
+  }
+  if (seed.audienceIntro?.length) {
+    doc.audienceIntro = seed.audienceIntro.map((p, i) => ({
+      _key: `aud-${i}`,
+      _type: 'audiencePersona',
+      ...p,
+    }))
+  }
+  if (seed.keyStats?.length) {
+    doc.keyStats = seed.keyStats.map((s, i) => ({
+      _key: `stat-${i}`,
+      _type: 'keyStat',
+      ...s,
+    }))
+  }
+  if (seed.caseStudies?.length) {
+    doc.caseStudies = seed.caseStudies.map((c, i) => ({
+      _key: `case-${i}`,
+      _type: 'caseStudy',
+      ...c,
+    }))
+  }
+  if (seed.pricingRanges?.length) {
+    doc.pricingRanges = seed.pricingRanges.map((r, i) => ({
+      _key: `price-${i}`,
+      _type: 'pricingRow',
+      ...r,
+    }))
+  }
+  if (seed.deliveryTable?.length) {
+    doc.deliveryTable = seed.deliveryTable.map((r, i) => ({
+      _key: `delivery-${i}`,
+      _type: 'deliveryRow',
+      ...r,
+    }))
+  }
+  if (seed.glossary?.length) {
+    doc.glossary = seed.glossary.map((g, i) => ({
+      _key: `glossary-${i}`,
+      _type: 'glossaryTerm',
+      ...g,
     }))
   }
   console.log(
