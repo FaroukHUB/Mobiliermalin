@@ -18,7 +18,15 @@ export const nationalLandingPage = {
   groups: [
     { name: 'main', title: 'Essentiel', default: true },
     { name: 'hero', title: 'Hero' },
+    { name: 'meta', title: 'Auteur & date' },
+    { name: 'tldr', title: 'Résumé (TL;DR)' },
+    { name: 'stats', title: 'Chiffres clés' },
     { name: 'body', title: 'Corps éditorial' },
+    { name: 'cases', title: 'Cas clients' },
+    { name: 'pricing', title: 'Prix constatés' },
+    { name: 'delivery', title: 'Livraison' },
+    { name: 'glossary', title: 'Glossaire' },
+    { name: 'video', title: 'Vidéo' },
     { name: 'faq', title: 'FAQ' },
     { name: 'seo', title: 'SEO & réseaux sociaux' },
   ],
@@ -292,6 +300,240 @@ export const nationalLandingPage = {
             },
           },
         },
+      ],
+    },
+
+    // ─── Auteur & date de mise à jour ───
+    {
+      name: 'author',
+      title: 'Auteur affiché',
+      type: 'string',
+      group: 'meta',
+      description: 'Auteur affiché sous le H1 (E-E-A-T + Article JSON-LD).',
+      options: {
+        list: [
+          { title: 'Farouk Etsaalbi', value: 'Farouk Etsaalbi' },
+          { title: 'Djamel Djennad', value: 'Djamel Djennad' },
+          { title: 'Équipe Mobilier Malin', value: 'Équipe Mobilier Malin' },
+        ],
+      },
+      initialValue: 'Équipe Mobilier Malin',
+    },
+    {
+      name: 'publishedAt',
+      title: 'Date de publication',
+      type: 'date',
+      group: 'meta',
+      description: 'Injectée dans Article JSON-LD (datePublished).',
+    },
+    {
+      name: 'lastUpdated',
+      title: 'Date de dernière mise à jour',
+      type: 'date',
+      group: 'meta',
+      description: 'Affichée sur la page + injectée dans Article JSON-LD (dateModified). Google valorise les contenus entretenus.',
+    },
+    {
+      name: 'readingTimeMinutes',
+      title: 'Temps de lecture (minutes)',
+      type: 'number',
+      group: 'meta',
+      description: 'Affiché sous le H1. Estimation manuelle (200-250 mots/min).',
+      validation: (R: Rule) => R.min(1).max(60),
+    },
+
+    // ─── TL;DR (résumé AI Overviews) ───
+    {
+      name: 'tldr',
+      title: 'TL;DR — Résumé en 2 à 3 phrases',
+      type: 'text',
+      rows: 4,
+      group: 'tldr',
+      description:
+        'Réponse directe à la requête, extraite par les AI Overviews Google. Doit tenir en 2-3 phrases percutantes, sans introduction.',
+      validation: (R: Rule) => R.max(600),
+    },
+    {
+      name: 'audienceIntro',
+      title: 'À qui s\'adresse cette page ?',
+      type: 'array',
+      group: 'tldr',
+      description: '2 à 4 personas ciblés — TPE, DAF, télétravailleur, office manager, etc.',
+      of: [
+        {
+          type: 'object',
+          name: 'audiencePersona',
+          fields: [
+            { name: 'label', type: 'string', title: 'Persona (ex: Office manager)', validation: (R: Rule) => R.required() },
+            { name: 'description', type: 'text', rows: 2, title: 'Description courte' },
+          ],
+          preview: {
+            select: { title: 'label', subtitle: 'description' },
+          },
+        },
+      ],
+    },
+
+    // ─── Chiffres clés (StatsRow) ───
+    {
+      name: 'keyStats',
+      title: 'Chiffres clés (4 max, affichés en bandeau)',
+      type: 'array',
+      group: 'stats',
+      description: 'Chiffres propres à Mobilier Malin ou au marché (avec source si extérieur).',
+      of: [
+        {
+          type: 'object',
+          name: 'keyStat',
+          fields: [
+            { name: 'value', type: 'string', title: 'Valeur (ex: "500+", "10 ans", "1/3")', validation: (R: Rule) => R.required() },
+            { name: 'label', type: 'string', title: 'Libellé (ex: "fauteuils reconditionnés/an")', validation: (R: Rule) => R.required() },
+            {
+              name: 'icon',
+              type: 'string',
+              title: 'Icône (nom Lucide)',
+              options: {
+                list: [
+                  { title: 'Recycle', value: 'Recycle' },
+                  { title: 'ShieldCheck', value: 'ShieldCheck' },
+                  { title: 'Truck', value: 'Truck' },
+                  { title: 'Award', value: 'Award' },
+                  { title: 'Users', value: 'Users' },
+                  { title: 'Building', value: 'Building' },
+                  { title: 'Leaf', value: 'Leaf' },
+                  { title: 'Clock', value: 'Clock' },
+                  { title: 'Star', value: 'Star' },
+                  { title: 'Package', value: 'Package' },
+                ],
+              },
+              initialValue: 'ShieldCheck',
+            },
+            { name: 'source', type: 'string', title: 'Source (facultatif, ex: "ADEME 2023")' },
+          ],
+          preview: {
+            select: { title: 'value', subtitle: 'label' },
+            prepare(s: { title?: string; subtitle?: string }) {
+              return { title: `${s.title || '?'} — ${s.subtitle || ''}` }
+            },
+          },
+        },
+      ],
+      validation: (R: Rule) => R.max(4),
+    },
+
+    // ─── Cas clients ───
+    {
+      name: 'caseStudies',
+      title: 'Cas clients (2 à 3)',
+      type: 'array',
+      group: 'cases',
+      description: 'Mini-cas réels ou représentatifs. Anonymiser si nécessaire.',
+      of: [
+        {
+          type: 'object',
+          name: 'caseStudy',
+          fields: [
+            { name: 'clientType', type: 'string', title: 'Client (ex: "Cabinet d\'avocats, Marseille")', validation: (R: Rule) => R.required() },
+            { name: 'context', type: 'text', rows: 3, title: 'Contexte (le besoin)', validation: (R: Rule) => R.required() },
+            { name: 'solution', type: 'text', rows: 3, title: 'Notre réponse', validation: (R: Rule) => R.required() },
+            { name: 'result', type: 'text', rows: 2, title: 'Résultat chiffré si possible' },
+            { name: 'quote', type: 'text', rows: 2, title: 'Citation courte (facultatif)' },
+          ],
+          preview: {
+            select: { title: 'clientType', subtitle: 'context' },
+          },
+        },
+      ],
+      validation: (R: Rule) => R.max(4),
+    },
+
+    // ─── Prix constatés ───
+    {
+      name: 'pricingRanges',
+      title: 'Prix constatés (fourchettes typiques)',
+      type: 'array',
+      group: 'pricing',
+      description: 'Fourchettes de prix par type/modèle. Sourced Product/AggregateOffer JSON-LD.',
+      of: [
+        {
+          type: 'object',
+          name: 'pricingRow',
+          fields: [
+            { name: 'label', type: 'string', title: 'Type ou modèle (ex: "Steelcase Leap V2 reconditionné")', validation: (R: Rule) => R.required() },
+            { name: 'priceFrom', type: 'number', title: 'Prix min (€)', validation: (R: Rule) => R.required().min(0) },
+            { name: 'priceTo', type: 'number', title: 'Prix max (€)', validation: (R: Rule) => R.required().min(0) },
+            { name: 'newPriceRef', type: 'string', title: 'Prix neuf de référence (ex: "1300-1700 €")' },
+            { name: 'notes', type: 'text', rows: 2, title: 'Notes (options, tailles, état, etc.)' },
+          ],
+          preview: {
+            select: { title: 'label', priceFrom: 'priceFrom', priceTo: 'priceTo' },
+            prepare(s: { title?: string; priceFrom?: number; priceTo?: number }) {
+              return { title: `${s.title || '?'} — ${s.priceFrom || 0} à ${s.priceTo || 0} €` }
+            },
+          },
+        },
+      ],
+    },
+
+    // ─── Livraison par région ───
+    {
+      name: 'deliveryTable',
+      title: 'Livraison par région / zone',
+      type: 'array',
+      group: 'delivery',
+      description: 'Zones, villes principales, délais. Signal de couverture + longue traîne locale.',
+      of: [
+        {
+          type: 'object',
+          name: 'deliveryRow',
+          fields: [
+            { name: 'region', type: 'string', title: 'Région / Zone', validation: (R: Rule) => R.required() },
+            { name: 'cities', type: 'string', title: 'Villes principales (séparées par virgule)' },
+            { name: 'delay', type: 'string', title: 'Délai typique (ex: "5-7 jours ouvrés")', validation: (R: Rule) => R.required() },
+            { name: 'notes', type: 'string', title: 'Notes (ex: "livraison en volume sur devis")' },
+          ],
+          preview: {
+            select: { title: 'region', subtitle: 'delay' },
+          },
+        },
+      ],
+    },
+
+    // ─── Glossaire ───
+    {
+      name: 'glossary',
+      title: 'Glossaire (10 à 15 termes)',
+      type: 'array',
+      group: 'glossary',
+      description: 'Vocabulaire du domaine — capture longue traîne + AI Overviews (DefinedTerm).',
+      of: [
+        {
+          type: 'object',
+          name: 'glossaryTerm',
+          fields: [
+            { name: 'term', type: 'string', title: 'Terme', validation: (R: Rule) => R.required() },
+            { name: 'definition', type: 'text', rows: 3, title: 'Définition (1-3 phrases)', validation: (R: Rule) => R.required() },
+          ],
+          preview: {
+            select: { title: 'term', subtitle: 'definition' },
+          },
+        },
+      ],
+    },
+
+    // ─── Vidéo hero ou section ───
+    {
+      name: 'videoEmbed',
+      title: 'Vidéo YouTube / Vimeo (facultatif)',
+      type: 'object',
+      group: 'video',
+      description: 'Vidéo atelier ou explicative. Émet un VideoObject JSON-LD si description+uploadDate remplis.',
+      fields: [
+        { name: 'url', type: 'url', title: 'URL YouTube ou Vimeo' },
+        { name: 'title', type: 'string', title: 'Titre de la vidéo' },
+        { name: 'description', type: 'text', rows: 2, title: 'Description (requis pour VideoObject)' },
+        { name: 'uploadDate', type: 'date', title: 'Date de publication (requis pour VideoObject)' },
+        { name: 'thumbnailUrl', type: 'url', title: 'URL miniature (facultatif, si custom)' },
       ],
     },
 

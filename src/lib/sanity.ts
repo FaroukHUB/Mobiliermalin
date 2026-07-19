@@ -451,6 +451,54 @@ export async function getCategoryBySlugSanity(slug: string): Promise<SanityCateg
  * Retourne null si aucun document Sanity — la page React affichera
  * alors son contenu hardcodé de fallback.
  */
+export type SanityKeyStat = {
+  value: string
+  label: string
+  icon?: string
+  source?: string
+}
+
+export type SanityCaseStudy = {
+  clientType: string
+  context: string
+  solution: string
+  result?: string
+  quote?: string
+}
+
+export type SanityPricingRow = {
+  label: string
+  priceFrom: number
+  priceTo: number
+  newPriceRef?: string
+  notes?: string
+}
+
+export type SanityDeliveryRow = {
+  region: string
+  cities?: string
+  delay: string
+  notes?: string
+}
+
+export type SanityGlossaryTerm = {
+  term: string
+  definition: string
+}
+
+export type SanityAudiencePersona = {
+  label: string
+  description?: string
+}
+
+export type SanityVideoEmbed = {
+  url?: string
+  title?: string
+  description?: string
+  uploadDate?: string
+  thumbnailUrl?: string
+}
+
 export type SanityNationalLanding = {
   _id: string
   pageKey: string
@@ -459,6 +507,18 @@ export type SanityNationalLanding = {
   heroTitle?: string
   heroIntro?: string
   heroImage?: SanityImage
+  author?: string
+  publishedAt?: string
+  lastUpdated?: string
+  readingTimeMinutes?: number
+  tldr?: string
+  audienceIntro?: SanityAudiencePersona[]
+  keyStats?: SanityKeyStat[]
+  caseStudies?: SanityCaseStudy[]
+  pricingRanges?: SanityPricingRow[]
+  deliveryTable?: SanityDeliveryRow[]
+  glossary?: SanityGlossaryTerm[]
+  videoEmbed?: SanityVideoEmbed
   body?: unknown[]
   faq?: Array<{ question: string; answer: string }>
   seo?: {
@@ -476,6 +536,10 @@ export async function getNationalLandingByKey(
     `*[_type == "nationalLandingPage" && pageKey == $pageKey][0] {
       _id, pageKey, displayName,
       heroEyebrow, heroTitle, heroIntro, heroImage,
+      author, publishedAt, lastUpdated, readingTimeMinutes,
+      tldr, audienceIntro,
+      keyStats, caseStudies, pricingRanges, deliveryTable, glossary,
+      videoEmbed,
       body, faq, seo
     }`,
     { pageKey },
