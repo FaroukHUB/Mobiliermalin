@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import {
   ArrowRight,
   ShieldCheck,
@@ -10,8 +9,8 @@ import {
 } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
-import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { NationalDeliveryBanner } from '@/components/national/NationalDeliveryBanner'
+import { NationalHero } from '@/components/national/NationalHero'
 import { EditorialPortableText } from '@/components/portable-text/EditorialPortableText'
 import type { PortableTextBlock } from 'next-sanity'
 import {
@@ -157,44 +156,18 @@ export default async function BureauProfessionnelOccasionPage() {
         }}
       />
 
-      <Breadcrumbs items={[{ name: "Bureau professionnel d'occasion" }]} />
-
-      {/* Hero */}
-      <section className="container py-14 md:py-20 max-w-4xl text-center">
-        <p className="eyebrow">{eyebrow}</p>
-        <h1 className="text-display font-serif mt-4 leading-[1.05]">
-          {title}
-        </h1>
-        <div className="gold-divider mx-auto mt-6" />
-        <p className="mt-8 text-lg text-ink-soft leading-relaxed whitespace-pre-line">
-          {intro}
-        </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/categorie/bureau" className="btn-primary">
-            Voir tous les bureaux
-            <ArrowRight className="h-4 w-4 ml-1.5" strokeWidth={1.5} />
-          </Link>
-          <Link href="/contact" className="btn-outline">
-            Devis en volume
-          </Link>
-        </div>
-      </section>
-
-      {heroImageUrl && (
-        <section className="container max-w-6xl">
-          <div className="relative aspect-[21/9] bg-ivory-dark overflow-hidden">
-            <Image
-              src={heroImageUrl}
-              alt={landing?.heroImage?.alt || title}
-              fill
-              priority
-              sizes="(min-width: 1024px) 1200px, 100vw"
-              className="object-cover"
-              unoptimized={heroImageUrl.startsWith('http') && !heroImageUrl.includes('cdn.sanity.io')}
-            />
-          </div>
-        </section>
-      )}
+      <NationalHero
+        breadcrumb={[{ name: "Bureau professionnel d'occasion" }]}
+        eyebrow={eyebrow}
+        title={title}
+        intro={intro}
+        imageUrl={heroImageUrl}
+        imageAlt={landing?.heroImage?.alt || title}
+        ctas={[
+          { label: 'Voir tous les bureaux', href: '/categorie/bureau' },
+          { label: 'Devis en volume', href: '/contact', variant: 'outline' },
+        ]}
+      />
 
       {landing?.body && Array.isArray(landing.body) && landing.body.length > 0 && (
         <section className="container py-12 md:py-16 max-w-3xl">

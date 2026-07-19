@@ -1,11 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { ArrowRight, ShieldCheck, Award, Sparkles, BookOpen } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
-import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { NationalDeliveryBanner } from '@/components/national/NationalDeliveryBanner'
+import { NationalHero } from '@/components/national/NationalHero'
 import { EditorialPortableText } from '@/components/portable-text/EditorialPortableText'
 import type { PortableTextBlock } from 'next-sanity'
 import {
@@ -164,44 +163,18 @@ export default async function FauteuilErgonomiquePage() {
         }}
       />
 
-      <Breadcrumbs items={[{ name: 'Fauteuil ergonomique' }]} />
-
-      {/* Hero */}
-      <section className="container py-14 md:py-20 max-w-4xl text-center">
-        <p className="eyebrow">{eyebrow}</p>
-        <h1 className="text-display font-serif mt-4 leading-[1.05]">
-          {title}
-        </h1>
-        <div className="gold-divider mx-auto mt-6" />
-        <p className="mt-8 text-lg text-ink-soft leading-relaxed whitespace-pre-line">
-          {intro}
-        </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/boutique" className="btn-primary">
-            Voir la sélection
-            <ArrowRight className="h-4 w-4 ml-1.5" strokeWidth={1.5} />
-          </Link>
-          <Link href="/contact" className="btn-outline">
-            Demander conseil
-          </Link>
-        </div>
-      </section>
-
-      {heroImageUrl && (
-        <section className="container max-w-6xl">
-          <div className="relative aspect-[21/9] bg-ivory-dark overflow-hidden">
-            <Image
-              src={heroImageUrl}
-              alt={landing?.heroImage?.alt || title}
-              fill
-              priority
-              sizes="(min-width: 1024px) 1200px, 100vw"
-              className="object-cover"
-              unoptimized={heroImageUrl.startsWith('http') && !heroImageUrl.includes('cdn.sanity.io')}
-            />
-          </div>
-        </section>
-      )}
+      <NationalHero
+        breadcrumb={[{ name: 'Fauteuil ergonomique' }]}
+        eyebrow={eyebrow}
+        title={title}
+        intro={intro}
+        imageUrl={heroImageUrl}
+        imageAlt={landing?.heroImage?.alt || title}
+        ctas={[
+          { label: 'Voir la sélection', href: '/boutique' },
+          { label: 'Demander conseil', href: '/contact', variant: 'outline' },
+        ]}
+      />
 
       {/* Corps éditorial Sanity (rendu seulement si l'admin a rempli le champ body) */}
       {landing?.body && Array.isArray(landing.body) && landing.body.length > 0 && (
