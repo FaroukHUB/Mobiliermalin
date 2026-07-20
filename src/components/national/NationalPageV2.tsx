@@ -111,6 +111,17 @@ export function NationalPageV2({
         </section>
       )}
 
+      {/* ─── Produits associés (haut de page : on vend d'abord) ─── */}
+      {products && products.length > 0 && (
+        <section className="container max-w-6xl">
+          <RelatedProductsGrid
+            products={products}
+            title={productsTitle || 'Notre sélection actuelle'}
+            ctaHref={productsCtaHref}
+          />
+        </section>
+      )}
+
       {/* ─── Sommaire ─── */}
       {toc && toc.length > 0 && (
         <section className="container max-w-4xl">
@@ -169,17 +180,6 @@ export function NationalPageV2({
 
       {/* ─── Bandeau livraison national ─── */}
       <NationalDeliveryBanner />
-
-      {/* ─── Produits associés ─── */}
-      {products && products.length > 0 && (
-        <section className="container max-w-6xl">
-          <RelatedProductsGrid
-            products={products}
-            title={productsTitle || 'Notre sélection actuelle'}
-            ctaHref={productsCtaHref}
-          />
-        </section>
-      )}
 
       {/* ─── Glossaire ─── */}
       {landing?.glossary && landing.glossary.length > 0 && (
