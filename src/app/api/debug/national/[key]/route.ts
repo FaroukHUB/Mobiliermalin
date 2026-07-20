@@ -1,13 +1,14 @@
 import { NextResponse, type NextRequest } from 'next/server'
+import { createClient } from 'next-sanity'
 import { getNationalLandingByKey } from '@/lib/sanity'
-import { projectId, dataset } from '../../../../../../sanity/env'
+import { projectId, dataset, apiVersion } from '../../../../../../sanity/env'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 /**
- * Endpoint debug : dump du résultat de getNationalLandingByKey pour
- * comprendre ce que Sanity retourne côté serveur en production.
+ * Endpoint debug enrichi : teste plusieurs perspectives pour voir si
+ * le doc existe en draft ou en publié, et par pageKey ou par _id.
  *
  * Usage : /api/debug/national/mobilier-de-bureau-occasion
  *
@@ -18,35 +19,70 @@ export async function GET(
   { params }: { params: Promise<{ key: string }> },
 ) {
   const { key } = await params
-  const landing = await getNationalLandingByKey(key)
+  const docId = `nationalLanding.${key}`
 
-  return NextResponse.json({
-    env: {
-      projectId: projectId || '(EMPTY)',
-      dataset: dataset || '(EMPTY)',
-      hasProjectId: !!projectId,
-    },
-    pageKey: key,
-    landing: landing
-      ? {
-          _id: landing._id,
-          pageKey: landing.pageKey,
-          displayName: landing.displayName,
-          heroEyebrow: landing.heroEyebrow,
-          heroTitle: landing.heroTitle,
-          hasBody: Array.isArray(landing.body) ? landing.body.length : 'not-array',
-          hasTldr: !!landing.tldr,
-          hasAuthor: landing.author,
-          hasLastUpdated: landing.lastUpdated,
-          keyStatsCount: landing.keyStats?.length ?? 0,
-          audienceIntroCount: landing.audienceIntro?.length ?? 0,
-          caseStudiesCount: landing.caseStudies?.length ?? 0,
-          pricingRangesCount: landing.pricingRanges?.length ?? 0,
-          deliveryTableCount: landing.deliveryTable?.length ?? 0,
-          glossaryCount: landing.glossary?.length ?? 0,
-          faqCount: landing.faq?.length ?? 0,
-        }
-      : null,
-    landingRaw: landing,
+  // Client "raw" sans perspective : voit drafts + published
+  const rawClient = createClient({
+    projectId: projectId || 'placeholder',
+    dataset,
+    apiVersion,
+    useCdn: false,
   })
+
+  // Client "published" (celui de la prod)
+  const pubClient = createClient({
+    projectId: projectId || 'placeholder',
+    dataset,
+    apiVersion,
+    useCdn: false,
+    perspective: 'published',
+  })
+
+  const [landingViaHelper, allDocs, byIdRaw, byIdPub, byKeyRaw, byKeyPub] =
+    await Promise.all([
+      getNationalLandingByKey(key).catch((e) => ({ error: String(e) })),
+      rawClient
+        .fetch<Array<{ _id: string; pageKey?: string }>>(
+          `*[_type == "nationalLandingPage"]{_id, pageKey}`,
+        )
+        .catch((e) => ({ error: String(e) })),
+      rawClient
+        .fetch(`*[_id == $id][0]{_id, pageKey, heroTitle}`, { id: docId })
+        .catch((e) => ({ error: String(e) })),
+      pubClient
+        .fetch(`*[_id == $id][0]{_id, pageKey, heroTitle}`, { id: docId })
+        .catch((e) => ({ error: String(e) })),
+      rawClient
+        .fetch(
+          `*[_type == "nationalLandingPage" && pageKey == $key][0]{_id, pageKey, heroTitle}`,
+          { key },
+        )
+        .catch((e) => ({ error: String(e) })),
+      pubClient
+        .fetch(
+          `*[_type == "nationalLandingPage" && pageKey == $key][0]{_id, pageKey, heroTitle}`,
+          { key },
+        )
+        .catch((e) => ({ error: String(e) })),
+    ])
+
+  return NextResponse.json(
+    {
+      env: {
+        projectId: projectId || '(EMPTY)',
+        dataset,
+        apiVersion,
+      },
+      pageKey: key,
+      docId,
+      landingViaHelper,
+      // Comparatifs pour localiser le bug
+      allNationalDocsRaw: allDocs,
+      byIdRaw,
+      byIdPub,
+      byKeyRaw,
+      byKeyPub,
+    },
+    { headers: { 'cache-control': 'no-store' } },
+  )
 }
