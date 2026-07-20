@@ -37,6 +37,7 @@ import type {
   SanityPricingRow,
 } from '@/lib/sanity'
 import { ProductCard, type ProductCardData } from '@/components/product/ProductCard'
+import { slugifyHeading } from '@/lib/slugify'
 
 // ─── Icon resolver ────────────────────────────────────
 
@@ -516,7 +517,7 @@ export function RelatedContent({
 
 // ─── TableOfContents (sommaire cliquable) ─────────────
 
-export type TocItem = { id: string; label: string }
+export type TocItem = { id?: string; label: string }
 
 export function TableOfContents({ items }: { items: TocItem[] }) {
   if (!items || items.length === 0) return null
@@ -527,19 +528,25 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
     >
       <p className="eyebrow text-gold mb-3">Sommaire</p>
       <ol className="space-y-1.5">
-        {items.map((it, i) => (
-          <li key={it.id} className="text-ink-soft hover:text-gold-dark">
-            <a
-              href={`#${it.id}`}
-              className="inline-flex items-baseline gap-2"
-            >
-              <span className="text-xs text-ink-mute tabular-nums">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <span>{it.label}</span>
-            </a>
-          </li>
-        ))}
+        {items.map((it, i) => {
+          // On ignore volontairement it.id : le href est TOUJOURS dérivé
+          // du label via slugifyHeading, exactement comme les H2 rendus
+          // par EditorialPortableText — garantie que l'ancre matche.
+          const anchor = slugifyHeading(it.label)
+          return (
+            <li key={anchor || i} className="text-ink-soft hover:text-gold-dark">
+              <a
+                href={`#${anchor}`}
+                className="inline-flex items-baseline gap-2"
+              >
+                <span className="text-xs text-ink-mute tabular-nums">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span>{it.label}</span>
+              </a>
+            </li>
+          )
+        })}
       </ol>
     </nav>
   )

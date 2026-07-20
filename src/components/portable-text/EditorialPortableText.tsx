@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 import { Info, AlertTriangle, CheckCircle2, Lightbulb } from 'lucide-react'
 import { urlFor } from '@/lib/sanity'
+import { slugifyHeading, extractText } from '@/lib/slugify'
 
 /**
  * Renderer PortableText éditorial partagé.
@@ -32,16 +33,28 @@ export function EditorialPortableText({ value }: { value: PortableTextBlock[] })
       value={value}
       components={{
         block: {
-          h2: ({ children }) => (
-            <h2 className="font-serif text-2xl md:text-3xl text-ink mt-14 mb-6 leading-tight scroll-mt-24">
-              {children}
-            </h2>
-          ),
-          h3: ({ children }) => (
-            <h3 className="font-serif text-xl md:text-2xl text-ink mt-10 mb-4 leading-snug">
-              {children}
-            </h3>
-          ),
+          h2: ({ children }) => {
+            const id = slugifyHeading(extractText(children))
+            return (
+              <h2
+                id={id || undefined}
+                className="font-serif text-2xl md:text-3xl text-ink mt-14 mb-6 leading-tight scroll-mt-24"
+              >
+                {children}
+              </h2>
+            )
+          },
+          h3: ({ children }) => {
+            const id = slugifyHeading(extractText(children))
+            return (
+              <h3
+                id={id || undefined}
+                className="font-serif text-xl md:text-2xl text-ink mt-10 mb-4 leading-snug scroll-mt-24"
+              >
+                {children}
+              </h3>
+            )
+          },
           h4: ({ children }) => (
             <h4 className="font-serif text-lg text-ink mt-8 mb-3 leading-snug">
               {children}

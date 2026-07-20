@@ -143,13 +143,13 @@ export default async function BureauProfessionnelOccasionPage() {
   ].filter(Boolean)
 
   const toc = [
-    { id: 'quand', label: "Quand faut-il choisir un bureau professionnel d'occasion ?" },
-    { id: 'types', label: 'Quels sont les quatre grands types de bureaux pros ?' },
-    { id: 'dimensions', label: 'Comment dimensionner un bureau selon le métier ?' },
-    { id: 'plateau', label: 'Équiper un plateau complet : par où commencer ?' },
-    { id: 'differences', label: "Reconditionné vs occasion : quelle différence ?" },
-    { id: 'rse', label: 'Bilan environnemental : ce que dit l\'ADEME' },
-    { id: 'garanties', label: 'Nos garanties et modalités' },
+    { label: "Quand faut-il choisir un bureau professionnel d'occasion ?" },
+    { label: 'Quels sont les quatre grands types de bureaux pros ?' },
+    { label: 'Comment dimensionner un bureau selon le métier occupé ?' },
+    { label: 'Équiper un plateau complet : par où commencer ?' },
+    { label: "Bureau reconditionné vs bureau d'occasion : quelle différence ?" },
+    { label: "Bilan environnemental : ce que dit l'ADEME" },
+    { label: 'Nos garanties et modalités' },
   ]
 
   return (

@@ -103,13 +103,13 @@ export default async function MobilierBureauEntreprisePage() {
   ].filter(Boolean)
 
   const toc = [
-    { id: 'accompagnement', label: 'Comment se passe l\'accompagnement pour équiper une entreprise ?' },
-    { id: 'analyse', label: 'Comment on analyse vos besoins réels (métiers, surface, budget)' },
-    { id: 'chiffrage', label: 'Comment est chiffré un projet mobilier pro reconditionné ?' },
-    { id: 'reprise', label: 'Reprise ou débarras de votre mobilier existant : les modalités' },
-    { id: 'livraison', label: 'Livraison, installation, coordination avec vos équipes' },
-    { id: 'rse', label: 'Attestation RSE, bilan carbone évité et marchés publics' },
-    { id: 'sav', label: 'SAV, garanties et interventions ultérieures' },
+    { label: "Comment se passe l'accompagnement pour équiper une entreprise ?" },
+    { label: 'Comment on analyse vos besoins réels ?' },
+    { label: 'Comment est chiffré un projet mobilier pro reconditionné ?' },
+    { label: 'Reprise ou débarras de votre mobilier existant' },
+    { label: 'Livraison, installation, coordination avec vos équipes' },
+    { label: 'Attestation RSE, bilan carbone évité et marchés publics' },
+    { label: 'SAV, garanties et interventions ultérieures' },
   ]
 
   return (

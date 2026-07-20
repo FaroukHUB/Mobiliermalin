@@ -155,13 +155,13 @@ export default async function MarqueSteelcasePage() {
   ].filter(Boolean)
 
   const toc = [
-    { id: 'histoire', label: 'Steelcase, une entreprise centenaire : les repères' },
-    { id: 'valeur', label: 'Pourquoi le Steelcase est-il aussi recherché en reconditionné ?' },
-    { id: 'fauteuils', label: 'Quels sont les fauteuils Steelcase emblématiques ?' },
-    { id: 'bureaux', label: 'Bureaux et solutions workspace' },
-    { id: 'reconnaitre', label: 'Comment reconnaître un vrai Steelcase ?' },
-    { id: 'process', label: 'Notre process spécifique Steelcase' },
-    { id: 'comparatif', label: 'Steelcase, Herman Miller, Haworth : qui choisir ?' },
+    { label: 'Steelcase, une entreprise centenaire : les repères essentiels' },
+    { label: 'Pourquoi le mobilier Steelcase est-il aussi recherché en reconditionné ?' },
+    { label: 'Quels sont les fauteuils Steelcase les plus emblématiques ?' },
+    { label: 'Bureaux et solutions Steelcase : la gamme workspace' },
+    { label: "Comment reconnaître un vrai Steelcase d'une copie ?" },
+    { label: 'Notre process de reconditionnement, spécifique aux Steelcase' },
+    { label: 'Comparatif Steelcase, Herman Miller, Haworth : qui choisir ?' },
   ]
 
   return (
