@@ -56,3 +56,5 @@ logs
 
 # OS
 Thumbs.db
+backup-avant-seed.tar.gz
+backup-*.tar.gz # pour tous les futurs backups
