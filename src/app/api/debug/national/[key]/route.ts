@@ -41,8 +41,21 @@ export async function GET(
       })
     : null
 
-  const [helperResult, publicAll, publicById, publicByKey, authAll, authById, authDraftById, authByKey] =
-    await Promise.all([
+  const [
+    helperResult,
+    publicAll,
+    publicById,
+    publicByKey,
+    authAll,
+    authById,
+    authDraftById,
+    authByKey,
+    // Contrôles croisés
+    publicProductCount,
+    authProductCount,
+    publicCategoryCount,
+    publicLocalPageCount,
+  ] = await Promise.all([
       getNationalLandingByKey(key).then((v) => (v ? { _id: v._id, pageKey: v.pageKey } : null)).catch((e) => ({ error: String(e) })),
       publicClient.fetch<Array<{ _id: string; pageKey?: string }>>(`*[_type == "nationalLandingPage"]{_id, pageKey}`).catch((e) => ({ error: String(e) })),
       publicClient.fetch(`*[_id == $id][0]{_id, pageKey}`, { id: docId }).catch((e) => ({ error: String(e) })),
@@ -51,6 +64,11 @@ export async function GET(
       authClient?.fetch(`*[_id == $id][0]{_id, pageKey}`, { id: docId }).catch((e) => ({ error: String(e) })) ?? null,
       authClient?.fetch(`*[_id == $id][0]{_id, pageKey}`, { id: draftDocId }).catch((e) => ({ error: String(e) })) ?? null,
       authClient?.fetch(`*[_type == "nationalLandingPage" && pageKey == $key][0]{_id, pageKey}`, { key }).catch((e) => ({ error: String(e) })) ?? null,
+      // Contrôles croisés (pour comparer permissions publiques par type)
+      publicClient.fetch<number>(`count(*[_type == "product"])`).catch((e) => ({ error: String(e) })),
+      authClient?.fetch<number>(`count(*[_type == "product"])`).catch((e) => ({ error: String(e) })) ?? null,
+      publicClient.fetch<number>(`count(*[_type == "category"])`).catch((e) => ({ error: String(e) })),
+      publicClient.fetch<number>(`count(*[_type == "localPage"])`).catch((e) => ({ error: String(e) })),
     ])
 
   return NextResponse.json(
@@ -70,6 +88,11 @@ export async function GET(
       authById,
       authDraftById,
       authByKey,
+      // Contrôles croisés (compare permissions publiques par type)
+      publicProductCount,
+      authProductCount,
+      publicCategoryCount,
+      publicLocalPageCount,
     },
     { headers: { 'cache-control': 'no-store' } },
   )
