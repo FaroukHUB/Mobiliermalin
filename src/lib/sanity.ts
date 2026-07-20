@@ -12,12 +12,21 @@ import { projectId, dataset, apiVersion, useCdn } from '../../sanity/env'
 // Si projectId est absent (avant configuration Vercel), on crée un client
 // "stub" qui ne peut pas vraiment fetch. Toutes les fonctions ci-dessous
 // retournent leur fallback grâce à safeFetch.
+//
+// SANITY_READ_TOKEN (facultatif) : token en lecture seule ("Viewer"),
+// stocké en env var Vercel. Résout les cas où certains types ne sont
+// pas visibles anonymement (nouveau type non propagé au CDN Sanity,
+// restrictions par type, etc.). Sans token, fallback sur l'accès public.
+const readToken = process.env.SANITY_READ_TOKEN
 export const sanityClient: SanityClient = createClient({
   projectId: projectId || 'placeholder',
   dataset,
   apiVersion,
-  useCdn,
+  // Si on a un token, on force useCdn:false (le CDN ne supporte pas
+  // l'auth par token). Sinon on garde useCdn selon config env.
+  useCdn: readToken ? false : useCdn,
   perspective: 'published',
+  ...(readToken && { token: readToken }),
 })
 
 const builder = imageUrlBuilder(sanityClient)
