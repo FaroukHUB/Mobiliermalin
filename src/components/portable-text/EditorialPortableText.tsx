@@ -2,7 +2,20 @@ import Image from 'next/image'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 import { Info, AlertTriangle, CheckCircle2, Lightbulb } from 'lucide-react'
 import { urlFor } from '@/lib/sanity'
-import { slugifyHeading, extractText } from '@/lib/slugify'
+import { slugifyHeading } from '@/lib/slugify'
+
+/**
+ * Extrait le texte plain d'un block Portable Text depuis sa data brute
+ * (value.children[].text). Bien plus fiable que de tenter d'extraire
+ * depuis les React nodes children, qui varient selon la version de
+ * next-sanity.
+ */
+function textOfBlock(value: unknown): string {
+  if (!value || typeof value !== 'object') return ''
+  const b = value as { _type?: string; children?: Array<{ text?: string }> }
+  if (b._type !== 'block' || !Array.isArray(b.children)) return ''
+  return b.children.map((c) => c?.text ?? '').join('')
+}
 
 /**
  * Renderer PortableText éditorial partagé.
@@ -33,8 +46,8 @@ export function EditorialPortableText({ value }: { value: PortableTextBlock[] })
       value={value}
       components={{
         block: {
-          h2: ({ children }) => {
-            const id = slugifyHeading(extractText(children))
+          h2: ({ value, children }) => {
+            const id = slugifyHeading(textOfBlock(value))
             return (
               <h2
                 id={id || undefined}
@@ -44,8 +57,8 @@ export function EditorialPortableText({ value }: { value: PortableTextBlock[] })
               </h2>
             )
           },
-          h3: ({ children }) => {
-            const id = slugifyHeading(extractText(children))
+          h3: ({ value, children }) => {
+            const id = slugifyHeading(textOfBlock(value))
             return (
               <h3
                 id={id || undefined}
