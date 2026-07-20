@@ -7,10 +7,8 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 /**
- * Endpoint debug enrichi : teste plusieurs perspectives pour voir si
- * le doc existe en draft ou en publié, et par pageKey ou par _id.
- *
- * Usage : /api/debug/national/mobilier-de-bureau-occasion
+ * Debug enrichi : utilise SANITY_WRITE_TOKEN (si disponible côté serveur)
+ * pour voir aussi les drafts. Compare avec le fetch public.
  *
  * À supprimer une fois le bug identifié.
  */
@@ -20,68 +18,58 @@ export async function GET(
 ) {
   const { key } = await params
   const docId = `nationalLanding.${key}`
+  const draftDocId = `drafts.${docId}`
 
-  // Client "raw" sans perspective : voit drafts + published
-  const rawClient = createClient({
+  const token = process.env.SANITY_WRITE_TOKEN
+
+  // Client public (sans token, sans perspective) — voit uniquement publiés
+  const publicClient = createClient({
     projectId: projectId || 'placeholder',
     dataset,
     apiVersion,
     useCdn: false,
   })
 
-  // Client "published" (celui de la prod)
-  const pubClient = createClient({
-    projectId: projectId || 'placeholder',
-    dataset,
-    apiVersion,
-    useCdn: false,
-    perspective: 'published',
-  })
+  // Client authentifié — voit publiés + drafts (si token dispo)
+  const authClient = token
+    ? createClient({
+        projectId: projectId || 'placeholder',
+        dataset,
+        apiVersion,
+        useCdn: false,
+        token,
+      })
+    : null
 
-  const [landingViaHelper, allDocs, byIdRaw, byIdPub, byKeyRaw, byKeyPub] =
+  const [helperResult, publicAll, publicById, publicByKey, authAll, authById, authDraftById, authByKey] =
     await Promise.all([
-      getNationalLandingByKey(key).catch((e) => ({ error: String(e) })),
-      rawClient
-        .fetch<Array<{ _id: string; pageKey?: string }>>(
-          `*[_type == "nationalLandingPage"]{_id, pageKey}`,
-        )
-        .catch((e) => ({ error: String(e) })),
-      rawClient
-        .fetch(`*[_id == $id][0]{_id, pageKey, heroTitle}`, { id: docId })
-        .catch((e) => ({ error: String(e) })),
-      pubClient
-        .fetch(`*[_id == $id][0]{_id, pageKey, heroTitle}`, { id: docId })
-        .catch((e) => ({ error: String(e) })),
-      rawClient
-        .fetch(
-          `*[_type == "nationalLandingPage" && pageKey == $key][0]{_id, pageKey, heroTitle}`,
-          { key },
-        )
-        .catch((e) => ({ error: String(e) })),
-      pubClient
-        .fetch(
-          `*[_type == "nationalLandingPage" && pageKey == $key][0]{_id, pageKey, heroTitle}`,
-          { key },
-        )
-        .catch((e) => ({ error: String(e) })),
+      getNationalLandingByKey(key).then((v) => (v ? { _id: v._id, pageKey: v.pageKey } : null)).catch((e) => ({ error: String(e) })),
+      publicClient.fetch<Array<{ _id: string; pageKey?: string }>>(`*[_type == "nationalLandingPage"]{_id, pageKey}`).catch((e) => ({ error: String(e) })),
+      publicClient.fetch(`*[_id == $id][0]{_id, pageKey}`, { id: docId }).catch((e) => ({ error: String(e) })),
+      publicClient.fetch(`*[_type == "nationalLandingPage" && pageKey == $key][0]{_id, pageKey}`, { key }).catch((e) => ({ error: String(e) })),
+      authClient?.fetch<Array<{ _id: string; pageKey?: string }>>(`*[_type == "nationalLandingPage"]{_id, pageKey}`).catch((e) => ({ error: String(e) })) ?? null,
+      authClient?.fetch(`*[_id == $id][0]{_id, pageKey}`, { id: docId }).catch((e) => ({ error: String(e) })) ?? null,
+      authClient?.fetch(`*[_id == $id][0]{_id, pageKey}`, { id: draftDocId }).catch((e) => ({ error: String(e) })) ?? null,
+      authClient?.fetch(`*[_type == "nationalLandingPage" && pageKey == $key][0]{_id, pageKey}`, { key }).catch((e) => ({ error: String(e) })) ?? null,
     ])
 
   return NextResponse.json(
     {
-      env: {
-        projectId: projectId || '(EMPTY)',
-        dataset,
-        apiVersion,
-      },
+      env: { projectId, dataset, apiVersion, hasWriteToken: !!token },
       pageKey: key,
-      docId,
-      landingViaHelper,
-      // Comparatifs pour localiser le bug
-      allNationalDocsRaw: allDocs,
-      byIdRaw,
-      byIdPub,
-      byKeyRaw,
-      byKeyPub,
+      publishedDocId: docId,
+      draftDocId,
+      // Résultats via le helper de la prod (perspective:'published')
+      helperResult,
+      // Vue "publique" (comme un lecteur non-authentifié)
+      publicAll,
+      publicById,
+      publicByKey,
+      // Vue "authentifiée" (voit drafts + published)
+      authAll,
+      authById,
+      authDraftById,
+      authByKey,
     },
     { headers: { 'cache-control': 'no-store' } },
   )
