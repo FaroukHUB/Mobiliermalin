@@ -29,9 +29,11 @@ function textOfBlock(value: unknown): string {
  * sanitize minimal).
  */
 
-// Extrait un ID YouTube d'une URL YouTube/youtu.be
+// Extrait un ID YouTube (watch?v=, youtu.be/, shorts/, live/, embed/)
 function ytId(url: string): string | null {
-  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  const m = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  )
   return m ? m[1] : null
 }
 // Extrait un ID Vimeo

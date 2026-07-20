@@ -372,7 +372,10 @@ export function GlossarySection({ terms }: { terms?: SanityGlossaryTerm[] }) {
 // ─── VideoBlock ────────────────────────────────────────
 
 function ytId(url: string): string | null {
-  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/)
+  // Supporte watch?v=, youtu.be/, shorts/, live/, embed/
+  const m = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  )
   return m ? m[1] : null
 }
 function vimeoId(url: string): string | null {
