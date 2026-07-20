@@ -15,16 +15,44 @@
   },
   "tldr": "Une chaise de bureau d'occasion reconditionnée offre une qualité pro pour un budget compris entre 150 et 750 € selon le modèle, contre 400 à 1700 € en neuf équivalent. Le marché est structuré autour des grandes marques (Steelcase, Herman Miller, Haworth), avec des modèles adaptés à tous les budgets et morphologies.",
   "audienceIntro": [
-    { "label": "Télétravailleur budget serré", "description": "Vous voulez une vraie chaise pro sous 300 €, sans passer par du bas de gamme." },
-    { "label": "Freelance qui débute", "description": "Vous investissez malin sur votre poste, avec possibilité de revente future." },
-    { "label": "TPE équipant 3 à 8 postes", "description": "Vous cherchez un lot cohérent à budget serré pour vos collaborateurs." },
-    { "label": "Étudiant ou jeune actif", "description": "Vous voulez un vrai fauteuil pro d'occasion pour vos études longues." }
+    {
+      "label": "Télétravailleur budget serré",
+      "description": "Vous voulez une vraie chaise pro sous 300 €, sans passer par du bas de gamme."
+    },
+    {
+      "label": "Freelance qui débute",
+      "description": "Vous investissez malin sur votre poste, avec possibilité de revente future."
+    },
+    {
+      "label": "TPE équipant 3 à 8 postes",
+      "description": "Vous cherchez un lot cohérent à budget serré pour vos collaborateurs."
+    },
+    {
+      "label": "Étudiant ou jeune actif",
+      "description": "Vous voulez un vrai fauteuil pro d'occasion pour vos études longues."
+    }
   ],
   "keyStats": [
-    { "value": "150 €", "label": "premier prix chaise pro reconditionnée", "icon": "Package" },
-    { "value": "60-80 %", "label": "d'économie vs neuf équivalent", "icon": "Award" },
-    { "value": "8h/j", "label": "usage prévu par les marques pros", "icon": "Clock" },
-    { "value": "10 ans", "label": "de durée de vie utile résiduelle", "icon": "ShieldCheck" }
+    {
+      "value": "150 €",
+      "label": "premier prix chaise pro reconditionnée",
+      "icon": "Package"
+    },
+    {
+      "value": "60-80 %",
+      "label": "d'économie vs neuf équivalent",
+      "icon": "Award"
+    },
+    {
+      "value": "8h/j",
+      "label": "usage prévu par les marques pros",
+      "icon": "Clock"
+    },
+    {
+      "value": "10 ans",
+      "label": "de durée de vie utile résiduelle",
+      "icon": "ShieldCheck"
+    }
   ],
   "caseStudies": [
     {
@@ -42,42 +70,161 @@
     }
   ],
   "pricingRanges": [
-    { "label": "Chaise visiteur pro reconditionnée", "priceFrom": 80, "priceTo": 180, "newPriceRef": "250-500 €", "notes": "Sans roulettes, pour salle réunion ou accueil client." },
-    { "label": "Steelcase Amia (entrée pro)", "priceFrom": 200, "priceTo": 350, "newPriceRef": "500-700 €", "notes": "Réglages essentiels, historiquement présent dans administrations." },
-    { "label": "Steelcase Series 1 (milieu)", "priceFrom": 250, "priceTo": 400, "newPriceRef": "500-750 €", "notes": "Meilleur rapport ergo/prix chez Steelcase." },
-    { "label": "Herman Miller Mirra 2 (milieu)", "priceFrom": 300, "priceTo": 500, "newPriceRef": "700-1000 €", "notes": "Alternative plus abordable à l'Aeron, mesh dossier." },
-    { "label": "Steelcase Think (compact évolutif)", "priceFrom": 300, "priceTo": 500, "newPriceRef": "800-1100 €", "notes": "Auto-ajustement selon morphologie." },
-    { "label": "Steelcase Leap V2 (haut de gamme)", "priceFrom": 400, "priceTo": 650, "newPriceRef": "1300-1700 €", "notes": "Sept réglages + LiveBack, référence ergo pro." },
-    { "label": "Herman Miller Aeron (icône)", "priceFrom": 500, "priceTo": 900, "newPriceRef": "1400-1800 €", "notes": "Tailles A/B/C, environnements chauds, morphologies extrêmes." }
+    {
+      "label": "Chaise visiteur pro reconditionnée",
+      "priceFrom": 80,
+      "priceTo": 180,
+      "newPriceRef": "250-500 €",
+      "notes": "Sans roulettes, pour salle réunion ou accueil client."
+    },
+    {
+      "label": "Steelcase Amia (entrée pro)",
+      "priceFrom": 200,
+      "priceTo": 350,
+      "newPriceRef": "500-700 €",
+      "notes": "Réglages essentiels, historiquement présent dans administrations."
+    },
+    {
+      "label": "Steelcase Series 1 (milieu)",
+      "priceFrom": 250,
+      "priceTo": 400,
+      "newPriceRef": "500-750 €",
+      "notes": "Meilleur rapport ergo/prix chez Steelcase."
+    },
+    {
+      "label": "Herman Miller Mirra 2 (milieu)",
+      "priceFrom": 300,
+      "priceTo": 500,
+      "newPriceRef": "700-1000 €",
+      "notes": "Alternative plus abordable à l'Aeron, mesh dossier."
+    },
+    {
+      "label": "Steelcase Think (compact évolutif)",
+      "priceFrom": 300,
+      "priceTo": 500,
+      "newPriceRef": "800-1100 €",
+      "notes": "Auto-ajustement selon morphologie."
+    },
+    {
+      "label": "Steelcase Leap V2 (haut de gamme)",
+      "priceFrom": 400,
+      "priceTo": 650,
+      "newPriceRef": "1300-1700 €",
+      "notes": "Sept réglages + LiveBack, référence ergo pro."
+    },
+    {
+      "label": "Herman Miller Aeron (icône)",
+      "priceFrom": 500,
+      "priceTo": 900,
+      "newPriceRef": "1400-1800 €",
+      "notes": "Tailles A/B/C, environnements chauds, morphologies extrêmes."
+    }
   ],
   "deliveryTable": [
-    { "region": "PACA", "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice, La Ciotat", "delay": "3 à 7 jours ouvrés", "notes": "Retrait showroom possible, ouvert du lundi au samedi." },
-    { "region": "Rhône-Alpes / Occitanie", "cities": "Lyon, Grenoble, Montpellier, Nîmes", "delay": "5 à 10 jours ouvrés", "notes": "Transporteur particulier ou groupage." },
-    { "region": "Île-de-France", "cities": "Paris + banlieue", "delay": "7 à 12 jours ouvrés", "notes": "Camion complet à partir de 10 chaises." },
-    { "region": "Reste France métropolitaine", "cities": "Bordeaux, Nantes, Rennes, Lille, Strasbourg", "delay": "10 à 15 jours ouvrés", "notes": "Devis sur mesure." }
+    {
+      "region": "PACA",
+      "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice, La Ciotat",
+      "delay": "3 à 7 jours ouvrés",
+      "notes": "Retrait showroom possible, ouvert du lundi au samedi."
+    },
+    {
+      "region": "Rhône-Alpes / Occitanie",
+      "cities": "Lyon, Grenoble, Montpellier, Nîmes",
+      "delay": "5 à 10 jours ouvrés",
+      "notes": "Transporteur particulier ou groupage."
+    },
+    {
+      "region": "Île-de-France",
+      "cities": "Paris + banlieue",
+      "delay": "7 à 12 jours ouvrés",
+      "notes": "Camion complet à partir de 10 chaises."
+    },
+    {
+      "region": "Reste France métropolitaine",
+      "cities": "Bordeaux, Nantes, Rennes, Lille, Strasbourg",
+      "delay": "10 à 15 jours ouvrés",
+      "notes": "Devis sur mesure."
+    }
   ],
   "glossary": [
-    { "term": "Chaise de bureau", "definition": "Terme générique désignant tout siège de travail, du modèle basique au fauteuil ergonomique haut de gamme." },
-    { "term": "Fauteuil ergonomique", "definition": "Sous-catégorie de chaise de bureau avec au moins cinq réglages indépendants, conçu pour un usage 8 heures/jour." },
-    { "term": "Chaise visiteur", "definition": "Siège sans roulettes ni réglage, prévu pour un usage court en réunion ou accueil. Souvent en lot de 4 ou 6." },
-    { "term": "Vérin à gaz", "definition": "Cylindre pneumatique permettant le réglage en hauteur. Pièce d'usure remplacée lors du reconditionnement." },
-    { "term": "Roulettes silencieuses", "definition": "Roulettes en polyuréthane adaptées aux sols durs (parquet, carrelage) sans bruit ni rayure." },
-    { "term": "Basculement synchrone", "definition": "Mécanisme qui synchronise l'inclinaison de l'assise et du dossier selon un ratio (souvent 2:1)." },
-    { "term": "Mesh (toile respirante)", "definition": "Toile tressée utilisée sur l'assise ou le dossier (notamment Aeron) pour la ventilation." },
-    { "term": "Piètement 5 branches", "definition": "Base standard des chaises pros modernes, plus stable et sûre que les anciens piètements 4 branches." },
-    { "term": "Accoudoirs 4D", "definition": "Accoudoirs réglables sur quatre axes : hauteur, largeur, profondeur, angle de rotation." },
-    { "term": "Steelcase Amia", "definition": "Fauteuil pro entrée de gamme Steelcase, historiquement dans les administrations. Bon rapport qualité/prix reconditionné." },
-    { "term": "Herman Miller Aeron", "definition": "Fauteuil iconique en mesh, 3 tailles A/B/C. La plus recherchée des références pros haut de gamme en reconditionné." },
-    { "term": "Reconditionnement", "definition": "Processus atelier de remise en état complet, avec remplacement des pièces d'usure et contrôle qualité." }
+    {
+      "term": "Chaise de bureau",
+      "definition": "Terme générique désignant tout siège de travail, du modèle basique au fauteuil ergonomique haut de gamme."
+    },
+    {
+      "term": "Fauteuil ergonomique",
+      "definition": "Sous-catégorie de chaise de bureau avec au moins cinq réglages indépendants, conçu pour un usage 8 heures/jour."
+    },
+    {
+      "term": "Chaise visiteur",
+      "definition": "Siège sans roulettes ni réglage, prévu pour un usage court en réunion ou accueil. Souvent en lot de 4 ou 6."
+    },
+    {
+      "term": "Vérin à gaz",
+      "definition": "Cylindre pneumatique permettant le réglage en hauteur. Pièce d'usure remplacée lors du reconditionnement."
+    },
+    {
+      "term": "Roulettes silencieuses",
+      "definition": "Roulettes en polyuréthane adaptées aux sols durs (parquet, carrelage) sans bruit ni rayure."
+    },
+    {
+      "term": "Basculement synchrone",
+      "definition": "Mécanisme qui synchronise l'inclinaison de l'assise et du dossier selon un ratio (souvent 2:1)."
+    },
+    {
+      "term": "Mesh (toile respirante)",
+      "definition": "Toile tressée utilisée sur l'assise ou le dossier (notamment Aeron) pour la ventilation."
+    },
+    {
+      "term": "Piètement 5 branches",
+      "definition": "Base standard des chaises pros modernes, plus stable et sûre que les anciens piètements 4 branches."
+    },
+    {
+      "term": "Accoudoirs 4D",
+      "definition": "Accoudoirs réglables sur quatre axes : hauteur, largeur, profondeur, angle de rotation."
+    },
+    {
+      "term": "Steelcase Amia",
+      "definition": "Fauteuil pro entrée de gamme Steelcase, historiquement dans les administrations. Bon rapport qualité/prix reconditionné."
+    },
+    {
+      "term": "Herman Miller Aeron",
+      "definition": "Fauteuil iconique en mesh, 3 tailles A/B/C. La plus recherchée des références pros haut de gamme en reconditionné."
+    },
+    {
+      "term": "Reconditionnement",
+      "definition": "Processus atelier de remise en état complet, avec remplacement des pièces d'usure et contrôle qualité."
+    }
   ],
-  "bodyMd": "## Sur cette page\n\n- Chaise ou fauteuil : quelle différence exactement ?\n- Quelles catégories de chaises trouve-t-on en occasion ?\n- Quelle chaise pour le télétravail à petit budget ?\n- À partir de quel prix a-t-on une vraie ergonomie ?\n- Comment entretenir une chaise reconditionnée ?\n- Fourchettes de prix constatées\n- Livraison et retrait au showroom\n- Sources et références\n\n---\n\n## Chaise ou fauteuil : quelle différence exactement ?\n\nDans l'usage courant, les deux termes sont interchangeables. Dans le vocabulaire pro, une distinction se dessine : la chaise de bureau est le terme générique pour tout siège de travail, du modèle basique au fauteuil ergonomique haut de gamme. Le fauteuil ergonomique est une sous-catégorie avec des critères précis : au minimum cinq réglages indépendants, conception pour un usage intensif de 8 heures par jour sur 10 ans et plus. Cette page couvre les deux univers, du modèle entrée de gamme pro à 150 € au fauteuil premium reconditionné à 750 €. Pour le focus ergo pur, voir la page dédiée [fauteuil ergonomique](/fauteuil-ergonomique).\n\n### Ce qui distingue une chaise pro d'une chaise grand public\n\nUne chaise IKEA ou Amazon Basics à 100 € offre 1 à 2 réglages, un vérin à gaz de qualité moyenne, des mousses qui s'affaissent en 12 à 24 mois, un revêtement qui se déchire aux zones de frottement. Une chaise pro d'occasion à 200 € offre 4 à 5 réglages, un vérin remplacé si nécessaire, des mousses contrôlées et remplacées si affaissement, un revêtement en tissu ou cuir prévu pour tenir 10 ans.\n\n> [success] La chaise de bureau est probablement l'achat le plus rentable en reconditionné. Le neuf grand public à 100 € ne tient pas 2 ans, la même somme dépensée sur du reconditionné pro tient 8 à 10 ans.\n\n---\n\n## Quelles catégories de chaises trouve-t-on en occasion ?\n\nQuatre grandes catégories de sièges de travail circulent sur le marché du reconditionné pro. Chacune répond à un usage précis.\n\n### Les chaises visiteurs\n\nSans roulettes, sans réglage, prévues pour un usage court (réunion, accueil client, salle d'attente). Souvent vendues par lots de 4 ou 6. Budget typique : 80 à 180 € l'unité en reconditionné, contre 250 à 500 € neuf.\n\n### Les fauteuils opérateurs entrée de gamme\n\nSteelcase Amia, Haworth Improv, chaises pros de générations anciennes. Réglages basiques (hauteur, basculement, éventuellement lombaire fixe). Pour un usage modéré ou pour équiper des postes secondaires. Budget : 150 à 300 € en reconditionné.\n\n### Les fauteuils ergonomiques milieu de gamme\n\nSteelcase Series 1, Herman Miller Mirra 2, Steelcase Think. Cinq réglages indépendants, mécanisme de basculement synchrone, accoudoirs 3D ou 4D. Le meilleur rapport ergonomie/prix. Budget : 250 à 500 € en reconditionné.\n\n### Les fauteuils ergonomiques haut de gamme\n\nSteelcase Leap V2, Herman Miller Aeron, Haworth Zody, Steelcase Gesture, Vitra Physix. Sept réglages ou plus, technologies propriétaires (LiveBack, PAL, dossier mesh Aeron). Budget : 400 à 900 € en reconditionné.\n\n![Chaise de bureau pro reconditionnée](https://images.unsplash.com/photo-1541558869434-2840d308329a?w=1600&q=85 \"Un fauteuil pro reconditionné offre 8 à 10 ans d'usage résiduel.\")\n\n---\n\n## Quelle chaise pour le télétravail à petit budget ?\n\nPour un télétravail 3 à 5 jours par semaine avec un budget serré (moins de 300 €), trois modèles se démarquent en reconditionné.\n\n### Steelcase Amia (200 à 350 €)\n\nHistoriquement présent dans les administrations françaises, l'Amia offre les réglages essentiels d'un fauteuil pro (hauteur, basculement, soutien lombaire, accoudoirs) dans un design sobre. Disponibilité régulière sur le marché du reconditionné.\n\n### Steelcase Series 1 (250 à 400 €)\n\nModèle plus récent, il reprend une bonne partie des réglages du Leap V2 (basculement synchrone, lombaire ajustable) dans un design plus compact. Équipe massivement les postes de télétravail cadre depuis 5 ans.\n\n### Herman Miller Mirra 2 (300 à 500 €)\n\nAlternative plus abordable à l'Aeron, avec dossier mesh respirant. Idéal pour les environnements chauds ou pour les utilisateurs qui transpirent en été. Livraison sur devis selon la génération et l'état.\n\n> [tip] Ne descendez pas en dessous du milieu de gamme pro reconditionné (200 € minimum) si vous télétravaillez 4 heures par jour ou plus. Le premier prix grand public à ce budget vous coûtera plus cher à long terme.\n\n---\n\n## À partir de quel prix a-t-on une vraie ergonomie ?\n\nLe seuil est autour de 250 à 300 € en reconditionné. En dessous, vous êtes sur du fauteuil pro d'entrée de gamme (Amia génération ancienne, chaises pro simples) : les réglages sont limités et le confort dépend beaucoup de votre morphologie standard.\n\n### Ce que vous obtenez à 250-400 €\n\nCinq réglages indépendants (hauteur d'assise, profondeur d'assise, lombaire, accoudoirs, basculement), mécanisme synchrone, accoudoirs 3D ou 4D, dossier tissu ou mesh. C'est le niveau minimum pour un usage 8 heures/jour sans compromis.\n\n### Ce que vous obtenez à 400-750 €\n\nSept réglages ou plus, technologies propriétaires (LiveBack Steelcase, PAL Haworth, mesh Aeron), tailles multiples pour Aeron (A/B/C). C'est le niveau des ergonomes en cabinet et des sièges sociaux d'entreprises exigeantes.\n\n### Au-delà de 750 €\n\nVous sortez du reconditionné mainstream pour les modèles très recherchés (Aeron Remastered 2016+, Gesture avec toutes options, Leap V2 cuir). L'écart de prix avec le neuf se réduit, la question devient : préférez-vous le vrai neuf ou le reconditionné très haut de gamme ?\n\n---\n\n## Comment entretenir une chaise reconditionnée ?\n\nUn fauteuil reconditionné correctement entretenu tient facilement 10 ans supplémentaires. Voici les gestes qui prolongent sa vie.\n\n### Nettoyage régulier du revêtement\n\nPasser un chiffon microfibre humide sur le tissu ou le cuir une fois par mois. En cas de tache tenace, utiliser un nettoyant textile doux ou faire un test discret avant traitement complet. Éviter les produits agressifs qui abîment les fibres.\n\n### Contrôle annuel du vérin à gaz\n\nUn vérin qui descend lentement quand vous vous asseyez est en fin de vie. Le remplacement est possible et coûte entre 40 et 80 € selon le modèle. Nous pouvons vous orienter vers un fournisseur de pièces détachées.\n\n### Contrôle des roulettes\n\nRoulettes bloquées, grinçantes ou qui laissent des traces au sol : elles peuvent se remplacer en 5 minutes sans outillage. Un jeu de 5 roulettes standards coûte 25 à 40 €.\n\n### Serrage périodique des accoudoirs\n\nLes vis des accoudoirs se desserrent avec les manipulations quotidiennes. Un tour de tournevis tous les 6 à 12 mois évite les jeux excessifs.\n\n> [success] Contrairement à une chaise grand public qui devient irréparable au bout de 2-3 ans, une chaise pro reconditionnée reste réparable et entretien-friendly toute sa durée de vie.\n\n---\n\n## Fourchettes de prix constatées\n\nLes prix ci-dessus correspondent aux fourchettes observées régulièrement dans notre atelier PACA. Ils dépendent de la génération du modèle, de l'état esthétique, des options d'origine (repose-tête, cuir vs tissu, accoudoirs 4D vs 3D) et de la rareté à un instant donné.\n\n### Ce qui fait varier le prix reconditionné\n\nUn Steelcase Leap V2 en tissu noir sans repose-tête sera à 400-450 €. Le même modèle en cuir avec repose-tête peut monter à 650 €. Un Aeron taille B en mesh classique est à 500-600 €, la version Remastered avec dossier PostureFit SL peut atteindre 800-900 €.\n\n### Comparez toujours au prix neuf\n\nDivisez le prix neuf par 3 pour obtenir la fourchette reconditionnée basse. Si un fauteuil est proposé à moins d'un tiers du prix neuf, vérifiez la qualité du reconditionnement. S'il est à plus de la moitié du prix neuf, comparez avec un vrai neuf en solde.\n\n---\n\n## Livraison et retrait au showroom\n\nLivraison en région PACA de manière régulière, avec créneau défini. Pour le reste de la France, transporteur particulier ou groupage selon la zone. Un fauteuil de bureau entre dans un utilitaire type Kangoo si vous préférez venir le chercher au showroom.\n\n### Le showroom pour essayer\n\nSitué à La Penne-sur-Huveaune (13), à 15 minutes de Marseille et 5 minutes d'Aubagne. Ouvert du lundi au samedi. Prévoyez 30 à 45 minutes pour essayer 2 à 3 modèles correctement. Un essai rapide de 5 minutes ne permet pas de départager des modèles proches.\n\n### Retrait ou livraison en région PACA\n\nRetrait gratuit au showroom (sans frais de transport). Livraison en région PACA à partir de 30-50 € selon la zone et le volume, avec créneau confirmé la veille.\n\n---\n\n## Sources et références\n\n- Recommandations INRS sur les sièges de travail : [inrs.fr](https://www.inrs.fr/risques/travail-ecran/ce-qu-il-faut-retenir.html)\n- Norme NF EN 1335 sur les sièges de travail de bureau : [afnor.org](https://www.boutique.afnor.org/fr-fr/norme/nf-en-1335-1/sieges-de-travail-de-bureau-partie-1-dimensions-determination-des-dimens/fa197478/1691)\n- Prévention des TMS, AMELI : [ameli.fr](https://www.ameli.fr/entreprise/sante-travail/risques/troubles-musculosquelettiques-tms)\n\n---\n\n## Explorer les alternatives\n\n- Passer au [fauteuil ergonomique haut de gamme](/fauteuil-ergonomique) (Leap V2, Aeron, Zody)\n- Consulter le [HUB mobilier de bureau occasion](/mobilier-de-bureau-occasion)\n- Compléter avec un [bureau d'occasion](/bureau-occasion)\n- Lire le guide [chaise gaming vs ergonomique](/guides/ergonomie/chaise-gaming-vs-chaise-ergonomique)\n- Lire le guide [choisir en cas de mal de dos](/guides/ergonomie/fauteuil-de-bureau-ergonomique-mal-de-dos)\n- Livraison [Marseille](/bureau-occasion-marseille), [Aubagne](/bureau-occasion-aubagne), [Aix](/bureau-occasion-aix-en-provence)\n",
+  "bodyMd": "## Sur cette page\n\n- Chaise ou fauteuil : quelle différence exactement ?\n- Quelles catégories de chaises trouve-t-on en occasion ?\n- Quelle chaise pour le télétravail à petit budget ?\n- À partir de quel prix a-t-on une vraie ergonomie ?\n- Comment entretenir une chaise reconditionnée ?\n- Fourchettes de prix constatées\n- Livraison et retrait au showroom\n- Sources et références\n\n---\n\n## Chaise ou fauteuil : quelle différence exactement ?\n\nDans l'usage courant, les deux termes sont interchangeables. Dans le vocabulaire pro, une distinction se dessine : la chaise de bureau est le terme générique pour tout siège de travail, du modèle basique au fauteuil ergonomique haut de gamme. Le fauteuil ergonomique est une sous-catégorie avec des critères précis : au minimum cinq réglages indépendants, conception pour un usage intensif de 8 heures par jour sur 10 ans et plus. Cette page couvre les deux univers, du modèle entrée de gamme pro à 150 € au fauteuil premium reconditionné à 750 €. Pour le focus ergo pur, voir la page dédiée [fauteuil ergonomique](/fauteuil-ergonomique).\n\n![Chaise de bureau ergonomique noire dans un bureau épuré](https://images.unsplash.com/photo-1505797149-35ebcb05a6fd?w=1600&q=85 \"Le milieu de gamme pro reconditionné démarre autour de 200 euros.\")\n\n### Ce qui distingue une chaise pro d'une chaise grand public\n\nUne chaise IKEA ou Amazon Basics à 100 € offre 1 à 2 réglages, un vérin à gaz de qualité moyenne, des mousses qui s'affaissent en 12 à 24 mois, un revêtement qui se déchire aux zones de frottement. Une chaise pro d'occasion à 200 € offre 4 à 5 réglages, un vérin remplacé si nécessaire, des mousses contrôlées et remplacées si affaissement, un revêtement en tissu ou cuir prévu pour tenir 10 ans.\n\n> [success] La chaise de bureau est probablement l'achat le plus rentable en reconditionné. Le neuf grand public à 100 € ne tient pas 2 ans, la même somme dépensée sur du reconditionné pro tient 8 à 10 ans.\n\n---\n\n## Quelles catégories de chaises trouve-t-on en occasion ?\n\nQuatre grandes catégories de sièges de travail circulent sur le marché du reconditionné pro. Chacune répond à un usage précis.\n\n### Les chaises visiteurs\n\nSans roulettes, sans réglage, prévues pour un usage court (réunion, accueil client, salle d'attente). Souvent vendues par lots de 4 ou 6. Budget typique : 80 à 180 € l'unité en reconditionné, contre 250 à 500 € neuf.\n\n### Les fauteuils opérateurs entrée de gamme\n\nSteelcase Amia, Haworth Improv, chaises pros de générations anciennes. Réglages basiques (hauteur, basculement, éventuellement lombaire fixe). Pour un usage modéré ou pour équiper des postes secondaires. Budget : 150 à 300 € en reconditionné.\n\n### Les fauteuils ergonomiques milieu de gamme\n\nSteelcase Series 1, Herman Miller Mirra 2, Steelcase Think. Cinq réglages indépendants, mécanisme de basculement synchrone, accoudoirs 3D ou 4D. Le meilleur rapport ergonomie/prix. Budget : 250 à 500 € en reconditionné.\n\n### Les fauteuils ergonomiques haut de gamme\n\nSteelcase Leap V2, Herman Miller Aeron, Haworth Zody, Steelcase Gesture, Vitra Physix. Sept réglages ou plus, technologies propriétaires (LiveBack, PAL, dossier mesh Aeron). Budget : 400 à 900 € en reconditionné.\n\n![Chaise de bureau pro reconditionnée](https://images.unsplash.com/photo-1541558869434-2840d308329a?w=1600&q=85 \"Un fauteuil pro reconditionné offre 8 à 10 ans d'usage résiduel.\")\n\n---\n\n## Quelle chaise pour le télétravail à petit budget ?\n\nPour un télétravail 3 à 5 jours par semaine avec un budget serré (moins de 300 €), trois modèles se démarquent en reconditionné.\n\n![Fauteuil de travail moderne près d'une fenêtre](https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=1600&q=85 \"Un revêtement pro est prévu pour tenir dix ans de frottements quotidiens.\")\n\n### Steelcase Amia (200 à 350 €)\n\nHistoriquement présent dans les administrations françaises, l'Amia offre les réglages essentiels d'un fauteuil pro (hauteur, basculement, soutien lombaire, accoudoirs) dans un design sobre. Disponibilité régulière sur le marché du reconditionné.\n\n### Steelcase Series 1 (250 à 400 €)\n\nModèle plus récent, il reprend une bonne partie des réglages du Leap V2 (basculement synchrone, lombaire ajustable) dans un design plus compact. Équipe massivement les postes de télétravail cadre depuis 5 ans.\n\n### Herman Miller Mirra 2 (300 à 500 €)\n\nAlternative plus abordable à l'Aeron, avec dossier mesh respirant. Idéal pour les environnements chauds ou pour les utilisateurs qui transpirent en été. Livraison sur devis selon la génération et l'état.\n\n> [tip] Ne descendez pas en dessous du milieu de gamme pro reconditionné (200 € minimum) si vous télétravaillez 4 heures par jour ou plus. Le premier prix grand public à ce budget vous coûtera plus cher à long terme.\n\n---\n\n## À partir de quel prix a-t-on une vraie ergonomie ?\n\nLe seuil est autour de 250 à 300 € en reconditionné. En dessous, vous êtes sur du fauteuil pro d'entrée de gamme (Amia génération ancienne, chaises pro simples) : les réglages sont limités et le confort dépend beaucoup de votre morphologie standard.\n\n![Espace de travail avec sièges professionnels](https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1600&q=85 \"Les lots cohérents équipent les TPE à budget maîtrisé.\")\n\n### Ce que vous obtenez à 250-400 €\n\nCinq réglages indépendants (hauteur d'assise, profondeur d'assise, lombaire, accoudoirs, basculement), mécanisme synchrone, accoudoirs 3D ou 4D, dossier tissu ou mesh. C'est le niveau minimum pour un usage 8 heures/jour sans compromis.\n\n### Ce que vous obtenez à 400-750 €\n\nSept réglages ou plus, technologies propriétaires (LiveBack Steelcase, PAL Haworth, mesh Aeron), tailles multiples pour Aeron (A/B/C). C'est le niveau des ergonomes en cabinet et des sièges sociaux d'entreprises exigeantes.\n\n### Au-delà de 750 €\n\nVous sortez du reconditionné mainstream pour les modèles très recherchés (Aeron Remastered 2016+, Gesture avec toutes options, Leap V2 cuir). L'écart de prix avec le neuf se réduit, la question devient : préférez-vous le vrai neuf ou le reconditionné très haut de gamme ?\n\n---\n\n## Comment entretenir une chaise reconditionnée ?\n\nUn fauteuil reconditionné correctement entretenu tient facilement 10 ans supplémentaires. Voici les gestes qui prolongent sa vie.\n\n### Nettoyage régulier du revêtement\n\nPasser un chiffon microfibre humide sur le tissu ou le cuir une fois par mois. En cas de tache tenace, utiliser un nettoyant textile doux ou faire un test discret avant traitement complet. Éviter les produits agressifs qui abîment les fibres.\n\n### Contrôle annuel du vérin à gaz\n\nUn vérin qui descend lentement quand vous vous asseyez est en fin de vie. Le remplacement est possible et coûte entre 40 et 80 € selon le modèle. Nous pouvons vous orienter vers un fournisseur de pièces détachées.\n\n### Contrôle des roulettes\n\nRoulettes bloquées, grinçantes ou qui laissent des traces au sol : elles peuvent se remplacer en 5 minutes sans outillage. Un jeu de 5 roulettes standards coûte 25 à 40 €.\n\n### Serrage périodique des accoudoirs\n\nLes vis des accoudoirs se desserrent avec les manipulations quotidiennes. Un tour de tournevis tous les 6 à 12 mois évite les jeux excessifs.\n\n> [success] Contrairement à une chaise grand public qui devient irréparable au bout de 2-3 ans, une chaise pro reconditionnée reste réparable et entretien-friendly toute sa durée de vie.\n\n---\n\n## Fourchettes de prix constatées\n\nLes prix ci-dessus correspondent aux fourchettes observées régulièrement dans notre atelier PACA. Ils dépendent de la génération du modèle, de l'état esthétique, des options d'origine (repose-tête, cuir vs tissu, accoudoirs 4D vs 3D) et de la rareté à un instant donné.\n\n### Ce qui fait varier le prix reconditionné\n\nUn Steelcase Leap V2 en tissu noir sans repose-tête sera à 400-450 €. Le même modèle en cuir avec repose-tête peut monter à 650 €. Un Aeron taille B en mesh classique est à 500-600 €, la version Remastered avec dossier PostureFit SL peut atteindre 800-900 €.\n\n### Comparez toujours au prix neuf\n\nDivisez le prix neuf par 3 pour obtenir la fourchette reconditionnée basse. Si un fauteuil est proposé à moins d'un tiers du prix neuf, vérifiez la qualité du reconditionnement. S'il est à plus de la moitié du prix neuf, comparez avec un vrai neuf en solde.\n\n---\n\n## Livraison et retrait au showroom\n\nLivraison en région PACA de manière régulière, avec créneau défini. Pour le reste de la France, transporteur particulier ou groupage selon la zone. Un fauteuil de bureau entre dans un utilitaire type Kangoo si vous préférez venir le chercher au showroom.\n\n### Le showroom pour essayer\n\nSitué à La Penne-sur-Huveaune (13), à 15 minutes de Marseille et 5 minutes d'Aubagne. Ouvert du lundi au samedi. Prévoyez 30 à 45 minutes pour essayer 2 à 3 modèles correctement. Un essai rapide de 5 minutes ne permet pas de départager des modèles proches.\n\n### Retrait ou livraison en région PACA\n\nRetrait gratuit au showroom (sans frais de transport). Livraison en région PACA à partir de 30-50 € selon la zone et le volume, avec créneau confirmé la veille.\n\n---\n\n## Sources et références\n\n- Recommandations INRS sur les sièges de travail : [inrs.fr](https://www.inrs.fr/risques/travail-ecran/ce-qu-il-faut-retenir.html)\n- Norme NF EN 1335 sur les sièges de travail de bureau : [afnor.org](https://www.boutique.afnor.org/fr-fr/norme/nf-en-1335-1/sieges-de-travail-de-bureau-partie-1-dimensions-determination-des-dimens/fa197478/1691)\n- Prévention des TMS, AMELI : [ameli.fr](https://www.ameli.fr/entreprise/sante-travail/risques/troubles-musculosquelettiques-tms)\n\n---\n\n## Explorer les alternatives\n\n- Passer au [fauteuil ergonomique haut de gamme](/fauteuil-ergonomique) (Leap V2, Aeron, Zody)\n- Consulter le [HUB mobilier de bureau occasion](/mobilier-de-bureau-occasion)\n- Compléter avec un [bureau d'occasion](/bureau-occasion)\n- Lire le guide [chaise gaming vs ergonomique](/guides/ergonomie/chaise-gaming-vs-chaise-ergonomique)\n- Lire le guide [choisir en cas de mal de dos](/guides/ergonomie/fauteuil-de-bureau-ergonomique-mal-de-dos)\n- Livraison [Marseille](/bureau-occasion-marseille), [Aubagne](/bureau-occasion-aubagne), [Aix](/bureau-occasion-aix-en-provence)\n",
   "faq": [
-    { "question": "Chaise de bureau ou fauteuil ergonomique : quelle différence ?", "answer": "La chaise de bureau désigne le siège de travail au sens large, du modèle basique au fauteuil ergonomique haut de gamme. Le fauteuil ergonomique est une sous-catégorie avec réglages complets et conception intensive. Notre catalogue couvre les deux segments." },
-    { "question": "Peut-on avoir une chaise de bureau reconditionnée sous les 200 euros ?", "answer": "Oui, plusieurs modèles pros entrée de gamme (Steelcase Series 1 en état correct, Amia, chaises visiteurs pros) se trouvent régulièrement entre 150 et 250 euros dans notre atelier." },
-    { "question": "Livrez-vous à un particulier en télétravail ?", "answer": "Oui, sans restriction. Livraison en région PACA et sur devis pour le reste de la France. Retrait au showroom possible sans rendez-vous obligatoire pour un seul modèle." },
-    { "question": "Existe-t-il différentes tailles pour l'Aeron ?", "answer": "Oui, l'Aeron existe en trois tailles A (petit), B (standard) et C (grand). C'est un des rares fauteuils pros à proposer plusieurs tailles. Précisez votre morphologie au devis pour un conseil adapté." },
-    { "question": "Combien de temps garde-t-on une chaise pro reconditionnée ?", "answer": "10 ans supplémentaires en usage quotidien pour les grandes marques pros correctement reconditionnées, avec entretien régulier. La chaise reste réparable via des pièces détachées disponibles sur le marché français." },
-    { "question": "Puis-je essayer plusieurs modèles avant de choisir ?", "answer": "Oui, showroom à La Penne-sur-Huveaune ouvert du lundi au samedi. Prévoyez 30 à 45 minutes pour tester 2 à 3 modèles. Un essai de 5 minutes ne suffit pas à départager deux fauteuils." },
-    { "question": "Ma chaise sera-t-elle livrée montée ?", "answer": "Selon les modèles et zones. Les fauteuils pros arrivent le plus souvent en carton, avec le piètement à assembler (2 vis à visser, 5 minutes). Les modèles complexes (Aeron, Leap V2) peuvent être livrés montés en région PACA." }
+    {
+      "question": "Chaise de bureau ou fauteuil ergonomique : quelle différence ?",
+      "answer": "La chaise de bureau désigne le siège de travail au sens large, du modèle basique au fauteuil ergonomique haut de gamme. Le fauteuil ergonomique est une sous-catégorie avec réglages complets et conception intensive. Notre catalogue couvre les deux segments."
+    },
+    {
+      "question": "Peut-on avoir une chaise de bureau reconditionnée sous les 200 euros ?",
+      "answer": "Oui, plusieurs modèles pros entrée de gamme (Steelcase Series 1 en état correct, Amia, chaises visiteurs pros) se trouvent régulièrement entre 150 et 250 euros dans notre atelier."
+    },
+    {
+      "question": "Livrez-vous à un particulier en télétravail ?",
+      "answer": "Oui, sans restriction. Livraison en région PACA et sur devis pour le reste de la France. Retrait au showroom possible sans rendez-vous obligatoire pour un seul modèle."
+    },
+    {
+      "question": "Existe-t-il différentes tailles pour l'Aeron ?",
+      "answer": "Oui, l'Aeron existe en trois tailles A (petit), B (standard) et C (grand). C'est un des rares fauteuils pros à proposer plusieurs tailles. Précisez votre morphologie au devis pour un conseil adapté."
+    },
+    {
+      "question": "Combien de temps garde-t-on une chaise pro reconditionnée ?",
+      "answer": "10 ans supplémentaires en usage quotidien pour les grandes marques pros correctement reconditionnées, avec entretien régulier. La chaise reste réparable via des pièces détachées disponibles sur le marché français."
+    },
+    {
+      "question": "Puis-je essayer plusieurs modèles avant de choisir ?",
+      "answer": "Oui, showroom à La Penne-sur-Huveaune ouvert du lundi au samedi. Prévoyez 30 à 45 minutes pour tester 2 à 3 modèles. Un essai de 5 minutes ne suffit pas à départager deux fauteuils."
+    },
+    {
+      "question": "Ma chaise sera-t-elle livrée montée ?",
+      "answer": "Selon les modèles et zones. Les fauteuils pros arrivent le plus souvent en carton, avec le piètement à assembler (2 vis à visser, 5 minutes). Les modèles complexes (Aeron, Leap V2) peuvent être livrés montés en région PACA."
+    }
   ]
 }

@@ -15,16 +15,44 @@
   },
   "tldr": "Une table de réunion d'occasion reconditionnée coûte entre 400 et 1800 € selon le format et le matériau, contre 1200 à 6000 € en neuf. Cinq formats couvrent l'essentiel des besoins (rectangulaire, ovale, board modulable, mange-debout, comptoir). Le câblage intégré est un critère décisif pour les salles connectées modernes.",
   "audienceIntro": [
-    { "label": "Cabinet 4 à 10 personnes", "description": "Vous équipez une salle de réunion pour vos clients et vos collaborateurs." },
-    { "label": "Agence ou startup", "description": "Vous ouvrez de nouveaux locaux et cherchez un board sobre à prix contenu." },
-    { "label": "Collectivité ou administration", "description": "Vous équipez une salle du conseil ou de commission en réponse à l'article R2172-4." },
-    { "label": "Coworking / espace évènementiel", "description": "Vous cherchez du modulable pour salles à géométrie variable." }
+    {
+      "label": "Cabinet 4 à 10 personnes",
+      "description": "Vous équipez une salle de réunion pour vos clients et vos collaborateurs."
+    },
+    {
+      "label": "Agence ou startup",
+      "description": "Vous ouvrez de nouveaux locaux et cherchez un board sobre à prix contenu."
+    },
+    {
+      "label": "Collectivité ou administration",
+      "description": "Vous équipez une salle du conseil ou de commission en réponse à l'article R2172-4."
+    },
+    {
+      "label": "Coworking / espace évènementiel",
+      "description": "Vous cherchez du modulable pour salles à géométrie variable."
+    }
   ],
   "keyStats": [
-    { "value": "1/3", "label": "du prix d'une table neuve pro", "icon": "Award" },
-    { "value": "8 à 20", "label": "personnes selon le format", "icon": "Users" },
-    { "value": "70 %", "label": "des tables en occasion sont en mélaminé", "icon": "Package" },
-    { "value": "R2172-4", "label": "conforme marchés publics", "icon": "ShieldCheck" }
+    {
+      "value": "1/3",
+      "label": "du prix d'une table neuve pro",
+      "icon": "Award"
+    },
+    {
+      "value": "8 à 20",
+      "label": "personnes selon le format",
+      "icon": "Users"
+    },
+    {
+      "value": "70 %",
+      "label": "des tables en occasion sont en mélaminé",
+      "icon": "Package"
+    },
+    {
+      "value": "R2172-4",
+      "label": "conforme marchés publics",
+      "icon": "ShieldCheck"
+    }
   ],
   "caseStudies": [
     {
@@ -42,41 +70,154 @@
     }
   ],
   "pricingRanges": [
-    { "label": "Table rectangulaire 160 cm (4-6 pers.)", "priceFrom": 250, "priceTo": 500, "newPriceRef": "800-1500 €", "notes": "Format standard petit cabinet, mélaminé ou placage." },
-    { "label": "Table rectangulaire 220 cm (8-10 pers.)", "priceFrom": 400, "priceTo": 800, "newPriceRef": "1300-2500 €", "notes": "Le format le plus demandé en occasion, câblage souvent inclus." },
-    { "label": "Table ovale 240 cm premium (10 pers.)", "priceFrom": 700, "priceTo": 1400, "newPriceRef": "2500-4500 €", "notes": "Placage bois, dessus verre parfois, cache-câbles central." },
-    { "label": "Board modulable 320-400 cm (12-16 pers.)", "priceFrom": 900, "priceTo": 1800, "newPriceRef": "3000-6000 €", "notes": "Composé de 2 à 4 plateaux, adaptable en U ou en carré." },
-    { "label": "Mange-debout haut (4-6 pers. debout)", "priceFrom": 200, "priceTo": 450, "newPriceRef": "600-1200 €", "notes": "Réunions courtes, standups, brainstorming." },
-    { "label": "Comptoir de réunion / accueil", "priceFrom": 250, "priceTo": 500, "newPriceRef": "700-1400 €", "notes": "Souvent avec rangement intégré, salle d'accueil ou coworking." }
+    {
+      "label": "Table rectangulaire 160 cm (4-6 pers.)",
+      "priceFrom": 250,
+      "priceTo": 500,
+      "newPriceRef": "800-1500 €",
+      "notes": "Format standard petit cabinet, mélaminé ou placage."
+    },
+    {
+      "label": "Table rectangulaire 220 cm (8-10 pers.)",
+      "priceFrom": 400,
+      "priceTo": 800,
+      "newPriceRef": "1300-2500 €",
+      "notes": "Le format le plus demandé en occasion, câblage souvent inclus."
+    },
+    {
+      "label": "Table ovale 240 cm premium (10 pers.)",
+      "priceFrom": 700,
+      "priceTo": 1400,
+      "newPriceRef": "2500-4500 €",
+      "notes": "Placage bois, dessus verre parfois, cache-câbles central."
+    },
+    {
+      "label": "Board modulable 320-400 cm (12-16 pers.)",
+      "priceFrom": 900,
+      "priceTo": 1800,
+      "newPriceRef": "3000-6000 €",
+      "notes": "Composé de 2 à 4 plateaux, adaptable en U ou en carré."
+    },
+    {
+      "label": "Mange-debout haut (4-6 pers. debout)",
+      "priceFrom": 200,
+      "priceTo": 450,
+      "newPriceRef": "600-1200 €",
+      "notes": "Réunions courtes, standups, brainstorming."
+    },
+    {
+      "label": "Comptoir de réunion / accueil",
+      "priceFrom": 250,
+      "priceTo": 500,
+      "newPriceRef": "700-1400 €",
+      "notes": "Souvent avec rangement intégré, salle d'accueil ou coworking."
+    }
   ],
   "deliveryTable": [
-    { "region": "PACA", "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice", "delay": "5 à 10 jours ouvrés", "notes": "Montage sur site recommandé pour les grandes tables et boards modulables." },
-    { "region": "Rhône-Alpes / Occitanie", "cities": "Lyon, Grenoble, Montpellier", "delay": "7 à 12 jours ouvrés", "notes": "Transporteur mobilier spécialisé pour les grands formats." },
-    { "region": "Île-de-France", "cities": "Paris + banlieue", "delay": "7 à 14 jours ouvrés", "notes": "Montage à l'étage possible avec accès ascenseur." },
-    { "region": "Reste France métropolitaine", "cities": "Bordeaux, Nantes, Rennes, Lille, Strasbourg", "delay": "12 à 20 jours ouvrés", "notes": "Devis particulier selon accessibilité (largeur portes, monte-charge)." }
+    {
+      "region": "PACA",
+      "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice",
+      "delay": "5 à 10 jours ouvrés",
+      "notes": "Montage sur site recommandé pour les grandes tables et boards modulables."
+    },
+    {
+      "region": "Rhône-Alpes / Occitanie",
+      "cities": "Lyon, Grenoble, Montpellier",
+      "delay": "7 à 12 jours ouvrés",
+      "notes": "Transporteur mobilier spécialisé pour les grands formats."
+    },
+    {
+      "region": "Île-de-France",
+      "cities": "Paris + banlieue",
+      "delay": "7 à 14 jours ouvrés",
+      "notes": "Montage à l'étage possible avec accès ascenseur."
+    },
+    {
+      "region": "Reste France métropolitaine",
+      "cities": "Bordeaux, Nantes, Rennes, Lille, Strasbourg",
+      "delay": "12 à 20 jours ouvrés",
+      "notes": "Devis particulier selon accessibilité (largeur portes, monte-charge)."
+    }
   ],
   "glossary": [
-    { "term": "Table de réunion", "definition": "Plateau destiné à accueillir un groupe de personnes autour d'un échange formel ou informel. Format variable de 4 à 20 personnes selon les dimensions." },
-    { "term": "Board (table de direction)", "definition": "Table de réunion premium destinée aux comités de direction. Grande taille (souvent 320-400 cm), matériaux nobles, câblage intégré." },
-    { "term": "Table de conférence", "definition": "Synonyme de table de réunion, avec connotation d'usage formel (salle du conseil, réunion clientèle importante)." },
-    { "term": "Comptoir de réunion", "definition": "Table haute prévue pour être utilisée debout, adaptée aux réunions courtes (standup, briefing quotidien)." },
-    { "term": "Table modulable", "definition": "Table composée de plusieurs plateaux assemblables selon différentes configurations (I, U, L, carré)." },
-    { "term": "Câblage intégré (salle connectée)", "definition": "Système de trappes ou boîtiers permettant d'accéder aux prises électriques et informatiques au milieu de la table, sans câbles qui traînent." },
-    { "term": "Cache-câbles central", "definition": "Trou avec cache amovible au centre du plateau permettant de faire descendre les câbles vers le sol proprement." },
-    { "term": "Placage bois", "definition": "Fine couche de bois véritable appliquée sur un panneau composite. Rend l'esthétique bois massif à un coût bien moindre." },
-    { "term": "Bois massif", "definition": "Plateau réalisé en une essence de bois pleine (chêne, noyer, hêtre). Segment très haut de gamme, rare en occasion." },
-    { "term": "Mélaminé", "definition": "Panneau bois recouvert d'une couche décorative synthétique. Standard industriel des tables de réunion pros courantes." },
-    { "term": "Table à roulettes", "definition": "Table équipée de roulettes freinables sous le piètement. Permet la reconfiguration rapide de la salle." },
-    { "term": "Chaise visiteur (accompagnement)", "definition": "Siège sans roulettes ni réglage, prévu pour équiper les places autour d'une table de réunion. Souvent vendu par lot de 4 ou 6." }
+    {
+      "term": "Table de réunion",
+      "definition": "Plateau destiné à accueillir un groupe de personnes autour d'un échange formel ou informel. Format variable de 4 à 20 personnes selon les dimensions."
+    },
+    {
+      "term": "Board (table de direction)",
+      "definition": "Table de réunion premium destinée aux comités de direction. Grande taille (souvent 320-400 cm), matériaux nobles, câblage intégré."
+    },
+    {
+      "term": "Table de conférence",
+      "definition": "Synonyme de table de réunion, avec connotation d'usage formel (salle du conseil, réunion clientèle importante)."
+    },
+    {
+      "term": "Comptoir de réunion",
+      "definition": "Table haute prévue pour être utilisée debout, adaptée aux réunions courtes (standup, briefing quotidien)."
+    },
+    {
+      "term": "Table modulable",
+      "definition": "Table composée de plusieurs plateaux assemblables selon différentes configurations (I, U, L, carré)."
+    },
+    {
+      "term": "Câblage intégré (salle connectée)",
+      "definition": "Système de trappes ou boîtiers permettant d'accéder aux prises électriques et informatiques au milieu de la table, sans câbles qui traînent."
+    },
+    {
+      "term": "Cache-câbles central",
+      "definition": "Trou avec cache amovible au centre du plateau permettant de faire descendre les câbles vers le sol proprement."
+    },
+    {
+      "term": "Placage bois",
+      "definition": "Fine couche de bois véritable appliquée sur un panneau composite. Rend l'esthétique bois massif à un coût bien moindre."
+    },
+    {
+      "term": "Bois massif",
+      "definition": "Plateau réalisé en une essence de bois pleine (chêne, noyer, hêtre). Segment très haut de gamme, rare en occasion."
+    },
+    {
+      "term": "Mélaminé",
+      "definition": "Panneau bois recouvert d'une couche décorative synthétique. Standard industriel des tables de réunion pros courantes."
+    },
+    {
+      "term": "Table à roulettes",
+      "definition": "Table équipée de roulettes freinables sous le piètement. Permet la reconfiguration rapide de la salle."
+    },
+    {
+      "term": "Chaise visiteur (accompagnement)",
+      "definition": "Siège sans roulettes ni réglage, prévu pour équiper les places autour d'une table de réunion. Souvent vendu par lot de 4 ou 6."
+    }
   ],
-  "bodyMd": "## Sur cette page\n\n- À quoi sert vraiment une table de réunion aujourd'hui ?\n- Quels formats existent (rectangulaire, ovale, modulable) ?\n- Combien de personnes selon la taille du plateau ?\n- Mélaminé, placage, bois massif : que privilégier ?\n- Câblage intégré et prises pour salles connectées\n- Mobilier complémentaire : chaises visiteurs, écran, comptoir\n- Livraison, montage, accessibilité\n- Sources et références\n\n---\n\n## À quoi sert vraiment une table de réunion aujourd'hui ?\n\nUne table de réunion contemporaine ne remplit plus les mêmes fonctions qu'il y a 20 ans. Les réunions physiques ont diminué en fréquence mais gagné en enjeu : ce sont désormais des moments décisifs de coordination, de brainstorming ou de rendez-vous clients importants. La table doit donc supporter des configurations variables (assis, debout, hybrides visio), un usage régulier mais pas quotidien, et une bonne intégration technique (prises, câblage, éclairage compatible visio).\n\nLe marché du reconditionné est particulièrement pertinent pour ce type de mobilier. Une table de réunion pro est peu sollicitée mécaniquement (pas de mouvement, pas d'usure des mécanismes), son plateau reste en excellent état après 5 à 10 ans d'usage entreprise. Un simple ponçage léger du plateau et un contrôle des fixations suffisent à la remettre en circuit, pour un prix divisé par 3 par rapport au neuf.\n\n### Pourquoi elles reviennent régulièrement sur le marché\n\nLes tables de réunion suivent le cycle des réorganisations d'entreprises. Une entreprise qui déménage ne redécoupe pas les mêmes salles, une entreprise qui grossit passe d'une table 8 places à une table 14 places. Cette rotation naturelle alimente un flux permanent de tables de qualité en reconditionné.\n\n> [success] La table de réunion est le meuble le plus rentable à acheter en reconditionné : peu d'usure structurelle, prix divisé par 3, disponibilité régulière chez les acteurs sérieux du reconditionnement.\n\n---\n\n## Quels formats existent (rectangulaire, ovale, modulable) ?\n\nCinq grands formats couvrent l'essentiel des besoins. Le choix dépend de la surface disponible, du nombre de personnes typique et de l'usage principal (réunion formelle, brainstorming, visio, rendez-vous client).\n\n### Table rectangulaire classique\n\nLe format le plus courant. Long de 140 à 320 cm, large de 80 à 120 cm. Il maximise le nombre de personnes assises pour une longueur donnée. Convient à la plupart des usages (réunion, formation, entretien). C'est le format à privilégier si vous hésitez.\n\n### Table ovale\n\nMêmes dimensions typiques que la rectangulaire mais avec les extrémités arrondies. Elle favorise la circulation visuelle entre les participants (chacun voit chacun) et évite les angles vifs contre lesquels on se cogne en circulant. Segment premium, plus rare en occasion.\n\n### Board modulable\n\nComposé de 2 à 6 plateaux assemblables selon différentes configurations (long, en U, en carré). Idéal pour les salles polyvalentes qui changent de config selon les besoins. Souvent avec roulettes freinables pour faciliter le déplacement.\n\n### Mange-debout haut\n\nTable de 100 à 110 cm de haut prévue pour être utilisée debout. Adaptée aux réunions courtes (standup meeting quotidien, brainstorming rapide), aux réunions cafétéria informelles ou aux salles de créativité. Beaucoup moins encombrant qu'une table classique.\n\n### Comptoir de réunion\n\nTable haute ou intermédiaire souvent adossée à un mur, parfois avec rangement intégré. Utile en coworking, en salle d'accueil ou dans les espaces réception.\n\n![Table de réunion moderne dans une salle de conférence](https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&q=85 \"Une table rectangulaire 220 cm équipe la majorité des salles de réunion 8 places.\")\n\n---\n\n## Combien de personnes selon la taille du plateau ?\n\nLa règle générique est de compter 60 à 70 cm de largeur par personne assise. Une table rectangulaire de 220 cm accueille donc confortablement 8 personnes (3 de chaque côté + 1 à chaque bout). Voici les correspondances pratiques.\n\n| Longueur x largeur | Personnes assises | Usage typique |\n| --- | --- | --- |\n| 140 x 80 cm | 4 personnes | Petite salle, réunion projet |\n| 180 x 90 cm | 6 personnes | Cabinet, agence, TPE |\n| 220 x 100 cm | 8 personnes | Standard cabinet, agence |\n| 280 x 110 cm | 10-12 personnes | Salle de direction |\n| 320 x 120 cm | 12-14 personnes | Board comité de direction |\n| 400 x 140 cm | 16-20 personnes | Salle du conseil, très grande réunion |\n\n### Astuce placement\n\nSi la table doit accueillir occasionnellement une réunion élargie (invités ponctuels, formation), prévoyez un format qui accepte 2 à 4 places supplémentaires en pinçant les intervalles. Une table 220 cm accueille 8 personnes en confort, jusqu'à 10 en configuration serrée.\n\n> [tip] Prévoyez toujours 90 cm minimum entre le mur et le dos de la chaise pour permettre le passage. Une salle 3 m x 3 m accepte une table 180 cm maximum, une salle 4 m x 4 m accepte une table 260 cm.\n\n---\n\n## Mélaminé, placage, bois massif : que privilégier ?\n\nTrois grandes catégories de matériaux dominent le marché des tables de réunion. Le choix conditionne à la fois l'esthétique, la durabilité et le budget.\n\n### Mélaminé\n\nStandard industriel du mobilier de bureau. Aspect uniforme, résistant aux taches et aux rayures superficielles, facile à nettoyer. Fourchette de prix la plus accessible en reconditionné. Convient aux salles de réunion internes et aux usages courants. 70% du stock reconditionné est en mélaminé.\n\n### Placage bois véritable\n\nFine couche de bois véritable (chêne, noyer, hêtre) appliquée sur un panneau composite. Rendu esthétique proche du bois massif à un coût nettement inférieur. Fragile aux chocs et aux liquides, à réserver aux salles de direction et de rendez-vous clients importants. 25% du stock reconditionné.\n\n### Bois massif\n\nPlateau réalisé en une essence de bois pleine. Segment très haut de gamme, robuste et intemporel. Prix élevé même en reconditionné, disponibilité rare. 5% du stock, principalement du chêne massif et du hêtre.\n\n### Verre et matériaux exotiques\n\nCertaines tables premium associent un plateau verre à une structure métallique. Impact visuel fort, mais fragile aux rayures et impossible à réparer si fissuré. Réservé aux salles vitrines.\n\n---\n\n## Câblage intégré et prises pour salles connectées\n\nUne salle de réunion moderne accueille systématiquement des ordinateurs portables, un système visio (écran + caméra + micro), parfois un rétroprojecteur. La gestion des câbles est devenue un critère majeur, à égalité avec le format et le matériau.\n\n### Trappes de câblage\n\nOuvertures rectangulaires dans le plateau, avec caches amovibles, donnant accès à des boîtiers de prises électriques et informatiques (HDMI, USB, RJ45). Idéal pour les salles où chaque participant apporte son ordinateur portable.\n\n### Cache-câbles central\n\nGrand trou circulaire au centre de la table, permettant de faire descendre les câbles vers le sol proprement. Solution plus simple et moins onéreuse que les trappes complètes.\n\n### Boîtiers escamotables\n\nBoîtiers de prises qui remontent à la surface de la table par pression ou automatisme électrique. Segment premium, plus rare en reconditionné.\n\n### Absence de câblage intégré\n\nSi la table est ancienne ou très basique, elle peut n'avoir aucun système de câblage. Prévoyez alors des rallonges au sol avec passage sécurisé (sous tapis passe-câble). Impact visuel négatif à considérer si des clients viennent régulièrement.\n\n> [success] Notre atelier peut ajouter un cache-câbles central sur une table qui n'en a pas, à condition que le plateau soit assez épais et que la structure le permette. Chiffré séparément au devis.\n\n---\n\n## Mobilier complémentaire : chaises visiteurs, écran, comptoir\n\nUne salle de réunion n'est pas complète avec seulement la table. Trois éléments complémentaires méritent d'être commandés en même temps pour cohérence esthétique et logistique.\n\n### Chaises visiteurs autour de la table\n\nComptez le même nombre de chaises que de places à la table, plus 2 chaises supplémentaires en réserve. Les chaises visiteurs pros reconditionnées coûtent 80 à 180 € l'unité, soit un budget de 640 à 1500 € pour équiper 8 places. Voir la page [chaise de bureau d'occasion](/chaise-bureau-occasion) pour la sélection.\n\n### Support d'écran / TV\n\nSupport mural pour l'écran visio ou support mobile sur roulettes selon la salle. Ce n'est pas notre cœur de métier, mais nous pouvons vous orienter vers des fournisseurs spécialisés.\n\n### Comptoir de réunion (café, rangement)\n\nUn comptoir bas ou une console reconditionnée en bordure de salle sert à poser boissons, dossiers et fournitures. Sépare visuellement l'espace réunion du reste de la pièce. Budget 250 à 500 € en occasion.\n\n---\n\n## Livraison, montage, accessibilité\n\nUne table de réunion est un meuble encombrant qui nécessite une logistique adaptée. Trois points à anticiper avant de valider le devis.\n\n### Accessibilité du bâtiment\n\nMesurez la largeur des portes, l'accès aux ascenseurs ou monte-charge, et la présence d'escaliers. Une table 320 cm en un seul plateau ne passe pas dans un ascenseur standard : elle sera livrée en éléments à assembler sur place, ou nécessitera un accès par le rez-de-chaussée.\n\n### Montage sur site\n\nLa plupart des tables de réunion en reconditionné arrivent en éléments (plateau + piétement séparés) et se montent sur place en 30 minutes à 1 heure selon le format. Prestation de montage disponible sur devis en région PACA, chiffrée séparément pour les autres régions.\n\n### Retrait du mobilier existant\n\nSi vous remplacez une table de réunion existante, nous étudions systématiquement la [reprise gratuite ou payante](/rachat-mobilier-bureau) selon l'état, la marque et le volume. Solution qui évite les coûts d'évacuation d'un côté et alimente le reconditionnement de l'autre.\n\n---\n\n## Sources et références\n\n- Publications ADEME sur le mobilier professionnel : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Article R2172-4 du Code de la commande publique : [legifrance.gouv.fr](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037730634)\n- Norme NF EN 527 sur les tables de travail de bureau : [afnor.org](https://www.boutique.afnor.org/)\n\n---\n\n## Continuer votre exploration\n\n- Consulter le [HUB mobilier de bureau occasion](/mobilier-de-bureau-occasion)\n- Équiper les postes de travail avec [bureau professionnel d'occasion](/bureau-professionnel-occasion)\n- Choisir les [chaises visiteurs](/chaise-bureau-occasion) et fauteuils associés\n- Équiper un projet complet : [mobilier bureau entreprise](/mobilier-bureau-entreprise)\n- Angle RSE : [mobilier de bureau éco-responsable](/mobilier-bureau-eco-responsable)\n- Découvrir la [marque Steelcase](/marques/steelcase)\n- Livraison locale : [Marseille](/bureau-occasion-marseille), [Aix](/bureau-occasion-aix-en-provence), [Toulon](/bureau-occasion-toulon)\n",
+  "bodyMd": "## Sur cette page\n\n- À quoi sert vraiment une table de réunion aujourd'hui ?\n- Quels formats existent (rectangulaire, ovale, modulable) ?\n- Combien de personnes selon la taille du plateau ?\n- Mélaminé, placage, bois massif : que privilégier ?\n- Câblage intégré et prises pour salles connectées\n- Mobilier complémentaire : chaises visiteurs, écran, comptoir\n- Livraison, montage, accessibilité\n- Sources et références\n\n---\n\n## À quoi sert vraiment une table de réunion aujourd'hui ?\n\nUne table de réunion contemporaine ne remplit plus les mêmes fonctions qu'il y a 20 ans. Les réunions physiques ont diminué en fréquence mais gagné en enjeu : ce sont désormais des moments décisifs de coordination, de brainstorming ou de rendez-vous clients importants. La table doit donc supporter des configurations variables (assis, debout, hybrides visio), un usage régulier mais pas quotidien, et une bonne intégration technique (prises, câblage, éclairage compatible visio).\n\n![Réunion autour d'une table de conférence avec ordinateurs portables](https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1600&q=85 \"La gestion des câbles est devenue un critère central des salles connectées.\")\n\nLe marché du reconditionné est particulièrement pertinent pour ce type de mobilier. Une table de réunion pro est peu sollicitée mécaniquement (pas de mouvement, pas d'usure des mécanismes), son plateau reste en excellent état après 5 à 10 ans d'usage entreprise. Un simple ponçage léger du plateau et un contrôle des fixations suffisent à la remettre en circuit, pour un prix divisé par 3 par rapport au neuf.\n\n### Pourquoi elles reviennent régulièrement sur le marché\n\nLes tables de réunion suivent le cycle des réorganisations d'entreprises. Une entreprise qui déménage ne redécoupe pas les mêmes salles, une entreprise qui grossit passe d'une table 8 places à une table 14 places. Cette rotation naturelle alimente un flux permanent de tables de qualité en reconditionné.\n\n> [success] La table de réunion est le meuble le plus rentable à acheter en reconditionné : peu d'usure structurelle, prix divisé par 3, disponibilité régulière chez les acteurs sérieux du reconditionnement.\n\n---\n\n## Quels formats existent (rectangulaire, ovale, modulable) ?\n\nCinq grands formats couvrent l'essentiel des besoins. Le choix dépend de la surface disponible, du nombre de personnes typique et de l'usage principal (réunion formelle, brainstorming, visio, rendez-vous client).\n\n### Table rectangulaire classique\n\nLe format le plus courant. Long de 140 à 320 cm, large de 80 à 120 cm. Il maximise le nombre de personnes assises pour une longueur donnée. Convient à la plupart des usages (réunion, formation, entretien). C'est le format à privilégier si vous hésitez.\n\n### Table ovale\n\nMêmes dimensions typiques que la rectangulaire mais avec les extrémités arrondies. Elle favorise la circulation visuelle entre les participants (chacun voit chacun) et évite les angles vifs contre lesquels on se cogne en circulant. Segment premium, plus rare en occasion.\n\n### Board modulable\n\nComposé de 2 à 6 plateaux assemblables selon différentes configurations (long, en U, en carré). Idéal pour les salles polyvalentes qui changent de config selon les besoins. Souvent avec roulettes freinables pour faciliter le déplacement.\n\n### Mange-debout haut\n\nTable de 100 à 110 cm de haut prévue pour être utilisée debout. Adaptée aux réunions courtes (standup meeting quotidien, brainstorming rapide), aux réunions cafétéria informelles ou aux salles de créativité. Beaucoup moins encombrant qu'une table classique.\n\n### Comptoir de réunion\n\nTable haute ou intermédiaire souvent adossée à un mur, parfois avec rangement intégré. Utile en coworking, en salle d'accueil ou dans les espaces réception.\n\n![Table de réunion moderne dans une salle de conférence](https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&q=85 \"Une table rectangulaire 220 cm équipe la majorité des salles de réunion 8 places.\")\n\n---\n\n## Combien de personnes selon la taille du plateau ?\n\nLa règle générique est de compter 60 à 70 cm de largeur par personne assise. Une table rectangulaire de 220 cm accueille donc confortablement 8 personnes (3 de chaque côté + 1 à chaque bout). Voici les correspondances pratiques.\n\n![Équipe en brainstorming autour d'une grande table](https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&q=85 \"Comptez 60 à 70 cm de largeur par personne assise.\")\n\n| Longueur x largeur | Personnes assises | Usage typique |\n| --- | --- | --- |\n| 140 x 80 cm | 4 personnes | Petite salle, réunion projet |\n| 180 x 90 cm | 6 personnes | Cabinet, agence, TPE |\n| 220 x 100 cm | 8 personnes | Standard cabinet, agence |\n| 280 x 110 cm | 10-12 personnes | Salle de direction |\n| 320 x 120 cm | 12-14 personnes | Board comité de direction |\n| 400 x 140 cm | 16-20 personnes | Salle du conseil, très grande réunion |\n\n### Astuce placement\n\nSi la table doit accueillir occasionnellement une réunion élargie (invités ponctuels, formation), prévoyez un format qui accepte 2 à 4 places supplémentaires en pinçant les intervalles. Une table 220 cm accueille 8 personnes en confort, jusqu'à 10 en configuration serrée.\n\n> [tip] Prévoyez toujours 90 cm minimum entre le mur et le dos de la chaise pour permettre le passage. Une salle 3 m x 3 m accepte une table 180 cm maximum, une salle 4 m x 4 m accepte une table 260 cm.\n\n---\n\n## Mélaminé, placage, bois massif : que privilégier ?\n\nTrois grandes catégories de matériaux dominent le marché des tables de réunion. Le choix conditionne à la fois l'esthétique, la durabilité et le budget.\n\n![Salle de réunion lumineuse avec table et chaises assorties](https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85 \"Chaises visiteurs assorties : l'ensemble fait la cohérence de la salle.\")\n\n### Mélaminé\n\nStandard industriel du mobilier de bureau. Aspect uniforme, résistant aux taches et aux rayures superficielles, facile à nettoyer. Fourchette de prix la plus accessible en reconditionné. Convient aux salles de réunion internes et aux usages courants. 70% du stock reconditionné est en mélaminé.\n\n### Placage bois véritable\n\nFine couche de bois véritable (chêne, noyer, hêtre) appliquée sur un panneau composite. Rendu esthétique proche du bois massif à un coût nettement inférieur. Fragile aux chocs et aux liquides, à réserver aux salles de direction et de rendez-vous clients importants. 25% du stock reconditionné.\n\n### Bois massif\n\nPlateau réalisé en une essence de bois pleine. Segment très haut de gamme, robuste et intemporel. Prix élevé même en reconditionné, disponibilité rare. 5% du stock, principalement du chêne massif et du hêtre.\n\n### Verre et matériaux exotiques\n\nCertaines tables premium associent un plateau verre à une structure métallique. Impact visuel fort, mais fragile aux rayures et impossible à réparer si fissuré. Réservé aux salles vitrines.\n\n---\n\n## Câblage intégré et prises pour salles connectées\n\nUne salle de réunion moderne accueille systématiquement des ordinateurs portables, un système visio (écran + caméra + micro), parfois un rétroprojecteur. La gestion des câbles est devenue un critère majeur, à égalité avec le format et le matériau.\n\n### Trappes de câblage\n\nOuvertures rectangulaires dans le plateau, avec caches amovibles, donnant accès à des boîtiers de prises électriques et informatiques (HDMI, USB, RJ45). Idéal pour les salles où chaque participant apporte son ordinateur portable.\n\n### Cache-câbles central\n\nGrand trou circulaire au centre de la table, permettant de faire descendre les câbles vers le sol proprement. Solution plus simple et moins onéreuse que les trappes complètes.\n\n### Boîtiers escamotables\n\nBoîtiers de prises qui remontent à la surface de la table par pression ou automatisme électrique. Segment premium, plus rare en reconditionné.\n\n### Absence de câblage intégré\n\nSi la table est ancienne ou très basique, elle peut n'avoir aucun système de câblage. Prévoyez alors des rallonges au sol avec passage sécurisé (sous tapis passe-câble). Impact visuel négatif à considérer si des clients viennent régulièrement.\n\n> [success] Notre atelier peut ajouter un cache-câbles central sur une table qui n'en a pas, à condition que le plateau soit assez épais et que la structure le permette. Chiffré séparément au devis.\n\n---\n\n## Mobilier complémentaire : chaises visiteurs, écran, comptoir\n\nUne salle de réunion n'est pas complète avec seulement la table. Trois éléments complémentaires méritent d'être commandés en même temps pour cohérence esthétique et logistique.\n\n### Chaises visiteurs autour de la table\n\nComptez le même nombre de chaises que de places à la table, plus 2 chaises supplémentaires en réserve. Les chaises visiteurs pros reconditionnées coûtent 80 à 180 € l'unité, soit un budget de 640 à 1500 € pour équiper 8 places. Voir la page [chaise de bureau d'occasion](/chaise-bureau-occasion) pour la sélection.\n\n### Support d'écran / TV\n\nSupport mural pour l'écran visio ou support mobile sur roulettes selon la salle. Ce n'est pas notre cœur de métier, mais nous pouvons vous orienter vers des fournisseurs spécialisés.\n\n### Comptoir de réunion (café, rangement)\n\nUn comptoir bas ou une console reconditionnée en bordure de salle sert à poser boissons, dossiers et fournitures. Sépare visuellement l'espace réunion du reste de la pièce. Budget 250 à 500 € en occasion.\n\n---\n\n## Livraison, montage, accessibilité\n\nUne table de réunion est un meuble encombrant qui nécessite une logistique adaptée. Trois points à anticiper avant de valider le devis.\n\n### Accessibilité du bâtiment\n\nMesurez la largeur des portes, l'accès aux ascenseurs ou monte-charge, et la présence d'escaliers. Une table 320 cm en un seul plateau ne passe pas dans un ascenseur standard : elle sera livrée en éléments à assembler sur place, ou nécessitera un accès par le rez-de-chaussée.\n\n### Montage sur site\n\nLa plupart des tables de réunion en reconditionné arrivent en éléments (plateau + piétement séparés) et se montent sur place en 30 minutes à 1 heure selon le format. Prestation de montage disponible sur devis en région PACA, chiffrée séparément pour les autres régions.\n\n### Retrait du mobilier existant\n\nSi vous remplacez une table de réunion existante, nous étudions systématiquement la [reprise gratuite ou payante](/rachat-mobilier-bureau) selon l'état, la marque et le volume. Solution qui évite les coûts d'évacuation d'un côté et alimente le reconditionnement de l'autre.\n\n---\n\n## Sources et références\n\n- Publications ADEME sur le mobilier professionnel : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Article R2172-4 du Code de la commande publique : [legifrance.gouv.fr](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037730634)\n- Norme NF EN 527 sur les tables de travail de bureau : [afnor.org](https://www.boutique.afnor.org/)\n\n---\n\n## Continuer votre exploration\n\n- Consulter le [HUB mobilier de bureau occasion](/mobilier-de-bureau-occasion)\n- Équiper les postes de travail avec [bureau professionnel d'occasion](/bureau-professionnel-occasion)\n- Choisir les [chaises visiteurs](/chaise-bureau-occasion) et fauteuils associés\n- Équiper un projet complet : [mobilier bureau entreprise](/mobilier-bureau-entreprise)\n- Angle RSE : [mobilier de bureau éco-responsable](/mobilier-bureau-eco-responsable)\n- Découvrir la [marque Steelcase](/marques/steelcase)\n- Livraison locale : [Marseille](/bureau-occasion-marseille), [Aix](/bureau-occasion-aix-en-provence), [Toulon](/bureau-occasion-toulon)\n",
   "faq": [
-    { "question": "Quels formats de tables de réunion trouve-t-on en occasion ?", "answer": "Rectangulaires classiques (140 à 320 cm), ovales premium (jusqu'à 400 cm), boards modulables assemblés à partir de plateaux plus petits, mange-debout hauts pour réunions courtes. Tous ces formats reviennent régulièrement dans notre atelier." },
-    { "question": "Peut-on avoir une table de réunion pour 12 personnes en reconditionné ?", "answer": "Oui, ce format est courant sur le marché du reconditionné pro. Comptez entre 700 et 1500 euros selon la marque, l'état et le matériau du plateau (mélaminé, placage bois, bois massif)." },
-    { "question": "Livrez-vous et installez-vous sur site ?", "answer": "Livraison en région PACA et sur devis pour le reste de la France. Le montage sur site peut être ajouté à la commande. Prévoir l'accessibilité (largeur porte, ascenseur, monte-charge) pour un devis précis." },
-    { "question": "Le câblage intégré est-il inclus systématiquement ?", "answer": "Non, ça dépend du modèle et de la génération de la table. Les tables anciennes n'ont souvent aucun câblage. Nous précisons systématiquement ce point sur la fiche produit avant achat." },
-    { "question": "Combien de places autour d'une table de 220 cm ?", "answer": "8 personnes en confort (3 de chaque côté + 1 à chaque bout), jusqu'à 10 en configuration serrée pour une réunion élargie exceptionnelle." },
-    { "question": "Un board modulable est-il plus cher qu'une table classique équivalente ?", "answer": "Généralement oui, du fait de la mécanique d'assemblage entre plateaux (aimants, crochets, roulettes). La flexibilité qu'il apporte justifie souvent l'écart pour les salles polyvalentes." },
-    { "question": "Peut-on associer les tables de plusieurs générations Steelcase ?", "answer": "Si les hauteurs et les épaisseurs de plateau sont identiques, oui, avec un rendu correct. En pratique, nous privilégions l'homogénéité complète pour les commandes en volume." }
+    {
+      "question": "Quels formats de tables de réunion trouve-t-on en occasion ?",
+      "answer": "Rectangulaires classiques (140 à 320 cm), ovales premium (jusqu'à 400 cm), boards modulables assemblés à partir de plateaux plus petits, mange-debout hauts pour réunions courtes. Tous ces formats reviennent régulièrement dans notre atelier."
+    },
+    {
+      "question": "Peut-on avoir une table de réunion pour 12 personnes en reconditionné ?",
+      "answer": "Oui, ce format est courant sur le marché du reconditionné pro. Comptez entre 700 et 1500 euros selon la marque, l'état et le matériau du plateau (mélaminé, placage bois, bois massif)."
+    },
+    {
+      "question": "Livrez-vous et installez-vous sur site ?",
+      "answer": "Livraison en région PACA et sur devis pour le reste de la France. Le montage sur site peut être ajouté à la commande. Prévoir l'accessibilité (largeur porte, ascenseur, monte-charge) pour un devis précis."
+    },
+    {
+      "question": "Le câblage intégré est-il inclus systématiquement ?",
+      "answer": "Non, ça dépend du modèle et de la génération de la table. Les tables anciennes n'ont souvent aucun câblage. Nous précisons systématiquement ce point sur la fiche produit avant achat."
+    },
+    {
+      "question": "Combien de places autour d'une table de 220 cm ?",
+      "answer": "8 personnes en confort (3 de chaque côté + 1 à chaque bout), jusqu'à 10 en configuration serrée pour une réunion élargie exceptionnelle."
+    },
+    {
+      "question": "Un board modulable est-il plus cher qu'une table classique équivalente ?",
+      "answer": "Généralement oui, du fait de la mécanique d'assemblage entre plateaux (aimants, crochets, roulettes). La flexibilité qu'il apporte justifie souvent l'écart pour les salles polyvalentes."
+    },
+    {
+      "question": "Peut-on associer les tables de plusieurs générations Steelcase ?",
+      "answer": "Si les hauteurs et les épaisseurs de plateau sont identiques, oui, avec un rendu correct. En pratique, nous privilégions l'homogénéité complète pour les commandes en volume."
+    }
   ]
 }

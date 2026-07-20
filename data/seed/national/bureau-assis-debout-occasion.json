@@ -15,16 +15,45 @@
   },
   "tldr": "Un bureau assis-debout d'occasion reconditionné coûte entre 600 et 900 €, soit un tiers du prix neuf équivalent (1500 à 2500 €). L'alternance assis-debout dans la journée est reconnue par l'INRS pour limiter les effets délétères de la position assise prolongée. Le moteur électrique (souvent Linak) est le point critique à contrôler avant achat.",
   "audienceIntro": [
-    { "label": "Télétravailleur avec mal de dos", "description": "Vous voulez alterner postures dans la journée sans investir dans du neuf coûteux." },
-    { "label": "Cadre supérieur en entreprise", "description": "Vous équipez votre poste avec du haut de gamme accessible en reconditionné." },
-    { "label": "Office manager RSE", "description": "Vous améliorez les conditions de travail avec un signal santé fort." },
-    { "label": "Startup 5 à 20 postes", "description": "Vous équipez en assis-debout pour attirer les talents sans exploser le budget." }
+    {
+      "label": "Télétravailleur avec mal de dos",
+      "description": "Vous voulez alterner postures dans la journée sans investir dans du neuf coûteux."
+    },
+    {
+      "label": "Cadre supérieur en entreprise",
+      "description": "Vous équipez votre poste avec du haut de gamme accessible en reconditionné."
+    },
+    {
+      "label": "Office manager RSE",
+      "description": "Vous améliorez les conditions de travail avec un signal santé fort."
+    },
+    {
+      "label": "Startup 5 à 20 postes",
+      "description": "Vous équipez en assis-debout pour attirer les talents sans exploser le budget."
+    }
   ],
   "keyStats": [
-    { "value": "1/3", "label": "du prix d'un assis-debout neuf", "icon": "Award" },
-    { "value": "65-130 cm", "label": "plage de réglage typique", "icon": "Package" },
-    { "value": "10-15 ans", "label": "durée de vie moteur Linak", "icon": "Clock", "source": "Linak" },
-    { "value": "180 kg", "label": "charge testée moteurs pro", "icon": "ShieldCheck" }
+    {
+      "value": "1/3",
+      "label": "du prix d'un assis-debout neuf",
+      "icon": "Award"
+    },
+    {
+      "value": "65-130 cm",
+      "label": "plage de réglage typique",
+      "icon": "Package"
+    },
+    {
+      "value": "10-15 ans",
+      "label": "durée de vie moteur Linak",
+      "icon": "Clock",
+      "source": "Linak"
+    },
+    {
+      "value": "180 kg",
+      "label": "charge testée moteurs pro",
+      "icon": "ShieldCheck"
+    }
   ],
   "caseStudies": [
     {
@@ -42,41 +71,154 @@
     }
   ],
   "pricingRanges": [
-    { "label": "Assis-debout mono-moteur 120 cm", "priceFrom": 400, "priceTo": 600, "newPriceRef": "900-1400 €", "notes": "Marque secondaire, plage de réglage réduite, adapté télétravail." },
-    { "label": "Assis-debout bi-moteur 140 cm standard", "priceFrom": 600, "priceTo": 800, "newPriceRef": "1200-1800 €", "notes": "Configuration la plus courante, plage 65-125 cm, mémoire positions." },
-    { "label": "Steelcase Migration bench 2 postes", "priceFrom": 800, "priceTo": 1400, "newPriceRef": "2000-3500 €", "notes": "Deux postes indépendants sur structure commune." },
-    { "label": "Steelcase Migration bench 4 postes", "priceFrom": 1500, "priceTo": 2800, "newPriceRef": "4000-7000 €", "notes": "Configuration open space, câblage intégré." },
-    { "label": "Assis-debout premium (bois massif, cuir)", "priceFrom": 900, "priceTo": 1300, "newPriceRef": "2500-4000 €", "notes": "Segment direction, plateau haut de gamme." },
-    { "label": "Kit assis-debout de conversion", "priceFrom": 150, "priceTo": 350, "newPriceRef": "400-800 €", "notes": "Se pose sur un bureau existant, alternative low-cost." }
+    {
+      "label": "Assis-debout mono-moteur 120 cm",
+      "priceFrom": 400,
+      "priceTo": 600,
+      "newPriceRef": "900-1400 €",
+      "notes": "Marque secondaire, plage de réglage réduite, adapté télétravail."
+    },
+    {
+      "label": "Assis-debout bi-moteur 140 cm standard",
+      "priceFrom": 600,
+      "priceTo": 800,
+      "newPriceRef": "1200-1800 €",
+      "notes": "Configuration la plus courante, plage 65-125 cm, mémoire positions."
+    },
+    {
+      "label": "Steelcase Migration bench 2 postes",
+      "priceFrom": 800,
+      "priceTo": 1400,
+      "newPriceRef": "2000-3500 €",
+      "notes": "Deux postes indépendants sur structure commune."
+    },
+    {
+      "label": "Steelcase Migration bench 4 postes",
+      "priceFrom": 1500,
+      "priceTo": 2800,
+      "newPriceRef": "4000-7000 €",
+      "notes": "Configuration open space, câblage intégré."
+    },
+    {
+      "label": "Assis-debout premium (bois massif, cuir)",
+      "priceFrom": 900,
+      "priceTo": 1300,
+      "newPriceRef": "2500-4000 €",
+      "notes": "Segment direction, plateau haut de gamme."
+    },
+    {
+      "label": "Kit assis-debout de conversion",
+      "priceFrom": 150,
+      "priceTo": 350,
+      "newPriceRef": "400-800 €",
+      "notes": "Se pose sur un bureau existant, alternative low-cost."
+    }
   ],
   "deliveryTable": [
-    { "region": "PACA", "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice", "delay": "5 à 10 jours ouvrés", "notes": "Livraison + installation recommandée pour l'assis-debout électrique." },
-    { "region": "Rhône-Alpes / Occitanie", "cities": "Lyon, Grenoble, Montpellier", "delay": "7 à 12 jours ouvrés", "notes": "Installation possible via partenaire local, chiffrée séparément." },
-    { "region": "Île-de-France", "cities": "Paris + banlieue", "delay": "7 à 14 jours ouvrés", "notes": "Camion complet à partir de 5 assis-debout." },
-    { "region": "Reste France métropolitaine", "cities": "Bordeaux, Nantes, Rennes, Lille, Strasbourg", "delay": "12 à 20 jours ouvrés", "notes": "Devis particulier, installation à valider." }
+    {
+      "region": "PACA",
+      "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice",
+      "delay": "5 à 10 jours ouvrés",
+      "notes": "Livraison + installation recommandée pour l'assis-debout électrique."
+    },
+    {
+      "region": "Rhône-Alpes / Occitanie",
+      "cities": "Lyon, Grenoble, Montpellier",
+      "delay": "7 à 12 jours ouvrés",
+      "notes": "Installation possible via partenaire local, chiffrée séparément."
+    },
+    {
+      "region": "Île-de-France",
+      "cities": "Paris + banlieue",
+      "delay": "7 à 14 jours ouvrés",
+      "notes": "Camion complet à partir de 5 assis-debout."
+    },
+    {
+      "region": "Reste France métropolitaine",
+      "cities": "Bordeaux, Nantes, Rennes, Lille, Strasbourg",
+      "delay": "12 à 20 jours ouvrés",
+      "notes": "Devis particulier, installation à valider."
+    }
   ],
   "glossary": [
-    { "term": "Bureau assis-debout électrique", "definition": "Bureau à plateau motorisé, réglable en hauteur entre 65 cm (assis) et 125-130 cm (debout). Alterne postures dans la journée." },
-    { "term": "Moteur Linak", "definition": "Fabricant danois leader des moteurs pour mobilier assis-debout pro. Présent sur la majorité des bureaux Steelcase, Kinnarps, IKEA Bekant électriques." },
-    { "term": "Bi-moteur", "definition": "Deux moteurs (un par pied) permettant montée/descente synchronisée, silencieuse et à charge élevée. Standard pour usage pro." },
-    { "term": "Mono-moteur", "definition": "Un seul moteur, plage de réglage réduite et charge maximale moindre. Adapté aux petits budgets et usages plus légers." },
-    { "term": "Télécommande à mémoire", "definition": "Boîtier permettant d'enregistrer 2 à 4 positions favorites (assis-A, debout, réunion) et de les rappeler en un bouton." },
-    { "term": "Anti-collision", "definition": "Sécurité qui arrête la descente automatique si le plateau détecte un obstacle (chaise, boîte, jambes)." },
-    { "term": "Kit de conversion", "definition": "Support à poser sur un bureau existant qui accueille écran + clavier et se soulève. Alternative low-cost au bureau assis-debout complet." },
-    { "term": "Steelcase Migration Bench", "definition": "Bureau assis-debout Steelcase en configuration bench (postes alignés). Un des plus vendus au monde en assis-debout pro." },
-    { "term": "Câblage passe-plateau", "definition": "Trou dans le plateau pour faire passer les câbles vers le haut, dissimulé par un cache. Essentiel pour cacher les câbles en position debout." },
-    { "term": "Fatigue de la position debout", "definition": "Douleurs lombaires ou jambes qui apparaissent si la position debout est maintenue trop longtemps. L'alternance est la clé, pas le remplacement." },
-    { "term": "Position assise prolongée", "definition": "Position assise maintenue plus de 4 heures consécutives, reconnue par l'INRS comme facteur de risque cardiovasculaire et TMS." },
-    { "term": "TMS (troubles musculo-squelettiques)", "definition": "Pathologies articulaires et musculaires favorisées par les postures prolongées. Représentent 87% des maladies pro reconnues selon l'AMELI." }
+    {
+      "term": "Bureau assis-debout électrique",
+      "definition": "Bureau à plateau motorisé, réglable en hauteur entre 65 cm (assis) et 125-130 cm (debout). Alterne postures dans la journée."
+    },
+    {
+      "term": "Moteur Linak",
+      "definition": "Fabricant danois leader des moteurs pour mobilier assis-debout pro. Présent sur la majorité des bureaux Steelcase, Kinnarps, IKEA Bekant électriques."
+    },
+    {
+      "term": "Bi-moteur",
+      "definition": "Deux moteurs (un par pied) permettant montée/descente synchronisée, silencieuse et à charge élevée. Standard pour usage pro."
+    },
+    {
+      "term": "Mono-moteur",
+      "definition": "Un seul moteur, plage de réglage réduite et charge maximale moindre. Adapté aux petits budgets et usages plus légers."
+    },
+    {
+      "term": "Télécommande à mémoire",
+      "definition": "Boîtier permettant d'enregistrer 2 à 4 positions favorites (assis-A, debout, réunion) et de les rappeler en un bouton."
+    },
+    {
+      "term": "Anti-collision",
+      "definition": "Sécurité qui arrête la descente automatique si le plateau détecte un obstacle (chaise, boîte, jambes)."
+    },
+    {
+      "term": "Kit de conversion",
+      "definition": "Support à poser sur un bureau existant qui accueille écran + clavier et se soulève. Alternative low-cost au bureau assis-debout complet."
+    },
+    {
+      "term": "Steelcase Migration Bench",
+      "definition": "Bureau assis-debout Steelcase en configuration bench (postes alignés). Un des plus vendus au monde en assis-debout pro."
+    },
+    {
+      "term": "Câblage passe-plateau",
+      "definition": "Trou dans le plateau pour faire passer les câbles vers le haut, dissimulé par un cache. Essentiel pour cacher les câbles en position debout."
+    },
+    {
+      "term": "Fatigue de la position debout",
+      "definition": "Douleurs lombaires ou jambes qui apparaissent si la position debout est maintenue trop longtemps. L'alternance est la clé, pas le remplacement."
+    },
+    {
+      "term": "Position assise prolongée",
+      "definition": "Position assise maintenue plus de 4 heures consécutives, reconnue par l'INRS comme facteur de risque cardiovasculaire et TMS."
+    },
+    {
+      "term": "TMS (troubles musculo-squelettiques)",
+      "definition": "Pathologies articulaires et musculaires favorisées par les postures prolongées. Représentent 87% des maladies pro reconnues selon l'AMELI."
+    }
   ],
-  "bodyMd": "## Sur cette page\n\n- Pourquoi passer au bureau assis-debout en 2026 ?\n- Ce que dit l'INRS sur la position debout au travail\n- Quels sont les modèles pros disponibles en occasion ?\n- Comment vérifier l'état du moteur électrique ?\n- Combien coûte réellement un assis-debout reconditionné ?\n- Installation, câblage, alimentation : les prérequis\n- Bilan RSE : l'assis-debout reconditionné vs neuf\n- Sources et références\n\n---\n\n## Pourquoi passer au bureau assis-debout en 2026 ?\n\nLa position assise prolongée est reconnue depuis 15 ans comme un facteur de risque cardiovasculaire, métabolique et musculo-squelettique. L'[INRS](https://www.inrs.fr/risques/travail-ecran/ce-qu-il-faut-retenir.html) recommande d'alterner régulièrement les postures pour limiter ces effets, et le bureau assis-debout est l'outil le plus direct pour le faire. Depuis 2020, l'adoption s'est accélérée dans les sièges sociaux d'entreprises, ce qui alimente aujourd'hui un stock significatif sur le marché du reconditionné.\n\nUn assis-debout électrique neuf coûte entre 1200 et 2500 euros selon la marque et la configuration. Le même modèle reconditionné se trouve entre 600 et 900 euros, soit un tiers du prix. Pour un cadre supérieur, un télétravailleur intensif ou une entreprise qui équipe plusieurs postes, l'écart change complètement l'équation économique.\n\n### Ce que le bureau assis-debout n'est pas\n\nCe n'est pas un bureau qu'on utilise debout toute la journée. Rester debout 8 heures est aussi fatigant que rester assis 8 heures, avec des risques différents (varices, lombaires, jambes). L'intérêt est dans l'alternance : passer 30 à 60 minutes debout toutes les 2 à 3 heures, puis se rasseoir. Le moteur électrique et la mémoire de positions rendent ce changement immédiat et sans friction.\n\n> [success] Une étude publiée dans la Revue Française de Santé au Travail suggère qu'alterner 30 minutes de debout toutes les 2 heures suffit à réduire significativement les marqueurs de sédentarité, sans dégrader la productivité perçue.\n\n---\n\n## Ce que dit l'INRS sur la position debout au travail\n\nL'Institut National de Recherche et de Sécurité (INRS) est la référence française sur la santé et la sécurité au travail. Ses publications recommandent depuis 2015 d'aménager les postes de travail pour permettre l'alternance des postures. Le bureau assis-debout est explicitement cité comme un aménagement pertinent, sous réserve d'une formation à son usage.\n\n### Les points clés de la recommandation INRS\n\nAlterner posture assise et debout dans la journée, éviter les stations statiques prolongées, ajuster la hauteur du plateau au coude fléchi à 90° (assis comme debout), maintenir l'écran à hauteur des yeux (bras d'écran recommandé). Ces recommandations valent pour tous les postes bureau, l'assis-debout étant l'outil qui les rend praticables au quotidien.\n\n### La formation à l'usage\n\nUn bureau assis-debout mal utilisé (rester debout des heures d'affilée, ou ne jamais utiliser la fonction) n'apporte aucun bénéfice. L'INRS recommande une sensibilisation aux bonnes pratiques : commencer par 15 minutes de debout par heure, monter progressivement, écouter les signaux du corps.\n\n---\n\n## Quels sont les modèles pros disponibles en occasion ?\n\nQuatre à cinq références concentrent l'essentiel de l'offre reconditionnée en France.\n\n### Steelcase Migration Bench\n\nProbablement l'assis-debout pro le plus vendu au monde. Configuration bench (2 à 4 postes alignés), moteur Linak bi-moteur, mémoire de positions. C'est le modèle le plus fréquent en reconditionné, avec un stock quasi permanent. Prix : 800-2800 € selon la configuration (nombre de postes, options).\n\n### Kinnarps Series K (assis-debout)\n\nMarque suédoise très présente dans les entreprises nordiques, régulièrement importée en France via des reprises de mobilier. Design épuré, moteur silencieux, plage de réglage large. Prix reconditionné : 600-900 € l'unité.\n\n### Vitra Tyde (assis-debout premium)\n\nDesign suisse haut de gamme, plateau bois massif ou placage, moteur bi-moteur silencieux. Segment direction et espaces prestige. Rare en reconditionné, prix 900-1500 €.\n\n### IKEA Bekant assis-debout\n\nL'IKEA a proposé une gamme assis-debout accessible qui revient régulièrement en occasion. Moteur Linak sur les modèles récents. Prix reconditionné : 300-500 €. Adapté au télétravail budget serré.\n\n### Assis-debout marques secondaires\n\nMarques génériques (Actiu, Herrmans, ou fabricants européens sans notoriété grand public) équipent aussi le marché du reconditionné. Prix 400-700 €, qualité variable selon les modèles, à vérifier au cas par cas.\n\n![Bureau assis-debout électrique reconditionné](https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1600&q=85 \"Un bureau assis-debout Migration Bench en configuration open space.\")\n\n---\n\n## Comment vérifier l'état du moteur électrique ?\n\nLe moteur est le point critique d'un assis-debout d'occasion. Un plateau qui se raye se répare, un moteur qui lâche transforme le bureau en meuble statique. Cinq vérifications avant tout achat.\n\n### 1. Tester toute la plage de hauteur\n\nMonter du plus bas au plus haut et redescendre. Le mouvement doit être régulier, silencieux (léger bourdonnement acceptable), sans à-coups ni ralentissements anormaux.\n\n### 2. Vérifier la vitesse de montée\n\nUn moteur en bonne santé monte le plateau de 65 à 130 cm en 15 à 20 secondes environ. Si la montée est nettement plus lente, le moteur fatigue.\n\n### 3. Tester la charge maximale\n\nMettre le poids typique du bureau utilisé (écran, ordinateur portable, lampe, dossiers) et vérifier que la montée reste possible. Si le moteur peine, la longévité résiduelle sera courte.\n\n### 4. Vérifier la mémoire des positions\n\nProgrammer 2 ou 3 positions et les rappeler pour tester la précision et la répétabilité. Une mémoire qui \"oublie\" ou approche mal la hauteur cible est un signe de télécommande défaillante.\n\n### 5. Vérifier l'anti-collision\n\nMettre un obstacle sur le trajet de descente (une boîte par exemple) et lancer la descente automatique. Le plateau doit s'arrêter au contact. Sinon, sécurité HS.\n\n> [tip] Nous testons systématiquement ces cinq points sur chaque assis-debout entrant en atelier. Un modèle qui échoue à un test est écarté du circuit vente.\n\n---\n\n## Combien coûte réellement un assis-debout reconditionné ?\n\nQuatre segments de prix couvrent l'essentiel du marché.\n\n### Segment entrée 400 à 600 € : télétravail budget serré\n\nAssis-debout mono-moteur marque secondaire, plage de réglage réduite (75 à 115 cm typiquement). Convient pour un usage télétravail modéré, moins de 4 heures par jour en position debout.\n\n### Segment standard 600 à 800 € : usage pro régulier\n\nBi-moteur, plage 65 à 125 cm, mémoire de positions, marque secondaire ou Steelcase premier prix. C'est le cœur du marché reconditionné pro, meilleur rapport qualité/prix.\n\n### Segment haut de gamme 800 à 1400 € : Steelcase Migration, Kinnarps K\n\nBi-moteur premium, mémoire 4 positions, anti-collision, câblage intégré. Configuration bench 2 postes possible. Pour des usages intensifs 8 heures par jour.\n\n### Segment premium 900 à 1500 € : Vitra Tyde, direction\n\nDesign haut de gamme, plateau bois massif ou placage, cuir. Segment très confidentiel en reconditionné, arrivages rares.\n\n### Kit de conversion 150 à 350 €\n\nAlternative low-cost si vous voulez tester l'assis-debout sans changer votre bureau existant. Ne convient pas à un usage intensif long terme mais permet de valider l'usage avant investissement.\n\n---\n\n## Installation, câblage, alimentation : les prérequis\n\nUn assis-debout électrique n'est pas plug-and-play comme un bureau statique. Trois points à anticiper avant la livraison.\n\n### Prise électrique à proximité\n\nLe bureau doit être branché en permanence sur une prise 220V standard. Prévoyez une prise à moins de 2 mètres du bureau, idéalement au sol (moins visible que sur un mur). Sur les configurations bench, une seule prise alimente les deux postes.\n\n### Longueur de câbles suffisante\n\nQuand le bureau monte, les câbles écran, PC, chargeur laptop remontent avec. Prévoyez des câbles longs (2 mètres minimum) ou un système de gestion de câbles avec chaîne porte-câbles pour éviter la tension en position haute.\n\n### Passe-câbles sur le plateau\n\nLa plupart des assis-debout pros ont un ou deux trous dans le plateau (avec cache amovible) pour faire descendre les câbles vers l'arrière. C'est essentiel pour cacher les câbles en position debout.\n\n> [tip] Prévoyez une chaîne porte-câbles (10 à 30 € en accessoire) si votre modèle n'en a pas d'origine. Elle guide les câbles proprement et évite qu'ils traînent ou se coincent.\n\n---\n\n## Bilan RSE : l'assis-debout reconditionné vs neuf\n\nUn assis-debout électrique neuf émet environ 100 à 180 kg de CO2 à la fabrication (plus élevé qu'un bureau classique à cause du moteur et de l'électronique), selon les données ADEME du secteur mobilier professionnel. Réutiliser un assis-debout existant évite intégralement cette empreinte, en particulier la partie électronique qui est la plus lourde en impact.\n\n### Argument RSE double : santé + carbone\n\nInvestir dans un assis-debout reconditionné coche deux cases RSE en même temps : amélioration des conditions de travail (santé) et économie circulaire (climat). Un signal fort dans les rapports RSE et sur les pages carrière pour attirer les talents.\n\n### Attestation de valorisation\n\nSur demande, nous fournissons une attestation chiffrée du carbone évité par la commande. Utilisable dans les rapports RSE et les réponses aux marchés publics soumis à l'article R2172-4 du CCP.\n\n---\n\n## Sources et références\n\n- INRS, poste de travail informatique : [inrs.fr](https://www.inrs.fr/risques/travail-ecran/ce-qu-il-faut-retenir.html)\n- Publications ADEME sur le mobilier professionnel : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Fabricant Linak (moteurs pour assis-debout pro) : [linak.fr](https://www.linak.fr/)\n- Fiche produit Steelcase Migration : [steelcase.com](https://www.steelcase.com/eu-fr/)\n\n---\n\n## Continuer votre exploration\n\n- Consulter le [HUB mobilier de bureau occasion](/mobilier-de-bureau-occasion)\n- Voir la version classique [bureau professionnel d'occasion](/bureau-professionnel-occasion)\n- Compléter avec un [fauteuil ergonomique](/fauteuil-ergonomique) adapté\n- Découvrir la marque [Steelcase](/marques/steelcase) (Migration Bench)\n- Angle RSE : [mobilier de bureau éco-responsable](/mobilier-bureau-eco-responsable)\n- Livraison locale : [Marseille](/bureau-occasion-marseille), [Aix](/bureau-occasion-aix-en-provence), [Nice](/bureau-occasion-nice)\n",
+  "bodyMd": "## Sur cette page\n\n- Pourquoi passer au bureau assis-debout en 2026 ?\n- Ce que dit l'INRS sur la position debout au travail\n- Quels sont les modèles pros disponibles en occasion ?\n- Comment vérifier l'état du moteur électrique ?\n- Combien coûte réellement un assis-debout reconditionné ?\n- Installation, câblage, alimentation : les prérequis\n- Bilan RSE : l'assis-debout reconditionné vs neuf\n- Sources et références\n\n---\n\n## Pourquoi passer au bureau assis-debout en 2026 ?\n\nLa position assise prolongée est reconnue depuis 15 ans comme un facteur de risque cardiovasculaire, métabolique et musculo-squelettique. L'[INRS](https://www.inrs.fr/risques/travail-ecran/ce-qu-il-faut-retenir.html) recommande d'alterner régulièrement les postures pour limiter ces effets, et le bureau assis-debout est l'outil le plus direct pour le faire. Depuis 2020, l'adoption s'est accélérée dans les sièges sociaux d'entreprises, ce qui alimente aujourd'hui un stock significatif sur le marché du reconditionné.\n\n![Bureau réglable en hauteur avec écran et clavier](https://images.unsplash.com/photo-1593062096033-9a26b09da705?w=1600&q=85 \"La plage 65-125 cm couvre 95% des morphologies.\")\n\nUn assis-debout électrique neuf coûte entre 1200 et 2500 euros selon la marque et la configuration. Le même modèle reconditionné se trouve entre 600 et 900 euros, soit un tiers du prix. Pour un cadre supérieur, un télétravailleur intensif ou une entreprise qui équipe plusieurs postes, l'écart change complètement l'équation économique.\n\n### Ce que le bureau assis-debout n'est pas\n\nCe n'est pas un bureau qu'on utilise debout toute la journée. Rester debout 8 heures est aussi fatigant que rester assis 8 heures, avec des risques différents (varices, lombaires, jambes). L'intérêt est dans l'alternance : passer 30 à 60 minutes debout toutes les 2 à 3 heures, puis se rasseoir. Le moteur électrique et la mémoire de positions rendent ce changement immédiat et sans friction.\n\n> [success] Une étude publiée dans la Revue Française de Santé au Travail suggère qu'alterner 30 minutes de debout toutes les 2 heures suffit à réduire significativement les marqueurs de sédentarité, sans dégrader la productivité perçue.\n\n---\n\n## Ce que dit l'INRS sur la position debout au travail\n\nL'Institut National de Recherche et de Sécurité (INRS) est la référence française sur la santé et la sécurité au travail. Ses publications recommandent depuis 2015 d'aménager les postes de travail pour permettre l'alternance des postures. Le bureau assis-debout est explicitement cité comme un aménagement pertinent, sous réserve d'une formation à son usage.\n\n![Collaborateurs debout en discussion dans un open space](https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=85 \"Alterner les postures : 30 à 60 minutes debout toutes les 2-3 heures.\")\n\n### Les points clés de la recommandation INRS\n\nAlterner posture assise et debout dans la journée, éviter les stations statiques prolongées, ajuster la hauteur du plateau au coude fléchi à 90° (assis comme debout), maintenir l'écran à hauteur des yeux (bras d'écran recommandé). Ces recommandations valent pour tous les postes bureau, l'assis-debout étant l'outil qui les rend praticables au quotidien.\n\n### La formation à l'usage\n\nUn bureau assis-debout mal utilisé (rester debout des heures d'affilée, ou ne jamais utiliser la fonction) n'apporte aucun bénéfice. L'INRS recommande une sensibilisation aux bonnes pratiques : commencer par 15 minutes de debout par heure, monter progressivement, écouter les signaux du corps.\n\n---\n\n## Quels sont les modèles pros disponibles en occasion ?\n\nQuatre à cinq références concentrent l'essentiel de l'offre reconditionnée en France.\n\n### Steelcase Migration Bench\n\nProbablement l'assis-debout pro le plus vendu au monde. Configuration bench (2 à 4 postes alignés), moteur Linak bi-moteur, mémoire de positions. C'est le modèle le plus fréquent en reconditionné, avec un stock quasi permanent. Prix : 800-2800 € selon la configuration (nombre de postes, options).\n\n### Kinnarps Series K (assis-debout)\n\nMarque suédoise très présente dans les entreprises nordiques, régulièrement importée en France via des reprises de mobilier. Design épuré, moteur silencieux, plage de réglage large. Prix reconditionné : 600-900 € l'unité.\n\n### Vitra Tyde (assis-debout premium)\n\nDesign suisse haut de gamme, plateau bois massif ou placage, moteur bi-moteur silencieux. Segment direction et espaces prestige. Rare en reconditionné, prix 900-1500 €.\n\n### IKEA Bekant assis-debout\n\nL'IKEA a proposé une gamme assis-debout accessible qui revient régulièrement en occasion. Moteur Linak sur les modèles récents. Prix reconditionné : 300-500 €. Adapté au télétravail budget serré.\n\n### Assis-debout marques secondaires\n\nMarques génériques (Actiu, Herrmans, ou fabricants européens sans notoriété grand public) équipent aussi le marché du reconditionné. Prix 400-700 €, qualité variable selon les modèles, à vérifier au cas par cas.\n\n![Bureau assis-debout électrique reconditionné](https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1600&q=85 \"Un bureau assis-debout Migration Bench en configuration open space.\")\n\n---\n\n## Comment vérifier l'état du moteur électrique ?\n\nLe moteur est le point critique d'un assis-debout d'occasion. Un plateau qui se raye se répare, un moteur qui lâche transforme le bureau en meuble statique. Cinq vérifications avant tout achat.\n\n![Immeuble de bureaux moderne](https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=85 \"Les sièges sociaux ont adopté massivement l'assis-debout depuis 2020.\")\n\n### 1. Tester toute la plage de hauteur\n\nMonter du plus bas au plus haut et redescendre. Le mouvement doit être régulier, silencieux (léger bourdonnement acceptable), sans à-coups ni ralentissements anormaux.\n\n### 2. Vérifier la vitesse de montée\n\nUn moteur en bonne santé monte le plateau de 65 à 130 cm en 15 à 20 secondes environ. Si la montée est nettement plus lente, le moteur fatigue.\n\n### 3. Tester la charge maximale\n\nMettre le poids typique du bureau utilisé (écran, ordinateur portable, lampe, dossiers) et vérifier que la montée reste possible. Si le moteur peine, la longévité résiduelle sera courte.\n\n### 4. Vérifier la mémoire des positions\n\nProgrammer 2 ou 3 positions et les rappeler pour tester la précision et la répétabilité. Une mémoire qui \"oublie\" ou approche mal la hauteur cible est un signe de télécommande défaillante.\n\n### 5. Vérifier l'anti-collision\n\nMettre un obstacle sur le trajet de descente (une boîte par exemple) et lancer la descente automatique. Le plateau doit s'arrêter au contact. Sinon, sécurité HS.\n\n> [tip] Nous testons systématiquement ces cinq points sur chaque assis-debout entrant en atelier. Un modèle qui échoue à un test est écarté du circuit vente.\n\n---\n\n## Combien coûte réellement un assis-debout reconditionné ?\n\nQuatre segments de prix couvrent l'essentiel du marché.\n\n### Segment entrée 400 à 600 € : télétravail budget serré\n\nAssis-debout mono-moteur marque secondaire, plage de réglage réduite (75 à 115 cm typiquement). Convient pour un usage télétravail modéré, moins de 4 heures par jour en position debout.\n\n### Segment standard 600 à 800 € : usage pro régulier\n\nBi-moteur, plage 65 à 125 cm, mémoire de positions, marque secondaire ou Steelcase premier prix. C'est le cœur du marché reconditionné pro, meilleur rapport qualité/prix.\n\n### Segment haut de gamme 800 à 1400 € : Steelcase Migration, Kinnarps K\n\nBi-moteur premium, mémoire 4 positions, anti-collision, câblage intégré. Configuration bench 2 postes possible. Pour des usages intensifs 8 heures par jour.\n\n### Segment premium 900 à 1500 € : Vitra Tyde, direction\n\nDesign haut de gamme, plateau bois massif ou placage, cuir. Segment très confidentiel en reconditionné, arrivages rares.\n\n### Kit de conversion 150 à 350 €\n\nAlternative low-cost si vous voulez tester l'assis-debout sans changer votre bureau existant. Ne convient pas à un usage intensif long terme mais permet de valider l'usage avant investissement.\n\n---\n\n## Installation, câblage, alimentation : les prérequis\n\nUn assis-debout électrique n'est pas plug-and-play comme un bureau statique. Trois points à anticiper avant la livraison.\n\n### Prise électrique à proximité\n\nLe bureau doit être branché en permanence sur une prise 220V standard. Prévoyez une prise à moins de 2 mètres du bureau, idéalement au sol (moins visible que sur un mur). Sur les configurations bench, une seule prise alimente les deux postes.\n\n### Longueur de câbles suffisante\n\nQuand le bureau monte, les câbles écran, PC, chargeur laptop remontent avec. Prévoyez des câbles longs (2 mètres minimum) ou un système de gestion de câbles avec chaîne porte-câbles pour éviter la tension en position haute.\n\n### Passe-câbles sur le plateau\n\nLa plupart des assis-debout pros ont un ou deux trous dans le plateau (avec cache amovible) pour faire descendre les câbles vers l'arrière. C'est essentiel pour cacher les câbles en position debout.\n\n> [tip] Prévoyez une chaîne porte-câbles (10 à 30 € en accessoire) si votre modèle n'en a pas d'origine. Elle guide les câbles proprement et évite qu'ils traînent ou se coincent.\n\n---\n\n## Bilan RSE : l'assis-debout reconditionné vs neuf\n\nUn assis-debout électrique neuf émet environ 100 à 180 kg de CO2 à la fabrication (plus élevé qu'un bureau classique à cause du moteur et de l'électronique), selon les données ADEME du secteur mobilier professionnel. Réutiliser un assis-debout existant évite intégralement cette empreinte, en particulier la partie électronique qui est la plus lourde en impact.\n\n### Argument RSE double : santé + carbone\n\nInvestir dans un assis-debout reconditionné coche deux cases RSE en même temps : amélioration des conditions de travail (santé) et économie circulaire (climat). Un signal fort dans les rapports RSE et sur les pages carrière pour attirer les talents.\n\n### Attestation de valorisation\n\nSur demande, nous fournissons une attestation chiffrée du carbone évité par la commande. Utilisable dans les rapports RSE et les réponses aux marchés publics soumis à l'article R2172-4 du CCP.\n\n---\n\n## Sources et références\n\n- INRS, poste de travail informatique : [inrs.fr](https://www.inrs.fr/risques/travail-ecran/ce-qu-il-faut-retenir.html)\n- Publications ADEME sur le mobilier professionnel : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Fabricant Linak (moteurs pour assis-debout pro) : [linak.fr](https://www.linak.fr/)\n- Fiche produit Steelcase Migration : [steelcase.com](https://www.steelcase.com/eu-fr/)\n\n---\n\n## Continuer votre exploration\n\n- Consulter le [HUB mobilier de bureau occasion](/mobilier-de-bureau-occasion)\n- Voir la version classique [bureau professionnel d'occasion](/bureau-professionnel-occasion)\n- Compléter avec un [fauteuil ergonomique](/fauteuil-ergonomique) adapté\n- Découvrir la marque [Steelcase](/marques/steelcase) (Migration Bench)\n- Angle RSE : [mobilier de bureau éco-responsable](/mobilier-bureau-eco-responsable)\n- Livraison locale : [Marseille](/bureau-occasion-marseille), [Aix](/bureau-occasion-aix-en-provence), [Nice](/bureau-occasion-nice)\n",
   "faq": [
-    { "question": "Un bureau assis-debout reconditionné est-il vraiment fiable ?", "answer": "Oui, à condition que le moteur ait été testé à charge maximale et que les câbles aient été vérifiés. C'est le premier point de contrôle dans notre atelier pour ce type de mobilier. Un bureau électrique bien reconditionné tient 10 à 15 ans d'usage supplémentaires." },
-    { "question": "Combien coûte un bureau assis-debout d'occasion ?", "answer": "Fourchette typique de 600 à 900 euros selon la marque, la largeur et l'état esthétique. Un Steelcase Migration neuf coûte entre 1500 et 2500 euros selon les options. Les configurations bench 4 postes montent à 1500-2800 €." },
-    { "question": "Le bureau est-il livré monté ?", "answer": "Selon les modèles et la zone. La livraison + installation est fortement recommandée pour l'assis-debout électrique (câblage, réglages, tests). Chiffrée séparément au devis." },
-    { "question": "Quelle plage de hauteur est-elle nécessaire ?", "answer": "Une plage de 65 à 125 cm couvre 95% des morphologies (de 1m55 à 1m95). Vérifiez si vous mesurez moins d'1m55 ou plus d'1m95 : certains modèles descendent jusqu'à 60 cm ou montent à 130 cm." },
-    { "question": "Faut-il rester debout toute la journée ?", "answer": "Non, ce n'est même pas recommandé. L'idéal est d'alterner 30 à 60 minutes debout toutes les 2 à 3 heures. La station debout continue fatigue autant que la station assise, avec des risques différents." },
-    { "question": "Le moteur fait-il du bruit ?", "answer": "Un léger bourdonnement mécanique est normal pendant la montée/descente (15-20 secondes). Un vrai bruit intempestif signale un moteur en fin de vie." },
-    { "question": "Puis-je utiliser un assis-debout comme table de réunion ponctuelle ?", "answer": "Oui, plusieurs modèles Steelcase et Kinnarps sont volontairement dimensionnés (160-180 cm) pour servir également de table de réunion debout occasionnelle." }
+    {
+      "question": "Un bureau assis-debout reconditionné est-il vraiment fiable ?",
+      "answer": "Oui, à condition que le moteur ait été testé à charge maximale et que les câbles aient été vérifiés. C'est le premier point de contrôle dans notre atelier pour ce type de mobilier. Un bureau électrique bien reconditionné tient 10 à 15 ans d'usage supplémentaires."
+    },
+    {
+      "question": "Combien coûte un bureau assis-debout d'occasion ?",
+      "answer": "Fourchette typique de 600 à 900 euros selon la marque, la largeur et l'état esthétique. Un Steelcase Migration neuf coûte entre 1500 et 2500 euros selon les options. Les configurations bench 4 postes montent à 1500-2800 €."
+    },
+    {
+      "question": "Le bureau est-il livré monté ?",
+      "answer": "Selon les modèles et la zone. La livraison + installation est fortement recommandée pour l'assis-debout électrique (câblage, réglages, tests). Chiffrée séparément au devis."
+    },
+    {
+      "question": "Quelle plage de hauteur est-elle nécessaire ?",
+      "answer": "Une plage de 65 à 125 cm couvre 95% des morphologies (de 1m55 à 1m95). Vérifiez si vous mesurez moins d'1m55 ou plus d'1m95 : certains modèles descendent jusqu'à 60 cm ou montent à 130 cm."
+    },
+    {
+      "question": "Faut-il rester debout toute la journée ?",
+      "answer": "Non, ce n'est même pas recommandé. L'idéal est d'alterner 30 à 60 minutes debout toutes les 2 à 3 heures. La station debout continue fatigue autant que la station assise, avec des risques différents."
+    },
+    {
+      "question": "Le moteur fait-il du bruit ?",
+      "answer": "Un léger bourdonnement mécanique est normal pendant la montée/descente (15-20 secondes). Un vrai bruit intempestif signale un moteur en fin de vie."
+    },
+    {
+      "question": "Puis-je utiliser un assis-debout comme table de réunion ponctuelle ?",
+      "answer": "Oui, plusieurs modèles Steelcase et Kinnarps sont volontairement dimensionnés (160-180 cm) pour servir également de table de réunion debout occasionnelle."
+    }
   ]
 }

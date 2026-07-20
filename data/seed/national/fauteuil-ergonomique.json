@@ -11,16 +11,45 @@
   "readingTimeMinutes": 9,
   "tldr": "Un fauteuil ergonomique professionnel reconditionné offre les mêmes réglages et la même durée de vie qu'un modèle neuf, pour un tiers du prix. Les modèles les plus recommandés par les ergonomes (Steelcase Leap V2, Herman Miller Aeron, Haworth Zody, Vitra Physix) sont disponibles en reconditionné entre 400 et 750 € contre 1300 à 1700 € neufs.",
   "audienceIntro": [
-    { "label": "Télétravailleur régulier", "description": "Vous passez 4h+ par jour sur un fauteuil : montez en qualité sans exploser le budget." },
-    { "label": "Freelance ou indépendant", "description": "Vous cherchez un vrai fauteuil pro déductible, à prix accessible." },
-    { "label": "Office manager", "description": "Vous équipez des collaborateurs à faible impact carbone, avec traçabilité." },
-    { "label": "Personne avec mal de dos", "description": "Vous voulez un modèle validé par les ergonomes (Leap V2, Aeron, Zody)." }
+    {
+      "label": "Télétravailleur régulier",
+      "description": "Vous passez 4h+ par jour sur un fauteuil : montez en qualité sans exploser le budget."
+    },
+    {
+      "label": "Freelance ou indépendant",
+      "description": "Vous cherchez un vrai fauteuil pro déductible, à prix accessible."
+    },
+    {
+      "label": "Office manager",
+      "description": "Vous équipez des collaborateurs à faible impact carbone, avec traçabilité."
+    },
+    {
+      "label": "Personne avec mal de dos",
+      "description": "Vous voulez un modèle validé par les ergonomes (Leap V2, Aeron, Zody)."
+    }
   ],
   "keyStats": [
-    { "value": "1/3", "label": "du prix d'un fauteuil pro neuf", "icon": "Award" },
-    { "value": "7 pts", "label": "de contrôle qualité en atelier", "icon": "ShieldCheck" },
-    { "value": "10-15 ans", "label": "de durée de vie résiduelle", "icon": "Clock" },
-    { "value": "87 %", "label": "des maladies pro sont des TMS", "icon": "Users", "source": "AMELI 2024" }
+    {
+      "value": "1/3",
+      "label": "du prix d'un fauteuil pro neuf",
+      "icon": "Award"
+    },
+    {
+      "value": "7 pts",
+      "label": "de contrôle qualité en atelier",
+      "icon": "ShieldCheck"
+    },
+    {
+      "value": "10-15 ans",
+      "label": "de durée de vie résiduelle",
+      "icon": "Clock"
+    },
+    {
+      "value": "87 %",
+      "label": "des maladies pro sont des TMS",
+      "icon": "Users",
+      "source": "AMELI 2024"
+    }
   ],
   "caseStudies": [
     {
@@ -44,37 +73,146 @@
     }
   ],
   "pricingRanges": [
-    { "label": "Steelcase Leap V2", "priceFrom": 400, "priceTo": 650, "newPriceRef": "1300-1700 €", "notes": "Selon état, options d'origine (repose-tête, cuir, tissu), génération." },
-    { "label": "Herman Miller Aeron", "priceFrom": 500, "priceTo": 900, "newPriceRef": "1400-1800 €", "notes": "Tailles A/B/C. Le modèle Remastered (2016+) se négocie plus haut." },
-    { "label": "Steelcase Series 1", "priceFrom": 250, "priceTo": 400, "newPriceRef": "500-750 €", "notes": "Meilleur rapport ergonomie/prix, disponibilité régulière." },
-    { "label": "Steelcase Gesture", "priceFrom": 500, "priceTo": 750, "newPriceRef": "1500-1900 €", "notes": "Accoudoirs suiveurs, orienté usage tablette/smartphone." },
-    { "label": "Steelcase Think", "priceFrom": 300, "priceTo": 500, "newPriceRef": "800-1100 €", "notes": "Auto-ajustement selon morphologie, design compact." },
-    { "label": "Haworth Zody", "priceFrom": 350, "priceTo": 550, "newPriceRef": "900-1200 €", "notes": "Système PAL breveté, très inclusif pour le bas du dos." },
-    { "label": "Vitra Physix", "priceFrom": 400, "priceTo": 650, "newPriceRef": "1200-1600 €", "notes": "Mécanisme Smart-P, design européen, orienté direction." },
-    { "label": "Steelcase Amia", "priceFrom": 200, "priceTo": 350, "newPriceRef": "500-700 €", "notes": "Entrée de gamme pro, historiquement administrations." }
+    {
+      "label": "Steelcase Leap V2",
+      "priceFrom": 400,
+      "priceTo": 650,
+      "newPriceRef": "1300-1700 €",
+      "notes": "Selon état, options d'origine (repose-tête, cuir, tissu), génération."
+    },
+    {
+      "label": "Herman Miller Aeron",
+      "priceFrom": 500,
+      "priceTo": 900,
+      "newPriceRef": "1400-1800 €",
+      "notes": "Tailles A/B/C. Le modèle Remastered (2016+) se négocie plus haut."
+    },
+    {
+      "label": "Steelcase Series 1",
+      "priceFrom": 250,
+      "priceTo": 400,
+      "newPriceRef": "500-750 €",
+      "notes": "Meilleur rapport ergonomie/prix, disponibilité régulière."
+    },
+    {
+      "label": "Steelcase Gesture",
+      "priceFrom": 500,
+      "priceTo": 750,
+      "newPriceRef": "1500-1900 €",
+      "notes": "Accoudoirs suiveurs, orienté usage tablette/smartphone."
+    },
+    {
+      "label": "Steelcase Think",
+      "priceFrom": 300,
+      "priceTo": 500,
+      "newPriceRef": "800-1100 €",
+      "notes": "Auto-ajustement selon morphologie, design compact."
+    },
+    {
+      "label": "Haworth Zody",
+      "priceFrom": 350,
+      "priceTo": 550,
+      "newPriceRef": "900-1200 €",
+      "notes": "Système PAL breveté, très inclusif pour le bas du dos."
+    },
+    {
+      "label": "Vitra Physix",
+      "priceFrom": 400,
+      "priceTo": 650,
+      "newPriceRef": "1200-1600 €",
+      "notes": "Mécanisme Smart-P, design européen, orienté direction."
+    },
+    {
+      "label": "Steelcase Amia",
+      "priceFrom": 200,
+      "priceTo": 350,
+      "newPriceRef": "500-700 €",
+      "notes": "Entrée de gamme pro, historiquement administrations."
+    }
   ],
   "deliveryTable": [
-    { "region": "PACA (Marseille, Aubagne, Aix, Toulon, Nice)", "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice, La Ciotat, Avignon", "delay": "3 à 7 jours ouvrés", "notes": "Livraison régulière avec créneau ; retrait showroom possible dans la journée sur rdv." },
-    { "region": "Rhône-Alpes", "cities": "Lyon, Grenoble, Chambéry, Valence", "delay": "5 à 10 jours ouvrés", "notes": "Expédition transporteur sur devis, tarifs dégressifs en volume." },
-    { "region": "Île-de-France", "cities": "Paris, banlieues 92, 93, 94, 78, 91, 95", "delay": "5 à 10 jours ouvrés", "notes": "Regroupement de commandes possible pour optimiser les coûts." },
-    { "region": "Ouest (Nouvelle-Aquitaine, Bretagne, Pays de la Loire)", "cities": "Bordeaux, Nantes, Rennes, Angers", "delay": "7 à 12 jours ouvrés", "notes": "Livraison sur devis, groupage recommandé." },
-    { "region": "Nord et Grand-Est", "cities": "Lille, Strasbourg, Nancy, Reims", "delay": "7 à 14 jours ouvrés", "notes": "Devis sur mesure, transporteur spécialisé mobilier." }
+    {
+      "region": "PACA (Marseille, Aubagne, Aix, Toulon, Nice)",
+      "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice, La Ciotat, Avignon",
+      "delay": "3 à 7 jours ouvrés",
+      "notes": "Livraison régulière avec créneau ; retrait showroom possible dans la journée sur rdv."
+    },
+    {
+      "region": "Rhône-Alpes",
+      "cities": "Lyon, Grenoble, Chambéry, Valence",
+      "delay": "5 à 10 jours ouvrés",
+      "notes": "Expédition transporteur sur devis, tarifs dégressifs en volume."
+    },
+    {
+      "region": "Île-de-France",
+      "cities": "Paris, banlieues 92, 93, 94, 78, 91, 95",
+      "delay": "5 à 10 jours ouvrés",
+      "notes": "Regroupement de commandes possible pour optimiser les coûts."
+    },
+    {
+      "region": "Ouest (Nouvelle-Aquitaine, Bretagne, Pays de la Loire)",
+      "cities": "Bordeaux, Nantes, Rennes, Angers",
+      "delay": "7 à 12 jours ouvrés",
+      "notes": "Livraison sur devis, groupage recommandé."
+    },
+    {
+      "region": "Nord et Grand-Est",
+      "cities": "Lille, Strasbourg, Nancy, Reims",
+      "delay": "7 à 14 jours ouvrés",
+      "notes": "Devis sur mesure, transporteur spécialisé mobilier."
+    }
   ],
   "glossary": [
-    { "term": "TMS (troubles musculo-squelettiques)", "definition": "Pathologies touchant les articulations, muscles et tendons, favorisées par une posture assise prolongée mal adaptée. Représentent 87% des maladies professionnelles reconnues en France selon l'Assurance Maladie." },
-    { "term": "Norme NF EN 1335", "definition": "Norme européenne définissant les dimensions et exigences de sécurité pour les sièges de travail de bureau. Classe A correspond au niveau le plus élevé." },
-    { "term": "Vérin à gaz", "definition": "Cylindre pneumatique permettant le réglage en hauteur du siège. Pièce d'usure à contrôler et à remplacer si le fauteuil descend seul." },
-    { "term": "Accoudoirs 4D", "definition": "Accoudoirs réglables sur quatre axes : hauteur, largeur, profondeur, angle de rotation. Standard sur les fauteuils pros haut de gamme." },
-    { "term": "LiveBack (Steelcase)", "definition": "Technologie propriétaire Steelcase qui permet au dossier de se déformer dynamiquement selon la posture, sans réglage manuel." },
-    { "term": "Système PAL (Haworth)", "definition": "Pelvic and Lumbar Back Support, breveté Haworth, offre un soutien double du bassin et des lombaires très inclusif pour les morphologies variées." },
-    { "term": "Mesh", "definition": "Toile respirante utilisée notamment sur l'Herman Miller Aeron pour l'assise et le dossier. Alternative aux mousses recouvertes de tissu." },
-    { "term": "Basculement synchrone", "definition": "Mécanisme qui synchronise l'inclinaison de l'assise et du dossier selon un ratio défini (souvent 2:1). Réduit la pression sur les cuisses lors de l'inclinaison." },
-    { "term": "Assise à profondeur réglable", "definition": "Coulissement de l'assise vers l'avant ou l'arrière (5 à 10 cm) pour adapter à la longueur des cuisses et libérer l'arrière du genou." },
-    { "term": "Soutien lombaire", "definition": "Zone du dossier qui épouse la courbure naturelle du bas du dos. Peut être réglable en hauteur, en profondeur ou les deux selon les modèles." },
-    { "term": "Reconditionnement", "definition": "Processus atelier de remise en état complet : démontage, nettoyage, remplacement des pièces d'usure, contrôle qualité. À distinguer de l'occasion simple (revendue en l'état)." },
-    { "term": "Fin de bail", "definition": "Départ d'une entreprise d'un site loué, occasion classique de remise sur le marché de mobilier professionnel en volume." }
+    {
+      "term": "TMS (troubles musculo-squelettiques)",
+      "definition": "Pathologies touchant les articulations, muscles et tendons, favorisées par une posture assise prolongée mal adaptée. Représentent 87% des maladies professionnelles reconnues en France selon l'Assurance Maladie."
+    },
+    {
+      "term": "Norme NF EN 1335",
+      "definition": "Norme européenne définissant les dimensions et exigences de sécurité pour les sièges de travail de bureau. Classe A correspond au niveau le plus élevé."
+    },
+    {
+      "term": "Vérin à gaz",
+      "definition": "Cylindre pneumatique permettant le réglage en hauteur du siège. Pièce d'usure à contrôler et à remplacer si le fauteuil descend seul."
+    },
+    {
+      "term": "Accoudoirs 4D",
+      "definition": "Accoudoirs réglables sur quatre axes : hauteur, largeur, profondeur, angle de rotation. Standard sur les fauteuils pros haut de gamme."
+    },
+    {
+      "term": "LiveBack (Steelcase)",
+      "definition": "Technologie propriétaire Steelcase qui permet au dossier de se déformer dynamiquement selon la posture, sans réglage manuel."
+    },
+    {
+      "term": "Système PAL (Haworth)",
+      "definition": "Pelvic and Lumbar Back Support, breveté Haworth, offre un soutien double du bassin et des lombaires très inclusif pour les morphologies variées."
+    },
+    {
+      "term": "Mesh",
+      "definition": "Toile respirante utilisée notamment sur l'Herman Miller Aeron pour l'assise et le dossier. Alternative aux mousses recouvertes de tissu."
+    },
+    {
+      "term": "Basculement synchrone",
+      "definition": "Mécanisme qui synchronise l'inclinaison de l'assise et du dossier selon un ratio défini (souvent 2:1). Réduit la pression sur les cuisses lors de l'inclinaison."
+    },
+    {
+      "term": "Assise à profondeur réglable",
+      "definition": "Coulissement de l'assise vers l'avant ou l'arrière (5 à 10 cm) pour adapter à la longueur des cuisses et libérer l'arrière du genou."
+    },
+    {
+      "term": "Soutien lombaire",
+      "definition": "Zone du dossier qui épouse la courbure naturelle du bas du dos. Peut être réglable en hauteur, en profondeur ou les deux selon les modèles."
+    },
+    {
+      "term": "Reconditionnement",
+      "definition": "Processus atelier de remise en état complet : démontage, nettoyage, remplacement des pièces d'usure, contrôle qualité. À distinguer de l'occasion simple (revendue en l'état)."
+    },
+    {
+      "term": "Fin de bail",
+      "definition": "Départ d'une entreprise d'un site loué, occasion classique de remise sur le marché de mobilier professionnel en volume."
+    }
   ],
-  "bodyMd": "## Sur cette page\n\n- Qu'est-ce qui définit un fauteuil vraiment ergonomique ?\n- Pourquoi passer au reconditionné plutôt qu'au neuf ?\n- Quels sont les modèles pros reconnus par les ergonomes ?\n- Comment vérifier la qualité d'un fauteuil reconditionné ?\n- Quel fauteuil choisir selon votre morphologie et votre usage ?\n- Notre process de remise en état, étape par étape\n- Livraison, essai, garantie : ce qu'il faut savoir\n- Sources et références réglementaires\n\n---\n\n## Qu'est-ce qui définit un fauteuil vraiment ergonomique ?\n\nUn fauteuil dit ergonomique n'est pas un fauteuil confortable au premier essai. C'est un fauteuil qui s'adapte à votre morphologie et qui reste supportable après huit heures d'utilisation. La différence se joue sur les réglages disponibles et sur la qualité mécanique des composants qui les rendent possibles.\n\nLa [norme NF EN 1335](https://www.boutique.afnor.org/fr-fr/norme/nf-en-1335-1/sieges-de-travail-de-bureau-partie-1-dimensions-determination-des-dimens/fa197478/1691) fixe les dimensions et exigences de sécurité pour les sièges de travail de bureau. Elle définit trois classes de conformité, la classe A correspondant au niveau le plus élevé. Un fauteuil pro digne de ce nom respecte au minimum cette classe A.\n\n### Les cinq réglages non négociables\n\nEn dessous de ces cinq réglages, le fauteuil ne peut pas s'adapter à des morphologies variées. Il finira par causer les douleurs qu'il devrait prévenir.\n\n- **Hauteur d'assise** : de 40 à 52 cm environ, ajustable par vérin à gaz\n- **Profondeur d'assise** : coulissement de 5 à 10 cm pour libérer l'arrière du genou\n- **Soutien lombaire** : hauteur et/ou intensité, pour épouser la courbure naturelle du bas du dos\n- **Accoudoirs 4D** : hauteur, largeur, profondeur, angle de rotation\n- **Tension de basculement** : réglable selon votre poids, avec verrouillage multi-positions\n\n### Ce qui distingue un vrai pro d'un modèle grand public\n\nUn fauteuil de bureau vendu 200 euros en grande surface propose parfois cinq réglages, sur le papier. La différence se voit à l'usage sur trois à cinq ans : mousses qui s'affaissent, vérin qui perd sa pression, mécanisme de basculement qui craque, revêtement qui se déchire. Les modèles pros sont conçus pour tenir dix à quinze ans en usage quotidien.\n\n![Fauteuil ergonomique professionnel dans un bureau](https://images.unsplash.com/photo-1541558869434-2840d308329a?w=1600&q=85 \"Fauteuil de bureau pro à cinq réglages, essentiel pour prévenir les TMS.\")\n\n> [tip] Un fauteuil ergonomique correctement réglé se remarque à un signe simple : vous oubliez qu'il est là. Si vous pensez à votre siège, c'est qu'il vous gêne.\n\n## Pourquoi passer au reconditionné plutôt qu'au neuf ?\n\nUn fauteuil pro neuf coûte entre 600 et 1 800 euros selon le modèle et les options. Le même fauteuil, deux ou trois ans plus tard, revient en atelier après une réorganisation d'entreprise. Il est démonté, les pièces d'usure sont remplacées, l'ensemble est remis à niveau. Il est ensuite revendu à un tiers du prix neuf, avec la même durée de vie résiduelle.\n\nCe modèle circulaire évite la mise en décharge de milliers de tonnes de mobilier chaque année. Selon l'[ADEME](https://librairie.ademe.fr/consommer-autrement/), le secteur du mobilier professionnel est l'un des gisements les plus significatifs pour l'économie circulaire en France, notamment via le réemploi.\n\n### Trois avantages concrets pour l'acheteur\n\n- **Prix divisé par trois** en moyenne par rapport au neuf, à qualité équivalente\n- **Modèles haut de gamme accessibles** : Leap V2, Aeron, Zody, Physix, souvent hors budget en neuf\n- **Empreinte carbone réduite** : réutiliser un fauteuil, c'est éviter la production d'un neuf\n\n### Ce que le reconditionné implique côté acheteur\n\nVous n'aurez pas toujours la couleur exacte souhaitée ni la totalité des options d'origine. Le stock dépend de ce qui revient en atelier. Notre équipe conseille par téléphone selon les modèles disponibles au moment de votre demande.\n\n---\n\n## Quels sont les modèles pros reconnus par les ergonomes ?\n\nSix modèles reviennent régulièrement dans les recommandations des ergonomes en France. Ils partagent trois caractéristiques : réglages complets, structure robuste, disponibilité en reconditionné.\n\n| Modèle | Marque | Points forts | Public visé |\n| --- | --- | --- | --- |\n| Leap V2 | [Steelcase](/marques/steelcase) | Soutien lombaire dynamique LiveBack, sept réglages | Usage 8h/j, dos fragile |\n| Aeron | Herman Miller | Mesh respirant, trois tailles A/B/C | Environnements chauds, morphologies extrêmes |\n| Series 1 | Steelcase | Bon rapport réglages/prix, design sobre | Télétravail régulier, budget moyen |\n| Gesture | Steelcase | Accoudoirs suiveurs, adapté aux smartphones/tablettes | Multitâche, postures variées |\n| Zody | Haworth | PAL (Pelvic and Lumbar) breveté, très inclusif | Utilisateurs sensibles au bas du dos |\n| Physix | Vitra | Mécanisme Smart-P, esthétique européenne | Bureaux design, direction |\n\n> [success] Notre stock tourne principalement autour de Steelcase Leap, Series 1 et Gesture, plus quelques Aeron, Zody et Physix selon les arrivages. Consultez la [sélection fauteuils](/categorie/fauteuil) pour voir les modèles disponibles cette semaine.\n\n---\n\n## Comment vérifier la qualité d'un fauteuil reconditionné ?\n\nToutes les remises en état ne se valent pas. Un fauteuil simplement nettoyé et revendu n'est pas un fauteuil reconditionné. Voici les points à vérifier avant tout achat, quel que soit le vendeur.\n\n### Sept vérifications à faire avant de valider\n\n1. **Vérin à gaz** : le fauteuil doit tenir sa hauteur, sans redescendre lentement\n2. **Mécanisme de basculement** : la tension doit se régler et se verrouiller sans jeu\n3. **Assise** : la mousse ne doit pas être affaissée, l'assise doit reprendre sa forme\n4. **Dossier** : le soutien lombaire doit être ferme, sans jeu latéral\n5. **Accoudoirs** : tous les axes doivent bouger, sans grincement ni blocage\n6. **Roulettes** : cinq roulettes en bon état, adaptées à votre sol (souple ou dur)\n7. **Revêtement** : pas de trou, pas de tache tenace, coutures intactes\n\n![Atelier de reconditionnement de fauteuils de bureau](https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=85 \"Étape de contrôle mécanique dans notre atelier reconditionnement.\")\n\n### Ce qu'un vrai reconditionneur remplace systématiquement\n\nDans notre atelier, chaque fauteuil qui rentre passe par sept contrôles avant remise en vente. Les pièces d'usure (vérin, roulettes, mousses partiellement affaissées) sont remplacées par des pièces d'origine ou compatibles. Les défauts esthétiques sont documentés et communiqués avant achat.\n\n## Quel fauteuil choisir selon votre morphologie et votre usage ?\n\n### Si vous mesurez moins d'1m65\n\nCherchez un modèle avec une profondeur d'assise réglable et un dossier pas trop haut. Le Steelcase Series 1 en taille standard convient bien. L'Aeron existe en taille A, spécifiquement conçue pour les petites morphologies.\n\n### Si vous mesurez plus d'1m85 ou pesez plus de 100 kg\n\nOrientez-vous vers un modèle testé pour usage intensif, avec vérin renforcé. Le Leap V2 est certifié jusqu'à 180 kg selon la [fiche produit Steelcase](https://www.steelcase.com/eu-fr/produits/sieges-bureau/leap/). L'Aeron taille C est également adapté.\n\n### Si vous alternez télétravail et bureau\n\nUn seul fauteuil ne suffira pas si vous voulez le même confort dans les deux environnements. Deux options : équiper les deux postes avec le même modèle, ou accepter un différentiel de confort et privilégier le poste où vous passez le plus de temps.\n\n### Si vous avez déjà des douleurs\n\nLisez d'abord notre guide sur le [choix d'un fauteuil ergonomique en cas de mal de dos](/guides/ergonomie/fauteuil-de-bureau-ergonomique-mal-de-dos). Il détaille les critères à valider selon la nature de la douleur (lombaire, cervicale, sciatique). Selon [l'Assurance Maladie](https://www.ameli.fr/entreprise/sante-travail/risques/troubles-musculosquelettiques-tms), les TMS représentent 87% des maladies professionnelles reconnues, dont une part liée aux postures de travail assises prolongées.\n\n---\n\n## Notre process de remise en état, étape par étape\n\nChaque fauteuil qui rentre dans notre atelier suit sept étapes documentées. Le process est le même pour un Leap V2 sorti d'entreprise que pour un Aeron issu d'une reprise après réorganisation.\n\n### Étape 1 : audit d'entrée\n\nDémontage complet, inspection visuelle, test des mécanismes. Les modèles jugés non récupérables sortent du circuit vente et partent au recyclage matière.\n\n### Étape 2 : nettoyage profond\n\nInjection extraction pour les tissus, dégraissage des surfaces plastiques, nettoyage des mécanismes. Les fauteuils tissu passent par une machine spécialisée qui retire poussière, allergènes et résidus.\n\n### Étape 3 : remplacement des pièces d'usure\n\nVérins à gaz, roulettes, éventuellement mousses d'assise si affaissement. Ces pièces sont neuves, sourcées auprès de fournisseurs spécialisés en pièces détachées mobilier de bureau.\n\n### Étape 4 : contrôle qualité final\n\nSept points de vérification à cocher avant la mise en vente. Un fauteuil qui échoue à un contrôle repart en atelier.\n\n### Étape 5 : documentation\n\nChaque fauteuil est photographié sous plusieurs angles, avec mention des éventuels défauts esthétiques résiduels. Ces défauts sont visibles sur la fiche produit avant achat.\n\n---\n\n## Livraison, essai, garantie : ce qu'il faut savoir\n\n### Essai avant achat\n\nLe showroom se situe à La Penne-sur-Huveaune, à 15 minutes de Marseille et 5 minutes d'Aubagne. Vous pouvez essayer plusieurs modèles sur rendez-vous du lundi au samedi. Pour les visiteurs éloignés, notre équipe conseille par téléphone selon votre morphologie, votre usage et les modèles en stock au moment de la demande.\n\n### Livraison France\n\nLivraison régulière dans toute la région PACA. Pour le reste de la France, expédition sur devis selon le volume et la zone. La [page zones desservies](/zones-desservies) détaille les modalités par région.\n\n### Garantie\n\nLes conditions de garantie sont précisées sur chaque fiche produit et récapitulées dans nos [conditions générales de vente](/cgv). Chaque fauteuil est vendu avec facture, un préalable indispensable pour toute intervention SAV.\n\n> [tip] Vous équipez plusieurs postes ? Demandez un [devis en volume](/contact). Nous adaptons les prix et la livraison selon les quantités et regroupons parfois plusieurs modèles pour compléter une commande.\n\n---\n\n## Sources et références réglementaires\n\n- Norme NF EN 1335 sur les sièges de travail de bureau : [afnor.org](https://www.boutique.afnor.org/fr-fr/norme/nf-en-1335-1/sieges-de-travail-de-bureau-partie-1-dimensions-determination-des-dimens/fa197478/1691)\n- Troubles musculo-squelettiques et prévention : [ameli.fr](https://www.ameli.fr/entreprise/sante-travail/risques/troubles-musculosquelettiques-tms)\n- Fiche INRS ED 79, poste de travail informatisé : [inrs.fr](https://www.inrs.fr/media.html?refINRS=ED%2079)\n- Économie circulaire et mobilier professionnel, publications ADEME : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Fiche technique Steelcase Leap V2 : [steelcase.com](https://www.steelcase.com/eu-fr/produits/sieges-bureau/leap/)\n\n---\n\n## Continuer votre recherche\n\n- Voir les [fauteuils reconditionnés en stock](/categorie/fauteuil)\n- Guide : [chaise gaming vs chaise ergonomique](/guides/ergonomie/chaise-gaming-vs-chaise-ergonomique)\n- Guide : [choisir son fauteuil quand on a mal au dos](/guides/ergonomie/fauteuil-de-bureau-ergonomique-mal-de-dos)\n- Voir les [bureaux professionnels d'occasion](/bureau-professionnel-occasion)\n- Explorer la [marque Steelcase](/marques/steelcase)\n- Retrait ou livraison à [Marseille](/bureau-occasion-marseille), [Aubagne](/bureau-occasion-aubagne), [Aix-en-Provence](/bureau-occasion-aix-en-provence)\n",
+  "bodyMd": "## Sur cette page\n\n- Qu'est-ce qui définit un fauteuil vraiment ergonomique ?\n- Pourquoi passer au reconditionné plutôt qu'au neuf ?\n- Quels sont les modèles pros reconnus par les ergonomes ?\n- Comment vérifier la qualité d'un fauteuil reconditionné ?\n- Quel fauteuil choisir selon votre morphologie et votre usage ?\n- Notre process de remise en état, étape par étape\n- Livraison, essai, garantie : ce qu'il faut savoir\n- Sources et références réglementaires\n\n---\n\n## Qu'est-ce qui définit un fauteuil vraiment ergonomique ?\n\nUn fauteuil dit ergonomique n'est pas un fauteuil confortable au premier essai. C'est un fauteuil qui s'adapte à votre morphologie et qui reste supportable après huit heures d'utilisation. La différence se joue sur les réglages disponibles et sur la qualité mécanique des composants qui les rendent possibles.\n\nLa [norme NF EN 1335](https://www.boutique.afnor.org/fr-fr/norme/nf-en-1335-1/sieges-de-travail-de-bureau-partie-1-dimensions-determination-des-dimens/fa197478/1691) fixe les dimensions et exigences de sécurité pour les sièges de travail de bureau. Elle définit trois classes de conformité, la classe A correspondant au niveau le plus élevé. Un fauteuil pro digne de ce nom respecte au minimum cette classe A.\n\n### Les cinq réglages non négociables\n\nEn dessous de ces cinq réglages, le fauteuil ne peut pas s'adapter à des morphologies variées. Il finira par causer les douleurs qu'il devrait prévenir.\n\n- **Hauteur d'assise** : de 40 à 52 cm environ, ajustable par vérin à gaz\n- **Profondeur d'assise** : coulissement de 5 à 10 cm pour libérer l'arrière du genou\n- **Soutien lombaire** : hauteur et/ou intensité, pour épouser la courbure naturelle du bas du dos\n- **Accoudoirs 4D** : hauteur, largeur, profondeur, angle de rotation\n- **Tension de basculement** : réglable selon votre poids, avec verrouillage multi-positions\n\n### Ce qui distingue un vrai pro d'un modèle grand public\n\nUn fauteuil de bureau vendu 200 euros en grande surface propose parfois cinq réglages, sur le papier. La différence se voit à l'usage sur trois à cinq ans : mousses qui s'affaissent, vérin qui perd sa pression, mécanisme de basculement qui craque, revêtement qui se déchire. Les modèles pros sont conçus pour tenir dix à quinze ans en usage quotidien.\n\n![Fauteuil ergonomique professionnel dans un bureau](https://images.unsplash.com/photo-1541558869434-2840d308329a?w=1600&q=85 \"Fauteuil de bureau pro à cinq réglages, essentiel pour prévenir les TMS.\")\n\n> [tip] Un fauteuil ergonomique correctement réglé se remarque à un signe simple : vous oubliez qu'il est là. Si vous pensez à votre siège, c'est qu'il vous gêne.\n\n## Pourquoi passer au reconditionné plutôt qu'au neuf ?\n\nUn fauteuil pro neuf coûte entre 600 et 1 800 euros selon le modèle et les options. Le même fauteuil, deux ou trois ans plus tard, revient en atelier après une réorganisation d'entreprise. Il est démonté, les pièces d'usure sont remplacées, l'ensemble est remis à niveau. Il est ensuite revendu à un tiers du prix neuf, avec la même durée de vie résiduelle.\n\n![Fauteuil ergonomique à dossier résille dans un bureau contemporain](https://images.unsplash.com/photo-1505797149-35ebcb05a6fd?w=1600&q=85 \"Le dossier résille assure la ventilation sur les longues journées.\")\n\nCe modèle circulaire évite la mise en décharge de milliers de tonnes de mobilier chaque année. Selon l'[ADEME](https://librairie.ademe.fr/consommer-autrement/), le secteur du mobilier professionnel est l'un des gisements les plus significatifs pour l'économie circulaire en France, notamment via le réemploi.\n\n### Trois avantages concrets pour l'acheteur\n\n- **Prix divisé par trois** en moyenne par rapport au neuf, à qualité équivalente\n- **Modèles haut de gamme accessibles** : Leap V2, Aeron, Zody, Physix, souvent hors budget en neuf\n- **Empreinte carbone réduite** : réutiliser un fauteuil, c'est éviter la production d'un neuf\n\n### Ce que le reconditionné implique côté acheteur\n\nVous n'aurez pas toujours la couleur exacte souhaitée ni la totalité des options d'origine. Le stock dépend de ce qui revient en atelier. Notre équipe conseille par téléphone selon les modèles disponibles au moment de votre demande.\n\n---\n\n## Quels sont les modèles pros reconnus par les ergonomes ?\n\nSix modèles reviennent régulièrement dans les recommandations des ergonomes en France. Ils partagent trois caractéristiques : réglages complets, structure robuste, disponibilité en reconditionné.\n\n![Réunion d'équipe dans un espace équipé de sièges ergonomiques](https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&q=85 \"Les sièges pros équipent les entreprises exigeantes depuis des décennies.\")\n\n| Modèle | Marque | Points forts | Public visé |\n| --- | --- | --- | --- |\n| Leap V2 | [Steelcase](/marques/steelcase) | Soutien lombaire dynamique LiveBack, sept réglages | Usage 8h/j, dos fragile |\n| Aeron | Herman Miller | Mesh respirant, trois tailles A/B/C | Environnements chauds, morphologies extrêmes |\n| Series 1 | Steelcase | Bon rapport réglages/prix, design sobre | Télétravail régulier, budget moyen |\n| Gesture | Steelcase | Accoudoirs suiveurs, adapté aux smartphones/tablettes | Multitâche, postures variées |\n| Zody | Haworth | PAL (Pelvic and Lumbar) breveté, très inclusif | Utilisateurs sensibles au bas du dos |\n| Physix | Vitra | Mécanisme Smart-P, esthétique européenne | Bureaux design, direction |\n\n> [success] Notre stock tourne principalement autour de Steelcase Leap, Series 1 et Gesture, plus quelques Aeron, Zody et Physix selon les arrivages. Consultez la [sélection fauteuils](/categorie/fauteuil) pour voir les modèles disponibles cette semaine.\n\n---\n\n## Comment vérifier la qualité d'un fauteuil reconditionné ?\n\nToutes les remises en état ne se valent pas. Un fauteuil simplement nettoyé et revendu n'est pas un fauteuil reconditionné. Voici les points à vérifier avant tout achat, quel que soit le vendeur.\n\n### Sept vérifications à faire avant de valider\n\n1. **Vérin à gaz** : le fauteuil doit tenir sa hauteur, sans redescendre lentement\n2. **Mécanisme de basculement** : la tension doit se régler et se verrouiller sans jeu\n3. **Assise** : la mousse ne doit pas être affaissée, l'assise doit reprendre sa forme\n4. **Dossier** : le soutien lombaire doit être ferme, sans jeu latéral\n5. **Accoudoirs** : tous les axes doivent bouger, sans grincement ni blocage\n6. **Roulettes** : cinq roulettes en bon état, adaptées à votre sol (souple ou dur)\n7. **Revêtement** : pas de trou, pas de tache tenace, coutures intactes\n\n![Atelier de reconditionnement de fauteuils de bureau](https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=85 \"Étape de contrôle mécanique dans notre atelier reconditionnement.\")\n\n### Ce qu'un vrai reconditionneur remplace systématiquement\n\nDans notre atelier, chaque fauteuil qui rentre passe par sept contrôles avant remise en vente. Les pièces d'usure (vérin, roulettes, mousses partiellement affaissées) sont remplacées par des pièces d'origine ou compatibles. Les défauts esthétiques sont documentés et communiqués avant achat.\n\n## Quel fauteuil choisir selon votre morphologie et votre usage ?\n\n### Si vous mesurez moins d'1m65\n\nCherchez un modèle avec une profondeur d'assise réglable et un dossier pas trop haut. Le Steelcase Series 1 en taille standard convient bien. L'Aeron existe en taille A, spécifiquement conçue pour les petites morphologies.\n\n![Poste de travail ergonomique complet](https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600&q=85 \"Fauteuil réglé + écran à hauteur des yeux : le duo anti-TMS.\")\n\n### Si vous mesurez plus d'1m85 ou pesez plus de 100 kg\n\nOrientez-vous vers un modèle testé pour usage intensif, avec vérin renforcé. Le Leap V2 est certifié jusqu'à 180 kg selon la [fiche produit Steelcase](https://www.steelcase.com/eu-fr/produits/sieges-bureau/leap/). L'Aeron taille C est également adapté.\n\n### Si vous alternez télétravail et bureau\n\nUn seul fauteuil ne suffira pas si vous voulez le même confort dans les deux environnements. Deux options : équiper les deux postes avec le même modèle, ou accepter un différentiel de confort et privilégier le poste où vous passez le plus de temps.\n\n### Si vous avez déjà des douleurs\n\nLisez d'abord notre guide sur le [choix d'un fauteuil ergonomique en cas de mal de dos](/guides/ergonomie/fauteuil-de-bureau-ergonomique-mal-de-dos). Il détaille les critères à valider selon la nature de la douleur (lombaire, cervicale, sciatique). Selon [l'Assurance Maladie](https://www.ameli.fr/entreprise/sante-travail/risques/troubles-musculosquelettiques-tms), les TMS représentent 87% des maladies professionnelles reconnues, dont une part liée aux postures de travail assises prolongées.\n\n---\n\n## Notre process de remise en état, étape par étape\n\nChaque fauteuil qui rentre dans notre atelier suit sept étapes documentées. Le process est le même pour un Leap V2 sorti d'entreprise que pour un Aeron issu d'une reprise après réorganisation.\n\n### Étape 1 : audit d'entrée\n\nDémontage complet, inspection visuelle, test des mécanismes. Les modèles jugés non récupérables sortent du circuit vente et partent au recyclage matière.\n\n### Étape 2 : nettoyage profond\n\nInjection extraction pour les tissus, dégraissage des surfaces plastiques, nettoyage des mécanismes. Les fauteuils tissu passent par une machine spécialisée qui retire poussière, allergènes et résidus.\n\n### Étape 3 : remplacement des pièces d'usure\n\nVérins à gaz, roulettes, éventuellement mousses d'assise si affaissement. Ces pièces sont neuves, sourcées auprès de fournisseurs spécialisés en pièces détachées mobilier de bureau.\n\n### Étape 4 : contrôle qualité final\n\nSept points de vérification à cocher avant la mise en vente. Un fauteuil qui échoue à un contrôle repart en atelier.\n\n### Étape 5 : documentation\n\nChaque fauteuil est photographié sous plusieurs angles, avec mention des éventuels défauts esthétiques résiduels. Ces défauts sont visibles sur la fiche produit avant achat.\n\n---\n\n## Livraison, essai, garantie : ce qu'il faut savoir\n\n### Essai avant achat\n\nLe showroom se situe à La Penne-sur-Huveaune, à 15 minutes de Marseille et 5 minutes d'Aubagne. Vous pouvez essayer plusieurs modèles sur rendez-vous du lundi au samedi. Pour les visiteurs éloignés, notre équipe conseille par téléphone selon votre morphologie, votre usage et les modèles en stock au moment de la demande.\n\n### Livraison France\n\nLivraison régulière dans toute la région PACA. Pour le reste de la France, expédition sur devis selon le volume et la zone. La [page zones desservies](/zones-desservies) détaille les modalités par région.\n\n### Garantie\n\nLes conditions de garantie sont précisées sur chaque fiche produit et récapitulées dans nos [conditions générales de vente](/cgv). Chaque fauteuil est vendu avec facture, un préalable indispensable pour toute intervention SAV.\n\n> [tip] Vous équipez plusieurs postes ? Demandez un [devis en volume](/contact). Nous adaptons les prix et la livraison selon les quantités et regroupons parfois plusieurs modèles pour compléter une commande.\n\n---\n\n## Sources et références réglementaires\n\n- Norme NF EN 1335 sur les sièges de travail de bureau : [afnor.org](https://www.boutique.afnor.org/fr-fr/norme/nf-en-1335-1/sieges-de-travail-de-bureau-partie-1-dimensions-determination-des-dimens/fa197478/1691)\n- Troubles musculo-squelettiques et prévention : [ameli.fr](https://www.ameli.fr/entreprise/sante-travail/risques/troubles-musculosquelettiques-tms)\n- Fiche INRS ED 79, poste de travail informatisé : [inrs.fr](https://www.inrs.fr/media.html?refINRS=ED%2079)\n- Économie circulaire et mobilier professionnel, publications ADEME : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Fiche technique Steelcase Leap V2 : [steelcase.com](https://www.steelcase.com/eu-fr/produits/sieges-bureau/leap/)\n\n---\n\n## Continuer votre recherche\n\n- Voir les [fauteuils reconditionnés en stock](/categorie/fauteuil)\n- Guide : [chaise gaming vs chaise ergonomique](/guides/ergonomie/chaise-gaming-vs-chaise-ergonomique)\n- Guide : [choisir son fauteuil quand on a mal au dos](/guides/ergonomie/fauteuil-de-bureau-ergonomique-mal-de-dos)\n- Voir les [bureaux professionnels d'occasion](/bureau-professionnel-occasion)\n- Explorer la [marque Steelcase](/marques/steelcase)\n- Retrait ou livraison à [Marseille](/bureau-occasion-marseille), [Aubagne](/bureau-occasion-aubagne), [Aix-en-Provence](/bureau-occasion-aix-en-provence)\n",
   "faq": [
     {
       "question": "Un fauteuil ergonomique reconditionné vaut-il vraiment un modèle neuf ?",

@@ -15,16 +15,45 @@
   "readingTimeMinutes": 11,
   "tldr": "Steelcase reste la marque de mobilier professionnel la plus recherchée en reconditionné : fondée en 1912, présente dans plus de 80 pays, elle propose des gammes conçues pour un usage intensif de 10 à 15 ans. Le Leap V2 (400-650 € en occasion vs 1300-1700 € neuf) est le fauteuil le plus vendu de la marque. Les pièces détachées sont disponibles auprès de fournisseurs spécialisés, ce qui rend le reconditionnement fiable sur le long terme.",
   "audienceIntro": [
-    { "label": "Amateur éclairé de mobilier pro", "description": "Vous connaissez la marque et voulez le vrai Leap V2 ou Gesture à prix accessible." },
-    { "label": "Office manager", "description": "Vous équipez en Steelcase pour vos collaborateurs sans passer par le neuf." },
-    { "label": "Architecte d'intérieur", "description": "Vous cherchez la cohérence esthétique Steelcase sur un plateau complet." },
-    { "label": "Passionné d'ergonomie", "description": "Vous ciblez le Leap V2 ou le Gesture, testés et validés par les ergonomes." }
+    {
+      "label": "Amateur éclairé de mobilier pro",
+      "description": "Vous connaissez la marque et voulez le vrai Leap V2 ou Gesture à prix accessible."
+    },
+    {
+      "label": "Office manager",
+      "description": "Vous équipez en Steelcase pour vos collaborateurs sans passer par le neuf."
+    },
+    {
+      "label": "Architecte d'intérieur",
+      "description": "Vous cherchez la cohérence esthétique Steelcase sur un plateau complet."
+    },
+    {
+      "label": "Passionné d'ergonomie",
+      "description": "Vous ciblez le Leap V2 ou le Gesture, testés et validés par les ergonomes."
+    }
   ],
   "keyStats": [
-    { "value": "1912", "label": "année de fondation Steelcase", "icon": "Building" },
-    { "value": "180 kg", "label": "charge testée sur le Leap V2", "icon": "ShieldCheck", "source": "Steelcase" },
-    { "value": "10-15 ans", "label": "durée de vie utile résiduelle", "icon": "Clock" },
-    { "value": "80+", "label": "pays d'implantation Steelcase", "icon": "Award" }
+    {
+      "value": "1912",
+      "label": "année de fondation Steelcase",
+      "icon": "Building"
+    },
+    {
+      "value": "180 kg",
+      "label": "charge testée sur le Leap V2",
+      "icon": "ShieldCheck",
+      "source": "Steelcase"
+    },
+    {
+      "value": "10-15 ans",
+      "label": "durée de vie utile résiduelle",
+      "icon": "Clock"
+    },
+    {
+      "value": "80+",
+      "label": "pays d'implantation Steelcase",
+      "icon": "Award"
+    }
   ],
   "caseStudies": [
     {
@@ -42,37 +71,146 @@
     }
   ],
   "pricingRanges": [
-    { "label": "Steelcase Leap V2 (fauteuil)", "priceFrom": 400, "priceTo": 650, "newPriceRef": "1300-1700 €", "notes": "Le best-seller reconditionné. Prix selon options d'origine et état esthétique." },
-    { "label": "Steelcase Series 1 (fauteuil)", "priceFrom": 250, "priceTo": 400, "newPriceRef": "500-750 €", "notes": "Meilleur rapport ergonomie/prix chez Steelcase." },
-    { "label": "Steelcase Think (fauteuil)", "priceFrom": 300, "priceTo": 500, "newPriceRef": "800-1100 €", "notes": "Auto-ajustement selon morphologie, design compact." },
-    { "label": "Steelcase Gesture (fauteuil)", "priceFrom": 500, "priceTo": 750, "newPriceRef": "1500-1900 €", "notes": "Accoudoirs suiveurs pour usage smartphone et tablette." },
-    { "label": "Steelcase Amia (fauteuil entrée pro)", "priceFrom": 200, "priceTo": 350, "newPriceRef": "500-700 €", "notes": "Historiquement présent dans les administrations." },
-    { "label": "Steelcase Migration Bench (bureau assis-debout)", "priceFrom": 600, "priceTo": 900, "newPriceRef": "1500-2500 €", "notes": "En configuration bench, souvent par 2 ou 4 postes." },
-    { "label": "Steelcase FrameOne (bench)", "priceFrom": 700, "priceTo": 1200, "newPriceRef": "2000-3500 €", "notes": "Configuration 4 postes, gestion câblage soignée." },
-    { "label": "Steelcase Universal (caisson mobile)", "priceFrom": 100, "priceTo": 200, "newPriceRef": "350-500 €", "notes": "3 tiroirs dont un dossier suspendu, verrouillage central." }
+    {
+      "label": "Steelcase Leap V2 (fauteuil)",
+      "priceFrom": 400,
+      "priceTo": 650,
+      "newPriceRef": "1300-1700 €",
+      "notes": "Le best-seller reconditionné. Prix selon options d'origine et état esthétique."
+    },
+    {
+      "label": "Steelcase Series 1 (fauteuil)",
+      "priceFrom": 250,
+      "priceTo": 400,
+      "newPriceRef": "500-750 €",
+      "notes": "Meilleur rapport ergonomie/prix chez Steelcase."
+    },
+    {
+      "label": "Steelcase Think (fauteuil)",
+      "priceFrom": 300,
+      "priceTo": 500,
+      "newPriceRef": "800-1100 €",
+      "notes": "Auto-ajustement selon morphologie, design compact."
+    },
+    {
+      "label": "Steelcase Gesture (fauteuil)",
+      "priceFrom": 500,
+      "priceTo": 750,
+      "newPriceRef": "1500-1900 €",
+      "notes": "Accoudoirs suiveurs pour usage smartphone et tablette."
+    },
+    {
+      "label": "Steelcase Amia (fauteuil entrée pro)",
+      "priceFrom": 200,
+      "priceTo": 350,
+      "newPriceRef": "500-700 €",
+      "notes": "Historiquement présent dans les administrations."
+    },
+    {
+      "label": "Steelcase Migration Bench (bureau assis-debout)",
+      "priceFrom": 600,
+      "priceTo": 900,
+      "newPriceRef": "1500-2500 €",
+      "notes": "En configuration bench, souvent par 2 ou 4 postes."
+    },
+    {
+      "label": "Steelcase FrameOne (bench)",
+      "priceFrom": 700,
+      "priceTo": 1200,
+      "newPriceRef": "2000-3500 €",
+      "notes": "Configuration 4 postes, gestion câblage soignée."
+    },
+    {
+      "label": "Steelcase Universal (caisson mobile)",
+      "priceFrom": 100,
+      "priceTo": 200,
+      "newPriceRef": "350-500 €",
+      "notes": "3 tiroirs dont un dossier suspendu, verrouillage central."
+    }
   ],
   "deliveryTable": [
-    { "region": "PACA", "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice", "delay": "3 à 7 jours ouvrés", "notes": "Retrait showroom possible dans la journée sur rdv." },
-    { "region": "Rhône-Alpes", "cities": "Lyon, Grenoble, Chambéry", "delay": "5 à 10 jours ouvrés", "notes": "Groupage commandes régulier." },
-    { "region": "Île-de-France", "cities": "Paris, Boulogne, Neuilly, Vincennes", "delay": "5 à 10 jours ouvrés", "notes": "Camion complet pour commandes 15+ postes." },
-    { "region": "Ouest", "cities": "Bordeaux, Nantes, Rennes", "delay": "7 à 14 jours ouvrés", "notes": "Devis sur mesure, transporteur spécialisé." },
-    { "region": "Nord et Grand-Est", "cities": "Lille, Strasbourg, Nancy, Reims", "delay": "10 à 15 jours ouvrés", "notes": "Livraison groupée recommandée." }
+    {
+      "region": "PACA",
+      "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice",
+      "delay": "3 à 7 jours ouvrés",
+      "notes": "Retrait showroom possible dans la journée sur rdv."
+    },
+    {
+      "region": "Rhône-Alpes",
+      "cities": "Lyon, Grenoble, Chambéry",
+      "delay": "5 à 10 jours ouvrés",
+      "notes": "Groupage commandes régulier."
+    },
+    {
+      "region": "Île-de-France",
+      "cities": "Paris, Boulogne, Neuilly, Vincennes",
+      "delay": "5 à 10 jours ouvrés",
+      "notes": "Camion complet pour commandes 15+ postes."
+    },
+    {
+      "region": "Ouest",
+      "cities": "Bordeaux, Nantes, Rennes",
+      "delay": "7 à 14 jours ouvrés",
+      "notes": "Devis sur mesure, transporteur spécialisé."
+    },
+    {
+      "region": "Nord et Grand-Est",
+      "cities": "Lille, Strasbourg, Nancy, Reims",
+      "delay": "10 à 15 jours ouvrés",
+      "notes": "Livraison groupée recommandée."
+    }
   ],
   "glossary": [
-    { "term": "Steelcase Inc.", "definition": "Entreprise américaine fondée en 1912 à Grand Rapids (Michigan), cotée au NYSE (SCS). Leader mondial du mobilier de bureau professionnel." },
-    { "term": "Steelcase Werndl", "definition": "Filiale européenne issue du rapprochement fin années 1990 avec le groupe allemand Werndl. Site de production notamment en Allemagne." },
-    { "term": "Leap V2", "definition": "Fauteuil emblématique Steelcase, deuxième génération (V2). Sept réglages + dossier LiveBack dynamique. Certifié 180 kg." },
-    { "term": "LiveBack", "definition": "Technologie brevetée Steelcase où le dossier se déforme automatiquement selon la posture, sans réglage manuel." },
-    { "term": "Migration Bench", "definition": "Bureau assis-debout électrique Steelcase en configuration bench (postes alignés). Adopté massivement par les grands sièges sociaux." },
-    { "term": "FrameOne", "definition": "Alternative plus légère et esthétique au Migration, orientée aménagements design." },
-    { "term": "Series 1", "definition": "Fauteuil pro Steelcase plus récent, positionné comme meilleur rapport ergonomie/prix. Cinq réglages essentiels." },
-    { "term": "Gesture", "definition": "Fauteuil Steelcase conçu pour les usages multi-écrans modernes (smartphone, tablette). Accoudoirs suiveurs 360°." },
-    { "term": "Think", "definition": "Fauteuil Steelcase à auto-ajustement, mécanique qui apprend de l'utilisateur. Design compact." },
-    { "term": "Amia", "definition": "Fauteuil Steelcase entrée de gamme pro, historiquement dans les administrations françaises." },
-    { "term": "Universal Storage", "definition": "Gamme de rangements Steelcase : caissons mobiles, armoires basses, armoires hautes coulissantes. Finitions sobres, mécanismes tiroirs très durables." },
-    { "term": "NYSE : SCS", "definition": "Ticker de Steelcase Inc. à la Bourse de New York. Coté depuis 1998." }
+    {
+      "term": "Steelcase Inc.",
+      "definition": "Entreprise américaine fondée en 1912 à Grand Rapids (Michigan), cotée au NYSE (SCS). Leader mondial du mobilier de bureau professionnel."
+    },
+    {
+      "term": "Steelcase Werndl",
+      "definition": "Filiale européenne issue du rapprochement fin années 1990 avec le groupe allemand Werndl. Site de production notamment en Allemagne."
+    },
+    {
+      "term": "Leap V2",
+      "definition": "Fauteuil emblématique Steelcase, deuxième génération (V2). Sept réglages + dossier LiveBack dynamique. Certifié 180 kg."
+    },
+    {
+      "term": "LiveBack",
+      "definition": "Technologie brevetée Steelcase où le dossier se déforme automatiquement selon la posture, sans réglage manuel."
+    },
+    {
+      "term": "Migration Bench",
+      "definition": "Bureau assis-debout électrique Steelcase en configuration bench (postes alignés). Adopté massivement par les grands sièges sociaux."
+    },
+    {
+      "term": "FrameOne",
+      "definition": "Alternative plus légère et esthétique au Migration, orientée aménagements design."
+    },
+    {
+      "term": "Series 1",
+      "definition": "Fauteuil pro Steelcase plus récent, positionné comme meilleur rapport ergonomie/prix. Cinq réglages essentiels."
+    },
+    {
+      "term": "Gesture",
+      "definition": "Fauteuil Steelcase conçu pour les usages multi-écrans modernes (smartphone, tablette). Accoudoirs suiveurs 360°."
+    },
+    {
+      "term": "Think",
+      "definition": "Fauteuil Steelcase à auto-ajustement, mécanique qui apprend de l'utilisateur. Design compact."
+    },
+    {
+      "term": "Amia",
+      "definition": "Fauteuil Steelcase entrée de gamme pro, historiquement dans les administrations françaises."
+    },
+    {
+      "term": "Universal Storage",
+      "definition": "Gamme de rangements Steelcase : caissons mobiles, armoires basses, armoires hautes coulissantes. Finitions sobres, mécanismes tiroirs très durables."
+    },
+    {
+      "term": "NYSE : SCS",
+      "definition": "Ticker de Steelcase Inc. à la Bourse de New York. Coté depuis 1998."
+    }
   ],
-  "bodyMd": "## Ce que vous trouverez sur cette page\n\n- Steelcase, une entreprise centenaire : les repères essentiels\n- Pourquoi le mobilier Steelcase est-il aussi recherché en reconditionné ?\n- Quels sont les fauteuils Steelcase les plus emblématiques ?\n- Bureaux et solutions Steelcase : la gamme workspace\n- Comment reconnaître un vrai Steelcase d'une copie ?\n- Notre process de reconditionnement, spécifique aux Steelcase\n- Comparatif Steelcase, Herman Miller, Haworth : qui choisir ?\n- Sources et références\n\n---\n\n## Steelcase, une entreprise centenaire : les repères essentiels\n\nSteelcase est fondée en 1912 à Grand Rapids, dans le Michigan, sous le nom de Metal Office Furniture Company. L'entreprise se spécialise d'abord dans les mobiliers de bureau ignifugés, une innovation majeure à l'époque des bureaux en bois massif. Elle change de nom pour Steelcase en 1954 et s'internationalise progressivement à partir des années 1970.\n\nEn Europe, Steelcase développe une filière propre via son rapprochement avec le groupe allemand Werndl à la fin des années 1990. Cette filière européenne est encore active aujourd'hui, avec des sites de production notamment en France et en Allemagne. L'entreprise est cotée à la bourse de New York (NYSE : SCS) et emploie plusieurs milliers de collaborateurs dans le monde.\n\n> [tip] Un mobilier Steelcase est identifiable à trois éléments : un logo gravé ou étiqueté, une numérotation série, et une qualité de finition perceptible dès la prise en main. Nous vérifions ces trois éléments sur chaque pièce entrant en atelier.\n\n### Pourquoi Steelcase est une référence mondiale\n\nLa marque équipe des sièges sociaux d'entreprises Fortune 500, des administrations, des cabinets et des universités depuis plusieurs décennies. Cette pénétration institutionnelle explique la présence massive de mobilier Steelcase sur le marché du reconditionné : lorsqu'une entreprise renouvelle son parc, ses meubles Steelcase reviennent en circuit.\n\n---\n\n## Pourquoi le mobilier Steelcase est-il aussi recherché en reconditionné ?\n\nTrois raisons expliquent la valeur résiduelle élevée des Steelcase, y compris sur des modèles ayant dix à quinze ans d'usage.\n\n### Une conception pour usage intensif\n\nLes gammes pro Steelcase sont testées pour un usage huit heures par jour, cinq jours sur sept, sur une durée de dix ans minimum. Cette exigence de conception se traduit par des pièces surdimensionnées, des matériaux durables et des mécanismes réparables.\n\n### Une disponibilité massive des pièces détachées\n\nContrairement à des marques plus confidentielles, les pièces Steelcase (vérins, roulettes, mousses, revêtements) sont disponibles en pièces détachées auprès de fournisseurs spécialisés. Un fauteuil Leap V2 de 2012 peut être entièrement remis à neuf en 2025, à condition d'avoir accès aux pièces d'origine.\n\n### Une esthétique qui vieillit bien\n\nLes designs Steelcase sont volontairement sobres, sans effets de mode marqués. Un Leap V2 fabriqué en 2010 ressemble à un Leap V2 fabriqué en 2024. Cette continuité visuelle facilite les mix reconditionné-neuf dans un même plateau.\n\n![Fauteuil Steelcase Leap V2 dans un bureau](https://images.unsplash.com/photo-1519974719765-e6559eac2575?w=1600&q=85 \"Le Steelcase Leap V2, l'un des fauteuils pro les plus reconditionnés au monde.\")\n\n---\n\n## Quels sont les fauteuils Steelcase les plus emblématiques ?\n\nSteelcase propose une dizaine de références en fauteuils de bureau, mais cinq modèles concentrent la quasi-totalité du marché reconditionné.\n\n### Leap V2, la référence ergonomique\n\nLe [Leap V2](https://www.steelcase.com/eu-fr/produits/sieges-bureau/leap/) est probablement le fauteuil pro le plus vendu au monde. Sa particularité : un dossier LiveBack qui se déforme dynamiquement selon la posture, sans qu'aucun réglage manuel soit nécessaire. Il propose par ailleurs sept réglages complémentaires : hauteur d'assise, profondeur d'assise, hauteur du dossier, tension, verrouillage, accoudoirs 4D, soutien lombaire. Certifié jusqu'à 180 kg selon la fiche produit officielle.\n\n### Series 1, le meilleur rapport ergonomie/prix\n\nDéveloppé plus récemment, le Series 1 reprend une bonne partie des réglages du Leap V2 dans un design plus compact et un prix plus accessible. Il équipe de nombreux open spaces et postes de télétravail cadre. C'est le modèle qui offre le meilleur rapport ergonomie/prix en reconditionné.\n\n### Think, le compact évolutif\n\nLe Think est un fauteuil qui apprend de son utilisateur : sa mécanique se règle automatiquement selon la morphologie et les postures fréquentes. Design plus compact que le Leap, il convient bien aux espaces où le fauteuil doit rester discret visuellement.\n\n### Gesture, adapté aux postures multiples\n\nLe Gesture a été conçu spécifiquement pour les usages modernes (smartphone, tablette, ordinateur portable). Ses accoudoirs suiveurs, montés sur bras articulés, accompagnent les mouvements des bras dans toutes les directions. Recommandé pour les métiers qui alternent constamment entre plusieurs supports.\n\n### Amia, l'entrée de gamme pro\n\nMoins connu grand public, l'Amia offre les réglages essentiels d'un fauteuil pro à un prix contenu. Il équipe historiquement de nombreux plateaux administratifs.\n\n| Modèle | Réglages | Idéal pour | Fourchette prix reconditionné |\n| --- | --- | --- | --- |\n| Leap V2 | 7 axes + LiveBack | Usage 8h/j, dos fragile | 400 à 650 € |\n| Series 1 | 5 axes essentiels | Télétravail cadre, open space | 250 à 400 € |\n| Think | Auto-ajustement | Compact, esthétique | 300 à 500 € |\n| Gesture | 6 axes + accoudoirs 360° | Usage tablette/smartphone | 500 à 750 € |\n| Amia | 4 axes | Administration, budget serré | 200 à 350 € |\n\n> [success] Consultez la [sélection de fauteuils disponibles](/categorie/fauteuil) filtrable par marque pour voir les modèles Steelcase actuellement en stock. Le stock évolue chaque semaine selon les arrivages.\n\n---\n\n## Bureaux et solutions Steelcase : la gamme workspace\n\nSteelcase ne se limite pas aux fauteuils. La marque propose une gamme complète d'aménagement de bureau, dont plusieurs collections reviennent en reconditionné.\n\n### Migration Bench, la référence open space\n\nLe Migration est un bureau assis-debout électrique en configuration bench (postes alignés, structure partagée). Il équipe massivement les grands sièges sociaux depuis une dizaine d'années. En reconditionné, c'est l'un des rares moyens d'accéder à cette qualité mécanique à budget maîtrisé.\n\n### FrameOne, le bench premium\n\nStructure plus légère que le Migration, avec un travail poussé sur le câblage et la gestion des accessoires. Convient bien aux plateaux qui privilégient l'esthétique et la modularité.\n\n### Solutions de rangement Universal\n\nCaissons mobiles trois tiroirs, armoires basses, armoires hautes coulissantes. La gamme Universal se reconnaît à ses finitions sobres et à la robustesse de ses mécanismes tiroirs, garantis pour des dizaines de milliers d'ouvertures.\n\n![Bureau Steelcase Migration Bench en open space](https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85 \"Un plateau équipé en bureaux Steelcase, configuration bench collaborative.\")\n\n---\n\n## Comment reconnaître un vrai Steelcase d'une copie ?\n\nLes contrefaçons Steelcase sont rares mais existent, notamment pour le Leap V2. Voici les points à vérifier avant tout achat, y compris chez nous.\n\n### Les cinq signes d'un vrai Steelcase\n\n1. **Logo gravé ou étiqueté** sur le mécanisme central du siège, souvent sous l'assise\n2. **Numéro de série** visible, permettant théoriquement de retracer l'année de fabrication\n3. **Qualité perçue des accoudoirs** : les axes doivent bouger fluidement, sans jeu ni craquement\n4. **Poids du siège** : un Leap V2 pèse environ 22 kg, une contrefaçon est souvent plus légère\n5. **Marquage des tissus** : les revêtements Steelcase portent une étiquette avec référence tissu\n\nNotre atelier vérifie systématiquement ces cinq points sur chaque Steelcase entrant. Un fauteuil qui échoue à un ou plusieurs contrôles est retiré du circuit vente et déclassé.\n\n---\n\n## Notre process de reconditionnement, spécifique aux Steelcase\n\nChaque marque a ses points d'attention. Voici ce que nous vérifions et remplaçons systématiquement sur les Steelcase reconditionnés dans notre atelier.\n\n### Fauteuils : quatre pièces contrôlées, deux systématiquement remplacées\n\n- **Vérin à gaz** : contrôlé, remplacé si perte de pression détectée\n- **Roulettes** : remplacées systématiquement pour les modèles à partir de 5 ans d'usage\n- **Mousses d'assise** : contrôlées, remplacées si affaissement supérieur à 20% de l'épaisseur d'origine\n- **Mécanisme de basculement** : démonté, nettoyé, graissé, remonté\n\n### Bureaux : trois vérifications critiques\n\n- **Système électrique** (pour les assis-debout) : moteurs, câbles, télécommande testés à charge maximale\n- **Piètement** : reprise antirouille si nécessaire, resserrage des visseries\n- **Plateau** : nettoyage profond, ponçage léger sur défauts esthétiques mineurs\n\n> [tip] Nous documentons chaque intervention réalisée sur les commandes en volume, à des fins de traçabilité pour vos éventuelles certifications RSE ou ISO.\n\n---\n\n## Comparatif Steelcase, Herman Miller, Haworth : qui choisir ?\n\nSteelcase n'est pas la seule marque pro de référence. Deux concurrents historiques méritent d'être considérés selon vos besoins.\n\n| Critère | Steelcase | Herman Miller | Haworth |\n| --- | --- | --- | --- |\n| Origine | USA, 1912 | USA, 1905 | USA, 1948 |\n| Fauteuil phare | Leap V2 | Aeron | Zody / Fern |\n| Design | Sobre, discret | Iconique, reconnaissable | Épuré, ergonomie visible |\n| Prix reconditionné | Élevé mais bien réparti | Très élevé sur Aeron | Moyen à élevé |\n| Disponibilité pièces | Excellente | Excellente | Bonne |\n| Idéal pour | Usage pro classique | Environnements chauds, morphologies extrêmes | Ergonomie inclusive |\n\n### En résumé\n\nSteelcase reste le choix par défaut si vous cherchez un fauteuil pro fiable, réparable, discret, avec un stock reconditionné disponible en permanence. Herman Miller Aeron s'impose si vous êtes dans un environnement chaud (mesh respirant) ou avec une morphologie extrême. Haworth Zody est un excellent choix pour les utilisateurs sensibles au bas du dos, grâce à son système PAL breveté.\n\n---\n\n## Sources et références\n\n- Site officiel Steelcase (fiches produit, spécifications techniques) : [steelcase.com/eu-fr](https://www.steelcase.com/eu-fr/)\n- Norme NF EN 1335 sur les sièges de travail de bureau : [afnor.org](https://www.boutique.afnor.org/fr-fr/norme/nf-en-1335-1/sieges-de-travail-de-bureau-partie-1-dimensions-determination-des-dimens/fa197478/1691)\n- Publications ADEME sur l'économie circulaire du mobilier : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Article R2172-4 du CCP, réemploi en marchés publics : [legifrance.gouv.fr](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037730634)\n\n---\n\n## Continuer votre exploration\n\n- Voir la [sélection Steelcase en stock](/categorie/fauteuil)\n- Découvrir la gamme [fauteuils ergonomiques](/fauteuil-ergonomique) toutes marques\n- Explorer les [bureaux professionnels d'occasion](/bureau-professionnel-occasion) Steelcase et autres\n- Comprendre [notre démarche](/notre-demarche) atelier et reconditionnement\n- Consulter les [attestations RSE](/attestation-rse) pour vos rapports\n- Livraison ou retrait à [Marseille](/bureau-occasion-marseille), [Aix-en-Provence](/bureau-occasion-aix-en-provence), [Nice](/bureau-occasion-nice), [Toulon](/bureau-occasion-toulon)\n",
+  "bodyMd": "## Ce que vous trouverez sur cette page\n\n- Steelcase, une entreprise centenaire : les repères essentiels\n- Pourquoi le mobilier Steelcase est-il aussi recherché en reconditionné ?\n- Quels sont les fauteuils Steelcase les plus emblématiques ?\n- Bureaux et solutions Steelcase : la gamme workspace\n- Comment reconnaître un vrai Steelcase d'une copie ?\n- Notre process de reconditionnement, spécifique aux Steelcase\n- Comparatif Steelcase, Herman Miller, Haworth : qui choisir ?\n- Sources et références\n\n---\n\n## Steelcase, une entreprise centenaire : les repères essentiels\n\nSteelcase est fondée en 1912 à Grand Rapids, dans le Michigan, sous le nom de Metal Office Furniture Company. L'entreprise se spécialise d'abord dans les mobiliers de bureau ignifugés, une innovation majeure à l'époque des bureaux en bois massif. Elle change de nom pour Steelcase en 1954 et s'internationalise progressivement à partir des années 1970.\n\n![Fauteuil de bureau haut de gamme à dossier résille](https://images.unsplash.com/photo-1505797149-35ebcb05a6fd?w=1600&q=85 \"Le Leap V2 reste le fauteuil pro le plus recherché en reconditionné.\")\n\nEn Europe, Steelcase développe une filière propre via son rapprochement avec le groupe allemand Werndl à la fin des années 1990. Cette filière européenne est encore active aujourd'hui, avec des sites de production notamment en France et en Allemagne. L'entreprise est cotée à la bourse de New York (NYSE : SCS) et emploie plusieurs milliers de collaborateurs dans le monde.\n\n> [tip] Un mobilier Steelcase est identifiable à trois éléments : un logo gravé ou étiqueté, une numérotation série, et une qualité de finition perceptible dès la prise en main. Nous vérifions ces trois éléments sur chaque pièce entrant en atelier.\n\n### Pourquoi Steelcase est une référence mondiale\n\nLa marque équipe des sièges sociaux d'entreprises Fortune 500, des administrations, des cabinets et des universités depuis plusieurs décennies. Cette pénétration institutionnelle explique la présence massive de mobilier Steelcase sur le marché du reconditionné : lorsqu'une entreprise renouvelle son parc, ses meubles Steelcase reviennent en circuit.\n\n---\n\n## Pourquoi le mobilier Steelcase est-il aussi recherché en reconditionné ?\n\nTrois raisons expliquent la valeur résiduelle élevée des Steelcase, y compris sur des modèles ayant dix à quinze ans d'usage.\n\n### Une conception pour usage intensif\n\nLes gammes pro Steelcase sont testées pour un usage huit heures par jour, cinq jours sur sept, sur une durée de dix ans minimum. Cette exigence de conception se traduit par des pièces surdimensionnées, des matériaux durables et des mécanismes réparables.\n\n### Une disponibilité massive des pièces détachées\n\nContrairement à des marques plus confidentielles, les pièces Steelcase (vérins, roulettes, mousses, revêtements) sont disponibles en pièces détachées auprès de fournisseurs spécialisés. Un fauteuil Leap V2 de 2012 peut être entièrement remis à neuf en 2025, à condition d'avoir accès aux pièces d'origine.\n\n### Une esthétique qui vieillit bien\n\nLes designs Steelcase sont volontairement sobres, sans effets de mode marqués. Un Leap V2 fabriqué en 2010 ressemble à un Leap V2 fabriqué en 2024. Cette continuité visuelle facilite les mix reconditionné-neuf dans un même plateau.\n\n![Fauteuil Steelcase Leap V2 dans un bureau](https://images.unsplash.com/photo-1519974719765-e6559eac2575?w=1600&q=85 \"Le Steelcase Leap V2, l'un des fauteuils pro les plus reconditionnés au monde.\")\n\n---\n\n## Quels sont les fauteuils Steelcase les plus emblématiques ?\n\nSteelcase propose une dizaine de références en fauteuils de bureau, mais cinq modèles concentrent la quasi-totalité du marché reconditionné.\n\n![Open space équipé de bureaux bench](https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=1600&q=85 \"Migration Bench et FrameOne équipent les grands sièges sociaux.\")\n\n### Leap V2, la référence ergonomique\n\nLe [Leap V2](https://www.steelcase.com/eu-fr/produits/sieges-bureau/leap/) est probablement le fauteuil pro le plus vendu au monde. Sa particularité : un dossier LiveBack qui se déforme dynamiquement selon la posture, sans qu'aucun réglage manuel soit nécessaire. Il propose par ailleurs sept réglages complémentaires : hauteur d'assise, profondeur d'assise, hauteur du dossier, tension, verrouillage, accoudoirs 4D, soutien lombaire. Certifié jusqu'à 180 kg selon la fiche produit officielle.\n\n### Series 1, le meilleur rapport ergonomie/prix\n\nDéveloppé plus récemment, le Series 1 reprend une bonne partie des réglages du Leap V2 dans un design plus compact et un prix plus accessible. Il équipe de nombreux open spaces et postes de télétravail cadre. C'est le modèle qui offre le meilleur rapport ergonomie/prix en reconditionné.\n\n### Think, le compact évolutif\n\nLe Think est un fauteuil qui apprend de son utilisateur : sa mécanique se règle automatiquement selon la morphologie et les postures fréquentes. Design plus compact que le Leap, il convient bien aux espaces où le fauteuil doit rester discret visuellement.\n\n### Gesture, adapté aux postures multiples\n\nLe Gesture a été conçu spécifiquement pour les usages modernes (smartphone, tablette, ordinateur portable). Ses accoudoirs suiveurs, montés sur bras articulés, accompagnent les mouvements des bras dans toutes les directions. Recommandé pour les métiers qui alternent constamment entre plusieurs supports.\n\n### Amia, l'entrée de gamme pro\n\nMoins connu grand public, l'Amia offre les réglages essentiels d'un fauteuil pro à un prix contenu. Il équipe historiquement de nombreux plateaux administratifs.\n\n| Modèle | Réglages | Idéal pour | Fourchette prix reconditionné |\n| --- | --- | --- | --- |\n| Leap V2 | 7 axes + LiveBack | Usage 8h/j, dos fragile | 400 à 650 € |\n| Series 1 | 5 axes essentiels | Télétravail cadre, open space | 250 à 400 € |\n| Think | Auto-ajustement | Compact, esthétique | 300 à 500 € |\n| Gesture | 6 axes + accoudoirs 360° | Usage tablette/smartphone | 500 à 750 € |\n| Amia | 4 axes | Administration, budget serré | 200 à 350 € |\n\n> [success] Consultez la [sélection de fauteuils disponibles](/categorie/fauteuil) filtrable par marque pour voir les modèles Steelcase actuellement en stock. Le stock évolue chaque semaine selon les arrivages.\n\n---\n\n## Bureaux et solutions Steelcase : la gamme workspace\n\nSteelcase ne se limite pas aux fauteuils. La marque propose une gamme complète d'aménagement de bureau, dont plusieurs collections reviennent en reconditionné.\n\n### Migration Bench, la référence open space\n\nLe Migration est un bureau assis-debout électrique en configuration bench (postes alignés, structure partagée). Il équipe massivement les grands sièges sociaux depuis une dizaine d'années. En reconditionné, c'est l'un des rares moyens d'accéder à cette qualité mécanique à budget maîtrisé.\n\n### FrameOne, le bench premium\n\nStructure plus légère que le Migration, avec un travail poussé sur le câblage et la gestion des accessoires. Convient bien aux plateaux qui privilégient l'esthétique et la modularité.\n\n### Solutions de rangement Universal\n\nCaissons mobiles trois tiroirs, armoires basses, armoires hautes coulissantes. La gamme Universal se reconnaît à ses finitions sobres et à la robustesse de ses mécanismes tiroirs, garantis pour des dizaines de milliers d'ouvertures.\n\n![Bureau Steelcase Migration Bench en open space](https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85 \"Un plateau équipé en bureaux Steelcase, configuration bench collaborative.\")\n\n---\n\n## Comment reconnaître un vrai Steelcase d'une copie ?\n\nLes contrefaçons Steelcase sont rares mais existent, notamment pour le Leap V2. Voici les points à vérifier avant tout achat, y compris chez nous.\n\n![Alignement de postes de travail professionnels](https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=1600&q=85 \"La sobriété des designs Steelcase facilite les mix reconditionné-neuf.\")\n\n### Les cinq signes d'un vrai Steelcase\n\n1. **Logo gravé ou étiqueté** sur le mécanisme central du siège, souvent sous l'assise\n2. **Numéro de série** visible, permettant théoriquement de retracer l'année de fabrication\n3. **Qualité perçue des accoudoirs** : les axes doivent bouger fluidement, sans jeu ni craquement\n4. **Poids du siège** : un Leap V2 pèse environ 22 kg, une contrefaçon est souvent plus légère\n5. **Marquage des tissus** : les revêtements Steelcase portent une étiquette avec référence tissu\n\nNotre atelier vérifie systématiquement ces cinq points sur chaque Steelcase entrant. Un fauteuil qui échoue à un ou plusieurs contrôles est retiré du circuit vente et déclassé.\n\n---\n\n## Notre process de reconditionnement, spécifique aux Steelcase\n\nChaque marque a ses points d'attention. Voici ce que nous vérifions et remplaçons systématiquement sur les Steelcase reconditionnés dans notre atelier.\n\n### Fauteuils : quatre pièces contrôlées, deux systématiquement remplacées\n\n- **Vérin à gaz** : contrôlé, remplacé si perte de pression détectée\n- **Roulettes** : remplacées systématiquement pour les modèles à partir de 5 ans d'usage\n- **Mousses d'assise** : contrôlées, remplacées si affaissement supérieur à 20% de l'épaisseur d'origine\n- **Mécanisme de basculement** : démonté, nettoyé, graissé, remonté\n\n### Bureaux : trois vérifications critiques\n\n- **Système électrique** (pour les assis-debout) : moteurs, câbles, télécommande testés à charge maximale\n- **Piètement** : reprise antirouille si nécessaire, resserrage des visseries\n- **Plateau** : nettoyage profond, ponçage léger sur défauts esthétiques mineurs\n\n> [tip] Nous documentons chaque intervention réalisée sur les commandes en volume, à des fins de traçabilité pour vos éventuelles certifications RSE ou ISO.\n\n---\n\n## Comparatif Steelcase, Herman Miller, Haworth : qui choisir ?\n\nSteelcase n'est pas la seule marque pro de référence. Deux concurrents historiques méritent d'être considérés selon vos besoins.\n\n| Critère | Steelcase | Herman Miller | Haworth |\n| --- | --- | --- | --- |\n| Origine | USA, 1912 | USA, 1905 | USA, 1948 |\n| Fauteuil phare | Leap V2 | Aeron | Zody / Fern |\n| Design | Sobre, discret | Iconique, reconnaissable | Épuré, ergonomie visible |\n| Prix reconditionné | Élevé mais bien réparti | Très élevé sur Aeron | Moyen à élevé |\n| Disponibilité pièces | Excellente | Excellente | Bonne |\n| Idéal pour | Usage pro classique | Environnements chauds, morphologies extrêmes | Ergonomie inclusive |\n\n### En résumé\n\nSteelcase reste le choix par défaut si vous cherchez un fauteuil pro fiable, réparable, discret, avec un stock reconditionné disponible en permanence. Herman Miller Aeron s'impose si vous êtes dans un environnement chaud (mesh respirant) ou avec une morphologie extrême. Haworth Zody est un excellent choix pour les utilisateurs sensibles au bas du dos, grâce à son système PAL breveté.\n\n---\n\n## Sources et références\n\n- Site officiel Steelcase (fiches produit, spécifications techniques) : [steelcase.com/eu-fr](https://www.steelcase.com/eu-fr/)\n- Norme NF EN 1335 sur les sièges de travail de bureau : [afnor.org](https://www.boutique.afnor.org/fr-fr/norme/nf-en-1335-1/sieges-de-travail-de-bureau-partie-1-dimensions-determination-des-dimens/fa197478/1691)\n- Publications ADEME sur l'économie circulaire du mobilier : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Article R2172-4 du CCP, réemploi en marchés publics : [legifrance.gouv.fr](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037730634)\n\n---\n\n## Continuer votre exploration\n\n- Voir la [sélection Steelcase en stock](/categorie/fauteuil)\n- Découvrir la gamme [fauteuils ergonomiques](/fauteuil-ergonomique) toutes marques\n- Explorer les [bureaux professionnels d'occasion](/bureau-professionnel-occasion) Steelcase et autres\n- Comprendre [notre démarche](/notre-demarche) atelier et reconditionnement\n- Consulter les [attestations RSE](/attestation-rse) pour vos rapports\n- Livraison ou retrait à [Marseille](/bureau-occasion-marseille), [Aix-en-Provence](/bureau-occasion-aix-en-provence), [Nice](/bureau-occasion-nice), [Toulon](/bureau-occasion-toulon)\n",
   "faq": [
     {
       "question": "Où est fabriqué le mobilier Steelcase vendu en France ?",

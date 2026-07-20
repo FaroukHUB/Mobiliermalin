@@ -11,7 +11,7 @@
  */
 
 import type { PortableTextBlock } from 'next-sanity'
-import { EditorialPortableText } from '@/components/portable-text/EditorialPortableText'
+import { NationalBodySections } from './NationalBodySections'
 import { NationalHero } from './NationalHero'
 import { NationalDeliveryBanner } from './NationalDeliveryBanner'
 import {
@@ -143,11 +143,16 @@ export function NationalPageV2({
         </section>
       )}
 
-      {/* ─── Corps éditorial (Portable Text) ─── */}
+      {/* ─── Corps éditorial en sections pleine largeur ─── */}
       {landing?.body && Array.isArray(landing.body) && landing.body.length > 0 && (
-        <section className="container py-10 md:py-14 max-w-3xl">
-          <EditorialPortableText value={landing.body as PortableTextBlock[]} />
-        </section>
+        <NationalBodySections
+          blocks={landing.body as PortableTextBlock[]}
+          cta={
+            productsCtaHref
+              ? { href: productsCtaHref, label: 'Voir la sélection en stock' }
+              : undefined
+          }
+        />
       )}
 
       {/* ─── Cas clients ─── */}

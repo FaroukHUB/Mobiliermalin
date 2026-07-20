@@ -15,16 +15,44 @@
   },
   "tldr": "Un bureau d'occasion reconditionné offre les mêmes performances qu'un bureau neuf pour un budget divisé par trois. Les modèles pros (Steelcase, Haworth, Vitra) se trouvent entre 100 et 400 €, contre 400 à 1200 € neufs. Pour le télétravail comme pour les TPE, c'est le meilleur rapport qualité/prix du marché.",
   "audienceIntro": [
-    { "label": "Télétravailleur régulier", "description": "Vous cherchez un vrai bureau pro pour votre domicile, sans passer par du meuble grand public." },
-    { "label": "Freelance ou indépendant", "description": "Vous équipez votre poste avec un budget serré mais une exigence de qualité." },
-    { "label": "TPE 2 à 5 postes", "description": "Vous ouvrez ou déménagez un petit bureau et voulez équiper proprement sans neuf." },
-    { "label": "Étudiant ou jeune actif", "description": "Vous vous installez et voulez un vrai bureau pro à petit budget." }
+    {
+      "label": "Télétravailleur régulier",
+      "description": "Vous cherchez un vrai bureau pro pour votre domicile, sans passer par du meuble grand public."
+    },
+    {
+      "label": "Freelance ou indépendant",
+      "description": "Vous équipez votre poste avec un budget serré mais une exigence de qualité."
+    },
+    {
+      "label": "TPE 2 à 5 postes",
+      "description": "Vous ouvrez ou déménagez un petit bureau et voulez équiper proprement sans neuf."
+    },
+    {
+      "label": "Étudiant ou jeune actif",
+      "description": "Vous vous installez et voulez un vrai bureau pro à petit budget."
+    }
   ],
   "keyStats": [
-    { "value": "1/3", "label": "du prix d'un bureau pro neuf", "icon": "Award" },
-    { "value": "100 €", "label": "bureau droit standard reconditionné", "icon": "Package" },
-    { "value": "7 pts", "label": "de contrôle qualité en atelier", "icon": "ShieldCheck" },
-    { "value": "10-15 ans", "label": "de durée de vie résiduelle", "icon": "Clock" }
+    {
+      "value": "1/3",
+      "label": "du prix d'un bureau pro neuf",
+      "icon": "Award"
+    },
+    {
+      "value": "100 €",
+      "label": "bureau droit standard reconditionné",
+      "icon": "Package"
+    },
+    {
+      "value": "7 pts",
+      "label": "de contrôle qualité en atelier",
+      "icon": "ShieldCheck"
+    },
+    {
+      "value": "10-15 ans",
+      "label": "de durée de vie résiduelle",
+      "icon": "Clock"
+    }
   ],
   "caseStudies": [
     {
@@ -42,42 +70,160 @@
     }
   ],
   "pricingRanges": [
-    { "label": "Bureau droit 100-120 cm entrée", "priceFrom": 80, "priceTo": 150, "newPriceRef": "200-350 €", "notes": "Mélaminé, marque pro entrée de gamme, idéal télétravail budget serré." },
-    { "label": "Bureau droit 140 cm standard", "priceFrom": 120, "priceTo": 250, "newPriceRef": "350-600 €", "notes": "Steelcase, Haworth ou équivalent, plateau épais, piètement métal." },
-    { "label": "Bureau droit 160-180 cm confort", "priceFrom": 180, "priceTo": 350, "newPriceRef": "500-900 €", "notes": "Espace pour 2 écrans + notes, câblage intégré souvent inclus." },
-    { "label": "Bureau d'angle 160 x 140 cm", "priceFrom": 200, "priceTo": 400, "newPriceRef": "600-1000 €", "notes": "Idéal petit espace ou coin de pièce." },
-    { "label": "Bureau IKEA Bekant reconditionné", "priceFrom": 90, "priceTo": 180, "newPriceRef": "200-350 €", "notes": "Modèle populaire, disponibilité régulière, adapté télétravail." },
-    { "label": "Caisson mobile 3 tiroirs", "priceFrom": 80, "priceTo": 180, "newPriceRef": "300-500 €", "notes": "Complément quasi indispensable pour ranger papiers et fournitures." }
+    {
+      "label": "Bureau droit 100-120 cm entrée",
+      "priceFrom": 80,
+      "priceTo": 150,
+      "newPriceRef": "200-350 €",
+      "notes": "Mélaminé, marque pro entrée de gamme, idéal télétravail budget serré."
+    },
+    {
+      "label": "Bureau droit 140 cm standard",
+      "priceFrom": 120,
+      "priceTo": 250,
+      "newPriceRef": "350-600 €",
+      "notes": "Steelcase, Haworth ou équivalent, plateau épais, piètement métal."
+    },
+    {
+      "label": "Bureau droit 160-180 cm confort",
+      "priceFrom": 180,
+      "priceTo": 350,
+      "newPriceRef": "500-900 €",
+      "notes": "Espace pour 2 écrans + notes, câblage intégré souvent inclus."
+    },
+    {
+      "label": "Bureau d'angle 160 x 140 cm",
+      "priceFrom": 200,
+      "priceTo": 400,
+      "newPriceRef": "600-1000 €",
+      "notes": "Idéal petit espace ou coin de pièce."
+    },
+    {
+      "label": "Bureau IKEA Bekant reconditionné",
+      "priceFrom": 90,
+      "priceTo": 180,
+      "newPriceRef": "200-350 €",
+      "notes": "Modèle populaire, disponibilité régulière, adapté télétravail."
+    },
+    {
+      "label": "Caisson mobile 3 tiroirs",
+      "priceFrom": 80,
+      "priceTo": 180,
+      "newPriceRef": "300-500 €",
+      "notes": "Complément quasi indispensable pour ranger papiers et fournitures."
+    }
   ],
   "deliveryTable": [
-    { "region": "PACA", "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice", "delay": "3 à 7 jours ouvrés", "notes": "Retrait showroom possible du lundi au samedi sur rdv." },
-    { "region": "Rhône-Alpes", "cities": "Lyon, Grenoble, Chambéry", "delay": "5 à 10 jours ouvrés", "notes": "Transporteur particulier, livraison rez-de-chaussée par défaut." },
-    { "region": "Occitanie", "cities": "Montpellier, Nîmes, Toulouse", "delay": "5 à 12 jours ouvrés", "notes": "Groupage régulier avec livraisons PACA." },
-    { "region": "Île-de-France", "cities": "Paris + banlieue", "delay": "7 à 14 jours ouvrés", "notes": "Précisez ascenseur ou escalier pour un devis exact." },
-    { "region": "Reste France métropolitaine", "cities": "Bordeaux, Nantes, Rennes, Lille, Strasbourg", "delay": "10 à 18 jours ouvrés", "notes": "Devis particulier, prévoir accessibilité livraison." }
+    {
+      "region": "PACA",
+      "cities": "Marseille, Aubagne, Aix-en-Provence, Toulon, Nice",
+      "delay": "3 à 7 jours ouvrés",
+      "notes": "Retrait showroom possible du lundi au samedi sur rdv."
+    },
+    {
+      "region": "Rhône-Alpes",
+      "cities": "Lyon, Grenoble, Chambéry",
+      "delay": "5 à 10 jours ouvrés",
+      "notes": "Transporteur particulier, livraison rez-de-chaussée par défaut."
+    },
+    {
+      "region": "Occitanie",
+      "cities": "Montpellier, Nîmes, Toulouse",
+      "delay": "5 à 12 jours ouvrés",
+      "notes": "Groupage régulier avec livraisons PACA."
+    },
+    {
+      "region": "Île-de-France",
+      "cities": "Paris + banlieue",
+      "delay": "7 à 14 jours ouvrés",
+      "notes": "Précisez ascenseur ou escalier pour un devis exact."
+    },
+    {
+      "region": "Reste France métropolitaine",
+      "cities": "Bordeaux, Nantes, Rennes, Lille, Strasbourg",
+      "delay": "10 à 18 jours ouvrés",
+      "notes": "Devis particulier, prévoir accessibilité livraison."
+    }
   ],
   "glossary": [
-    { "term": "Bureau droit", "definition": "Format classique, plateau rectangulaire. Le plus courant en occasion, du 100 au 180 cm de long." },
-    { "term": "Bureau d'angle", "definition": "Plateau en L ou en vague qui exploite un angle de pièce ou sépare zones écran et papier." },
-    { "term": "Piètement T ou en aile", "definition": "Deux supports latéraux reliant le sol au plateau. Format économique et stable." },
-    { "term": "Plateau mélaminé", "definition": "Panneau de bois recouvert d'une couche décorative synthétique. Standard industriel du mobilier de bureau pro." },
-    { "term": "Câblage intégré", "definition": "Système de passe-câbles et de goulottes pour cacher les câbles électriques et informatiques du poste." },
-    { "term": "Rangement suspendu", "definition": "Tiroir vertical du caisson permettant de suspendre des dossiers cartonnés type A4." },
-    { "term": "Fauteuil ergonomique", "definition": "Siège de bureau avec au moins cinq réglages indépendants, conçu pour un usage prolongé sans fatigue." },
-    { "term": "IKEA Bekant", "definition": "Modèle de bureau IKEA très populaire, souvent revendu d'occasion. Bonne base de télétravail à petit budget." },
-    { "term": "Steelcase Series 1", "definition": "Fauteuil ergonomique milieu de gamme Steelcase, meilleur rapport ergonomie/prix pour le télétravail." },
-    { "term": "Reconditionné en atelier", "definition": "Processus complet de remise en état : démontage, nettoyage, remplacement pièces d'usure, contrôle qualité." },
-    { "term": "Bureau assis-debout", "definition": "Bureau à plateau motorisé, réglable en hauteur pour alterner postures assise et debout." },
-    { "term": "TMS (troubles musculo-squelettiques)", "definition": "Pathologies favorisées par une posture assise mal adaptée. Prévention par un bon fauteuil et un bureau bien dimensionné." }
+    {
+      "term": "Bureau droit",
+      "definition": "Format classique, plateau rectangulaire. Le plus courant en occasion, du 100 au 180 cm de long."
+    },
+    {
+      "term": "Bureau d'angle",
+      "definition": "Plateau en L ou en vague qui exploite un angle de pièce ou sépare zones écran et papier."
+    },
+    {
+      "term": "Piètement T ou en aile",
+      "definition": "Deux supports latéraux reliant le sol au plateau. Format économique et stable."
+    },
+    {
+      "term": "Plateau mélaminé",
+      "definition": "Panneau de bois recouvert d'une couche décorative synthétique. Standard industriel du mobilier de bureau pro."
+    },
+    {
+      "term": "Câblage intégré",
+      "definition": "Système de passe-câbles et de goulottes pour cacher les câbles électriques et informatiques du poste."
+    },
+    {
+      "term": "Rangement suspendu",
+      "definition": "Tiroir vertical du caisson permettant de suspendre des dossiers cartonnés type A4."
+    },
+    {
+      "term": "Fauteuil ergonomique",
+      "definition": "Siège de bureau avec au moins cinq réglages indépendants, conçu pour un usage prolongé sans fatigue."
+    },
+    {
+      "term": "IKEA Bekant",
+      "definition": "Modèle de bureau IKEA très populaire, souvent revendu d'occasion. Bonne base de télétravail à petit budget."
+    },
+    {
+      "term": "Steelcase Series 1",
+      "definition": "Fauteuil ergonomique milieu de gamme Steelcase, meilleur rapport ergonomie/prix pour le télétravail."
+    },
+    {
+      "term": "Reconditionné en atelier",
+      "definition": "Processus complet de remise en état : démontage, nettoyage, remplacement pièces d'usure, contrôle qualité."
+    },
+    {
+      "term": "Bureau assis-debout",
+      "definition": "Bureau à plateau motorisé, réglable en hauteur pour alterner postures assise et debout."
+    },
+    {
+      "term": "TMS (troubles musculo-squelettiques)",
+      "definition": "Pathologies favorisées par une posture assise mal adaptée. Prévention par un bon fauteuil et un bureau bien dimensionné."
+    }
   ],
-  "bodyMd": "## Sur cette page\n\n- Pourquoi acheter un bureau d'occasion en 2026 ?\n- Quels formats de bureaux existent en occasion ?\n- Quel bureau choisir pour le télétravail ?\n- Bureau pour freelance ou indépendant : que privilégier ?\n- Comment vérifier la qualité avant achat ?\n- Budget : combien prévoir selon l'usage ?\n- Livraison à domicile : comment ça se passe ?\n- Sources et références\n\n---\n\n## Pourquoi acheter un bureau d'occasion en 2026 ?\n\nUn bureau professionnel neuf de qualité coûte entre 350 et 900 euros selon les dimensions et la marque. Le même bureau en occasion reconditionnée se trouve entre 100 et 400 euros. Vous obtenez exactement les mêmes performances, la même durée de vie utile résiduelle (10 à 15 ans en usage quotidien), et un impact environnemental drastiquement réduit. Pour un télétravailleur, un freelance ou une petite structure, le choix est mathématique.\n\nLe télétravail massif depuis 2020 a créé un besoin d'équipement pro à domicile qui n'existait pas avant. Beaucoup se sont d'abord équipés avec du mobilier grand public (IKEA, Amazon Basics, marques de bricolage) et découvrent après quelques mois que la qualité n'est pas à la hauteur d'un usage 6 à 8 heures par jour. Le bureau d'occasion pro reconditionné est la réponse à ce constat.\n\n### La différence avec un bureau IKEA neuf\n\nUn bureau IKEA à 199 euros propose un plateau de 18 mm d'épaisseur, un piètement en tube fin, une charge maximale de 50 kg environ. Un bureau Steelcase reconditionné équivalent au même prix propose un plateau de 22 à 25 mm, un piètement acier renforcé, une charge testée à 100 kg minimum. Sur 10 ans d'usage, le second reste ferme et stable, le premier montre des signes de fatigue au bout de 3 à 4 ans.\n\n> [success] Pour le même budget, le reconditionné pro l'emporte sur le neuf grand public à tous les niveaux : robustesse, esthétique, durabilité, revente possible.\n\n---\n\n## Quels formats de bureaux existent en occasion ?\n\nCinq grandes familles de bureaux couvrent l'essentiel de la demande en occasion. Le choix se fait selon l'espace disponible, votre usage quotidien et votre budget.\n\n### Le bureau droit standard\n\nPlateau rectangulaire de 100 à 180 cm, profondeur 60 à 80 cm. Format le plus courant, disponible en permanence. Il se place contre un mur, en îlot ou en L avec un retour. C'est le point de départ recommandé pour un télétravail classique ou un premier poste indépendant.\n\n### Le bureau d'angle\n\nPlateau en L ou en vague qui exploite un coin de pièce. Il offre plus de surface utile qu'un bureau droit tout en occupant moins de longueur de mur. Idéal pour les petits espaces (chambre convertie en bureau, coin de salon) ou pour ceux qui utilisent deux écrans avec des dossiers papier à côté.\n\n### Le bureau bench (2 postes)\n\nDeux bureaux droits alignés partageant une structure commune. Utile en famille (deux télétravailleurs sous le même toit) ou en TPE avec deux collaborateurs. Le bench pro pré-câblé simplifie la gestion des prises et des câbles.\n\n### Le bureau assis-debout électrique\n\nPlateau motorisé qui monte de 65 à 130 cm environ. Il permet d'alterner postures assise et debout dans la journée. Investissement plus lourd (600 à 900 euros en occasion), justifié par la prévention des TMS et le confort sur des journées de 8 heures et plus. Détaillé sur la page [bureau assis-debout d'occasion](/bureau-assis-debout-occasion).\n\n### Le bureau IKEA Bekant reconditionné\n\nModèle très populaire du fabricant suédois, souvent revendu d'occasion en bon état. Bon compromis pour un télétravail à petit budget, moins robuste que du Steelcase mais très correct. Prix typique reconditionné : 90 à 180 euros.\n\n| Format | Espace requis | Idéal pour | Budget occasion |\n| --- | --- | --- | --- |\n| Droit 120 cm | 1,2 m linéaire | Télétravail léger | 100 à 180 € |\n| Droit 140-160 cm | 1,5 m linéaire | Télétravail régulier | 150 à 300 € |\n| Angle 160 x 140 | 1,6 m² | Deux écrans + papier | 200 à 400 € |\n| Bench 2 postes | 2,5 m linéaire | Famille ou TPE | 250 à 500 € |\n| Assis-debout 140 | 1,5 m linéaire | Prévention TMS | 600 à 900 € |\n\n![Bureau télétravail à domicile](https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1600&q=85 \"Un poste télétravail équipé en bureau pro reconditionné.\")\n\n---\n\n## Quel bureau choisir pour le télétravail ?\n\nPour un télétravail 3 à 5 jours par semaine, quatre critères comptent plus que les autres : les dimensions du plateau, la stabilité du piètement, la qualité du plateau à l'usure, et la présence d'un système de câblage pour éviter le bazar sous les pieds.\n\n### Dimensions recommandées selon votre écran\n\nUn écran 24 pouces + clavier + souris + un peu d'espace pour un cahier : 120 cm de long suffit. Deux écrans 24 pouces : passez à 160 cm minimum, ou optez pour un bureau d'angle. Un écran ultrawide 34 pouces : 140 cm au minimum, sinon la profondeur de recul manque (l'écran est trop près des yeux).\n\n### Le rôle du bras d'écran\n\nUn bras d'écran (souvent vendu à part) libère la totalité de la profondeur du plateau. Ça change tout sur un bureau de 60 cm de profondeur, qui devient très confortable une fois débarrassé du pied d'écran classique. C'est un accessoire à envisager en complément d'un bureau reconditionné pour maximiser l'ergonomie.\n\n### Vérifiez la stabilité avant l'achat\n\nUn bureau qui tremble quand vous tapez au clavier ou quand vous déplacez la souris devient vite insupportable. En magasin ou en showroom, posez les deux mains sur le plateau et appliquez une pression latérale : un bureau pro reste rigide, un bureau grand public plie de plusieurs millimètres.\n\n> [tip] Pour un télétravail intensif, investissez dans le meilleur bureau que votre budget permet. C'est un achat que vous n'aurez à refaire ni dans 5 ans ni dans 10 ans si vous choisissez du pro reconditionné.\n\n---\n\n## Bureau pour freelance ou indépendant : que privilégier ?\n\nEn tant que freelance, votre bureau est un outil de travail déductible. Un bureau pro à 250 euros HT est traité fiscalement de la même façon qu'un bureau grand public au même prix, mais avec 10 ans d'usage utile en plus. Trois critères se démarquent pour ce profil.\n\n### La cohérence visuelle en visioconférence\n\nQuand vous passez en visio avec un client, l'arrière-plan compte. Un bureau pro avec finition sobre (chêne clair, blanc, noir) transmet un signal de sérieux. Un bureau IKEA blanc éclatant en revanche capte la lumière et parasite l'image webcam.\n\n### La possibilité d'accueillir un second poste ponctuel\n\nUn associé qui passe, un client qui vient co-travailler, un collaborateur ponctuel : un bureau assez long (160 cm minimum) ou un bench 2 postes anticipent ces cas d'usage. Plus flexible qu'un bureau strict individuel.\n\n### La revente potentielle\n\nUn bureau pro reconditionné se revend à 60-80% de son prix d'achat 3 à 5 ans plus tard. Un bureau IKEA neuf se revend à 30-40% de son prix. Un bureau pro c'est aussi un actif liquide, pas juste une dépense.\n\n---\n\n## Comment vérifier la qualité avant achat ?\n\nCinq points de contrôle avant de valider un bureau d'occasion, quel que soit le vendeur.\n\n### 1. La stabilité du piètement\n\nAppliquez une pression latérale : un bureau pro ne bouge pas. Un bureau bas de gamme oscille visiblement. C'est le premier test à faire physiquement en showroom.\n\n### 2. L'état du plateau\n\nRayures superficielles : acceptables et négociables. Fissures ou éclats profonds : dealbreaker. Trace de brûlure ou tache tenace : négociez fortement ou passez votre chemin.\n\n### 3. Le mécanisme électrique (assis-debout)\n\nSi vous prenez un modèle motorisé, testez la montée et la descente sur toute la plage de hauteur. Écoutez le moteur : un bruit régulier est normal, un grincement métallique ou un ralentissement anormal signalent un moteur fatigué.\n\n### 4. La visserie et les fixations\n\nVérifiez que toutes les vis sont présentes, que les fixations entre plateau et piètement sont serrées, et que les pieds réglables (pour compenser un sol non plat) fonctionnent.\n\n### 5. Les accessoires d'origine\n\nSelon le modèle : passe-câbles, goulottes, boîtiers de prises, tapis de bureau, panneaux séparateurs de bench. Vérifiez ce qui est inclus ou non, ça change le prix effectif.\n\n---\n\n## Budget : combien prévoir selon l'usage ?\n\nQuatre budgets typiques couvrent la majorité des besoins.\n\n### Budget minimal 100 à 200 € : télétravail occasionnel\n\nBureau droit 100 à 120 cm entrée de gamme, marque pro ou IKEA Bekant reconditionné. Convient pour 1 à 2 jours de télétravail par semaine, ou pour un étudiant.\n\n### Budget confort 200 à 400 € : télétravail régulier\n\nBureau droit 140 à 160 cm marque pro (Steelcase, Haworth), plateau épais 22-25 mm, piètement métal robuste. Convient pour un télétravail 3 à 5 jours par semaine sur plusieurs années.\n\n### Budget évolutif 400 à 700 € : setup complet ou petit espace pro\n\nBureau d'angle 160 x 140 cm ou bench 2 postes reconditionnés. Convient pour un travail intensif avec deux écrans ou pour une TPE naissante avec un ou deux collaborateurs.\n\n### Budget premium 600 à 900 € : assis-debout ou setup direction\n\nBureau assis-debout électrique reconditionné ou bureau de direction (bois massif, cuir sur plateau). Pour un usage intensif avec exigence forte de confort et de statut.\n\n---\n\n## Livraison à domicile : comment ça se passe ?\n\nLivraison en région PACA de manière régulière, avec créneau défini le matin ou l'après-midi. Pour le reste de la France, expédition par transporteur particulier ou groupée avec d'autres commandes selon la zone. Comptez 3 à 7 jours ouvrés pour PACA, 5 à 12 jours pour Occitanie et Rhône-Alpes, 7 à 14 jours pour Île-de-France, 10 à 18 jours pour les autres régions.\n\n### Ce qu'il faut préciser au devis\n\nPrésence d'un ascenseur ou d'un escalier, largeur minimale des portes et couloirs, étage, disponibilité d'une place de stationnement à proximité. Ces éléments changent significativement le coût de la livraison, particulièrement en centre-ville dense.\n\n### Le retrait au showroom\n\nOption la plus économique si vous êtes en PACA. Showroom à La Penne-sur-Huveaune (13), à 15 minutes de Marseille et 5 minutes d'Aubagne, ouvert du lundi au samedi sur rendez-vous. Vous pouvez charger le bureau dans un utilitaire ou une voiture spacieuse selon le modèle.\n\n> [tip] Si vous partez en location d'utilitaire, comptez 2 heures avec la prise en main du véhicule. Un bureau démonté rentre dans la plupart des utilitaires standards (Kangoo, Berlingo).\n\n---\n\n## Sources et références\n\n- Publications ADEME sur le mobilier professionnel : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Recommandations INRS sur le poste de travail informatique : [inrs.fr](https://www.inrs.fr/risques/travail-ecran/ce-qu-il-faut-retenir.html)\n- Norme NF EN 527 sur les tables de travail de bureau : [afnor.org](https://www.boutique.afnor.org/)\n\n---\n\n## Continuer votre exploration\n\n- Explorer les [bureaux disponibles en stock](/categorie/bureau)\n- Comparer avec la version [BtoB en volume](/bureau-professionnel-occasion)\n- Compléter avec un [fauteuil ergonomique](/fauteuil-ergonomique)\n- Passer au [bureau assis-debout d'occasion](/bureau-assis-debout-occasion)\n- Voir la [chaise de bureau d'occasion](/chaise-bureau-occasion)\n- Livraison à [Marseille](/bureau-occasion-marseille), [Aubagne](/bureau-occasion-aubagne), [Aix-en-Provence](/bureau-occasion-aix-en-provence), [Toulon](/bureau-occasion-toulon)\n",
+  "bodyMd": "## Sur cette page\n\n- Pourquoi acheter un bureau d'occasion en 2026 ?\n- Quels formats de bureaux existent en occasion ?\n- Quel bureau choisir pour le télétravail ?\n- Bureau pour freelance ou indépendant : que privilégier ?\n- Comment vérifier la qualité avant achat ?\n- Budget : combien prévoir selon l'usage ?\n- Livraison à domicile : comment ça se passe ?\n- Sources et références\n\n---\n\n## Pourquoi acheter un bureau d'occasion en 2026 ?\n\nUn bureau professionnel neuf de qualité coûte entre 350 et 900 euros selon les dimensions et la marque. Le même bureau en occasion reconditionnée se trouve entre 100 et 400 euros. Vous obtenez exactement les mêmes performances, la même durée de vie utile résiduelle (10 à 15 ans en usage quotidien), et un impact environnemental drastiquement réduit. Pour un télétravailleur, un freelance ou une petite structure, le choix est mathématique.\n\n![Bureau en bois clair avec ordinateur portable dans un intérieur lumineux](https://images.unsplash.com/photo-1493421419110-74f4e85ba126?w=1600&q=85 \"Un bureau pro reconditionné s'intègre naturellement dans un intérieur de télétravail.\")\n\nLe télétravail massif depuis 2020 a créé un besoin d'équipement pro à domicile qui n'existait pas avant. Beaucoup se sont d'abord équipés avec du mobilier grand public (IKEA, Amazon Basics, marques de bricolage) et découvrent après quelques mois que la qualité n'est pas à la hauteur d'un usage 6 à 8 heures par jour. Le bureau d'occasion pro reconditionné est la réponse à ce constat.\n\n### La différence avec un bureau IKEA neuf\n\nUn bureau IKEA à 199 euros propose un plateau de 18 mm d'épaisseur, un piètement en tube fin, une charge maximale de 50 kg environ. Un bureau Steelcase reconditionné équivalent au même prix propose un plateau de 22 à 25 mm, un piètement acier renforcé, une charge testée à 100 kg minimum. Sur 10 ans d'usage, le second reste ferme et stable, le premier montre des signes de fatigue au bout de 3 à 4 ans.\n\n> [success] Pour le même budget, le reconditionné pro l'emporte sur le neuf grand public à tous les niveaux : robustesse, esthétique, durabilité, revente possible.\n\n---\n\n## Quels formats de bureaux existent en occasion ?\n\nCinq grandes familles de bureaux couvrent l'essentiel de la demande en occasion. Le choix se fait selon l'espace disponible, votre usage quotidien et votre budget.\n\n### Le bureau droit standard\n\nPlateau rectangulaire de 100 à 180 cm, profondeur 60 à 80 cm. Format le plus courant, disponible en permanence. Il se place contre un mur, en îlot ou en L avec un retour. C'est le point de départ recommandé pour un télétravail classique ou un premier poste indépendant.\n\n### Le bureau d'angle\n\nPlateau en L ou en vague qui exploite un coin de pièce. Il offre plus de surface utile qu'un bureau droit tout en occupant moins de longueur de mur. Idéal pour les petits espaces (chambre convertie en bureau, coin de salon) ou pour ceux qui utilisent deux écrans avec des dossiers papier à côté.\n\n### Le bureau bench (2 postes)\n\nDeux bureaux droits alignés partageant une structure commune. Utile en famille (deux télétravailleurs sous le même toit) ou en TPE avec deux collaborateurs. Le bench pro pré-câblé simplifie la gestion des prises et des câbles.\n\n### Le bureau assis-debout électrique\n\nPlateau motorisé qui monte de 65 à 130 cm environ. Il permet d'alterner postures assise et debout dans la journée. Investissement plus lourd (600 à 900 euros en occasion), justifié par la prévention des TMS et le confort sur des journées de 8 heures et plus. Détaillé sur la page [bureau assis-debout d'occasion](/bureau-assis-debout-occasion).\n\n### Le bureau IKEA Bekant reconditionné\n\nModèle très populaire du fabricant suédois, souvent revendu d'occasion en bon état. Bon compromis pour un télétravail à petit budget, moins robuste que du Steelcase mais très correct. Prix typique reconditionné : 90 à 180 euros.\n\n| Format | Espace requis | Idéal pour | Budget occasion |\n| --- | --- | --- | --- |\n| Droit 120 cm | 1,2 m linéaire | Télétravail léger | 100 à 180 € |\n| Droit 140-160 cm | 1,5 m linéaire | Télétravail régulier | 150 à 300 € |\n| Angle 160 x 140 | 1,6 m² | Deux écrans + papier | 200 à 400 € |\n| Bench 2 postes | 2,5 m linéaire | Famille ou TPE | 250 à 500 € |\n| Assis-debout 140 | 1,5 m linéaire | Prévention TMS | 600 à 900 € |\n\n![Bureau télétravail à domicile](https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1600&q=85 \"Un poste télétravail équipé en bureau pro reconditionné.\")\n\n---\n\n## Quel bureau choisir pour le télétravail ?\n\nPour un télétravail 3 à 5 jours par semaine, quatre critères comptent plus que les autres : les dimensions du plateau, la stabilité du piètement, la qualité du plateau à l'usure, et la présence d'un système de câblage pour éviter le bazar sous les pieds.\n\n![Poste de télétravail organisé avec double écran](https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1600&q=85 \"160 cm minimum pour travailler confortablement avec deux écrans.\")\n\n### Dimensions recommandées selon votre écran\n\nUn écran 24 pouces + clavier + souris + un peu d'espace pour un cahier : 120 cm de long suffit. Deux écrans 24 pouces : passez à 160 cm minimum, ou optez pour un bureau d'angle. Un écran ultrawide 34 pouces : 140 cm au minimum, sinon la profondeur de recul manque (l'écran est trop près des yeux).\n\n### Le rôle du bras d'écran\n\nUn bras d'écran (souvent vendu à part) libère la totalité de la profondeur du plateau. Ça change tout sur un bureau de 60 cm de profondeur, qui devient très confortable une fois débarrassé du pied d'écran classique. C'est un accessoire à envisager en complément d'un bureau reconditionné pour maximiser l'ergonomie.\n\n### Vérifiez la stabilité avant l'achat\n\nUn bureau qui tremble quand vous tapez au clavier ou quand vous déplacez la souris devient vite insupportable. En magasin ou en showroom, posez les deux mains sur le plateau et appliquez une pression latérale : un bureau pro reste rigide, un bureau grand public plie de plusieurs millimètres.\n\n> [tip] Pour un télétravail intensif, investissez dans le meilleur bureau que votre budget permet. C'est un achat que vous n'aurez à refaire ni dans 5 ans ni dans 10 ans si vous choisissez du pro reconditionné.\n\n---\n\n## Bureau pour freelance ou indépendant : que privilégier ?\n\nEn tant que freelance, votre bureau est un outil de travail déductible. Un bureau pro à 250 euros HT est traité fiscalement de la même façon qu'un bureau grand public au même prix, mais avec 10 ans d'usage utile en plus. Trois critères se démarquent pour ce profil.\n\n![Plateau de bureau en bois massif avec accessoires de travail](https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=1600&q=85 \"Les plateaux pros de 22 à 25 mm restent rigides pendant des décennies.\")\n\n### La cohérence visuelle en visioconférence\n\nQuand vous passez en visio avec un client, l'arrière-plan compte. Un bureau pro avec finition sobre (chêne clair, blanc, noir) transmet un signal de sérieux. Un bureau IKEA blanc éclatant en revanche capte la lumière et parasite l'image webcam.\n\n### La possibilité d'accueillir un second poste ponctuel\n\nUn associé qui passe, un client qui vient co-travailler, un collaborateur ponctuel : un bureau assez long (160 cm minimum) ou un bench 2 postes anticipent ces cas d'usage. Plus flexible qu'un bureau strict individuel.\n\n### La revente potentielle\n\nUn bureau pro reconditionné se revend à 60-80% de son prix d'achat 3 à 5 ans plus tard. Un bureau IKEA neuf se revend à 30-40% de son prix. Un bureau pro c'est aussi un actif liquide, pas juste une dépense.\n\n---\n\n## Comment vérifier la qualité avant achat ?\n\nCinq points de contrôle avant de valider un bureau d'occasion, quel que soit le vendeur.\n\n### 1. La stabilité du piètement\n\nAppliquez une pression latérale : un bureau pro ne bouge pas. Un bureau bas de gamme oscille visiblement. C'est le premier test à faire physiquement en showroom.\n\n### 2. L'état du plateau\n\nRayures superficielles : acceptables et négociables. Fissures ou éclats profonds : dealbreaker. Trace de brûlure ou tache tenace : négociez fortement ou passez votre chemin.\n\n### 3. Le mécanisme électrique (assis-debout)\n\nSi vous prenez un modèle motorisé, testez la montée et la descente sur toute la plage de hauteur. Écoutez le moteur : un bruit régulier est normal, un grincement métallique ou un ralentissement anormal signalent un moteur fatigué.\n\n### 4. La visserie et les fixations\n\nVérifiez que toutes les vis sont présentes, que les fixations entre plateau et piètement sont serrées, et que les pieds réglables (pour compenser un sol non plat) fonctionnent.\n\n### 5. Les accessoires d'origine\n\nSelon le modèle : passe-câbles, goulottes, boîtiers de prises, tapis de bureau, panneaux séparateurs de bench. Vérifiez ce qui est inclus ou non, ça change le prix effectif.\n\n---\n\n## Budget : combien prévoir selon l'usage ?\n\nQuatre budgets typiques couvrent la majorité des besoins.\n\n### Budget minimal 100 à 200 € : télétravail occasionnel\n\nBureau droit 100 à 120 cm entrée de gamme, marque pro ou IKEA Bekant reconditionné. Convient pour 1 à 2 jours de télétravail par semaine, ou pour un étudiant.\n\n### Budget confort 200 à 400 € : télétravail régulier\n\nBureau droit 140 à 160 cm marque pro (Steelcase, Haworth), plateau épais 22-25 mm, piètement métal robuste. Convient pour un télétravail 3 à 5 jours par semaine sur plusieurs années.\n\n### Budget évolutif 400 à 700 € : setup complet ou petit espace pro\n\nBureau d'angle 160 x 140 cm ou bench 2 postes reconditionnés. Convient pour un travail intensif avec deux écrans ou pour une TPE naissante avec un ou deux collaborateurs.\n\n### Budget premium 600 à 900 € : assis-debout ou setup direction\n\nBureau assis-debout électrique reconditionné ou bureau de direction (bois massif, cuir sur plateau). Pour un usage intensif avec exigence forte de confort et de statut.\n\n---\n\n## Livraison à domicile : comment ça se passe ?\n\nLivraison en région PACA de manière régulière, avec créneau défini le matin ou l'après-midi. Pour le reste de la France, expédition par transporteur particulier ou groupée avec d'autres commandes selon la zone. Comptez 3 à 7 jours ouvrés pour PACA, 5 à 12 jours pour Occitanie et Rhône-Alpes, 7 à 14 jours pour Île-de-France, 10 à 18 jours pour les autres régions.\n\n### Ce qu'il faut préciser au devis\n\nPrésence d'un ascenseur ou d'un escalier, largeur minimale des portes et couloirs, étage, disponibilité d'une place de stationnement à proximité. Ces éléments changent significativement le coût de la livraison, particulièrement en centre-ville dense.\n\n### Le retrait au showroom\n\nOption la plus économique si vous êtes en PACA. Showroom à La Penne-sur-Huveaune (13), à 15 minutes de Marseille et 5 minutes d'Aubagne, ouvert du lundi au samedi sur rendez-vous. Vous pouvez charger le bureau dans un utilitaire ou une voiture spacieuse selon le modèle.\n\n> [tip] Si vous partez en location d'utilitaire, comptez 2 heures avec la prise en main du véhicule. Un bureau démonté rentre dans la plupart des utilitaires standards (Kangoo, Berlingo).\n\n---\n\n## Sources et références\n\n- Publications ADEME sur le mobilier professionnel : [librairie.ademe.fr](https://librairie.ademe.fr/consommer-autrement/)\n- Recommandations INRS sur le poste de travail informatique : [inrs.fr](https://www.inrs.fr/risques/travail-ecran/ce-qu-il-faut-retenir.html)\n- Norme NF EN 527 sur les tables de travail de bureau : [afnor.org](https://www.boutique.afnor.org/)\n\n---\n\n## Continuer votre exploration\n\n- Explorer les [bureaux disponibles en stock](/categorie/bureau)\n- Comparer avec la version [BtoB en volume](/bureau-professionnel-occasion)\n- Compléter avec un [fauteuil ergonomique](/fauteuil-ergonomique)\n- Passer au [bureau assis-debout d'occasion](/bureau-assis-debout-occasion)\n- Voir la [chaise de bureau d'occasion](/chaise-bureau-occasion)\n- Livraison à [Marseille](/bureau-occasion-marseille), [Aubagne](/bureau-occasion-aubagne), [Aix-en-Provence](/bureau-occasion-aix-en-provence), [Toulon](/bureau-occasion-toulon)\n",
   "faq": [
-    { "question": "Quelle est la différence avec un bureau professionnel d'occasion ?", "answer": "Le bureau professionnel d'occasion cible plutôt les entreprises qui équipent un plateau en volume. Cette page présente des bureaux à l'unité, pour un usage télétravail, freelance ou petite structure. Les mêmes marques pros restent disponibles." },
-    { "question": "Puis-je acheter un seul bureau ?", "answer": "Oui, tous nos bureaux sont vendus à l'unité, sans minimum de commande. La sélection est visible dans notre catégorie bureau." },
-    { "question": "Livrez-vous à domicile pour un particulier ou freelance ?", "answer": "Oui, la livraison à domicile est possible partout en région PACA de manière régulière et sur devis pour le reste de la France. Précisez si un escalier ou un ascenseur est présent pour un devis exact." },
-    { "question": "Peut-on essayer avant d'acheter ?", "answer": "Oui, le showroom de La Penne-sur-Huveaune permet de voir et tester plusieurs bureaux sur rendez-vous. Ouvert du lundi au samedi. Prévoyez 30 à 45 minutes pour tester correctement deux à trois modèles." },
-    { "question": "Les bureaux sont-ils livrés montés ?", "answer": "Selon les modèles et la zone. La plupart des bureaux sont livrés démontés en région parisienne et grand ouest pour optimiser les frais. En PACA, la livraison peut être faite montée sur demande." },
-    { "question": "Puis-je déduire un bureau d'occasion en tant que freelance ?", "answer": "Oui, un bureau professionnel est un actif déductible au même titre qu'un bureau neuf, sur présentation de la facture émise à votre nom (personne morale ou physique en micro-entreprise). Aucune différence fiscale avec un achat neuf." },
-    { "question": "Existe-t-il des bureaux en bois massif d'occasion ?", "answer": "Oui, mais plus rarement que les modèles mélaminés (marché historiquement dominé par le mélaminé dans le pro). Les bureaux en placage bois ou bois massif sont plutôt du segment direction, entre 400 et 900 € en occasion." }
+    {
+      "question": "Quelle est la différence avec un bureau professionnel d'occasion ?",
+      "answer": "Le bureau professionnel d'occasion cible plutôt les entreprises qui équipent un plateau en volume. Cette page présente des bureaux à l'unité, pour un usage télétravail, freelance ou petite structure. Les mêmes marques pros restent disponibles."
+    },
+    {
+      "question": "Puis-je acheter un seul bureau ?",
+      "answer": "Oui, tous nos bureaux sont vendus à l'unité, sans minimum de commande. La sélection est visible dans notre catégorie bureau."
+    },
+    {
+      "question": "Livrez-vous à domicile pour un particulier ou freelance ?",
+      "answer": "Oui, la livraison à domicile est possible partout en région PACA de manière régulière et sur devis pour le reste de la France. Précisez si un escalier ou un ascenseur est présent pour un devis exact."
+    },
+    {
+      "question": "Peut-on essayer avant d'acheter ?",
+      "answer": "Oui, le showroom de La Penne-sur-Huveaune permet de voir et tester plusieurs bureaux sur rendez-vous. Ouvert du lundi au samedi. Prévoyez 30 à 45 minutes pour tester correctement deux à trois modèles."
+    },
+    {
+      "question": "Les bureaux sont-ils livrés montés ?",
+      "answer": "Selon les modèles et la zone. La plupart des bureaux sont livrés démontés en région parisienne et grand ouest pour optimiser les frais. En PACA, la livraison peut être faite montée sur demande."
+    },
+    {
+      "question": "Puis-je déduire un bureau d'occasion en tant que freelance ?",
+      "answer": "Oui, un bureau professionnel est un actif déductible au même titre qu'un bureau neuf, sur présentation de la facture émise à votre nom (personne morale ou physique en micro-entreprise). Aucune différence fiscale avec un achat neuf."
+    },
+    {
+      "question": "Existe-t-il des bureaux en bois massif d'occasion ?",
+      "answer": "Oui, mais plus rarement que les modèles mélaminés (marché historiquement dominé par le mélaminé dans le pro). Les bureaux en placage bois ou bois massif sont plutôt du segment direction, entre 400 et 900 € en occasion."
+    }
   ]
 }
