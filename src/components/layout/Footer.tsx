@@ -259,6 +259,16 @@ export function Footer({ logo }: FooterProps = {}) {
         <div className="container py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ivory/50">
           <p>
             © {new Date().getFullYear()} Mobilier Malin — SARL 2 M. Tous droits réservés.
+            {' · '}
+            Propulsé par{' '}
+            <a
+              href="https://mon-agenceweb.fr/"
+              target="_blank"
+              rel="noopener"
+              className="text-gold hover:text-gold-dark underline underline-offset-2 transition"
+            >
+              Farouk
+            </a>
           </p>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-1">
             {LEGAL.map((l) => (
