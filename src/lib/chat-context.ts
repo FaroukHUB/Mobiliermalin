@@ -271,12 +271,12 @@ async function searchProducts(args: ToolCallArgs) {
 
     const groqQuery = `*[_type == "product" && status == "published"
          ${useBrand && brand ? '&& brand match $brand' : ''}
-         ${useCat && categorySlug ? '&& category->slug.current == $categorySlug' : ''}
+         ${useCat && categorySlug ? '&& (primaryCategory->slug.current == $categorySlug || $categorySlug in categories[]->slug.current || category->slug.current == $categorySlug)' : ''}
          ${maxPrice ? '&& (coalesce(salePrice, price) <= $maxPrice)' : ''}
-         ${useWords && queryWords.length > 0 ? '&& (name match $queryWords || shortDescription match $queryWords || brand match $queryWords || category->name match $queryWords)' : ''}
+         ${useWords && queryWords.length > 0 ? '&& (name match $queryWords || shortDescription match $queryWords || brand match $queryWords || primaryCategory->name match $queryWords || category->name match $queryWords)' : ''}
        ] | order(_updatedAt desc) [0...8] {
         _id, name, slug, price, salePrice, stock, brand, condition, shortDescription,
-        category->{ name, slug }
+        "category": coalesce(primaryCategory->{ name, slug }, category->{ name, slug })
       }`
 
     try {

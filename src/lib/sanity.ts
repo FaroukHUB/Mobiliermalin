@@ -156,6 +156,25 @@ export type SanityProduct = {
 
 // ───────────────────────── Queries GROQ ─────────────────────────
 
+// Un produit "appartient" à une catégorie s'il la référence via le
+// nouveau système (primaryCategory / categories[]) OU l'ancien champ
+// legacy `category` (produits créés avant la migration). Toute query
+// par catégorie DOIT matcher les deux — sinon les nouveaux produits
+// deviennent invisibles sur les pages catégorie.
+const IN_CATEGORY = (slugVar: string) => `(
+  primaryCategory->slug.current == ${slugVar} ||
+  ${slugVar} in categories[]->slug.current ||
+  category->slug.current == ${slugVar}
+)`
+const IN_CATEGORY_DEEP = (slugVar: string) => `(
+  primaryCategory->slug.current == ${slugVar} ||
+  primaryCategory->parent->slug.current == ${slugVar} ||
+  ${slugVar} in categories[]->slug.current ||
+  ${slugVar} in categories[]->parent->slug.current ||
+  category->slug.current == ${slugVar} ||
+  category->parent->slug.current == ${slugVar}
+)`
+
 const PRODUCT_FIELDS = `
   _id, name, slug, status, shortDescription, description,
   price, salePrice, salePriceValidUntil, comparePrice, stock,
@@ -207,7 +226,7 @@ export async function getAllProducts(): Promise<SanityProduct[]> {
  */
 export async function getProductsByCategory(categorySlug: string): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published" && defined(slug.current) && category->slug.current == $slug] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
+    `*[_type == "product" && status == "published" && defined(slug.current) && ${IN_CATEGORY('$slug')}] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
     { slug: categorySlug },
     [],
   )
@@ -247,7 +266,7 @@ export async function getRelatedProducts(
   // (Sanity n'a pas de vrai random() ; l'ordre par date est trop stable).
   const pool = await safeFetch<SanityProduct[]>(
     `*[_type == "product" && status == "published" && defined(slug.current)
-        && category->slug.current == $cat
+        && ${IN_CATEGORY('$cat')}
         && slug.current != $slug]
        | order(_createdAt desc) [0...8] { ${PRODUCT_FIELDS} }`,
     { cat: categorySlug, slug: currentSlug },
@@ -319,7 +338,7 @@ export async function getLatestProductsByCategoryDeep(
 ): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
     `*[_type == "product" && status == "published" && defined(slug.current) &&
-      (category->slug.current == $slug || category->parent->slug.current == $slug)
+      ${IN_CATEGORY_DEEP('$slug')}
     ] | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
     { slug: categorySlug, limit },
     [],
@@ -572,7 +591,7 @@ export async function getProductsByBrand(brand: string): Promise<SanityProduct[]
 export async function getProductsByCategoryDeep(categorySlug: string): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
     `*[_type == "product" && status == "published" && defined(slug.current) &&
-      (category->slug.current == $slug || category->parent->slug.current == $slug)
+      ${IN_CATEGORY_DEEP('$slug')}
     ] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
     { slug: categorySlug },
     [],

@@ -181,11 +181,10 @@ function buildItem(product: SanityProduct): string | null {
   const description = buildDescription(product).slice(0, 5000)
   const title = product.name.slice(0, 150)
   const brand = product.brand || STORE_NAME
-  const category = mapGoogleCategory(
-    product.category?.slug?.current,
-    product.category?.name,
-  )
-  const productType = product.category?.name || 'Mobilier de bureau'
+  // primaryCategory (nouveau système) prioritaire, fallback legacy category
+  const cat = product.primaryCategory || product.category
+  const category = mapGoogleCategory(cat?.slug?.current, cat?.name)
+  const productType = cat?.name || 'Mobilier de bureau'
 
   const hasSale =
     product.salePrice &&
