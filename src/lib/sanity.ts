@@ -196,7 +196,7 @@ async function safeFetch<T>(query: string, params: Record<string, unknown> = {},
  */
 export async function getAllProducts(): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published"] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
+    `*[_type == "product" && status == "published" && defined(slug.current)] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
     {},
     [],
   )
@@ -207,7 +207,7 @@ export async function getAllProducts(): Promise<SanityProduct[]> {
  */
 export async function getProductsByCategory(categorySlug: string): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published" && category->slug.current == $slug] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
+    `*[_type == "product" && status == "published" && defined(slug.current) && category->slug.current == $slug] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
     { slug: categorySlug },
     [],
   )
@@ -218,7 +218,7 @@ export async function getProductsByCategory(categorySlug: string): Promise<Sanit
  */
 export async function getProductBySlug(slug: string): Promise<SanityProduct | null> {
   return safeFetch<SanityProduct | null>(
-    `*[_type == "product" && status == "published" && slug.current == $slug][0] { ${PRODUCT_FIELDS} }`,
+    `*[_type == "product" && status == "published" && defined(slug.current) && slug.current == $slug][0] { ${PRODUCT_FIELDS} }`,
     { slug },
     null,
   )
@@ -237,7 +237,7 @@ export async function getRelatedProducts(
 ): Promise<SanityProduct[]> {
   if (!categorySlug) {
     return safeFetch<SanityProduct[]>(
-      `*[_type == "product" && status == "published" && slug.current != $slug]
+      `*[_type == "product" && status == "published" && defined(slug.current) && slug.current != $slug]
          | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
       { slug: currentSlug, limit },
       [],
@@ -246,7 +246,7 @@ export async function getRelatedProducts(
   // On tire 8 produits candidats de la catégorie puis on shuffle côté JS
   // (Sanity n'a pas de vrai random() ; l'ordre par date est trop stable).
   const pool = await safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published"
+    `*[_type == "product" && status == "published" && defined(slug.current)
         && category->slug.current == $cat
         && slug.current != $slug]
        | order(_createdAt desc) [0...8] { ${PRODUCT_FIELDS} }`,
@@ -268,7 +268,7 @@ export async function getFeaturedProducts(limit: number = 6): Promise<SanityProd
   return safeFetch<SanityProduct[]>(
     // Tri : d'abord par featuredOrder (1, 2, 3...) si défini, sinon par date.
     // coalesce(featuredOrder, 9999) → les produits sans ordre tombent à la fin.
-    `*[_type == "product" && status == "published" && featured == true]
+    `*[_type == "product" && status == "published" && defined(slug.current) && featured == true]
        | order(coalesce(featuredOrder, 9999) asc, _createdAt desc) [0...$limit] {
          ${PRODUCT_FIELDS}
        }`,
@@ -284,7 +284,7 @@ export async function getFeaturedProducts(limit: number = 6): Promise<SanityProd
  */
 export async function getExceptionProducts(limit: number = 3): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published" && exception == true]
+    `*[_type == "product" && status == "published" && defined(slug.current) && exception == true]
        | order(coalesce(exceptionOrder, 9999) asc, _createdAt desc) [0...$limit] {
          ${PRODUCT_FIELDS}
        }`,
@@ -301,7 +301,7 @@ export async function getExceptionProducts(limit: number = 3): Promise<SanityPro
  */
 export async function getLatestProducts(limit: number = 4): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published"] | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
+    `*[_type == "product" && status == "published" && defined(slug.current)] | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
     { limit },
     [],
   )
@@ -318,7 +318,7 @@ export async function getLatestProductsByCategoryDeep(
   limit: number = 4,
 ): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published" &&
+    `*[_type == "product" && status == "published" && defined(slug.current) &&
       (category->slug.current == $slug || category->parent->slug.current == $slug)
     ] | order(_createdAt desc) [0...$limit] { ${PRODUCT_FIELDS} }`,
     { slug: categorySlug, limit },
@@ -398,7 +398,7 @@ export async function getLocalPage(pageKey: string): Promise<SanityLocalPage> {
  */
 export async function getAllProductSlugs(): Promise<string[]> {
   return safeFetch<{ slug: { current: string } }[]>(
-    `*[_type == "product" && status == "published"]{ slug }`,
+    `*[_type == "product" && status == "published" && defined(slug.current)]{ slug }`,
     {},
     [],
   ).then((docs) => docs.map((d) => d.slug.current).filter(Boolean))
@@ -562,7 +562,7 @@ export async function getNationalLandingByKey(
  */
 export async function getProductsByBrand(brand: string): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published" && brand == $brand]
+    `*[_type == "product" && status == "published" && defined(slug.current) && brand == $brand]
       | order(featured desc, _createdAt desc) { ${PRODUCT_FIELDS} }`,
     { brand },
     [],
@@ -571,7 +571,7 @@ export async function getProductsByBrand(brand: string): Promise<SanityProduct[]
 
 export async function getProductsByCategoryDeep(categorySlug: string): Promise<SanityProduct[]> {
   return safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published" &&
+    `*[_type == "product" && status == "published" && defined(slug.current) &&
       (category->slug.current == $slug || category->parent->slug.current == $slug)
     ] | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
     { slug: categorySlug },
@@ -638,7 +638,7 @@ export async function getMenuShowcaseProduct(): Promise<SanityProduct | null> {
   if (explicit && explicit._id) return explicit
 
   const latest = await safeFetch<SanityProduct[]>(
-    `*[_type == "product" && status == "published"] | order(_createdAt desc) [0...1] { ${PRODUCT_FIELDS} }`,
+    `*[_type == "product" && status == "published" && defined(slug.current)] | order(_createdAt desc) [0...1] { ${PRODUCT_FIELDS} }`,
     {},
     [],
   )

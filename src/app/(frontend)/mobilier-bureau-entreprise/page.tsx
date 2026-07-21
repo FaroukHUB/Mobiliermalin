@@ -67,7 +67,7 @@ const FALLBACK_FAQ = [
 
 function sanityToCard(p: SanityProduct): ProductCardData {
   const firstImage = p.images?.[0]
-  const imageUrl = firstImage ? urlFor(firstImage).width(900).height(1200).fit('crop').url() : undefined
+  const imageUrl = firstImage?.asset ? urlFor(firstImage).width(900).height(1200).fit('crop').url() : undefined
   return {
     id: p._id, slug: p.slug.current, title: p.name, shortDescription: p.shortDescription,
     price: p.price, salePrice: p.salePrice, comparePrice: p.comparePrice, condition: p.condition,

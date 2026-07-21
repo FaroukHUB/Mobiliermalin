@@ -55,7 +55,7 @@ export function ExceptionPieces({ products }: ExceptionPiecesProps) {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 max-w-6xl mx-auto">
           {products.map((p, i) => {
             const firstImage = p.images?.[0]
-            const imageUrl = firstImage
+            const imageUrl = firstImage?.asset
               ? urlFor(firstImage).width(900).height(1100).fit('crop').url()
               : null
             const conditionLabel = p.condition ? CONDITION_LABELS[p.condition] : null
