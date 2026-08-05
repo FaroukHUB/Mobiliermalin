@@ -85,6 +85,27 @@ export async function POST(
     return NextResponse.json({ error: 'Devis introuvable' }, { status: 404 })
   }
 
+  // Validation explicite des champs requis pour le PDF — un doc
+  // incomplet doit produire un message actionnable, pas un crash.
+  const missing: string[] = []
+  if (!quote.numero) missing.push('numéro (sauvegarde/publie le document pour le générer)')
+  if (!quote.customer?.name) missing.push('nom du client')
+  if (!quote.customer?.email) missing.push('email du client')
+  if (!quote.product?.name) missing.push('produit')
+  if (typeof quote.product?.unitPrice !== 'number') missing.push('prix unitaire du produit')
+  if (typeof quote.product?.quantity !== 'number') missing.push('quantité du produit')
+  if (!quote.shippingAddress?.street || !quote.shippingAddress?.city) {
+    missing.push('adresse de livraison (rue + ville)')
+  }
+  if (missing.length > 0) {
+    return NextResponse.json(
+      {
+        error: `Document incomplet, impossible de générer le PDF. Champs manquants : ${missing.join(' · ')}. Vérifie aussi que le document est bien PUBLIÉ (l'API ne voit pas les brouillons).`,
+      },
+      { status: 422 },
+    )
+  }
+
   // 2) Génération du PDF
   const emittedAt = new Date()
   const validUntil = quote.validUntil
@@ -119,8 +140,9 @@ export async function POST(
     pdfBuffer = await renderToBuffer(QuotePdf(pdfInput))
   } catch (err) {
     console.error('[devis/envoyer] PDF render error', err)
+    const detail = err instanceof Error ? err.message : String(err)
     return NextResponse.json(
-      { error: 'Erreur lors de la génération du PDF' },
+      { error: `Erreur lors de la génération du PDF : ${detail.slice(0, 300)}` },
       { status: 500 },
     )
   }
