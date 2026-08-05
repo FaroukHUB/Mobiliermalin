@@ -373,6 +373,9 @@ export function QuotePdf({
             <Text style={styles.partyLine}>{LEGAL.siegeSocial.ligne1}</Text>
             <Text style={styles.partyLine}>{LEGAL.siegeSocial.ligne2}</Text>
             <Text style={styles.partyLine}>{LEGAL.siegeSocial.codePostal} {LEGAL.siegeSocial.ville}</Text>
+            <Text style={[styles.partyLine, { marginTop: 4, fontSize: 8 }]}>
+              Showroom : {LEGAL.showroom.ligne1}, {LEGAL.showroom.codePostal} {LEGAL.showroom.ville}
+            </Text>
             <Text style={[styles.partyLine, { marginTop: 6 }]}>{LEGAL.telephone}</Text>
             <Text style={styles.partyLine}>{LEGAL.email}</Text>
             <Text style={[styles.partyLine, { marginTop: 6, fontSize: 7.5 }]}>

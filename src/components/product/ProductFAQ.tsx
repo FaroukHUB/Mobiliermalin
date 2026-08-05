@@ -51,12 +51,12 @@ function buildFAQ({ productName, brand, conditionLabel, categoryName, stock }: P
   // 2. Atelier local (ex-garantie)
   qa.push({
     q: `Où et comment est préparé ${productName} avant la vente ?`,
-    a: `Chaque pièce est démontée, contrôlée et préparée dans notre propre atelier au 18 chemin Noël Robion, 13400 La Penne-sur-Huveaune. Notre équipe technique intervient sur chaque produit avant sa mise en vente — rien n'est expédié sans contrôle physique. Vous pouvez d'ailleurs passer voir l'atelier et le showroom sur rendez-vous — nos clients particuliers comme professionnels sont libres d'essayer avant d'acheter, et de contacter directement l'équipe qui a préparé leur pièce.`,
+    a: `Chaque pièce est démontée, contrôlée et préparée dans notre propre atelier au 18 chemin Noël Robion, 13821 La Penne-sur-Huveaune. Notre équipe technique intervient sur chaque produit avant sa mise en vente — rien n'est expédié sans contrôle physique. Vous pouvez d'ailleurs passer voir l'atelier et le showroom sur rendez-vous — nos clients particuliers comme professionnels sont libres d'essayer avant d'acheter, et de contacter directement l'équipe qui a préparé leur pièce.`,
     aHtml: (
       <>
         Chaque pièce est démontée, contrôlée et préparée dans{' '}
         <strong className="text-ink">notre propre atelier</strong> au 18 chemin
-        Noël Robion, 13400 La Penne-sur-Huveaune. Notre équipe technique
+        Noël Robion, 13821 La Penne-sur-Huveaune. Notre équipe technique
         intervient sur chaque produit avant sa mise en vente — rien
         n&apos;est expédié sans contrôle physique. Vous pouvez
         d&apos;ailleurs passer voir
@@ -83,11 +83,11 @@ function buildFAQ({ productName, brand, conditionLabel, categoryName, stock }: P
   // 3. Retrait / livraison
   qa.push({
     q: `Comment récupérer ${productName} ?`,
-    a: `Deux options : 1) Retrait gratuit à notre showroom du 18 chemin Noël Robion, 13400 La Penne-sur-Huveaune, du lundi au samedi entre 10h et 18h (créneau à réserver après paiement) ; 2) Livraison sur devis à Marseille, Aubagne, Aix-en-Provence, La Ciotat, Toulon et dans toute la région PACA — l'aide au déchargement et à la mise en place est incluse.`,
+    a: `Deux options : 1) Retrait gratuit à notre showroom du 18 chemin Noël Robion, 13821 La Penne-sur-Huveaune, du lundi au samedi entre 10h et 18h (créneau à réserver après paiement) ; 2) Livraison sur devis à Marseille, Aubagne, Aix-en-Provence, La Ciotat, Toulon et dans toute la région PACA — l'aide au déchargement et à la mise en place est incluse.`,
     aHtml: (
       <>
         Deux options : <strong className="text-ink">retrait gratuit</strong> à
-        notre showroom du 18 chemin Noël Robion, 13400 La Penne-sur-Huveaune,
+        notre showroom du 18 chemin Noël Robion, 13821 La Penne-sur-Huveaune,
         du lundi au samedi entre 10h et 18h (créneau réservé après paiement) ;
         ou <strong className="text-ink">livraison sur devis</strong> à{' '}
         <Link href="/bureau-occasion-marseille" className="text-gold-dark underline underline-offset-2 hover:text-gold">

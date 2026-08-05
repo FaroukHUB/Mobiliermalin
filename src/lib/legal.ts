@@ -29,7 +29,7 @@ export const LEGAL = {
   },
   showroom: {
     ligne1: '18 chemin Noël Robion',
-    codePostal: '13400',
+    codePostal: '13821',
     ville: 'La Penne-sur-Huveaune',
   },
 
