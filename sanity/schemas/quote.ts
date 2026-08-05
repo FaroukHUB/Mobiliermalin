@@ -307,6 +307,14 @@ export const quote = {
       readOnly: true,
     },
     {
+      name: 'invoiceSentAt',
+      title: 'Facture envoyée le',
+      type: 'datetime',
+      group: 'tracking',
+      readOnly: true,
+      description: 'Renseigné automatiquement par l\'action "Envoyer la facture" (email sans lien de paiement).',
+    },
+    {
       name: 'acceptedAt',
       title: 'Accepté le',
       type: 'datetime',

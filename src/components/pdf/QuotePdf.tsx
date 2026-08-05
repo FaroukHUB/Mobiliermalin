@@ -10,6 +10,12 @@ export type QuoteOption = {
 
 export type QuotePdfInput = {
   numero: string
+  /**
+   * 'devis' (défaut) : titre DEVIS, validité affichée, modalités
+   * d'acceptation en ligne. 'facture' : titre FACTURE, pas de bloc
+   * validité, modalités de règlement + mentions légales facture.
+   */
+  docKind?: 'devis' | 'facture'
   emittedAt: Date
   validUntil: Date
   customer: {
@@ -277,6 +283,7 @@ function dateFr(d: Date): string {
 
 export function QuotePdf({
   numero,
+  docKind = 'devis',
   emittedAt,
   validUntil,
   customer,
@@ -287,6 +294,8 @@ export function QuotePdf({
   tvaRate,
   pdfNotes,
 }: QuotePdfInput) {
+  const isInvoice = docKind === 'facture'
+  const docLabel = isInvoice ? 'Facture' : 'Devis'
   const productTotal = product.unitPrice * product.quantity
   const optionsTotal = options.reduce((sum, o) => sum + o.price, 0)
   const subtotalHt = productTotal + shippingFee + optionsTotal
@@ -302,7 +311,7 @@ export function QuotePdf({
 
   return (
     <Document
-      title={`Devis ${numero} — Mobilier Malin`}
+      title={`${docLabel} ${numero} — Mobilier Malin`}
       author="Mobilier Malin (SARL 2 M)"
       creator="Mobilier Malin"
     >
@@ -317,16 +326,18 @@ export function QuotePdf({
         {/* En-tête devis */}
         <View style={styles.quoteHeader}>
           <View style={styles.col}>
-            <Text style={styles.quoteTitle}>DEVIS</Text>
+            <Text style={styles.quoteTitle}>{isInvoice ? 'FACTURE' : 'DEVIS'}</Text>
             <Text style={styles.quoteNumero}>N° {numero}</Text>
           </View>
           <View style={[styles.col, { alignItems: 'flex-end' }]}>
-            <Text style={styles.metaLabel}>Émis le</Text>
+            <Text style={styles.metaLabel}>Émis{isInvoice ? 'e' : ''} le</Text>
             <Text style={styles.metaValue}>{dateFr(emittedAt)}</Text>
-            <View style={{ marginTop: 8 }}>
-              <Text style={styles.metaLabel}>Valable jusqu'au</Text>
-              <Text style={styles.metaValue}>{dateFr(validUntil)}</Text>
-            </View>
+            {!isInvoice && (
+              <View style={{ marginTop: 8 }}>
+                <Text style={styles.metaLabel}>Valable jusqu'au</Text>
+                <Text style={styles.metaValue}>{dateFr(validUntil)}</Text>
+              </View>
+            )}
           </View>
         </View>
 
@@ -434,12 +445,22 @@ export function QuotePdf({
         {/* Modalités */}
         <View style={[styles.notesBox, { marginTop: 12 }]}>
           <Text style={styles.notesTitle}>Modalités</Text>
-          <Text style={styles.notesContent}>
-            • Devis valable {Math.ceil((validUntil.getTime() - emittedAt.getTime()) / (1000 * 60 * 60 * 24))} jours à compter de la date d'émission.{'\n'}
-            • Paiement à l'acceptation par carte bancaire (Stripe) — règlement 100 % à la commande.{'\n'}
-            • Livraison sous 7 à 15 jours ouvrés à compter de la réception du paiement.{'\n'}
-            • Acceptation : cliquez sur le lien reçu par email accompagnant ce devis.
-          </Text>
+          {isInvoice ? (
+            <Text style={styles.notesContent}>
+              • Règlement selon les modalités convenues avec notre équipe.{'\n'}
+              • Pas d'escompte pour paiement anticipé.{'\n'}
+              • Professionnels — en cas de retard de paiement : pénalités de retard exigibles
+              au taux légal et indemnité forfaitaire de recouvrement de 40 €
+              (art. L441-10 et D441-5 du Code de commerce).
+            </Text>
+          ) : (
+            <Text style={styles.notesContent}>
+              • Devis valable {Math.ceil((validUntil.getTime() - emittedAt.getTime()) / (1000 * 60 * 60 * 24))} jours à compter de la date d'émission.{'\n'}
+              • Paiement à l'acceptation par carte bancaire (Stripe) — règlement 100 % à la commande.{'\n'}
+              • Livraison sous 7 à 15 jours ouvrés à compter de la réception du paiement.{'\n'}
+              • Acceptation : cliquez sur le lien reçu par email accompagnant ce devis.
+            </Text>
+          )}
         </View>
 
         {/* Footer */}
@@ -454,7 +475,7 @@ export function QuotePdf({
       {/* ═══════════ PAGE 2 : CGV ═══════════ */}
       <Page size="A4" style={styles.page}>
         <View style={styles.headerBar}>
-          <Text style={styles.brandTagline}>Devis {numero}</Text>
+          <Text style={styles.brandTagline}>{docLabel} {numero}</Text>
           <Text style={styles.brandName}>Conditions Générales de Vente</Text>
         </View>
 

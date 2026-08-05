@@ -8,6 +8,7 @@ import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './sanity/schemas'
 import { sendQuoteAction } from './sanity/actions/sendQuoteAction'
+import { sendInvoiceAction } from './sanity/actions/sendInvoiceAction'
 import { downloadInvoiceAction } from './sanity/actions/downloadInvoiceAction'
 import { Dashboard } from './sanity/dashboard/Dashboard'
 import {
@@ -80,7 +81,7 @@ export default defineConfig({
       }
       // Sur les devis : ajoute l'action "Envoyer au client"
       if (context.schemaType === 'quote') {
-        return [...input, sendQuoteAction]
+        return [...input, sendQuoteAction, sendInvoiceAction]
       }
       // Sur les commandes : ajoute l'action "Télécharger la facture"
       if (context.schemaType === 'order') {
