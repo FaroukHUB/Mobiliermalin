@@ -27,11 +27,16 @@ type QuoteDoc = {
     floor?: string
     elevator?: 'yes' | 'no' | 'unknown'
   }
-  product: {
-    name: string
-    unitPrice: number
-    quantity: number
+  product?: {
+    name?: string
+    unitPrice?: number
+    quantity?: number
   }
+  lineItems?: Array<{
+    name?: string
+    unitPrice?: number
+    quantity?: number
+  }>
   shippingFee?: number
   options?: { label: string; price: number }[]
   tvaRate?: number
@@ -77,6 +82,7 @@ export async function POST(
     `*[_type == "quote" && _id == $id][0] {
       _id, numero, status, validUntil, _createdAt,
       customer, shippingAddress, product,
+      lineItems[]{ name, unitPrice, quantity },
       shippingFee, options, tvaRate, pdfNotes
     }`,
     { id: uid },
@@ -85,22 +91,37 @@ export async function POST(
     return NextResponse.json({ error: 'Devis introuvable' }, { status: 404 })
   }
 
-  // Validation explicite des champs requis pour le PDF — un doc
-  // incomplet doit produire un message actionnable, pas un crash.
+  // Unifie les lignes : lineItems (devis manuel, produits catalogue OU
+  // libellés saisis à la main) prioritaire sur product (legacy 1 ligne).
+  const rawLines =
+    Array.isArray(quote.lineItems) && quote.lineItems.length > 0
+      ? quote.lineItems
+      : quote.product
+        ? [quote.product]
+        : []
+  const items = rawLines
+    .filter((l) => l?.name && typeof l?.unitPrice === 'number')
+    .map((l) => ({
+      name: l.name as string,
+      unitPrice: l.unitPrice as number,
+      quantity: l.quantity ?? 1,
+    }))
+
+  // Validation MINIMALE : le strict nécessaire pour pouvoir envoyer un
+  // document facturable. Tout le reste (adresse, téléphone, quantité,
+  // étage...) est optionnel — une vente au showroom n'a pas d'adresse
+  // de livraison, une quantité absente vaut 1.
   const missing: string[] = []
-  if (!quote.numero) missing.push('numéro (sauvegarde/publie le document pour le générer)')
+  if (!quote.numero) missing.push('numéro (publie le document pour le générer)')
   if (!quote.customer?.name) missing.push('nom du client')
-  if (!quote.customer?.email) missing.push('email du client')
-  if (!quote.product?.name) missing.push('produit')
-  if (typeof quote.product?.unitPrice !== 'number') missing.push('prix unitaire du produit')
-  if (typeof quote.product?.quantity !== 'number') missing.push('quantité du produit')
-  if (!quote.shippingAddress?.street || !quote.shippingAddress?.city) {
-    missing.push('adresse de livraison (rue + ville)')
+  if (!quote.customer?.email) missing.push('email du client (destinataire de l\'envoi)')
+  if (items.length === 0) {
+    missing.push('au moins une ligne produit avec libellé + prix (champ "Lignes de produits", saisie libre possible)')
   }
   if (missing.length > 0) {
     return NextResponse.json(
       {
-        error: `Document incomplet, impossible de générer le PDF. Champs manquants : ${missing.join(' · ')}. Vérifie aussi que le document est bien PUBLIÉ (l'API ne voit pas les brouillons).`,
+        error: `Champs manquants : ${missing.join(' · ')}. Vérifie aussi que le document est bien PUBLIÉ (l'API ne voit pas les brouillons).`,
       },
       { status: 422 },
     )
@@ -128,7 +149,7 @@ export async function POST(
     validUntil,
     customer: quote.customer,
     shippingAddress: quote.shippingAddress,
-    product: quote.product,
+    items,
     shippingFee: quote.shippingFee || 0,
     options: quote.options || [],
     tvaRate: quote.tvaRate ?? 20,
@@ -163,17 +184,21 @@ export async function POST(
   const acceptUrl = `${siteUrl}/devis/${uid}`
 
   const totalTtc = computeTotalTtc(pdfInput)
+  const productLabel =
+    items.length === 1
+      ? items[0].name
+      : `${items[0].name} + ${items.length - 1} autre${items.length > 2 ? 's' : ''} article${items.length > 2 ? 's' : ''}`
   const customerHtml = isInvoice
     ? renderInvoiceEmailHtml({
         numero: displayNumero,
         customerName: quote.customer.name,
-        productName: quote.product.name,
+        productName: productLabel,
         totalTtc,
       })
     : renderClientEmailHtml({
         numero: quote.numero,
         customerName: quote.customer.name,
-        productName: quote.product.name,
+        productName: productLabel,
         totalTtc,
         validUntil,
         acceptUrl,
@@ -278,7 +303,10 @@ export async function POST(
 }
 
 function computeTotalTtc(input: QuotePdfInput): number {
-  const productTotal = input.product.unitPrice * input.product.quantity
+  const productTotal = (input.items || []).reduce(
+    (sum, it) => sum + it.unitPrice * it.quantity,
+    0,
+  )
   const optionsTotal = input.options.reduce((sum, o) => sum + o.price, 0)
   const subtotalHt = productTotal + input.shippingFee + optionsTotal
   const tvaAmount = subtotalHt * (input.tvaRate / 100)

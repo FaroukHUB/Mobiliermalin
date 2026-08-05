@@ -24,18 +24,33 @@ export type QuotePdfInput = {
     phone?: string
     company?: string
   }
-  shippingAddress: {
-    street: string
-    postalCode: string
-    city: string
+  // Optionnelle : une vente au showroom ou un retrait n'a pas
+  // d'adresse de livraison. Le bloc adresse ne s'affiche que si présente.
+  shippingAddress?: {
+    street?: string
+    postalCode?: string
+    city?: string
     floor?: string
     elevator?: 'yes' | 'no' | 'unknown'
   }
-  product: {
+  /**
+   * Ligne produit unique (devis legacy issus du formulaire client).
+   * Ignorée si `items` est fourni.
+   */
+  product?: {
     name: string
     unitPrice: number
     quantity: number
   }
+  /**
+   * Lignes multiples (devis créés manuellement) : produit du catalogue
+   * OU libellé saisi à la main. Prioritaire sur `product`.
+   */
+  items?: Array<{
+    name: string
+    unitPrice: number
+    quantity: number
+  }>
   shippingFee: number
   options: QuoteOption[]
   tvaRate: number
@@ -289,6 +304,7 @@ export function QuotePdf({
   customer,
   shippingAddress,
   product,
+  items,
   shippingFee,
   options,
   tvaRate,
@@ -296,16 +312,23 @@ export function QuotePdf({
 }: QuotePdfInput) {
   const isInvoice = docKind === 'facture'
   const docLabel = isInvoice ? 'Facture' : 'Devis'
-  const productTotal = product.unitPrice * product.quantity
+  // Unifie lignes multiples (items) et ligne unique legacy (product)
+  const lines =
+    items && items.length > 0 ? items : product ? [product] : []
+  const productTotal = lines.reduce(
+    (sum, l) => sum + l.unitPrice * l.quantity,
+    0,
+  )
   const optionsTotal = options.reduce((sum, o) => sum + o.price, 0)
   const subtotalHt = productTotal + shippingFee + optionsTotal
   const tvaAmount = subtotalHt * (tvaRate / 100)
   const totalTtc = subtotalHt + tvaAmount
 
+  const hasAddress = !!(shippingAddress?.street || shippingAddress?.city)
   const elevatorLabel =
-    shippingAddress.elevator === 'yes'
+    shippingAddress?.elevator === 'yes'
       ? 'Oui'
-      : shippingAddress.elevator === 'no'
+      : shippingAddress?.elevator === 'no'
         ? 'Non'
         : 'Non précisé'
 
@@ -365,17 +388,25 @@ export function QuotePdf({
             {customer.company ? (
               <Text style={styles.partyLine}>{customer.company}</Text>
             ) : null}
-            <Text style={styles.partyLine}>{shippingAddress.street}</Text>
-            <Text style={styles.partyLine}>
-              {shippingAddress.postalCode} {shippingAddress.city}
-            </Text>
-            {shippingAddress.floor || shippingAddress.elevator !== 'unknown' ? (
-              <Text style={[styles.partyLine, { marginTop: 4, fontSize: 8 }]}>
-                {shippingAddress.floor ? `Étage : ${shippingAddress.floor} — ` : ''}
-                Ascenseur : {elevatorLabel}
-              </Text>
+            {hasAddress ? (
+              <>
+                {shippingAddress?.street ? (
+                  <Text style={styles.partyLine}>{shippingAddress.street}</Text>
+                ) : null}
+                <Text style={styles.partyLine}>
+                  {[shippingAddress?.postalCode, shippingAddress?.city].filter(Boolean).join(' ')}
+                </Text>
+                {shippingAddress?.floor || (shippingAddress?.elevator && shippingAddress.elevator !== 'unknown') ? (
+                  <Text style={[styles.partyLine, { marginTop: 4, fontSize: 8 }]}>
+                    {shippingAddress?.floor ? `Étage : ${shippingAddress.floor} — ` : ''}
+                    Ascenseur : {elevatorLabel}
+                  </Text>
+                ) : null}
+              </>
             ) : null}
-            <Text style={[styles.partyLine, { marginTop: 6 }]}>{customer.phone}</Text>
+            {customer.phone ? (
+              <Text style={[styles.partyLine, { marginTop: 6 }]}>{customer.phone}</Text>
+            ) : null}
             <Text style={styles.partyLine}>{customer.email}</Text>
           </View>
         </View>
@@ -388,19 +419,23 @@ export function QuotePdf({
           <Text style={[styles.colTotal, styles.cellHeader]}>Total HT</Text>
         </View>
 
-        {/* Ligne produit */}
-        <View style={styles.tableRow}>
-          <Text style={styles.colDesc}>{product.name}</Text>
-          <Text style={styles.colQty}>{product.quantity}</Text>
-          <Text style={styles.colPrice}>{eur(product.unitPrice)}</Text>
-          <Text style={styles.colTotal}>{eur(productTotal)}</Text>
-        </View>
+        {/* Lignes produit (une par item) */}
+        {lines.map((line, i) => (
+          <View key={i} style={styles.tableRow}>
+            <Text style={styles.colDesc}>{line.name}</Text>
+            <Text style={styles.colQty}>{line.quantity}</Text>
+            <Text style={styles.colPrice}>{eur(line.unitPrice)}</Text>
+            <Text style={styles.colTotal}>{eur(line.unitPrice * line.quantity)}</Text>
+          </View>
+        ))}
 
         {/* Livraison */}
         {shippingFee > 0 && (
           <View style={styles.tableRow}>
             <Text style={styles.colDesc}>
-              Livraison à {shippingAddress.city} ({shippingAddress.postalCode})
+              {shippingAddress?.city
+                ? `Livraison à ${shippingAddress.city}${shippingAddress.postalCode ? ` (${shippingAddress.postalCode})` : ''}`
+                : 'Livraison'}
             </Text>
             <Text style={styles.colQty}>1</Text>
             <Text style={styles.colPrice}>{eur(shippingFee)}</Text>
