@@ -41,9 +41,9 @@ const FALLBACK_HERO_ALT =
   'Espace de bureau ouvert équipé en mobilier d\'occasion près d\'Aubagne'
 
 export const metadata: Metadata = {
-  title: 'Vente de bureaux d\'occasion à Aubagne — Showroom à 5 min, retrait sur place',
+  title: 'Vente de bureaux d\'occasion à Aubagne — Showroom sur place',
   description:
-    'Vente directe de bureaux d\'occasion à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). Magasin de mobilier de bureau professionnel : 200 pièces en stock, lundi-samedi sur rendez-vous. Bureaux droits, angle, bench, assis-debout reconditionnés dans notre atelier local.',
+    'Magasin de bureaux d\'occasion à 5 min d\'Aubagne : droits, angle, bench, assis-debout reconditionnés en atelier. Essai sur place lun-sam, retrait immédiat.',
   keywords: [
     'vente bureaux aubagne',
     'vente bureau Aubagne',

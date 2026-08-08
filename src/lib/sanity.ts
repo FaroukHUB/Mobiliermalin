@@ -576,6 +576,23 @@ export async function getNationalLandingByKey(
 }
 
 /**
+ * Produits dont le nom matche un terme (insensible casse via match GROQ).
+ * Utilisé par les landing pages verticales sans catégorie dédiée
+ * (ex: /cabine-acoustique-bureau → "cabine*" + "box acoustique*").
+ */
+export async function searchProductsByName(terms: string[]): Promise<SanityProduct[]> {
+  if (terms.length === 0) return []
+  const clauses = terms.map((_, i) => `name match $t${i}`).join(' || ')
+  const params = Object.fromEntries(terms.map((t, i) => [`t${i}`, `${t}*`]))
+  return safeFetch<SanityProduct[]>(
+    `*[_type == "product" && status == "published" && defined(slug.current) && (${clauses})]
+      | order(_createdAt desc) { ${PRODUCT_FIELDS} }`,
+    params,
+    [],
+  )
+}
+
+/**
  * Produits d'une marque donnée (case-sensitive sur le nom Sanity).
  * Utilisé par les landing pages nationales /marques/[brand].
  */

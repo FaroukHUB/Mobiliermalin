@@ -88,6 +88,14 @@ export const NATIONAL_PAGES: NationalPageEntry[] = [
     icon: '🏛',
   },
   {
+    key: 'cabine-acoustique-bureau',
+    title: 'Cabine acoustique de bureau',
+    displayName: 'Cabine acoustique bureau',
+    route: '/cabine-acoustique-bureau',
+    section: 'produit-vertical',
+    icon: '🔇',
+  },
+  {
     key: 'mobilier-bureau-eco-responsable',
     title: 'Mobilier de bureau éco-responsable (RSE)',
     displayName: 'Mobilier bureau éco-responsable',

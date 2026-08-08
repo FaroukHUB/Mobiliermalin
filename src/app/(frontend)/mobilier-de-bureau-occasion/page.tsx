@@ -138,6 +138,7 @@ export default async function MobilierDeBureauOccasionPage() {
           { href: '/chaise-bureau-occasion', label: 'Chaise de bureau d\'occasion', eyebrow: 'Vertical' },
           { href: '/bureau-assis-debout-occasion', label: 'Bureau assis-debout d\'occasion', eyebrow: 'Vertical' },
           { href: '/table-reunion-occasion', label: "Table de réunion d'occasion", eyebrow: 'Vertical' },
+          { href: '/cabine-acoustique-bureau', label: 'Cabine acoustique de bureau', eyebrow: 'Vertical' },
           { href: '/mobilier-bureau-entreprise', label: 'Équiper une entreprise (BtoB)', eyebrow: 'Guide' },
           { href: '/mobilier-bureau-eco-responsable', label: 'Mobilier de bureau éco-responsable', eyebrow: 'RSE' },
           { href: '/marques/steelcase', label: 'Marque Steelcase', eyebrow: 'Marque' },
