@@ -67,6 +67,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/mobilier-bureau-entreprise`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${siteUrl}/mobilier-bureau-eco-responsable`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${siteUrl}/cabine-acoustique-bureau`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
+    // Landing pages nationales — Phase 3 (marques + modèle star)
+    { url: `${siteUrl}/marques/herman-miller`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${siteUrl}/marques/vitra`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${siteUrl}/marques/haworth`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${siteUrl}/steelcase-leap-v2-occasion`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${siteUrl}/retractation`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${siteUrl}/mentions-legales`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${siteUrl}/cgv`, lastModified: now, changeFrequency: 'yearly', priority: 0.2 },

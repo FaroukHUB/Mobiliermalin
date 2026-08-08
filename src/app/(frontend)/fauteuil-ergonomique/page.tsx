@@ -216,6 +216,8 @@ export default async function FauteuilErgonomiquePage() {
           { href: '/bureau-professionnel-occasion', label: 'Bureau professionnel d\'occasion', eyebrow: 'Sélection' },
           { href: '/bureau-assis-debout-occasion', label: 'Bureau assis-debout d\'occasion', eyebrow: 'Sélection' },
           { href: '/marques/steelcase', label: 'La marque Steelcase (Leap, Gesture, Series 1)', eyebrow: 'Marque' },
+          { href: '/steelcase-leap-v2-occasion', label: 'Le Leap V2 en détail : guide d\'achat occasion', eyebrow: 'Modèle star' },
+          { href: '/marques/herman-miller', label: 'La marque Herman Miller (Aeron)', eyebrow: 'Marque' },
           { href: '/bureau-occasion-marseille', label: 'Mobilier de bureau à Marseille', eyebrow: 'Livraison locale' },
         ]}
       />

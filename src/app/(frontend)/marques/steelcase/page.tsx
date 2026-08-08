@@ -188,7 +188,11 @@ export default async function MarqueSteelcasePage() {
         productsTitle="Notre sélection Steelcase reconditionnée"
         toc={toc}
         relatedLinks={[
+          { href: '/steelcase-leap-v2-occasion', label: 'Le Leap V2 en détail : guide d\'achat occasion', eyebrow: 'Modèle star' },
           { href: '/fauteuil-ergonomique', label: 'Tous les fauteuils ergonomiques (Leap, Aeron, Zody…)', eyebrow: 'Sélection' },
+          { href: '/marques/herman-miller', label: 'La marque Herman Miller (Aeron)', eyebrow: 'Marque' },
+          { href: '/marques/haworth', label: 'La marque Haworth (Zody)', eyebrow: 'Marque' },
+          { href: '/marques/vitra', label: 'La marque Vitra (Physix)', eyebrow: 'Marque' },
           { href: '/bureau-professionnel-occasion', label: "Bureaux professionnels d'occasion", eyebrow: 'Sélection' },
           { href: '/mobilier-de-bureau-occasion', label: "L'univers complet du mobilier occasion", eyebrow: 'HUB' },
           { href: '/guides/ergonomie/fauteuil-de-bureau-ergonomique-mal-de-dos', label: 'Choisir son fauteuil quand on a mal au dos', eyebrow: 'Guide' },
