@@ -122,8 +122,12 @@ export function NationalPageV2({
         </section>
       )}
 
-      {/* ─── Sommaire ─── */}
-      {toc && toc.length > 0 && (
+      {/* ─── Sommaire ───
+          Rendu uniquement si le corps éditorial Sanity existe : les
+          ancres pointent vers ses H2. Sans body (doc non seedé), un
+          sommaire mènerait vers du vide. */}
+      {toc && toc.length > 0 &&
+        landing?.body && Array.isArray(landing.body) && landing.body.length > 0 && (
         <section className="container max-w-4xl">
           <TableOfContents items={toc} />
         </section>
