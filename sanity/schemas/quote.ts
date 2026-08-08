@@ -341,17 +341,23 @@ export const quote = {
       numero: 'numero',
       name: 'customer.name',
       product: 'product.name',
+      firstLine: 'lineItems.0.name',
+      secondLine: 'lineItems.1.name',
       status: 'status',
     },
     prepare({
       numero,
       name,
       product,
+      firstLine,
+      secondLine,
       status,
     }: {
       numero?: string
       name?: string
       product?: string
+      firstLine?: string
+      secondLine?: string
       status?: string
     }) {
       const statusEmoji: Record<string, string> = {
@@ -362,9 +368,16 @@ export const quote = {
         refused: '❌',
         expired: '⏰',
       }
+      // Libellé produit : lineItems (nouveau format) prioritaire sur
+      // le champ product legacy.
+      const productLabel = firstLine
+        ? secondLine
+          ? `${firstLine} +…`
+          : firstLine
+        : product
       return {
         title: numero || '(en cours de création)',
-        subtitle: `${(status && statusEmoji[status]) || ''} ${name || '?'} — ${product || '?'}`,
+        subtitle: `${(status && statusEmoji[status]) || ''} ${name || '?'} — ${productLabel || '?'}`,
       }
     },
   },

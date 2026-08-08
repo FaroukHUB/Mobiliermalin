@@ -107,32 +107,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Email invalide' }, { status: 400 })
   }
 
-  // Récap article(s)
+  // Récap article(s) — les prix du site sont TTC, le devis stocke du HT
+  // (le PDF et la page d'acceptation recomposent ensuite TTC = HT × 1,20).
+  const tvaFactor = 1 + LEGAL.tauxTvaDefaut / 100
+  const toHt = (ttc: number) => Math.round((ttc / tvaFactor) * 100) / 100
   const subtotal = items.reduce((sum, it) => sum + it.price * it.quantity, 0)
   const primaryItem = items[0]
   const isCart = items.length > 1 || items[0].quantity > 1
-  // Nom composé pour l'aperçu Sanity
-  const composedProductName = isCart
-    ? `Panier (${items.reduce((n, it) => n + it.quantity, 0)} articles) — ${items.length} référence${items.length > 1 ? 's' : ''}`
-    : primaryItem.name
 
-  // Bloc "Panier" prépendé aux notes client si multi-items
-  const cartNotesBlock = isCart
-    ? items
-        .map(
-          (it) =>
-            `- ${it.quantity}× ${it.name} · ${it.price.toLocaleString('fr-FR')} € l'unité = ${(it.price * it.quantity).toLocaleString('fr-FR')} €`,
-        )
-        .join('\n')
-    : ''
-  const composedNotes = [
-    cartNotesBlock
-      ? `Détail du panier :\n${cartNotesBlock}\nTotal produits (hors livraison) : ${subtotal.toLocaleString('fr-FR')} €`
-      : '',
-    body.customerNotes || '',
-  ]
-    .filter(Boolean)
-    .join('\n\n')
+  // Lignes structurées du devis : une par article du panier. C'est la
+  // source de vérité pour le Studio, le PDF et la page d'acceptation.
+  const lineItems = items.map((it, i) => ({
+    _key: `li-${i}`,
+    _type: 'lineItem',
+    ...(it.id && { ref: { _type: 'reference', _ref: it.id, _weak: true } }),
+    name: it.name,
+    slug: it.slug || undefined,
+    unitPrice: toHt(it.price),
+    quantity: it.quantity,
+  }))
+
+  const composedNotes = body.customerNotes || undefined
 
   const numero = await generateQuoteNumber()
 
@@ -160,16 +155,10 @@ export async function POST(req: NextRequest) {
       elevator: body.elevator || 'unknown',
       instructions: body.instructions || undefined,
     },
-    product: {
-      ref: primaryItem.id ? { _type: 'reference', _ref: primaryItem.id } : undefined,
-      name: composedProductName,
-      slug: primaryItem.slug || undefined,
-      unitPrice: subtotal, // Total = "prix unitaire" × 1 pour rester compatible avec le schéma
-      quantity: 1,
-    },
+    lineItems,
     shippingFee: 0,
     tvaRate: LEGAL.tauxTvaDefaut,
-    customerNotes: composedNotes || undefined,
+    customerNotes: composedNotes,
   }
 
   // 1) Création du document dans Sanity (si write client configuré)
@@ -194,8 +183,10 @@ export async function POST(req: NextRequest) {
   if (isBrevoConfigured()) {
     const elevatorLabel = body.elevator === 'yes' ? 'Oui' : body.elevator === 'no' ? 'Non' : 'Inconnu'
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
+    // Lien "intent" Sanity : ouvre directement le document en édition,
+    // indépendamment de la structure de navigation du Studio.
     const sanityLink = createdId
-      ? `${siteUrl}/studio/structure/devisLivraison;${createdId}`
+      ? `${siteUrl}/studio/intent/edit/id=${createdId};type=quote/`
       : ''
     const adminHtml = `<!DOCTYPE html>
 <html lang="fr"><body style="font-family:Helvetica,Arial,sans-serif;background:#f5f5f5;padding:24px;color:#1a1a1a;">
