@@ -34,6 +34,19 @@ export const sendInvoiceAction: DocumentActionComponent = (props: DocumentAction
         return
       }
 
+      // Garde-fou : l'API ne lit que la version PUBLIÉE du document.
+      // Envoyer avec des modifications en brouillon produirait un PDF
+      // qui ignore les derniers changements (frais de livraison,
+      // lignes, prix...). On bloque et on demande de publier d'abord.
+      if (props.draft) {
+        setDialog({
+          type: 'error',
+          message:
+            'Ce devis a des modifications NON PUBLIÉES : le document envoyé ne les inclurait pas. Clique d\'abord sur "Publish" (en bas à droite), puis relance l\'envoi.',
+        })
+        return
+      }
+
       if (invoiceSentAt) {
         const confirmResend = window.confirm(
           `Une facture a déjà été envoyée le ${new Date(invoiceSentAt).toLocaleDateString('fr-FR')}. La renvoyer ?`,
