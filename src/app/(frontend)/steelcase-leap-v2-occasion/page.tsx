@@ -84,6 +84,47 @@ export default async function SteelcaseLeapV2Page() {
   const faq = landing?.faq && landing.faq.length > 0 ? landing.faq : FALLBACK_FAQ
   const heroImageUrl = landing?.heroImage ? urlFor(landing.heroImage).width(1600).url() : undefined
 
+  // Google exige qu'un noeud Product porte offers, review ou aggregateRating
+  // (rapport GSC "Extraits de produits"). On construit un AggregateOffer
+  // depuis les prix réels du catalogue ; à défaut, depuis les fourchettes
+  // Sanity ; sans aucun prix, le sujet de la page reste un simple Thing.
+  const leapPrices = products
+    .map((p) => (p.salePrice && p.salePrice < p.price ? p.salePrice : p.price))
+    .filter((n): n is number => typeof n === 'number' && n > 0)
+  const pricingRows = landing?.pricingRanges || []
+  const leapOffers =
+    leapPrices.length > 0
+      ? {
+          '@type': 'AggregateOffer',
+          priceCurrency: 'EUR',
+          lowPrice: Math.min(...leapPrices).toString(),
+          highPrice: Math.max(...leapPrices).toString(),
+          offerCount: leapPrices.length,
+          itemCondition: 'https://schema.org/RefurbishedCondition',
+          availability: 'https://schema.org/InStock',
+          seller: { '@id': `${siteUrl}/#organization` },
+        }
+      : pricingRows.length > 0
+        ? {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'EUR',
+            lowPrice: Math.min(...pricingRows.flatMap((r) => [r.priceFrom, r.priceTo])).toString(),
+            highPrice: Math.max(...pricingRows.flatMap((r) => [r.priceFrom, r.priceTo])).toString(),
+            offerCount: pricingRows.length,
+            itemCondition: 'https://schema.org/RefurbishedCondition',
+            availability: 'https://schema.org/InStock',
+            seller: { '@id': `${siteUrl}/#organization` },
+          }
+        : null
+  const aboutEntity = leapOffers
+    ? {
+        '@type': 'Product',
+        name: 'Steelcase Leap V2',
+        brand: { '@type': 'Brand', name: 'Steelcase' },
+        offers: leapOffers,
+      }
+    : { '@type': 'Thing', name: 'Steelcase Leap V2' }
+
   const schemas = [
     buildArticleSchema({ pageUrl, headline: landing?.heroTitle || FALLBACK.heroTitle,
       description: landing?.seo?.metaDescription || landing?.heroIntro || FALLBACK.heroIntro,
@@ -97,7 +138,7 @@ export default async function SteelcaseLeapV2Page() {
     {
       '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': `${pageUrl}#collection`,
       name: "Steelcase Leap V2 d'occasion", url: pageUrl, isPartOf: { '@id': `${siteUrl}/#website` },
-      about: { '@type': 'Product', name: 'Steelcase Leap V2', brand: { '@type': 'Brand', name: 'Steelcase' } },
+      about: aboutEntity,
       ...(productCards.length > 0 && {
         mainEntity: {
           '@type': 'ItemList', numberOfItems: productCards.length,
