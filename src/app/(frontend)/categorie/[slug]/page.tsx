@@ -252,6 +252,56 @@ export default async function CategoryPage({
         </div>
       </section>
 
+      {/* Produits — juste sous le hero : on vend d'abord, on raconte ensuite */}
+      <section className="container py-16 md:py-20">
+        <Reveal>
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+            <div>
+              <p className="eyebrow">Notre sélection</p>
+              <h2 className="font-serif text-h1 mt-2">
+                {products.length > 0
+                  ? `${products.length} ${products.length > 1 ? 'pièces disponibles' : 'pièce disponible'}`
+                  : 'Pièces disponibles sur demande'}
+              </h2>
+            </div>
+            <Link href="/contact" className="btn-outline">
+              Demander un devis personnalisé
+            </Link>
+          </div>
+        </Reveal>
+
+        {products.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            {products.map((p, i) => (
+              <Reveal key={p._id} delay={i * 50}>
+                <ProductCard product={sanityToCard(p)} />
+              </Reveal>
+            ))}
+          </div>
+        ) : (
+          <Reveal>
+            <div className="bg-ivory-light border border-line p-10 md:p-16 text-center">
+              <p className="font-serif text-2xl text-ink">
+                Notre stock évolue chaque semaine
+              </p>
+              <p className="text-ink-mute mt-3 max-w-xl mx-auto leading-relaxed">
+                Les pièces de cette catégorie ne sont pas encore listées en
+                ligne, mais elles sont disponibles à notre showroom d&apos;Aubagne.
+                Décrivez-nous votre besoin, nous revenons sous 24 h.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/contact" className="btn-primary">
+                  Demander la disponibilité
+                </Link>
+                <a href="tel:+33676617053" className="btn-outline">
+                  06 76 61 70 53
+                </a>
+              </div>
+            </div>
+          </Reveal>
+        )}
+      </section>
+
       {/* ═════════════ SECTIONS PILIER (conditionnelles Sanity) ═════════════ */}
 
       {/* Hero image pilier */}
@@ -429,56 +479,6 @@ export default async function CategoryPage({
           </div>
         </section>
       )}
-
-      {/* Produits */}
-      <section className="container py-16 md:py-20">
-        <Reveal>
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-            <div>
-              <p className="eyebrow">Notre sélection</p>
-              <h2 className="font-serif text-h1 mt-2">
-                {products.length > 0
-                  ? `${products.length} ${products.length > 1 ? 'pièces disponibles' : 'pièce disponible'}`
-                  : 'Pièces disponibles sur demande'}
-              </h2>
-            </div>
-            <Link href="/contact" className="btn-outline">
-              Demander un devis personnalisé
-            </Link>
-          </div>
-        </Reveal>
-
-        {products.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {products.map((p, i) => (
-              <Reveal key={p._id} delay={i * 50}>
-                <ProductCard product={sanityToCard(p)} />
-              </Reveal>
-            ))}
-          </div>
-        ) : (
-          <Reveal>
-            <div className="bg-ivory-light border border-line p-10 md:p-16 text-center">
-              <p className="font-serif text-2xl text-ink">
-                Notre stock évolue chaque semaine
-              </p>
-              <p className="text-ink-mute mt-3 max-w-xl mx-auto leading-relaxed">
-                Les pièces de cette catégorie ne sont pas encore listées en
-                ligne, mais elles sont disponibles à notre showroom d&apos;Aubagne.
-                Décrivez-nous votre besoin, nous revenons sous 24 h.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <Link href="/contact" className="btn-primary">
-                  Demander la disponibilité
-                </Link>
-                <a href="tel:+33676617053" className="btn-outline">
-                  06 76 61 70 53
-                </a>
-              </div>
-            </div>
-          </Reveal>
-        )}
-      </section>
 
       {/* Highlights — seulement si on a des données statiques riches */}
       {staticData && staticData.highlights.length > 0 && (
