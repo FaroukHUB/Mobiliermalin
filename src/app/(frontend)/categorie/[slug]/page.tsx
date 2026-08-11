@@ -208,7 +208,7 @@ export default async function CategoryPage({
               <div className="gold-divider mx-0 mt-7" />
               {shortTagline && (
                 <p className="mt-7 text-lg text-ink-soft leading-relaxed">
-                  {shortTagline}.
+                  {shortTagline.replace(/\.\s*$/, '')}.
                 </p>
               )}
               {longDescription && longDescription !== shortTagline && (
