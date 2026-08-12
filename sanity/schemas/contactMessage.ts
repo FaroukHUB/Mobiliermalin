@@ -82,6 +82,14 @@ export const contactMessage = {
       rows: 3,
       description: 'Suivi de la demande (réponse envoyée, relance à faire…).',
     },
+    {
+      name: 'brevoMessageId',
+      title: 'ID message Brevo',
+      type: 'string',
+      readOnly: true,
+      hidden: true,
+      description: 'Rempli par le script d\'import des anciens messages (dédoublonnage).',
+    },
   ],
   preview: {
     select: {
