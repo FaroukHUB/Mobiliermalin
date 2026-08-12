@@ -47,6 +47,14 @@ type Counts = {
   quotesPending: number
   categories: number
   heroSlides: number
+  // Demandes reçues sur le site (comptage par période)
+  quotes7d: number
+  quotes30d: number
+  quotesTotal: number
+  contacts7d: number
+  contacts30d: number
+  contactsTotal: number
+  contactsUnhandled: number
 }
 
 type RecentDoc = {
@@ -71,7 +79,19 @@ const COUNTS_QUERY = `{
   "blogDrafts":        count(*[_type == "blogPost" && status == "draft"]),
   "quotesPending":     count(*[_type == "quote" && status == "pending"]),
   "categories":        count(*[_type == "category"]),
-  "heroSlides":        count(*[_type == "heroSlide"])
+  "heroSlides":        count(*[_type == "heroSlide"]),
+  "quotes7d":          count(*[_type == "quote" && dateTime(_createdAt) > dateTime(now()) - 604800]),
+  "quotes30d":         count(*[_type == "quote" && dateTime(_createdAt) > dateTime(now()) - 2592000]),
+  "quotesTotal":       count(*[_type == "quote"]),
+  "contacts7d":        count(*[_type == "contactMessage" && dateTime(_createdAt) > dateTime(now()) - 604800]),
+  "contacts30d":       count(*[_type == "contactMessage" && dateTime(_createdAt) > dateTime(now()) - 2592000]),
+  "contactsTotal":     count(*[_type == "contactMessage"]),
+  "contactsUnhandled": count(*[_type == "contactMessage" && handled != true])
+}`
+
+const RECENT_CONTACTS_QUERY = `*[_type == "contactMessage"] | order(receivedAt desc)[0...5] {
+  _id, _type, _updatedAt, name,
+  "status": select(handled == true => "handledContact", "pendingContact")
 }`
 
 const RECENT_ORDERS_QUERY = `*[_type == "order"] | order(placedAt desc)[0...5] {
@@ -146,6 +166,8 @@ const STATUS_BADGES: Record<string, { tone: 'primary' | 'positive' | 'caution' |
   published: { tone: 'positive', label: 'Publié' },
   draft: { tone: 'caution', label: 'Brouillon' },
   archived: { tone: 'default', label: 'Archivé' },
+  pendingContact: { tone: 'caution', label: 'À répondre' },
+  handledContact: { tone: 'positive', label: 'Traité' },
 }
 
 // ─── Sous-composants ───────────────────────────────────────────
@@ -292,6 +314,7 @@ export function Dashboard() {
   const [recentOrders, setRecentOrders] = useState<RecentDoc[]>([])
   const [recentProducts, setRecentProducts] = useState<RecentDoc[]>([])
   const [recentBlog, setRecentBlog] = useState<RecentDoc[]>([])
+  const [recentContacts, setRecentContacts] = useState<RecentDoc[]>([])
   const [tipIndex, setTipIndex] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -303,13 +326,15 @@ export function Dashboard() {
       client.fetch<RecentDoc[]>(RECENT_ORDERS_QUERY),
       client.fetch<RecentDoc[]>(RECENT_PRODUCTS_QUERY),
       client.fetch<RecentDoc[]>(RECENT_BLOG_QUERY),
+      client.fetch<RecentDoc[]>(RECENT_CONTACTS_QUERY),
     ])
-      .then(([c, orders, products, blog]) => {
+      .then(([c, orders, products, blog, contacts]) => {
         if (cancelled) return
         setCounts(c)
         setRecentOrders(orders)
         setRecentProducts(products)
         setRecentBlog(blog)
+        setRecentContacts(contacts)
       })
       .catch((err) => console.warn('[dashboard] fetch error', err))
       .finally(() => {
@@ -439,6 +464,46 @@ export function Dashboard() {
               </Grid>
             </Box>
 
+            {/* ─── DEMANDES REÇUES (comptage) ─── */}
+            <Box>
+              <Heading size={2} style={{ marginBottom: 4 }}>
+                Demandes reçues sur le site
+              </Heading>
+              <Text size={1} muted style={{ marginBottom: 12, display: 'block' }}>
+                Formulaire de devis + formulaire de contact, comptés par période.
+              </Text>
+              <Grid columns={[2, 2, 4]} gap={3}>
+                <KpiCard
+                  icon="📋"
+                  label="Devis — 7 derniers jours"
+                  value={counts?.quotes7d ?? 0}
+                  sub={`${counts?.quotes30d ?? 0} sur 30 jours · ${counts?.quotesTotal ?? 0} au total`}
+                  tone={counts && counts.quotes7d > 0 ? 'positive' : 'default'}
+                />
+                <KpiCard
+                  icon="📋"
+                  label="Devis à traiter"
+                  value={counts?.quotesPending ?? 0}
+                  sub="Demandes sans réponse"
+                  tone={counts && counts.quotesPending > 0 ? 'caution' : 'positive'}
+                />
+                <KpiCard
+                  icon="✉️"
+                  label="Contacts — 7 derniers jours"
+                  value={counts?.contacts7d ?? 0}
+                  sub={`${counts?.contacts30d ?? 0} sur 30 jours · ${counts?.contactsTotal ?? 0} au total`}
+                  tone={counts && counts.contacts7d > 0 ? 'positive' : 'default'}
+                />
+                <KpiCard
+                  icon="✉️"
+                  label="Contacts à répondre"
+                  value={counts?.contactsUnhandled ?? 0}
+                  sub='Coche "Traité" après réponse'
+                  tone={counts && counts.contactsUnhandled > 0 ? 'caution' : 'positive'}
+                />
+              </Grid>
+            </Box>
+
             {/* ─── ACTIONS RAPIDES ─── */}
             <Box>
               <Heading size={2} style={{ marginBottom: 12 }}>
@@ -469,7 +534,7 @@ export function Dashboard() {
             </Box>
 
             {/* ─── ACTIVITÉ RÉCENTE ─── */}
-            <Grid columns={[1, 1, 3]} gap={4}>
+            <Grid columns={[1, 2, 4]} gap={4}>
               {/* Dernières commandes */}
               <Card padding={4} radius={2} shadow={1} tone="default">
                 <Stack space={3}>
@@ -514,6 +579,34 @@ export function Dashboard() {
                           doc={doc}
                           labelKey="name"
                           onClick={() => openDoc(doc._id, 'product')}
+                        />
+                      ))}
+                    </Stack>
+                  )}
+                </Stack>
+              </Card>
+
+              {/* Derniers messages contact */}
+              <Card padding={4} radius={2} shadow={1} tone="default">
+                <Stack space={3}>
+                  <Flex align="center" justify="space-between">
+                    <Heading size={1}>Derniers messages contact</Heading>
+                    <Text size={0} muted>
+                      {counts?.contactsUnhandled ?? 0} à répondre
+                    </Text>
+                  </Flex>
+                  {recentContacts.length === 0 ? (
+                    <Text size={1} muted>
+                      Aucun message pour l&apos;instant.
+                    </Text>
+                  ) : (
+                    <Stack space={0}>
+                      {recentContacts.map((doc) => (
+                        <RecentItem
+                          key={doc._id}
+                          doc={doc}
+                          labelKey="name"
+                          onClick={() => openDoc(doc._id, 'contactMessage')}
                         />
                       ))}
                     </Stack>

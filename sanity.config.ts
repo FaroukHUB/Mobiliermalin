@@ -471,6 +471,40 @@ export default defineConfig({
                       ),
                   ]),
               ),
+            // Messages du formulaire de contact — archivés par /api/contact
+            S.listItem()
+              .title('Messages contact')
+              .icon(() => '✉️')
+              .child(
+                S.list()
+                  .title('Messages contact')
+                  .items([
+                    S.listItem()
+                      .title('🟡 À répondre')
+                      .child(
+                        S.documentList()
+                          .title('À répondre')
+                          .filter('_type == "contactMessage" && handled != true')
+                          .defaultOrdering([{ field: 'receivedAt', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('✅ Traités')
+                      .child(
+                        S.documentList()
+                          .title('Traités')
+                          .filter('_type == "contactMessage" && handled == true')
+                          .defaultOrdering([{ field: 'receivedAt', direction: 'desc' }]),
+                      ),
+                    S.divider(),
+                    S.listItem()
+                      .title('Tous les messages')
+                      .child(
+                        S.documentTypeList('contactMessage')
+                          .title('Tous les messages')
+                          .defaultOrdering([{ field: 'receivedAt', direction: 'desc' }]),
+                      ),
+                  ]),
+              ),
             // Devis de livraison (workflow B2B)
             S.listItem()
               .title('Devis livraison')

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { sendEmail, isBrevoConfigured } from '@/lib/brevo'
+import { getWriteClient } from '@/lib/sanity-write'
 import { LEGAL } from '@/lib/legal'
 
 type ContactPayload = {
@@ -102,6 +103,28 @@ Envoyé le ${new Date().toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 
 </body>
 </html>
 `
+
+  // Archive la demande dans Sanity pour la comptabiliser (tableau de
+  // bord Studio + liste "Messages contact"). Ne bloque JAMAIS l'envoi
+  // de l'email : en cas d'échec on log et on continue.
+  const writeClient = getWriteClient()
+  if (writeClient) {
+    try {
+      await writeClient.create({
+        _type: 'contactMessage',
+        name: name.trim(),
+        email: email.trim(),
+        ...(phone && { phone: phone.trim() }),
+        ...(company && { company: company.trim() }),
+        projectType,
+        message: message.trim(),
+        receivedAt: new Date().toISOString(),
+        handled: false,
+      })
+    } catch (err) {
+      console.error('[contact] Archivage Sanity échoué (email envoyé quand même):', err)
+    }
+  }
 
   // Envoi via Brevo (cohérent avec le reste du site)
   if (isBrevoConfigured()) {
