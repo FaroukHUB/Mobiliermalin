@@ -83,8 +83,8 @@ const COUNTS_QUERY = `{
   "quotes7d":          count(*[_type == "quote" && dateTime(_createdAt) > dateTime(now()) - 604800]),
   "quotes30d":         count(*[_type == "quote" && dateTime(_createdAt) > dateTime(now()) - 2592000]),
   "quotesTotal":       count(*[_type == "quote"]),
-  "contacts7d":        count(*[_type == "contactMessage" && dateTime(_createdAt) > dateTime(now()) - 604800]),
-  "contacts30d":       count(*[_type == "contactMessage" && dateTime(_createdAt) > dateTime(now()) - 2592000]),
+  "contacts7d":        count(*[_type == "contactMessage" && dateTime(coalesce(receivedAt, _createdAt)) > dateTime(now()) - 604800]),
+  "contacts30d":       count(*[_type == "contactMessage" && dateTime(coalesce(receivedAt, _createdAt)) > dateTime(now()) - 2592000]),
   "contactsTotal":     count(*[_type == "contactMessage"]),
   "contactsUnhandled": count(*[_type == "contactMessage" && handled != true])
 }`
@@ -398,7 +398,7 @@ export function Dashboard() {
                   tone="positive"
                   onClick={() =>
                     router.navigateUrl({
-                      path: '/desk/mobilier',
+                      path: '/structure/mobilier',
                     })
                   }
                 />
@@ -479,6 +479,9 @@ export function Dashboard() {
                   value={counts?.quotes7d ?? 0}
                   sub={`${counts?.quotes30d ?? 0} sur 30 jours · ${counts?.quotesTotal ?? 0} au total`}
                   tone={counts && counts.quotes7d > 0 ? 'positive' : 'default'}
+                  onClick={() =>
+                    router.navigateUrl({ path: '/structure/devisLivraison' })
+                  }
                 />
                 <KpiCard
                   icon="📋"
@@ -486,6 +489,9 @@ export function Dashboard() {
                   value={counts?.quotesPending ?? 0}
                   sub="Demandes sans réponse"
                   tone={counts && counts.quotesPending > 0 ? 'caution' : 'positive'}
+                  onClick={() =>
+                    router.navigateUrl({ path: '/structure/devisLivraison' })
+                  }
                 />
                 <KpiCard
                   icon="✉️"
@@ -493,6 +499,9 @@ export function Dashboard() {
                   value={counts?.contacts7d ?? 0}
                   sub={`${counts?.contacts30d ?? 0} sur 30 jours · ${counts?.contactsTotal ?? 0} au total`}
                   tone={counts && counts.contacts7d > 0 ? 'positive' : 'default'}
+                  onClick={() =>
+                    router.navigateUrl({ path: '/structure/contactMessages' })
+                  }
                 />
                 <KpiCard
                   icon="✉️"
@@ -500,6 +509,9 @@ export function Dashboard() {
                   value={counts?.contactsUnhandled ?? 0}
                   sub='Coche "Traité" après réponse'
                   tone={counts && counts.contactsUnhandled > 0 ? 'caution' : 'positive'}
+                  onClick={() =>
+                    router.navigateUrl({ path: '/structure/contactMessages' })
+                  }
                 />
               </Grid>
             </Box>

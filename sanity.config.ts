@@ -243,6 +243,7 @@ export default defineConfig({
                   .defaultOrdering([{ field: 'order', direction: 'asc' }]),
               ),
             S.listItem()
+              .id('mobilier')
               .title('Mobilier (produits)')
               .icon(() => '🪑')
               .child(
@@ -473,6 +474,7 @@ export default defineConfig({
               ),
             // Messages du formulaire de contact — archivés par /api/contact
             S.listItem()
+              .id('contactMessages')
               .title('Messages contact')
               .icon(() => '✉️')
               .child(
@@ -507,6 +509,7 @@ export default defineConfig({
               ),
             // Devis de livraison (workflow B2B)
             S.listItem()
+              .id('devisLivraison')
               .title('Devis livraison')
               .icon(() => '📋')
               .child(
