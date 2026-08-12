@@ -398,7 +398,7 @@ export function Dashboard() {
                   tone="positive"
                   onClick={() =>
                     router.navigateUrl({
-                      path: '/structure/mobilier',
+                      path: '/studio/structure/mobilier',
                     })
                   }
                 />
@@ -480,7 +480,7 @@ export function Dashboard() {
                   sub={`${counts?.quotes30d ?? 0} sur 30 jours · ${counts?.quotesTotal ?? 0} au total`}
                   tone={counts && counts.quotes7d > 0 ? 'positive' : 'default'}
                   onClick={() =>
-                    router.navigateUrl({ path: '/structure/devisLivraison' })
+                    router.navigateUrl({ path: '/studio/structure/devisLivraison' })
                   }
                 />
                 <KpiCard
@@ -490,7 +490,7 @@ export function Dashboard() {
                   sub="Demandes sans réponse"
                   tone={counts && counts.quotesPending > 0 ? 'caution' : 'positive'}
                   onClick={() =>
-                    router.navigateUrl({ path: '/structure/devisLivraison' })
+                    router.navigateUrl({ path: '/studio/structure/devisLivraison' })
                   }
                 />
                 <KpiCard
@@ -500,7 +500,7 @@ export function Dashboard() {
                   sub={`${counts?.contacts30d ?? 0} sur 30 jours · ${counts?.contactsTotal ?? 0} au total`}
                   tone={counts && counts.contacts7d > 0 ? 'positive' : 'default'}
                   onClick={() =>
-                    router.navigateUrl({ path: '/structure/contactMessages' })
+                    router.navigateUrl({ path: '/studio/structure/contactMessages' })
                   }
                 />
                 <KpiCard
@@ -510,7 +510,7 @@ export function Dashboard() {
                   sub='Coche "Traité" après réponse'
                   tone={counts && counts.contactsUnhandled > 0 ? 'caution' : 'positive'}
                   onClick={() =>
-                    router.navigateUrl({ path: '/structure/contactMessages' })
+                    router.navigateUrl({ path: '/studio/structure/contactMessages' })
                   }
                 />
               </Grid>
