@@ -47,6 +47,18 @@ type SanityQuote = {
   blShowPrices?: boolean
   blCarrier?: string
   blNotes?: string
+  blPaymentStatus?: 'paid' | 'due' | 'partial' | 'invoice'
+  blPaymentMethod?: string
+  blAmountDue?: number
+}
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  cb: 'Carte bancaire',
+  especes: 'Espèces',
+  virement: 'Virement',
+  cheque: 'Chèque',
+  'en-ligne': 'Paiement en ligne (Stripe)',
+  autre: 'Autre',
 }
 
 export async function GET(
@@ -126,6 +138,12 @@ export async function GET(
     showPrices: quote.blShowPrices === true,
     carrier: quote.blCarrier,
     notes: quote.blNotes,
+    paymentStatus: quote.blPaymentStatus,
+    paymentMethod: quote.blPaymentMethod
+      ? PAYMENT_METHOD_LABELS[quote.blPaymentMethod] || quote.blPaymentMethod
+      : undefined,
+    amountDue:
+      typeof quote.blAmountDue === 'number' ? quote.blAmountDue : undefined,
   }
 
   try {

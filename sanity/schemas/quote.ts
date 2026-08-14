@@ -306,6 +306,50 @@ export const quote = {
       group: 'deliveryNote',
       description: 'Créneau horaire, instructions d\'accès, matériel de manutention… Affiché dans un encadré sur le PDF.',
     },
+    {
+      name: 'blPaymentStatus',
+      title: 'Règlement — statut',
+      type: 'string',
+      group: 'deliveryNote',
+      options: {
+        list: [
+          { value: 'paid', title: '✅ Payé (rien à encaisser à la livraison)' },
+          { value: 'due', title: '💶 À régler à la livraison' },
+          { value: 'partial', title: '🔶 Acompte versé — solde à la livraison' },
+          { value: 'invoice', title: '🧾 À régler sur facture (paiement différé)' },
+        ],
+        layout: 'radio',
+      },
+      description:
+        'Si renseigné, un encadré "Règlement" apparaît sur le bon avec le montant TTC. Laisser vide pour ne rien afficher.',
+    },
+    {
+      name: 'blPaymentMethod',
+      title: 'Règlement — mode de paiement',
+      type: 'string',
+      group: 'deliveryNote',
+      options: {
+        list: [
+          { value: 'cb', title: '💳 Carte bancaire' },
+          { value: 'especes', title: '💵 Espèces' },
+          { value: 'virement', title: '🏦 Virement' },
+          { value: 'cheque', title: '🖊️ Chèque' },
+          { value: 'en-ligne', title: '🔒 Paiement en ligne (Stripe)' },
+          { value: 'autre', title: 'Autre' },
+        ],
+        layout: 'dropdown',
+      },
+      description: 'Mode utilisé (si payé) ou attendu (si à régler). Optionnel.',
+    },
+    {
+      name: 'blAmountDue',
+      title: 'Règlement — montant à encaisser (€ TTC)',
+      type: 'number',
+      group: 'deliveryNote',
+      validation: (R: Rule) => R.min(0),
+      description:
+        'Optionnel. Par défaut le bon affiche le total TTC du devis. Renseigne un montant ici pour le remplacer (ex : solde restant après acompte).',
+    },
 
     // ───── Notes ─────
     {

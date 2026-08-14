@@ -40,6 +40,14 @@ export type DeliveryNotePdfInput = {
   showPrices: boolean
   carrier?: string
   notes?: string
+  /**
+   * Bloc "Règlement" (optionnel) : si paymentStatus est défini, un
+   * encadré affiche le montant TTC + statut + mode de paiement.
+   */
+  paymentStatus?: 'paid' | 'due' | 'partial' | 'invoice'
+  paymentMethod?: string
+  /** Montant TTC à afficher dans le bloc règlement. Défaut : total TTC calculé. */
+  amountDue?: number
 }
 
 const COLORS = {
@@ -218,6 +226,45 @@ const styles = StyleSheet.create({
     color: COLORS.inkSoft,
     lineHeight: 1.5,
   },
+  // Bloc règlement
+  paymentBox: {
+    marginTop: 20,
+    flexDirection: 'row',
+    borderWidth: 0.5,
+    borderColor: COLORS.line,
+  },
+  paymentCell: {
+    flex: 1,
+    padding: 12,
+    borderRightWidth: 0.5,
+    borderRightColor: COLORS.line,
+  },
+  paymentCellLast: {
+    flex: 1,
+    padding: 12,
+  },
+  paymentLabel: {
+    fontSize: 8,
+    color: COLORS.inkMute,
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginBottom: 4,
+  },
+  paymentValue: {
+    fontSize: 12,
+    color: COLORS.ink,
+    fontFamily: 'Helvetica-Bold',
+  },
+  paymentValuePaid: {
+    fontSize: 12,
+    color: '#2b915d',
+    fontFamily: 'Helvetica-Bold',
+  },
+  paymentValueDue: {
+    fontSize: 12,
+    color: '#b23d3d',
+    fontFamily: 'Helvetica-Bold',
+  },
   // Signatures
   signBox: {
     flexDirection: 'row',
@@ -275,6 +322,13 @@ function dateFr(d: Date): string {
   })
 }
 
+const PAYMENT_STATUS_LABELS: Record<string, string> = {
+  paid: 'PAYÉ — rien à encaisser',
+  due: 'À RÉGLER à la livraison',
+  partial: 'Acompte versé — solde à régler à la livraison',
+  invoice: 'À régler sur facture (paiement différé)',
+}
+
 export function DeliveryNotePdf({
   numero,
   deliveryDate,
@@ -287,6 +341,9 @@ export function DeliveryNotePdf({
   showPrices,
   carrier,
   notes,
+  paymentStatus,
+  paymentMethod,
+  amountDue,
 }: DeliveryNotePdfInput) {
   const productTotal = items.reduce((s, l) => s + l.unitPrice * l.quantity, 0)
   const optionsTotal = options.reduce((s, o) => s + o.price, 0)
@@ -453,6 +510,38 @@ export function DeliveryNotePdf({
             <View style={styles.ttcRow}>
               <Text style={styles.ttcLabel}>Total TTC</Text>
               <Text style={styles.ttcValue}>{eur(totalTtc)}</Text>
+            </View>
+          </View>
+        ) : null}
+
+        {/* Bloc règlement — uniquement si un statut est renseigné */}
+        {paymentStatus ? (
+          <View style={styles.paymentBox}>
+            <View style={styles.paymentCell}>
+              <Text style={styles.paymentLabel}>Montant TTC</Text>
+              <Text style={styles.paymentValue}>
+                {eur(typeof amountDue === 'number' ? amountDue : totalTtc)}
+              </Text>
+            </View>
+            <View style={styles.paymentCell}>
+              <Text style={styles.paymentLabel}>Règlement</Text>
+              <Text
+                style={
+                  paymentStatus === 'paid'
+                    ? styles.paymentValuePaid
+                    : paymentStatus === 'invoice'
+                      ? styles.paymentValue
+                      : styles.paymentValueDue
+                }
+              >
+                {PAYMENT_STATUS_LABELS[paymentStatus] || paymentStatus}
+              </Text>
+            </View>
+            <View style={styles.paymentCellLast}>
+              <Text style={styles.paymentLabel}>Mode de paiement</Text>
+              <Text style={styles.paymentValue}>
+                {paymentMethod || 'Non précisé'}
+              </Text>
             </View>
           </View>
         ) : null}
