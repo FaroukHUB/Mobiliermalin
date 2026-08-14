@@ -18,6 +18,7 @@ export const quote = {
     { name: 'client', title: '👤 Client' },
     { name: 'product', title: '📦 Produit & livraison' },
     { name: 'fees', title: '💶 Frais & options' },
+    { name: 'deliveryNote', title: '🚚 Bon de livraison' },
     { name: 'notes', title: '📝 Notes' },
     { name: 'tracking', title: '🔗 Suivi' },
   ],
@@ -270,6 +271,40 @@ export const quote = {
         ],
         layout: 'dropdown',
       },
+    },
+
+    // ───── Bon de livraison ─────
+    // Tous ces champs sont OPTIONNELS : le bon de livraison se génère
+    // avec des valeurs par défaut sensées même si rien n'est rempli.
+    {
+      name: 'blDate',
+      title: 'Date de livraison',
+      type: 'date',
+      group: 'deliveryNote',
+      description: 'Date prévue ou effective de la livraison. Vide = date du jour à la génération.',
+    },
+    {
+      name: 'blShowPrices',
+      title: 'Afficher les prix sur le bon',
+      type: 'boolean',
+      group: 'deliveryNote',
+      initialValue: false,
+      description: 'Par défaut un bon de livraison ne montre que les quantités. Coche pour ajouter les prix HT et totaux.',
+    },
+    {
+      name: 'blCarrier',
+      title: 'Livreur / transporteur',
+      type: 'string',
+      group: 'deliveryNote',
+      description: 'Nom du livreur ou du transporteur (optionnel, affiché sur le bon).',
+    },
+    {
+      name: 'blNotes',
+      title: 'Notes sur le bon de livraison',
+      type: 'text',
+      rows: 3,
+      group: 'deliveryNote',
+      description: 'Créneau horaire, instructions d\'accès, matériel de manutention… Affiché dans un encadré sur le PDF.',
     },
 
     // ───── Notes ─────
