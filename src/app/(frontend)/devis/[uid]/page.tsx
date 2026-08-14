@@ -35,6 +35,7 @@ type QuoteDoc = {
   shippingFee?: number
   options?: { label: string; price: number }[]
   tvaRate?: number
+  tvaExemptionText?: string
   pdfNotes?: string
 }
 
@@ -58,7 +59,7 @@ export default async function QuoteAcceptPage({
       _id, numero, status, documentType, validUntil, _createdAt,
       customer, shippingAddress, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate, pdfNotes
+      shippingFee, options, tvaRate, tvaExemptionText, pdfNotes
     }`,
     { id: uid },
   )
@@ -232,22 +233,33 @@ export default async function QuoteAcceptPage({
             ))}
           </tbody>
           <tfoot className="border-t border-line text-sm">
-            <tr>
-              <td colSpan={3} className="px-6 py-2 text-right text-ink-mute">Sous-total HT</td>
-              <td className="px-6 py-2 text-right text-ink">{eur(subtotalHt)}</td>
-            </tr>
-            <tr>
-              <td colSpan={3} className="px-6 py-2 text-right text-ink-mute">
-                TVA ({tvaRate} %)
-              </td>
-              <td className="px-6 py-2 text-right text-ink">{eur(tvaAmount)}</td>
-            </tr>
+            {tvaRate !== 0 && (
+              <>
+                <tr>
+                  <td colSpan={3} className="px-6 py-2 text-right text-ink-mute">Sous-total HT</td>
+                  <td className="px-6 py-2 text-right text-ink">{eur(subtotalHt)}</td>
+                </tr>
+                <tr>
+                  <td colSpan={3} className="px-6 py-2 text-right text-ink-mute">
+                    TVA ({tvaRate} %)
+                  </td>
+                  <td className="px-6 py-2 text-right text-ink">{eur(tvaAmount)}</td>
+                </tr>
+              </>
+            )}
             <tr className="bg-ink text-ivory">
               <td colSpan={3} className="px-6 py-3 text-right text-xs uppercase tracking-widest text-gold">
-                Total TTC à payer
+                {tvaRate === 0 ? 'Total à payer' : 'Total TTC à payer'}
               </td>
               <td className="px-6 py-3 text-right text-lg font-serif">{eur(totalTtc)}</td>
             </tr>
+            {tvaRate === 0 && (
+              <tr>
+                <td colSpan={4} className="px-6 py-2 text-right text-xs text-ink-mute">
+                  {quote.tvaExemptionText || 'TVA non applicable'}
+                </td>
+              </tr>
+            )}
           </tfoot>
         </table>
       </div>

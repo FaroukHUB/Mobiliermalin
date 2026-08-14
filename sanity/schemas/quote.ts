@@ -267,10 +267,22 @@ export const quote = {
           { value: 20, title: '20 % (standard)' },
           { value: 10, title: '10 % (réduit)' },
           { value: 5.5, title: '5,5 % (super réduit)' },
-          { value: 0, title: '0 % (exonéré)' },
+          { value: 0, title: '0 % (exonéré / hors TVA)' },
         ],
         layout: 'dropdown',
       },
+      description:
+        'À 0 %, la ligne TVA disparaît des PDF (devis, facture, bon de livraison) et la mention ci-dessous s\'affiche à la place.',
+    },
+    {
+      name: 'tvaExemptionText',
+      title: 'Mention d\'exonération de TVA',
+      type: 'string',
+      group: 'fees',
+      hidden: ({ document }: { document?: { tvaRate?: number } }) =>
+        (document?.tvaRate ?? 20) !== 0,
+      description:
+        'Obligatoire sur une facture sans TVA. Exemples : "TVA non applicable — régime de la marge (art. 297 A du CGI)" pour les biens d\'occasion, "TVA non applicable, art. 293 B du CGI" pour la franchise en base. Vérifie la bonne mention avec ton comptable.',
     },
 
     // ───── Bon de livraison ─────

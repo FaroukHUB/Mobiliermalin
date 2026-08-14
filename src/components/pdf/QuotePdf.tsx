@@ -54,6 +54,11 @@ export type QuotePdfInput = {
   shippingFee: number
   options: QuoteOption[]
   tvaRate: number
+  /**
+   * Mention légale affichée à la place de la ligne TVA quand tvaRate
+   * vaut 0 (ex : régime de la marge art. 297 A, franchise 293 B…).
+   */
+  tvaExemptionText?: string
   pdfNotes?: string
 }
 
@@ -314,10 +319,12 @@ export function QuotePdf({
   shippingFee,
   options,
   tvaRate,
+  tvaExemptionText,
   pdfNotes,
 }: QuotePdfInput) {
   const isInvoice = docKind === 'facture'
   const docLabel = isInvoice ? 'Facture' : 'Devis'
+  const noTva = tvaRate === 0
   // Unifie lignes multiples (items) et ligne unique legacy (product)
   const lines =
     items && items.length > 0 ? items : product ? [product] : []
@@ -424,8 +431,8 @@ export function QuotePdf({
         <View style={styles.tableHeader}>
           <Text style={[styles.colDesc, styles.cellHeader]}>Désignation</Text>
           <Text style={[styles.colQty, styles.cellHeader]}>Qté</Text>
-          <Text style={[styles.colPrice, styles.cellHeader]}>P.U. HT</Text>
-          <Text style={[styles.colTotal, styles.cellHeader]}>Total HT</Text>
+          <Text style={[styles.colPrice, styles.cellHeader]}>{noTva ? 'P.U.' : 'P.U. HT'}</Text>
+          <Text style={[styles.colTotal, styles.cellHeader]}>{noTva ? 'Total' : 'Total HT'}</Text>
         </View>
 
         {/* Lignes produit (une par item) */}
@@ -462,20 +469,36 @@ export function QuotePdf({
           </View>
         ))}
 
-        {/* Totaux */}
+        {/* Totaux — sans ligne TVA si taux à 0 (hors TVA) */}
         <View style={styles.totalsBox}>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Sous-total HT</Text>
-            <Text style={styles.totalValue}>{eur(subtotalHt)}</Text>
-          </View>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>TVA ({tvaRate} %)</Text>
-            <Text style={styles.totalValue}>{eur(tvaAmount)}</Text>
-          </View>
+          {!noTva && (
+            <>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>Sous-total HT</Text>
+                <Text style={styles.totalValue}>{eur(subtotalHt)}</Text>
+              </View>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>TVA ({tvaRate} %)</Text>
+                <Text style={styles.totalValue}>{eur(tvaAmount)}</Text>
+              </View>
+            </>
+          )}
           <View style={styles.ttcRow}>
-            <Text style={styles.ttcLabel}>Total TTC</Text>
+            <Text style={styles.ttcLabel}>{noTva ? 'Total' : 'Total TTC'}</Text>
             <Text style={styles.ttcValue}>{eur(totalTtc)}</Text>
           </View>
+          {noTva && (
+            <Text
+              style={{
+                fontSize: 8,
+                color: COLORS.inkMute,
+                marginTop: 6,
+                textAlign: 'right',
+              }}
+            >
+              {tvaExemptionText || 'TVA non applicable'}
+            </Text>
+          )}
         </View>
 
         {/* Notes */}

@@ -43,6 +43,7 @@ type SanityQuote = {
   shippingFee?: number
   options?: Array<{ label?: string; price?: number }>
   tvaRate?: number
+  tvaExemptionText?: string
   blDate?: string
   blShowPrices?: boolean
   blCarrier?: string
@@ -135,6 +136,7 @@ export async function GET(
       .map((o) => ({ label: o.label as string, price: o.price ?? 0 })),
     shippingFee: quote.shippingFee ?? 0,
     tvaRate: quote.tvaRate ?? 20,
+    tvaExemptionText: quote.tvaExemptionText,
     showPrices: quote.blShowPrices === true,
     carrier: quote.blCarrier,
     notes: quote.blNotes,

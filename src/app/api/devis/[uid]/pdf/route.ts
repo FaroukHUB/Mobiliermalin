@@ -41,6 +41,7 @@ type QuoteDoc = {
   shippingFee?: number
   options?: { label: string; price: number }[]
   tvaRate?: number
+  tvaExemptionText?: string
   pdfNotes?: string
 }
 
@@ -61,7 +62,7 @@ export async function GET(
         _id, numero, validUntil, _createdAt,
         customer, shippingAddress, product,
         lineItems[]{ name, unitPrice, quantity },
-        shippingFee, options, tvaRate, pdfNotes
+        shippingFee, options, tvaRate, tvaExemptionText, pdfNotes
       }`,
       { id: uid },
     )
@@ -132,6 +133,7 @@ export async function GET(
     shippingFee: quote.shippingFee || 0,
     options: quote.options || [],
     tvaRate: quote.tvaRate ?? 20,
+    tvaExemptionText: quote.tvaExemptionText,
     pdfNotes: quote.pdfNotes,
   }
 

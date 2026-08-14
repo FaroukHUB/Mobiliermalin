@@ -40,6 +40,8 @@ export type DeliveryNotePdfInput = {
   showPrices: boolean
   carrier?: string
   notes?: string
+  /** Mention légale affichée quand tvaRate vaut 0 (hors TVA). */
+  tvaExemptionText?: string
   /**
    * Bloc "Règlement" (optionnel) : si paymentStatus est défini, un
    * encadré affiche le montant TTC + statut + mode de paiement.
@@ -347,10 +349,12 @@ export function DeliveryNotePdf({
   showPrices,
   carrier,
   notes,
+  tvaExemptionText,
   paymentStatus,
   paymentMethod,
   amountDue,
 }: DeliveryNotePdfInput) {
+  const noTva = tvaRate === 0
   const productTotal = items.reduce((s, l) => s + l.unitPrice * l.quantity, 0)
   const optionsTotal = options.reduce((s, o) => s + o.price, 0)
   const subtotalHt = productTotal + shippingFee + optionsTotal
@@ -445,8 +449,8 @@ export function DeliveryNotePdf({
           <Text style={[styles.colQty, styles.cellHeader]}>Qté</Text>
           {showPrices ? (
             <>
-              <Text style={[styles.colPrice, styles.cellHeader]}>P.U. HT</Text>
-              <Text style={[styles.colTotal, styles.cellHeader]}>Total HT</Text>
+              <Text style={[styles.colPrice, styles.cellHeader]}>{noTva ? 'P.U.' : 'P.U. HT'}</Text>
+              <Text style={[styles.colTotal, styles.cellHeader]}>{noTva ? 'Total' : 'Total HT'}</Text>
             </>
           ) : (
             <Text style={[styles.colCheck, styles.cellHeader]}>Contrôle</Text>
@@ -505,18 +509,27 @@ export function DeliveryNotePdf({
         {/* Totaux — uniquement si les prix sont affichés */}
         {showPrices ? (
           <View style={styles.totalsBox}>
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Sous-total HT</Text>
-              <Text style={styles.totalValue}>{eur(subtotalHt)}</Text>
-            </View>
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>TVA ({tvaRate} %)</Text>
-              <Text style={styles.totalValue}>{eur(tvaAmount)}</Text>
-            </View>
+            {!noTva && (
+              <>
+                <View style={styles.totalRow}>
+                  <Text style={styles.totalLabel}>Sous-total HT</Text>
+                  <Text style={styles.totalValue}>{eur(subtotalHt)}</Text>
+                </View>
+                <View style={styles.totalRow}>
+                  <Text style={styles.totalLabel}>TVA ({tvaRate} %)</Text>
+                  <Text style={styles.totalValue}>{eur(tvaAmount)}</Text>
+                </View>
+              </>
+            )}
             <View style={styles.ttcRow}>
-              <Text style={styles.ttcLabel}>Total TTC</Text>
+              <Text style={styles.ttcLabel}>{noTva ? 'Total' : 'Total TTC'}</Text>
               <Text style={styles.ttcValue}>{eur(totalTtc)}</Text>
             </View>
+            {noTva && (
+              <Text style={{ fontSize: 8, color: COLORS.inkMute, marginTop: 4, textAlign: 'right' }}>
+                {tvaExemptionText || 'TVA non applicable'}
+              </Text>
+            )}
           </View>
         ) : null}
 
@@ -524,10 +537,15 @@ export function DeliveryNotePdf({
         {paymentStatus ? (
           <View style={styles.paymentBox} wrap={false}>
             <View style={styles.paymentCell}>
-              <Text style={styles.paymentLabel}>Montant TTC</Text>
+              <Text style={styles.paymentLabel}>{noTva ? 'Montant' : 'Montant TTC'}</Text>
               <Text style={styles.paymentValue}>
                 {eur(typeof amountDue === 'number' ? amountDue : totalTtc)}
               </Text>
+              {noTva && !showPrices ? (
+                <Text style={{ fontSize: 7, color: COLORS.inkMute, marginTop: 3 }}>
+                  {tvaExemptionText || 'TVA non applicable'}
+                </Text>
+              ) : null}
             </View>
             <View style={styles.paymentCell}>
               <Text style={styles.paymentLabel}>Règlement</Text>
