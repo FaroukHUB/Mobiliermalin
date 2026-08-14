@@ -11,6 +11,10 @@ import { sendQuoteAction } from './sanity/actions/sendQuoteAction'
 import { sendInvoiceAction } from './sanity/actions/sendInvoiceAction'
 import { downloadInvoiceAction } from './sanity/actions/downloadInvoiceAction'
 import { downloadDeliveryNoteAction } from './sanity/actions/downloadDeliveryNoteAction'
+import {
+  downloadQuotePdfAction,
+  downloadInvoicePdfAction,
+} from './sanity/actions/downloadQuotePdfActions'
 import { Dashboard } from './sanity/dashboard/Dashboard'
 import {
   ProductGridView,
@@ -82,7 +86,14 @@ export default defineConfig({
       }
       // Sur les devis : ajoute l'action "Envoyer au client"
       if (context.schemaType === 'quote') {
-        return [...input, sendQuoteAction, sendInvoiceAction, downloadDeliveryNoteAction]
+        return [
+          ...input,
+          sendQuoteAction,
+          sendInvoiceAction,
+          downloadQuotePdfAction,
+          downloadInvoicePdfAction,
+          downloadDeliveryNoteAction,
+        ]
       }
       // Sur les commandes : ajoute l'action "Télécharger la facture"
       if (context.schemaType === 'order') {

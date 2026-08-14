@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ShieldCheck, FileText, Clock, AlertCircle } from 'lucide-react'
+import { ShieldCheck, FileText, Clock, AlertCircle, Download } from 'lucide-react'
 import { sanityClient } from '@/lib/sanity'
 import { LEGAL } from '@/lib/legal'
 import { AcceptQuoteButton } from '@/components/quote/AcceptQuoteButton'
@@ -260,6 +260,19 @@ export default async function QuoteAcceptPage({
           </p>
         </div>
       )}
+
+      {/* Téléchargement PDF — même rendu que la pièce jointe email */}
+      <div className="mt-6 text-center">
+        <a
+          href={`/api/devis/${quote._id}/pdf${isInvoice ? '?type=facture' : ''}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 btn-outline"
+        >
+          <Download className="h-4 w-4" strokeWidth={1.5} />
+          Télécharger {isInvoice ? 'la facture' : 'le devis'} (PDF)
+        </a>
+      </div>
 
       {/* CTA accepter / payer */}
       {!isAccepted && !isRefused && !isExpired && (
