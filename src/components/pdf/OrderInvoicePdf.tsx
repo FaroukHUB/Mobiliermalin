@@ -288,10 +288,16 @@ const styles = StyleSheet.create({
 
 function eur(cents: number): string {
   return (
-    (cents / 100).toLocaleString('fr-FR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }) + ' €'
+    (cents / 100)
+      .toLocaleString('fr-FR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+      // Le séparateur de milliers fr-FR est une espace insécable étroite
+      // (U+202F) que les polices PDF standard ne connaissent pas : elle
+      // se dessine par-dessus le chiffre (effet "barré"). On la remplace
+      // par une espace classique.
+      .replace(/[  ]/g, ' ') + ' €'
   )
 }
 

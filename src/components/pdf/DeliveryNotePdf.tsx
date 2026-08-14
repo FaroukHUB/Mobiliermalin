@@ -62,7 +62,7 @@ const COLORS = {
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
+    padding: 30,
     fontSize: 10,
     fontFamily: 'Helvetica',
     color: COLORS.ink,
@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
   headerBar: {
     backgroundColor: COLORS.ink,
     color: COLORS.ivory,
-    padding: 16,
-    marginBottom: 24,
+    padding: 12,
+    marginBottom: 14,
   },
   brandName: {
     fontSize: 18,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   docHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: 14,
   },
   docTitle: {
     fontSize: 22,
@@ -116,12 +116,12 @@ const styles = StyleSheet.create({
   },
   partiesBox: {
     flexDirection: 'row',
-    gap: 16,
-    marginBottom: 20,
+    gap: 12,
+    marginBottom: 12,
   },
   partyCol: {
     flex: 1,
-    padding: 12,
+    padding: 9,
     backgroundColor: COLORS.ivory,
     borderLeftWidth: 2,
     borderLeftColor: COLORS.gold,
@@ -148,14 +148,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.ink,
     color: COLORS.ivory,
-    padding: 8,
+    padding: 6,
     fontSize: 8,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
   tableRow: {
     flexDirection: 'row',
-    padding: 8,
+    padding: 5,
     borderBottomWidth: 0.5,
     borderBottomColor: COLORS.line,
     fontSize: 10,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   totalsBox: {
-    marginTop: 16,
+    marginTop: 8,
     marginLeft: 'auto',
     width: '60%',
   },
@@ -208,8 +208,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
   },
   notesBox: {
-    marginTop: 20,
-    padding: 12,
+    marginTop: 10,
+    padding: 9,
     backgroundColor: COLORS.ivory,
     borderLeftWidth: 2,
     borderLeftColor: COLORS.gold,
@@ -228,20 +228,20 @@ const styles = StyleSheet.create({
   },
   // Bloc règlement
   paymentBox: {
-    marginTop: 20,
+    marginTop: 10,
     flexDirection: 'row',
     borderWidth: 0.5,
     borderColor: COLORS.line,
   },
   paymentCell: {
     flex: 1,
-    padding: 12,
+    padding: 9,
     borderRightWidth: 0.5,
     borderRightColor: COLORS.line,
   },
   paymentCellLast: {
     flex: 1,
-    padding: 12,
+    padding: 9,
   },
   paymentLabel: {
     fontSize: 8,
@@ -268,15 +268,15 @@ const styles = StyleSheet.create({
   // Signatures
   signBox: {
     flexDirection: 'row',
-    gap: 16,
-    marginTop: 28,
+    gap: 12,
+    marginTop: 12,
   },
   signCol: {
     flex: 1,
-    padding: 12,
+    padding: 9,
     borderWidth: 0.5,
     borderColor: COLORS.line,
-    minHeight: 110,
+    minHeight: 78,
   },
   signTitle: {
     fontSize: 8,
@@ -307,10 +307,16 @@ const styles = StyleSheet.create({
 
 function eur(v: number): string {
   return (
-    v.toLocaleString('fr-FR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }) + ' €'
+    v
+      .toLocaleString('fr-FR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+      // Le séparateur de milliers fr-FR est une espace insécable étroite
+      // (U+202F) que les polices PDF standard ne connaissent pas : elle
+      // se dessine par-dessus le chiffre (effet "barré"). On la remplace
+      // par une espace classique.
+      .replace(/[  ]/g, ' ') + ' €'
   )
 }
 
@@ -516,7 +522,7 @@ export function DeliveryNotePdf({
 
         {/* Bloc règlement — uniquement si un statut est renseigné */}
         {paymentStatus ? (
-          <View style={styles.paymentBox}>
+          <View style={styles.paymentBox} wrap={false}>
             <View style={styles.paymentCell}>
               <Text style={styles.paymentLabel}>Montant TTC</Text>
               <Text style={styles.paymentValue}>
@@ -561,7 +567,7 @@ export function DeliveryNotePdf({
         ) : null}
 
         {/* Signatures */}
-        <View style={styles.signBox}>
+        <View style={styles.signBox} wrap={false}>
           <View style={styles.signCol}>
             <Text style={styles.signTitle}>Le livreur</Text>
             <Text style={styles.signHint}>Nom et signature</Text>
@@ -569,10 +575,8 @@ export function DeliveryNotePdf({
           <View style={styles.signCol}>
             <Text style={styles.signTitle}>Le client — reçu conforme</Text>
             <Text style={styles.signHint}>
-              Nom, date et signature.{'\n'}
-              Réserves éventuelles à indiquer ci-dessous (article L.133-3 du
-              Code de commerce : les réserves doivent être précises et motivées,
-              confirmées au transporteur sous 3 jours).
+              Nom, date et signature. Réserves précises et motivées à indiquer
+              ci-dessous, à confirmer sous 3 jours (art. L.133-3 C. com.).
             </Text>
           </View>
         </View>
