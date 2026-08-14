@@ -383,12 +383,8 @@ export function QuotePdf({
             <Text style={styles.partyTitle}>Émetteur</Text>
             <Text style={styles.partyName}>{LEGAL.nomCommercial}</Text>
             <Text style={styles.partyLine}>{LEGAL.raisonSociale} ({LEGAL.formeJuridique})</Text>
-            <Text style={styles.partyLine}>{LEGAL.siegeSocial.ligne1}</Text>
-            <Text style={styles.partyLine}>{LEGAL.siegeSocial.ligne2}</Text>
-            <Text style={styles.partyLine}>{LEGAL.siegeSocial.codePostal} {LEGAL.siegeSocial.ville}</Text>
-            <Text style={[styles.partyLine, { marginTop: 4, fontSize: 8 }]}>
-              Showroom : {LEGAL.showroom.ligne1}, {LEGAL.showroom.codePostal} {LEGAL.showroom.ville}
-            </Text>
+            <Text style={styles.partyLine}>{LEGAL.showroom.ligne1}</Text>
+            <Text style={styles.partyLine}>{LEGAL.showroom.codePostal} {LEGAL.showroom.ville}</Text>
             <Text style={[styles.partyLine, { marginTop: 6 }]}>{LEGAL.telephone}</Text>
             <Text style={styles.partyLine}>{LEGAL.email}</Text>
             <Text style={[styles.partyLine, { marginTop: 6, fontSize: 7.5 }]}>
@@ -533,7 +529,7 @@ export function QuotePdf({
         {/* Footer */}
         <Text style={styles.footer} fixed>
           {LEGAL.nomCommercial} — {LEGAL.raisonSociale} {LEGAL.formeJuridique} au capital de {LEGAL.capitalSocial} ·
-          Siège : {LEGAL.siegeSocial.ligne2}, {LEGAL.siegeSocial.codePostal} {LEGAL.siegeSocial.ville} ·
+          {LEGAL.showroom.ligne1}, {LEGAL.showroom.codePostal} {LEGAL.showroom.ville} ·
           SIREN {LEGAL.siren} · RCS {LEGAL.rcs} · TVA {LEGAL.tvaIntracom}{'\n'}
           Page <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
         </Text>
