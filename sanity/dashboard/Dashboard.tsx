@@ -707,6 +707,11 @@ export function Dashboard() {
                   href="https://mobiliermalin.com"
                 />
                 <ExternalLink
+                  icon="📕"
+                  label="Catalogue PDF"
+                  href="https://mobiliermalin.com/catalogue.pdf"
+                />
+                <ExternalLink
                   icon="📊"
                   label="Search Console"
                   href="https://search.google.com/search-console"
