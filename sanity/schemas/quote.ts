@@ -119,6 +119,20 @@ export const quote = {
       validation: (R: Rule) => R.required(),
     },
 
+    {
+      name: 'billingAddress',
+      title: 'Adresse de facturation (si différente de la livraison)',
+      type: 'object',
+      group: 'client',
+      description:
+        'À remplir uniquement quand la société est domiciliée ailleurs que le lieu de livraison. Vide = l\'adresse de livraison sert aussi de facturation.',
+      fields: [
+        { name: 'street', title: 'Rue', type: 'string' },
+        { name: 'postalCode', title: 'Code postal', type: 'string' },
+        { name: 'city', title: 'Ville', type: 'string' },
+      ],
+    },
+
     // ───── Produit unique (legacy — venant du formulaire client) ─────
     // Rétrocompatibilité : les anciens devis créés via /demander-devis
     // utilisent ce champ. Les devis créés manuellement depuis

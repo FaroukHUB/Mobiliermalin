@@ -27,6 +27,7 @@ type QuoteDoc = {
     floor?: string
     elevator?: 'yes' | 'no' | 'unknown'
   }
+  billingAddress?: { street?: string; postalCode?: string; city?: string }
   product?: {
     name?: string
     unitPrice?: number
@@ -83,7 +84,7 @@ export async function POST(
   const quote = await sanityClient.fetch<QuoteDoc | null>(
     `*[_type == "quote" && _id == $id][0] {
       _id, numero, status, validUntil, _createdAt,
-      customer, shippingAddress, product,
+      customer, shippingAddress, billingAddress, product,
       lineItems[]{ name, unitPrice, quantity },
       shippingFee, options, tvaRate, tvaExemptionText, depositPercent, pdfNotes
     }`,
@@ -151,6 +152,7 @@ export async function POST(
     validUntil,
     customer: quote.customer,
     shippingAddress: quote.shippingAddress,
+    billingAddress: quote.billingAddress,
     items,
     shippingFee: quote.shippingFee || 0,
     options: quote.options || [],

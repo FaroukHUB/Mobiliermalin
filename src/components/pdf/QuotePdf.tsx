@@ -34,6 +34,16 @@ export type QuotePdfInput = {
     elevator?: 'yes' | 'no' | 'unknown'
   }
   /**
+   * Adresse de facturation si différente de la livraison (société
+   * domiciliée ailleurs). Affichée dans le bloc Destinataire, la
+   * livraison passant alors dans un sous-bloc dédié.
+   */
+  billingAddress?: {
+    street?: string
+    postalCode?: string
+    city?: string
+  }
+  /**
    * Ligne produit unique (devis legacy issus du formulaire client).
    * Ignorée si `items` est fourni.
    */
@@ -320,6 +330,7 @@ export function QuotePdf({
   validUntil,
   customer,
   shippingAddress,
+  billingAddress,
   product,
   items,
   shippingFee,
@@ -349,6 +360,7 @@ export function QuotePdf({
   const totalTtc = subtotalHt + tvaAmount
 
   const hasAddress = !!(shippingAddress?.street || shippingAddress?.city)
+  const hasBilling = !!(billingAddress?.street || billingAddress?.city)
   const elevatorLabel =
     shippingAddress?.elevator === 'yes'
       ? 'Oui'
@@ -411,7 +423,18 @@ export function QuotePdf({
             {customer.company ? (
               <Text style={styles.partyLine}>{customer.company}</Text>
             ) : null}
-            {hasAddress ? (
+            {/* Adresse principale du bloc : facturation si renseignée,
+                sinon l'adresse de livraison joue les deux rôles. */}
+            {hasBilling ? (
+              <>
+                {billingAddress?.street ? (
+                  <Text style={styles.partyLine}>{billingAddress.street}</Text>
+                ) : null}
+                <Text style={styles.partyLine}>
+                  {[billingAddress?.postalCode, billingAddress?.city].filter(Boolean).join(' ')}
+                </Text>
+              </>
+            ) : hasAddress ? (
               <>
                 {shippingAddress?.street ? (
                   <Text style={styles.partyLine}>{shippingAddress.street}</Text>
@@ -419,13 +442,29 @@ export function QuotePdf({
                 <Text style={styles.partyLine}>
                   {[shippingAddress?.postalCode, shippingAddress?.city].filter(Boolean).join(' ')}
                 </Text>
-                {shippingAddress?.floor || (shippingAddress?.elevator && shippingAddress.elevator !== 'unknown') ? (
-                  <Text style={[styles.partyLine, { marginTop: 4, fontSize: 8 }]}>
-                    {shippingAddress?.floor ? `Étage : ${shippingAddress.floor} — ` : ''}
-                    Ascenseur : {elevatorLabel}
-                  </Text>
-                ) : null}
               </>
+            ) : null}
+            {/* Livraison en sous-bloc quand elle diffère de la facturation */}
+            {hasBilling && hasAddress ? (
+              <>
+                <Text style={[styles.partyTitle, { marginTop: 6, marginBottom: 2 }]}>
+                  Adresse de livraison
+                </Text>
+                {shippingAddress?.street ? (
+                  <Text style={styles.partyLine}>{shippingAddress.street}</Text>
+                ) : null}
+                <Text style={styles.partyLine}>
+                  {[shippingAddress?.postalCode, shippingAddress?.city].filter(Boolean).join(' ')}
+                </Text>
+              </>
+            ) : null}
+            {hasAddress &&
+            (shippingAddress?.floor ||
+              (shippingAddress?.elevator && shippingAddress.elevator !== 'unknown')) ? (
+              <Text style={[styles.partyLine, { marginTop: 4, fontSize: 8 }]}>
+                {shippingAddress?.floor ? `Étage : ${shippingAddress.floor} — ` : ''}
+                Ascenseur : {elevatorLabel}
+              </Text>
             ) : null}
             {customer.phone ? (
               <Text style={[styles.partyLine, { marginTop: 6 }]}>{customer.phone}</Text>
