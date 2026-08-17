@@ -633,6 +633,12 @@ export type SanitySiteSettings = {
   showroomImage?: SanityImage
   lldHeroImage?: SanityImage
   rseHeroImage?: SanityImage
+  // Popup promo (page d'accueil, une fois par visiteur)
+  promoPopupEnabled?: boolean
+  promoPopupImage?: SanityImage
+  promoPopupLink?: string
+  promoPopupButtonLabel?: string
+  promoPopupCampaignId?: string
 }
 
 /**
@@ -645,7 +651,9 @@ export async function getSiteSettings(): Promise<SanitySiteSettings> {
       siteName, logoOnLight, logoOnDark, favicon, ogImage,
       heroAutoplayEnabled, heroAutoplayDelay, heroStopOnHover,
       manifesteImage, lldSectionImage, showroomImage,
-      lldHeroImage, rseHeroImage
+      lldHeroImage, rseHeroImage,
+      promoPopupEnabled, promoPopupImage, promoPopupLink,
+      promoPopupButtonLabel, promoPopupCampaignId
     }`,
     {},
     null,

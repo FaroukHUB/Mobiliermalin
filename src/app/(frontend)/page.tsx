@@ -16,6 +16,7 @@ import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { BlogSection } from '@/components/sections/BlogSection'
 import { GuidesSection } from '@/components/sections/GuidesSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
+import { HomePromoPopup } from '@/components/promo/HomePromoPopup'
 import { SHOP_URL } from '@/lib/config'
 import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProducts, getExceptionProducts, urlFor, type SanityImage } from '@/lib/sanity'
 
@@ -181,6 +182,17 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* Popup promo (Réglages du site → 🎉 Popup promo) — home
+          uniquement, une fois par visiteur et par campagne */}
+      {settings.promoPopupEnabled && settings.promoPopupImage?.asset && (
+        <HomePromoPopup
+          imageUrl={urlFor(settings.promoPopupImage).width(900).url()}
+          imageAlt="Offre promotionnelle Mobilier Malin"
+          href={settings.promoPopupLink || '/boutique'}
+          buttonLabel={settings.promoPopupButtonLabel || 'Découvrir l\'offre'}
+          campaignId={settings.promoPopupCampaignId || 'promo'}
+        />
+      )}
       <HeroSlider
         slides={slides}
         autoplayEnabled={settings.heroAutoplayEnabled ?? true}

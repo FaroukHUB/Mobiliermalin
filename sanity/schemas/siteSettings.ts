@@ -10,8 +10,52 @@ export const siteSettings = {
     { name: 'sections', title: 'Images des sections' },
     { name: 'pagesHero', title: 'Hero des pages internes' },
     { name: 'navigation', title: 'Navigation (menu)' },
+    { name: 'promo', title: '🎉 Popup promo' },
   ],
   fields: [
+    // ─────────── Popup promo (page d'accueil) ───────────
+    {
+      name: 'promoPopupEnabled',
+      title: 'Activer le popup promo',
+      type: 'boolean',
+      group: 'promo',
+      initialValue: false,
+      description:
+        'Affiche l\'affiche en popup sur la page d\'accueil, UNE seule fois par visiteur. Décoche pour le retirer instantanément (fin de promo).',
+    },
+    {
+      name: 'promoPopupImage',
+      title: 'Affiche (image du popup)',
+      type: 'image',
+      group: 'promo',
+      options: { hotspot: false },
+      description: 'Le visuel complet (ex : affiche Pack spécial rentrée). Format portrait recommandé, JPG/PNG.',
+    },
+    {
+      name: 'promoPopupLink',
+      title: 'Lien du bouton',
+      type: 'string',
+      group: 'promo',
+      initialValue: '/produit/pack-special-rentree',
+      description:
+        'Où le bouton emmène le client. Ex : /produit/pack-special-rentree (crée d\'abord le produit avec ce slug), ou /boutique, /contact…',
+    },
+    {
+      name: 'promoPopupButtonLabel',
+      title: 'Texte du bouton',
+      type: 'string',
+      group: 'promo',
+      initialValue: '🎒 Commander le pack spécial rentrée',
+    },
+    {
+      name: 'promoPopupCampaignId',
+      title: 'Identifiant de campagne',
+      type: 'string',
+      group: 'promo',
+      initialValue: 'rentree-2026',
+      description:
+        'Clé technique du "une fois par visiteur". Change-la (ex : noel-2026) pour une NOUVELLE campagne : le popup se réaffichera même aux visiteurs qui avaient fermé l\'ancien.',
+    },
     // ─────────── Identité ───────────
     {
       name: 'siteName',
