@@ -89,6 +89,7 @@ export default function NouveauDevisPage() {
   // cohérente avec le reste (lignes produits en HT + options en HT).
   const [shippingFeeTTC, setShippingFeeTTC] = useState(0)
   const [tvaRate, setTvaRate] = useState(20)
+  const [depositPercent, setDepositPercent] = useState(0)
   const [validUntilDays, setValidUntilDays] = useState(30)
   const [pdfNotes, setPdfNotes] = useState('')
   const [internalNotes, setInternalNotes] = useState('')
@@ -209,6 +210,7 @@ export default function NouveauDevisPage() {
           shippingFee: shippingFeeHt,
           options: options.map((o) => ({ label: o.label, price: o.price })),
           tvaRate,
+          ...(depositPercent >= 1 && depositPercent <= 99 && { depositPercent }),
           validUntilDays,
           pdfNotes,
           internalNotes,
@@ -241,6 +243,7 @@ export default function NouveauDevisPage() {
     setLineItems([{ id: rid(), name: '', unitPrice: 0, quantity: 1 }])
     setOptions([])
     setShippingFeeTTC(0)
+    setDepositPercent(0)
     setPdfNotes('')
     setInternalNotes('')
     setResult(null)
@@ -591,6 +594,17 @@ export default function NouveauDevisPage() {
               style={inputStyle}
             />
           </Field>
+          <Field label="Acompte demandé (%) — vide = 100 %" flex={1}>
+            <input
+              type="number"
+              min={0}
+              max={99}
+              value={depositPercent || ''}
+              onChange={(e) => setDepositPercent(parseInt(e.target.value) || 0)}
+              style={inputStyle}
+              placeholder="Ex : 50 → le client ne règle que la moitié en ligne"
+            />
+          </Field>
         </Row>
         <Field label="Notes visibles sur le devis client (facultatif)">
           <textarea
@@ -662,6 +676,18 @@ export default function NouveauDevisPage() {
             <span style={{ fontFamily: 'Georgia, serif' }}>Total TTC</span>
             <strong style={{ textAlign: 'right' }}>{fmt(totalTtc)} €</strong>
           </span>
+          {depositPercent >= 1 && depositPercent <= 99 && (
+            <>
+              <span style={{ color: '#c8a25b' }}>Acompte en ligne ({depositPercent} %)</span>
+              <strong style={{ textAlign: 'right', color: '#c8a25b' }}>
+                {fmt(totalTtc * (depositPercent / 100))} €
+              </strong>
+              <span style={{ opacity: 0.7 }}>Solde à encaisser ensuite</span>
+              <strong style={{ textAlign: 'right', opacity: 0.7 }}>
+                {fmt(totalTtc * (1 - depositPercent / 100))} €
+              </strong>
+            </>
+          )}
         </div>
       </div>
 

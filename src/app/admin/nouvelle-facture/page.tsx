@@ -77,6 +77,7 @@ export default function NouvelleFacturePage() {
   ])
 
   const [tvaRate, setTvaRate] = useState(20)
+  const [depositPercent, setDepositPercent] = useState(0)
   const [pdfNotes, setPdfNotes] = useState('')
   const [internalNotes, setInternalNotes] = useState('')
 
@@ -207,6 +208,7 @@ export default function NouvelleFacturePage() {
           shippingFee: 0,
           options: [],
           tvaRate,
+          ...(depositPercent >= 1 && depositPercent <= 99 && { depositPercent }),
           pdfNotes,
           internalNotes,
         }),
@@ -234,6 +236,7 @@ export default function NouvelleFacturePage() {
     setDescription('')
     setAmountTTC(0)
     setLineItems([{ id: rid(), name: '', unitPrice: 0, quantity: 1 }])
+    setDepositPercent(0)
     setPdfNotes('')
     setInternalNotes('')
     setResult(null)
@@ -553,6 +556,17 @@ export default function NouvelleFacturePage() {
                 <option value={0}>0 % (exonéré)</option>
               </select>
             </Field>
+            <Field label="Acompte demandé (%) — vide = 100 %" flex={1}>
+              <input
+                type="number"
+                min={0}
+                max={99}
+                value={depositPercent || ''}
+                onChange={(e) => setDepositPercent(parseInt(e.target.value) || 0)}
+                style={inputStyle}
+                placeholder="Ex : 50 → le client ne règle que la moitié"
+              />
+            </Field>
           </Row>
         </div>
 
@@ -626,6 +640,18 @@ export default function NouvelleFacturePage() {
             <span style={{ fontFamily: 'Georgia, serif' }}>Total TTC</span>
             <strong style={{ textAlign: 'right' }}>{fmt(totalTtc)} €</strong>
           </span>
+          {depositPercent >= 1 && depositPercent <= 99 && (
+            <>
+              <span style={{ color: '#c8a25b' }}>Acompte en ligne ({depositPercent} %)</span>
+              <strong style={{ textAlign: 'right', color: '#c8a25b' }}>
+                {fmt(totalTtc * (depositPercent / 100))} €
+              </strong>
+              <span style={{ opacity: 0.7 }}>Solde à encaisser ensuite</span>
+              <strong style={{ textAlign: 'right', opacity: 0.7 }}>
+                {fmt(totalTtc * (1 - depositPercent / 100))} €
+              </strong>
+            </>
+          )}
         </div>
       </div>
 

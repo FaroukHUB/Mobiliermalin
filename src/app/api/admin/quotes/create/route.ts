@@ -70,6 +70,7 @@ type Payload = {
   }
   lineItems?: LineItemIn[]
   shippingFee?: number
+  depositPercent?: number
   options?: OptionIn[]
   tvaRate?: number
   validUntilDays?: number
@@ -225,6 +226,12 @@ export async function POST(req: Request) {
     }))
 
   const shippingFee = typeof body.shippingFee === 'number' ? body.shippingFee : 0
+  const depositPercent =
+    typeof body.depositPercent === 'number' &&
+    body.depositPercent >= 1 &&
+    body.depositPercent <= 99
+      ? body.depositPercent
+      : null
   const tvaRate = typeof body.tvaRate === 'number' ? body.tvaRate : 20
 
   const subtotalHt =
@@ -269,6 +276,7 @@ export async function POST(req: Request) {
     },
     lineItems: lineItemsClean,
     shippingFee,
+    ...(depositPercent && { depositPercent }),
     options: optionsClean,
     tvaRate,
     sentAt: now,
