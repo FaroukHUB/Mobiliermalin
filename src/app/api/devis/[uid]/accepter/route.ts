@@ -20,6 +20,7 @@ type QuoteDoc = {
   shippingFee?: number
   options?: { label: string; price: number }[]
   tvaRate?: number
+  depositPercent?: number
 }
 
 /**
@@ -49,7 +50,7 @@ export async function POST(
       _id, numero, status, validUntil,
       customer, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate
+      shippingFee, options, tvaRate, depositPercent
     }`,
     { id: uid },
   )
@@ -92,6 +93,19 @@ export async function POST(
     return NextResponse.json({ error: 'Montant du devis invalide' }, { status: 400 })
   }
 
+  // Acompte : si depositPercent est défini (1-99), le client ne règle
+  // en ligne que ce pourcentage du total. Le solde est encaissé plus
+  // tard selon les modalités convenues (hors Stripe).
+  const depositPercent =
+    typeof quote.depositPercent === 'number' &&
+    quote.depositPercent >= 1 &&
+    quote.depositPercent <= 99
+      ? quote.depositPercent
+      : null
+  const amountToCharge = depositPercent
+    ? Math.round((totalTtc * depositPercent) / 100)
+    : totalTtc
+
   // 4) Construire la session Stripe Checkout
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || `https://${_req.headers.get('host')}`
@@ -122,13 +136,17 @@ export async function POST(
       : ''
   stripeParams.append(
     'line_items[0][price_data][product_data][name]',
-    `Devis ${quote.numero} — ${firstItemName}${itemCount}`,
+    depositPercent
+      ? `Acompte ${depositPercent} % — Devis ${quote.numero} — ${firstItemName}${itemCount}`
+      : `Devis ${quote.numero} — ${firstItemName}${itemCount}`,
   )
   stripeParams.append(
     'line_items[0][price_data][product_data][description]',
-    `Mobilier + livraison + options (TTC incluant ${tvaRate}% TVA)`,
+    depositPercent
+      ? `Acompte de ${depositPercent} % sur un total de ${(totalTtc / 100).toFixed(2)} € TTC — solde à régler selon les modalités convenues`
+      : `Mobilier + livraison + options (TTC incluant ${tvaRate}% TVA)`,
   )
-  stripeParams.append('line_items[0][price_data][unit_amount]', String(totalTtc))
+  stripeParams.append('line_items[0][price_data][unit_amount]', String(amountToCharge))
   stripeParams.append('line_items[0][quantity]', '1')
 
   // Metadata : retrouvable dans Stripe Dashboard ET dans le webhook
@@ -136,9 +154,15 @@ export async function POST(
   stripeParams.append('metadata[quote_id]', quote._id)
   stripeParams.append('metadata[quote_numero]', quote.numero)
   stripeParams.append('metadata[customer_name]', quote.customer.name)
+  if (depositPercent) {
+    stripeParams.append('metadata[deposit_percent]', String(depositPercent))
+    stripeParams.append('metadata[total_ttc_cents]', String(totalTtc))
+  }
   stripeParams.append(
     'payment_intent_data[description]',
-    `Acceptation devis ${quote.numero}`,
+    depositPercent
+      ? `Acompte ${depositPercent} % — devis ${quote.numero}`
+      : `Acceptation devis ${quote.numero}`,
   )
 
   // ─── FACTURATION AUTOMATIQUE STRIPE ────────────────────────────

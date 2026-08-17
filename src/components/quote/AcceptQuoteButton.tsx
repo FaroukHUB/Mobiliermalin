@@ -9,6 +9,8 @@ interface AcceptQuoteButtonProps {
   totalTtc: number
   customerEmail: string
   documentType?: 'quote' | 'invoice'
+  /** Acompte en % (1-99) : le bouton affiche et prélève ce montant seulement. */
+  depositPercent?: number
 }
 
 export function AcceptQuoteButton({
@@ -17,14 +19,24 @@ export function AcceptQuoteButton({
   totalTtc,
   customerEmail,
   documentType = 'quote',
+  depositPercent,
 }: AcceptQuoteButtonProps) {
   const isInvoice = documentType === 'invoice'
-  const buttonLabel = isInvoice ? 'Payer maintenant' : 'Accepter et payer'
+  const hasDeposit =
+    typeof depositPercent === 'number' && depositPercent >= 1 && depositPercent <= 99
+  const amountToPay = hasDeposit
+    ? Math.round(totalTtc * (depositPercent / 100) * 100) / 100
+    : totalTtc
+  const buttonLabel = hasDeposit
+    ? `Accepter et régler l'acompte de ${depositPercent} % :`
+    : isInvoice
+      ? 'Payer maintenant'
+      : 'Accepter et payer'
   const docLabel = isInvoice ? 'Facture' : 'Devis'
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const totalStr = totalTtc.toLocaleString('fr-FR', {
+  const totalStr = amountToPay.toLocaleString('fr-FR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })

@@ -59,6 +59,12 @@ export type QuotePdfInput = {
    * vaut 0 (ex : régime de la marge art. 297 A, franchise 293 B…).
    */
   tvaExemptionText?: string
+  /**
+   * Acompte demandé en % (1-99). Si défini, un encadré affiche
+   * "Acompte à la commande : X € · Solde : Y €" sous les totaux et les
+   * modalités de paiement s'adaptent.
+   */
+  depositPercent?: number
   pdfNotes?: string
 }
 
@@ -320,11 +326,16 @@ export function QuotePdf({
   options,
   tvaRate,
   tvaExemptionText,
+  depositPercent,
   pdfNotes,
 }: QuotePdfInput) {
   const isInvoice = docKind === 'facture'
   const docLabel = isInvoice ? 'Facture' : 'Devis'
   const noTva = tvaRate === 0
+  const hasDeposit =
+    typeof depositPercent === 'number' &&
+    depositPercent >= 1 &&
+    depositPercent <= 99
   // Unifie lignes multiples (items) et ligne unique legacy (product)
   const lines =
     items && items.length > 0 ? items : product ? [product] : []
@@ -495,6 +506,32 @@ export function QuotePdf({
               {tvaExemptionText || 'TVA non applicable'}
             </Text>
           )}
+          {hasDeposit && (
+            <View
+              style={{
+                marginTop: 8,
+                padding: 10,
+                backgroundColor: COLORS.ivory,
+                borderLeftWidth: 2,
+                borderLeftColor: COLORS.gold,
+              }}
+            >
+              <View style={styles.totalRow}>
+                <Text style={[styles.totalLabel, { color: COLORS.goldDark }]}>
+                  Acompte à la commande ({depositPercent} %)
+                </Text>
+                <Text style={styles.totalValue}>
+                  {eur(Math.round(totalTtc * (depositPercent! / 100) * 100) / 100)}
+                </Text>
+              </View>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>Solde restant</Text>
+                <Text style={styles.totalValue}>
+                  {eur(totalTtc - Math.round(totalTtc * (depositPercent! / 100) * 100) / 100)}
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
 
         {/* Notes */}
@@ -519,7 +556,9 @@ export function QuotePdf({
           ) : (
             <Text style={styles.notesContent}>
               • Devis valable {Math.ceil((validUntil.getTime() - emittedAt.getTime()) / (1000 * 60 * 60 * 24))} jours à compter de la date d'émission.{'\n'}
-              • Paiement à l'acceptation par carte bancaire (Stripe) — règlement 100 % à la commande.{'\n'}
+              {hasDeposit
+                ? `• Paiement à l'acceptation par carte bancaire (Stripe) — acompte de ${depositPercent} % à la commande, solde selon les modalités convenues avec notre équipe.\n`
+                : `• Paiement à l'acceptation par carte bancaire (Stripe) — règlement 100 % à la commande.\n`}
               • Livraison sous 7 à 15 jours ouvrés à compter de la réception du paiement.{'\n'}
               • Acceptation : cliquez sur le lien reçu par email accompagnant ce devis.
             </Text>

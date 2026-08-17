@@ -36,6 +36,7 @@ type QuoteDoc = {
   options?: { label: string; price: number }[]
   tvaRate?: number
   tvaExemptionText?: string
+  depositPercent?: number
   pdfNotes?: string
 }
 
@@ -59,7 +60,7 @@ export default async function QuoteAcceptPage({
       _id, numero, status, documentType, validUntil, _createdAt,
       customer, shippingAddress, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate, tvaExemptionText, pdfNotes
+      shippingFee, options, tvaRate, tvaExemptionText, depositPercent, pdfNotes
     }`,
     { id: uid },
   )
@@ -87,6 +88,17 @@ export default async function QuoteAcceptPage({
   const subtotalHt = linesTotal + shippingFee + optionsTotal
   const tvaAmount = subtotalHt * (tvaRate / 100)
   const totalTtc = subtotalHt + tvaAmount
+
+  // Acompte : le client ne règle en ligne que ce pourcentage du total
+  const depositPercent =
+    typeof quote.depositPercent === 'number' &&
+    quote.depositPercent >= 1 &&
+    quote.depositPercent <= 99
+      ? quote.depositPercent
+      : null
+  const depositTtc = depositPercent
+    ? Math.round(totalTtc * (depositPercent / 100) * 100) / 100
+    : null
 
   const validUntil = quote.validUntil ? new Date(quote.validUntil) : null
   const isExpired = validUntil ? validUntil.getTime() < Date.now() : false
@@ -260,6 +272,22 @@ export default async function QuoteAcceptPage({
                 </td>
               </tr>
             )}
+            {depositTtc !== null && (
+              <>
+                <tr className="bg-ivory-dark/60">
+                  <td colSpan={3} className="px-6 py-2 text-right text-gold-dark font-medium">
+                    Acompte à régler aujourd&apos;hui ({depositPercent} %)
+                  </td>
+                  <td className="px-6 py-2 text-right text-ink font-medium">{eur(depositTtc)}</td>
+                </tr>
+                <tr>
+                  <td colSpan={3} className="px-6 py-2 text-right text-ink-mute">
+                    Solde restant (selon modalités convenues)
+                  </td>
+                  <td className="px-6 py-2 text-right text-ink">{eur(totalTtc - depositTtc)}</td>
+                </tr>
+              </>
+            )}
           </tfoot>
         </table>
       </div>
@@ -295,6 +323,7 @@ export default async function QuoteAcceptPage({
             totalTtc={totalTtc}
             customerEmail={quote.customer.email}
             documentType={quote.documentType}
+            depositPercent={depositPercent ?? undefined}
           />
           <p className="mt-4 text-center text-xs text-ink-mute leading-relaxed">
             Paiement sécurisé via Stripe. En cliquant, vous acceptez les CGV jointes

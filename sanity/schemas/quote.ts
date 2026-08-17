@@ -285,6 +285,16 @@ export const quote = {
         'Obligatoire sur une facture sans TVA. Exemples : "TVA non applicable — régime de la marge (art. 297 A du CGI)" pour les biens d\'occasion, "TVA non applicable, art. 293 B du CGI" pour la franchise en base. Vérifie la bonne mention avec ton comptable.',
     },
 
+    {
+      name: 'depositPercent',
+      title: 'Acompte demandé (%)',
+      type: 'number',
+      group: 'fees',
+      validation: (R: Rule) => R.min(1).max(99),
+      description:
+        'Laisser vide = paiement de 100 % à l\'acceptation. Renseigne par exemple 50 pour que le client ne règle que la moitié en ligne : le PDF affiche acompte + solde, et le bouton de paiement ne prélève que l\'acompte.',
+    },
+
     // ───── Bon de livraison ─────
     // Tous ces champs sont OPTIONNELS : le bon de livraison se génère
     // avec des valeurs par défaut sensées même si rien n'est rempli.

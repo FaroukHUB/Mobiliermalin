@@ -41,6 +41,7 @@ type QuoteDoc = {
   options?: { label: string; price: number }[]
   tvaRate?: number
   tvaExemptionText?: string
+  depositPercent?: number
   pdfNotes?: string
 }
 
@@ -84,7 +85,7 @@ export async function POST(
       _id, numero, status, validUntil, _createdAt,
       customer, shippingAddress, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate, tvaExemptionText, pdfNotes
+      shippingFee, options, tvaRate, tvaExemptionText, depositPercent, pdfNotes
     }`,
     { id: uid },
   )
@@ -155,6 +156,7 @@ export async function POST(
     options: quote.options || [],
     tvaRate: quote.tvaRate ?? 20,
     tvaExemptionText: quote.tvaExemptionText,
+    depositPercent: quote.depositPercent,
     pdfNotes: quote.pdfNotes,
   }
 
