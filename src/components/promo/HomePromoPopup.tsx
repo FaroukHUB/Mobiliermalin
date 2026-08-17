@@ -10,9 +10,8 @@ import { X } from 'lucide-react'
  *
  * Règles :
  *  - Affiché UNIQUEMENT là où le composant est monté (la home)
- *  - UNE seule fois par visiteur et par campagne : mémorisé en
- *    localStorage sous mm_promo_seen_<campaignId>. Changer
- *    l'identifiant de campagne dans Sanity réaffiche le popup.
+ *  - À CHAQUE affichage/rafraîchissement de la page d'accueil
+ *    (pas de mémorisation : demande explicite de l'admin)
  *  - Fermeture : croix, clic sur le fond, touche Échap, ou clic sur
  *    le bouton d'action (qui navigue vers la promo).
  */
@@ -30,30 +29,17 @@ export function HomePromoPopup({
   imageAlt,
   href,
   buttonLabel,
-  campaignId,
 }: HomePromoPopupProps) {
   const [open, setOpen] = useState(false)
-  const storageKey = `mm_promo_seen_${campaignId}`
 
   useEffect(() => {
-    try {
-      if (window.localStorage.getItem(storageKey)) return
-    } catch {
-      // localStorage indisponible (navigation privée stricte) : on
-      // affiche quand même, tant pis pour le "une fois".
-    }
     const t = setTimeout(() => setOpen(true), 900)
     return () => clearTimeout(t)
-  }, [storageKey])
+  }, [])
 
   const dismiss = useCallback(() => {
     setOpen(false)
-    try {
-      window.localStorage.setItem(storageKey, new Date().toISOString())
-    } catch {
-      // ignore
-    }
-  }, [storageKey])
+  }, [])
 
   useEffect(() => {
     if (!open) return

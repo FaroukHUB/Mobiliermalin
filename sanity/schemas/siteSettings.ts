@@ -21,7 +21,7 @@ export const siteSettings = {
       group: 'promo',
       initialValue: false,
       description:
-        'Affiche l\'affiche en popup sur la page d\'accueil, UNE seule fois par visiteur. Décoche pour le retirer instantanément (fin de promo).',
+        'Affiche l\'affiche en popup à chaque visite/rafraîchissement de la page d\'accueil. Décoche pour le retirer instantanément (fin de promo).',
     },
     {
       name: 'promoPopupImage',
@@ -54,7 +54,7 @@ export const siteSettings = {
       group: 'promo',
       initialValue: 'rentree-2026',
       description:
-        'Clé technique du "une fois par visiteur". Change-la (ex : noel-2026) pour une NOUVELLE campagne : le popup se réaffichera même aux visiteurs qui avaient fermé l\'ancien.',
+        'Clé technique de campagne (ex : rentree-2026, noel-2026). Non bloquante : le popup s\'affiche à chaque visite de la page d\'accueil.',
     },
     // ─────────── Identité ───────────
     {
