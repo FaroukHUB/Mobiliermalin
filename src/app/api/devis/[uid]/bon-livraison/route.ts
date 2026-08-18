@@ -17,6 +17,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
+import QRCode from 'qrcode'
 import { sanityClient } from '@/lib/sanity'
 import {
   DeliveryNotePdf,
@@ -120,6 +121,27 @@ export async function GET(
   // Numéro BL dérivé du numéro de devis/facture : DEV-2026-0012 → BL-2026-0012
   const numero = (quote.numero || 'BL').replace(/^(DEV|FAC)-/, 'BL-')
 
+  // QR itinéraire : lien Google Maps universel (iPhone + Android) vers
+  // l'adresse de livraison, généré localement (aucun service externe).
+  // Pas d'adresse (retrait showroom) → pas de QR.
+  let mapsQrDataUrl: string | undefined
+  const addr = quote.shippingAddress
+  if (addr?.street || addr?.city) {
+    const query = [addr?.street, addr?.postalCode, addr?.city]
+      .filter(Boolean)
+      .join(', ')
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
+    try {
+      mapsQrDataUrl = await QRCode.toDataURL(mapsUrl, {
+        width: 280,
+        margin: 1,
+        errorCorrectionLevel: 'M',
+      })
+    } catch (err) {
+      console.warn('[bon-livraison] QR generation failed (bon généré sans QR):', err)
+    }
+  }
+
   const input: DeliveryNotePdfInput = {
     numero,
     deliveryDate: quote.blDate ? new Date(quote.blDate) : new Date(),
@@ -137,6 +159,7 @@ export async function GET(
     shippingFee: quote.shippingFee ?? 0,
     tvaRate: quote.tvaRate ?? 20,
     tvaExemptionText: quote.tvaExemptionText,
+    mapsQrDataUrl,
     showPrices: quote.blShowPrices === true,
     carrier: quote.blCarrier,
     notes: quote.blNotes,

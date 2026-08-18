@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer'
 import { LEGAL } from '@/lib/legal'
 
 /**
@@ -42,6 +42,12 @@ export type DeliveryNotePdfInput = {
   notes?: string
   /** Mention légale affichée quand tvaRate vaut 0 (hors TVA). */
   tvaExemptionText?: string
+  /**
+   * QR code (data URL PNG) contenant le lien Google Maps de l'adresse
+   * de livraison : le livreur scanne, l'itinéraire s'ouvre. Généré
+   * côté route uniquement si une adresse est présente.
+   */
+  mapsQrDataUrl?: string
   /**
    * Bloc "Règlement" (optionnel) : si paymentStatus est défini, un
    * encadré affiche le montant TTC + statut + mode de paiement.
@@ -350,6 +356,7 @@ export function DeliveryNotePdf({
   carrier,
   notes,
   tvaExemptionText,
+  mapsQrDataUrl,
   paymentStatus,
   paymentMethod,
   amountDue,
@@ -413,32 +420,57 @@ export function DeliveryNotePdf({
             <Text style={styles.partyLine}>{LEGAL.email}</Text>
           </View>
           <View style={styles.partyCol}>
-            <Text style={styles.partyTitle}>Livré à</Text>
-            <Text style={styles.partyName}>{customer.name}</Text>
-            {customer.company ? (
-              <Text style={styles.partyLine}>{customer.company}</Text>
-            ) : null}
-            {hasAddress ? (
-              <>
-                {shippingAddress?.street ? (
-                  <Text style={styles.partyLine}>{shippingAddress.street}</Text>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.partyTitle}>Livré à</Text>
+                <Text style={styles.partyName}>{customer.name}</Text>
+                {customer.company ? (
+                  <Text style={styles.partyLine}>{customer.company}</Text>
                 ) : null}
-                <Text style={styles.partyLine}>
-                  {[shippingAddress?.postalCode, shippingAddress?.city].filter(Boolean).join(' ')}
-                </Text>
-                {shippingAddress?.floor || (shippingAddress?.elevator && shippingAddress.elevator !== 'unknown') ? (
-                  <Text style={[styles.partyLine, { marginTop: 4, fontSize: 8 }]}>
-                    {shippingAddress?.floor ? `Étage : ${shippingAddress.floor} — ` : ''}
-                    Ascenseur : {elevatorLabel}
+                {hasAddress ? (
+                  <>
+                    {shippingAddress?.street ? (
+                      <Text style={styles.partyLine}>{shippingAddress.street}</Text>
+                    ) : null}
+                    <Text style={styles.partyLine}>
+                      {[shippingAddress?.postalCode, shippingAddress?.city].filter(Boolean).join(' ')}
+                    </Text>
+                    {shippingAddress?.floor || (shippingAddress?.elevator && shippingAddress.elevator !== 'unknown') ? (
+                      <Text style={[styles.partyLine, { marginTop: 4, fontSize: 8 }]}>
+                        {shippingAddress?.floor ? `Étage : ${shippingAddress.floor} — ` : ''}
+                        Ascenseur : {elevatorLabel}
+                      </Text>
+                    ) : null}
+                  </>
+                ) : (
+                  <Text style={styles.partyLine}>Retrait au showroom / adresse non précisée</Text>
+                )}
+                {customer.phone ? (
+                  <Text style={[styles.partyLine, { marginTop: 6 }]}>{customer.phone}</Text>
+                ) : null}
+              </View>
+              {/* QR itinéraire : scan → Google Maps sur l'adresse */}
+              {mapsQrDataUrl ? (
+                <View style={{ alignItems: 'center', width: 74 }}>
+                  {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                  <Image
+                    src={mapsQrDataUrl}
+                    style={{ width: 70, height: 70, backgroundColor: '#fff' }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 6,
+                      color: COLORS.inkMute,
+                      textAlign: 'center',
+                      marginTop: 3,
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    Scanner :{'\n'}itinéraire Maps
                   </Text>
-                ) : null}
-              </>
-            ) : (
-              <Text style={styles.partyLine}>Retrait au showroom / adresse non précisée</Text>
-            )}
-            {customer.phone ? (
-              <Text style={[styles.partyLine, { marginTop: 6 }]}>{customer.phone}</Text>
-            ) : null}
+                </View>
+              ) : null}
+            </View>
           </View>
         </View>
 
