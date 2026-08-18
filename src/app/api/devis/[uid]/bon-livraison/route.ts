@@ -121,18 +121,19 @@ export async function GET(
   // Numéro BL dérivé du numéro de devis/facture : DEV-2026-0012 → BL-2026-0012
   const numero = (quote.numero || 'BL').replace(/^(DEV|FAC)-/, 'BL-')
 
-  // QR itinéraire : lien Google Maps universel (iPhone + Android) vers
-  // l'adresse de livraison, généré localement (aucun service externe).
-  // Pas d'adresse (retrait showroom) → pas de QR.
+  // QR itinéraire : ouvre la page /itineraire du site, qui propose au
+  // livreur d'ouvrir l'adresse dans Google Maps OU Waze. Généré
+  // localement (aucun service externe). Pas d'adresse → pas de QR.
   let mapsQrDataUrl: string | undefined
   const addr = quote.shippingAddress
   if (addr?.street || addr?.city) {
     const query = [addr?.street, addr?.postalCode, addr?.city]
       .filter(Boolean)
       .join(', ')
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
+    const itineraireUrl = `${siteUrl}/itineraire?q=${encodeURIComponent(query)}`
     try {
-      mapsQrDataUrl = await QRCode.toDataURL(mapsUrl, {
+      mapsQrDataUrl = await QRCode.toDataURL(itineraireUrl, {
         width: 280,
         margin: 1,
         errorCorrectionLevel: 'M',

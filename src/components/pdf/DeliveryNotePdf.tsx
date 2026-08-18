@@ -466,7 +466,7 @@ export function DeliveryNotePdf({
                       lineHeight: 1.3,
                     }}
                   >
-                    Scanner :{'\n'}itinéraire Maps
+                    Scanner :{'\n'}itinéraire{'\n'}Maps / Waze
                   </Text>
                 </View>
               ) : null}
