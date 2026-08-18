@@ -1,5 +1,10 @@
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer'
 import { LEGAL } from '@/lib/legal'
+
+// Encart avis Google sur les FACTURES — mêmes constantes que la
+// facture de commande (OrderInvoicePdf) pour un rendu identique.
+const GOOGLE_REVIEW_URL = 'https://g.page/r/CUtST0PM2AI0EBM/review'
+const REVIEW_QR_IMAGE_URL = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=8&data=${encodeURIComponent(GOOGLE_REVIEW_URL)}`
 
 // ───────── Types ─────────
 
@@ -255,6 +260,48 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: COLORS.inkSoft,
     lineHeight: 1.5,
+  },
+  // Encart avis Google (factures uniquement)
+  reviewBox: {
+    marginTop: 12,
+    padding: 14,
+    backgroundColor: COLORS.ink,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  reviewQr: {
+    width: 90,
+    height: 90,
+    backgroundColor: '#fff',
+    padding: 4,
+  },
+  reviewText: {
+    flex: 1,
+  },
+  reviewTitle: {
+    fontSize: 8,
+    color: COLORS.gold,
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginBottom: 3,
+  },
+  reviewHeading: {
+    fontSize: 12,
+    fontFamily: 'Times-Roman',
+    color: COLORS.ivory,
+    marginBottom: 5,
+  },
+  reviewBody: {
+    fontSize: 8.5,
+    color: COLORS.ivory,
+    opacity: 0.85,
+    lineHeight: 1.5,
+  },
+  reviewLink: {
+    fontSize: 7.5,
+    color: COLORS.gold,
+    marginTop: 4,
   },
   // Footer
   footer: {
@@ -603,6 +650,27 @@ export function QuotePdf({
             </Text>
           )}
         </View>
+
+        {/* Encart avis Google — factures uniquement, comme sur la
+            facture de commande Stripe */}
+        {isInvoice ? (
+          <View style={styles.reviewBox} wrap={false}>
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            <Image src={REVIEW_QR_IMAGE_URL} style={styles.reviewQr} />
+            <View style={styles.reviewText}>
+              <Text style={styles.reviewTitle}>Merci pour votre confiance</Text>
+              <Text style={styles.reviewHeading}>
+                Partagez votre expérience sur Google
+              </Text>
+              <Text style={styles.reviewBody}>
+                Votre retour nous permet d&apos;améliorer notre service et
+                guide les futurs clients dans leur choix. Scannez le QR code
+                avec votre téléphone pour accéder directement à notre page.
+              </Text>
+              <Text style={styles.reviewLink}>{GOOGLE_REVIEW_URL}</Text>
+            </View>
+          </View>
+        ) : null}
 
         {/* Footer */}
         <Text style={styles.footer} fixed>
