@@ -18,7 +18,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
 import QRCode from 'qrcode'
-import { sanityClient } from '@/lib/sanity'
+import { sanityClient, getSiteSettings, urlFor } from '@/lib/sanity'
 import {
   DeliveryNotePdf,
   type DeliveryNotePdfInput,
@@ -143,8 +143,21 @@ export async function GET(
     }
   }
 
+  // Logo du bandeau d'en-tête : version "fond sombre" des Réglages
+  // du site. Absent → le bandeau reste en texte seul.
+  let logoUrl: string | undefined
+  try {
+    const settings = await getSiteSettings()
+    if (settings.logoOnDark?.asset) {
+      logoUrl = urlFor(settings.logoOnDark).height(160).format('png').url()
+    }
+  } catch (err) {
+    console.warn('[bon-livraison] logo introuvable, document généré sans logo:', err)
+  }
+
   const input: DeliveryNotePdfInput = {
     numero,
+    logoUrl,
     deliveryDate: quote.blDate ? new Date(quote.blDate) : new Date(),
     customer: {
       name: quote.customer.name,

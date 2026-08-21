@@ -12,7 +12,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
-import { sanityClient } from '@/lib/sanity'
+import { sanityClient, getSiteSettings, urlFor } from '@/lib/sanity'
 import { OrderInvoicePdf, type OrderInvoicePdfInput } from '@/components/pdf/OrderInvoicePdf'
 import { LEGAL } from '@/lib/legal'
 
@@ -118,7 +118,20 @@ export async function GET(
           },
         ]
 
+  // Logo du bandeau d'en-tête : version "fond sombre" des Réglages
+  // du site. Absent → le bandeau reste en texte seul.
+  let logoUrl: string | undefined
+  try {
+    const settings = await getSiteSettings()
+    if (settings.logoOnDark?.asset) {
+      logoUrl = urlFor(settings.logoOnDark).height(160).format('png').url()
+    }
+  } catch (err) {
+    console.warn('[facture] logo introuvable, document généré sans logo:', err)
+  }
+
   const pdfInput: OrderInvoicePdfInput = {
+    logoUrl,
     numero: factureNumero,
     emittedAt,
     paidAt,

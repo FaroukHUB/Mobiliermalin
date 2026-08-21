@@ -80,6 +80,8 @@ export type QuotePdfInput = {
    * modalités de paiement s'adaptent.
    */
   depositPercent?: number
+  /** Logo (URL PNG) affiché dans le bandeau d'en-tête. */
+  logoUrl?: string
   pdfNotes?: string
 }
 
@@ -110,6 +112,16 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 24,
   },
+  headerBarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  headerLogo: {
+    height: 42,
+    width: 42,
+    objectFit: 'contain',
+  },
   brandName: {
     fontSize: 18,
     color: COLORS.ivory,
@@ -118,7 +130,9 @@ const styles = StyleSheet.create({
   },
   brandTagline: {
     fontSize: 8,
-    color: COLORS.gold,
+    // Blanc et non doré : les imprimantes N&B ne rendent pas la
+    // couleur sur aplat noir (le texte devient illisible).
+    color: '#FFFFFF',
     letterSpacing: 2,
     textTransform: 'uppercase',
     marginTop: 2,
@@ -231,7 +245,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   ttcLabel: {
-    color: COLORS.gold,
+    color: '#FFFFFF',
     fontSize: 9,
     textTransform: 'uppercase',
     letterSpacing: 1.5,
@@ -281,7 +295,7 @@ const styles = StyleSheet.create({
   },
   reviewTitle: {
     fontSize: 8,
-    color: COLORS.gold,
+    color: '#FFFFFF',
     textTransform: 'uppercase',
     letterSpacing: 1.5,
     marginBottom: 3,
@@ -300,7 +314,7 @@ const styles = StyleSheet.create({
   },
   reviewLink: {
     fontSize: 7.5,
-    color: COLORS.gold,
+    color: '#FFFFFF',
     marginTop: 4,
   },
   // Footer
@@ -385,6 +399,7 @@ export function QuotePdf({
   tvaRate,
   tvaExemptionText,
   depositPercent,
+  logoUrl,
   pdfNotes,
 }: QuotePdfInput) {
   const isInvoice = docKind === 'facture'
@@ -424,9 +439,15 @@ export function QuotePdf({
       {/* ═══════════ PAGE 1 : Devis ═══════════ */}
       <Page size="A4" style={styles.page}>
         {/* Header marque */}
-        <View style={styles.headerBar}>
-          <Text style={styles.brandTagline}>Mobilier Malin · SARL 2 M</Text>
-          <Text style={styles.brandName}>Mobilier de bureau reconditionné</Text>
+        <View style={[styles.headerBar, styles.headerBarRow]}>
+          {logoUrl ? (
+            // eslint-disable-next-line jsx-a11y/alt-text
+            <Image src={logoUrl} style={styles.headerLogo} />
+          ) : null}
+          <View style={{ flex: 1 }}>
+            <Text style={styles.brandTagline}>Mobilier Malin · SARL 2 M</Text>
+            <Text style={styles.brandName}>Mobilier de bureau reconditionné</Text>
+          </View>
         </View>
 
         {/* En-tête devis */}

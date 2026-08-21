@@ -34,6 +34,8 @@ export type OrderInvoicePdfInput = {
   tvaRate: number // ex: 20
   paymentMethod?: string // "Carte bancaire (Stripe)"
   paidAt: Date
+  /** Logo (URL PNG) affiché dans le bandeau d'en-tête. */
+  logoUrl?: string
 }
 
 // ───────── Styles ─────────
@@ -59,6 +61,16 @@ const styles = StyleSheet.create({
   },
   headerBar: {
     marginBottom: 24,
+  },
+  headerBarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerLogo: {
+    height: 40,
+    width: 40,
+    objectFit: 'contain',
   },
   brandTagline: {
     fontSize: 8,
@@ -246,7 +258,9 @@ const styles = StyleSheet.create({
   },
   reviewTitle: {
     fontSize: 8,
-    color: COLORS.gold,
+    // Blanc et non doré : les imprimantes N&B ne rendent pas la
+    // couleur sur aplat noir (le texte devient illisible).
+    color: '#FFFFFF',
     textTransform: 'uppercase',
     letterSpacing: 1.5,
     marginBottom: 3,
@@ -265,7 +279,7 @@ const styles = StyleSheet.create({
   },
   reviewLink: {
     fontSize: 7.5,
-    color: COLORS.gold,
+    color: '#FFFFFF',
     marginTop: 4,
   },
   // Footer
@@ -323,6 +337,7 @@ export function OrderInvoicePdf({
   tvaRate,
   paymentMethod,
   paidAt,
+  logoUrl,
 }: OrderInvoicePdfInput) {
   // Stripe stocke en TTC → on décompose pour l'affichage HT/TVA
   const totalHt = Math.round(amountTotalCents / (1 + tvaRate / 100))
@@ -338,13 +353,19 @@ export function OrderInvoicePdf({
     >
       <Page size="A4" style={styles.page}>
         {/* Marque */}
-        <View style={styles.headerBar}>
-          <Text style={styles.brandTagline}>
-            Mobilier Malin · {LEGAL.raisonSociale}
-          </Text>
-          <Text style={styles.brandName}>
-            Mobilier de bureau reconditionné
-          </Text>
+        <View style={[styles.headerBar, styles.headerBarRow]}>
+          {logoUrl ? (
+            // eslint-disable-next-line jsx-a11y/alt-text
+            <Image src={logoUrl} style={styles.headerLogo} />
+          ) : null}
+          <View style={{ flex: 1 }}>
+            <Text style={styles.brandTagline}>
+              Mobilier Malin · {LEGAL.raisonSociale}
+            </Text>
+            <Text style={styles.brandName}>
+              Mobilier de bureau reconditionné
+            </Text>
+          </View>
         </View>
 
         {/* En-tête facture */}

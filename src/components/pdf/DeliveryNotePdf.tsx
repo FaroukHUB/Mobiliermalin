@@ -42,6 +42,8 @@ export type DeliveryNotePdfInput = {
   notes?: string
   /** Mention légale affichée quand tvaRate vaut 0 (hors TVA). */
   tvaExemptionText?: string
+  /** Logo (URL PNG) affiché dans le bandeau d'en-tête. */
+  logoUrl?: string
   /**
    * QR code (data URL PNG) contenant le lien Google Maps de l'adresse
    * de livraison : le livreur scanne, l'itinéraire s'ouvre. Généré
@@ -82,6 +84,16 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 14,
   },
+  headerBarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerLogo: {
+    height: 36,
+    width: 36,
+    objectFit: 'contain',
+  },
   brandName: {
     fontSize: 18,
     color: COLORS.ivory,
@@ -90,7 +102,9 @@ const styles = StyleSheet.create({
   },
   brandTagline: {
     fontSize: 8,
-    color: COLORS.gold,
+    // Blanc et non doré : les imprimantes N&B ne rendent pas la
+    // couleur sur aplat noir (le texte devient illisible).
+    color: '#FFFFFF',
     letterSpacing: 2,
     textTransform: 'uppercase',
     marginTop: 2,
@@ -205,7 +219,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   ttcLabel: {
-    color: COLORS.gold,
+    color: '#FFFFFF',
     fontSize: 9,
     textTransform: 'uppercase',
     letterSpacing: 1.5,
@@ -356,6 +370,7 @@ export function DeliveryNotePdf({
   carrier,
   notes,
   tvaExemptionText,
+  logoUrl,
   mapsQrDataUrl,
   paymentStatus,
   paymentMethod,
@@ -385,9 +400,15 @@ export function DeliveryNotePdf({
     >
       <Page size="A4" style={styles.page}>
         {/* Header marque */}
-        <View style={styles.headerBar}>
-          <Text style={styles.brandTagline}>Mobilier Malin · SARL 2 M</Text>
-          <Text style={styles.brandName}>Mobilier de bureau reconditionné</Text>
+        <View style={[styles.headerBar, styles.headerBarRow]}>
+          {logoUrl ? (
+            // eslint-disable-next-line jsx-a11y/alt-text
+            <Image src={logoUrl} style={styles.headerLogo} />
+          ) : null}
+          <View style={{ flex: 1 }}>
+            <Text style={styles.brandTagline}>Mobilier Malin · SARL 2 M</Text>
+            <Text style={styles.brandName}>Mobilier de bureau reconditionné</Text>
+          </View>
         </View>
 
         {/* En-tête document */}
