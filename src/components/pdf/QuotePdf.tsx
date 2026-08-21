@@ -702,7 +702,10 @@ export function QuotePdf({
         </Text>
       </Page>
 
-      {/* ═══════════ PAGE 2 : CGV ═══════════ */}
+      {/* ═══════════ PAGE 2 : CGV — devis uniquement ═══════════
+          Une facture doit tenir sur une seule page : on n'y annexe
+          pas les CGV (le client les a déjà acceptées avec le devis). */}
+      {isInvoice ? null : (
       <Page size="A4" style={styles.page}>
         <View style={styles.headerBar}>
           <Text style={styles.brandTagline}>{docLabel} {numero}</Text>
@@ -820,6 +823,7 @@ export function QuotePdf({
           Page <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
         </Text>
       </Page>
+      )}
     </Document>
   )
 }
