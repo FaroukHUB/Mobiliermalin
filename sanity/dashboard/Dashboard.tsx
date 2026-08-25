@@ -57,6 +57,29 @@ type Counts = {
   contactsUnhandled: number
 }
 
+/** Commande Stripe : montant déjà TTC, en centimes. */
+type RevenueOrder = {
+  _id: string
+  placedAt?: string
+  _createdAt: string
+  amountTotalCents?: number
+  status?: string
+}
+
+/** Devis : montants stockés HT, TVA à appliquer pour obtenir le TTC. */
+type RevenueQuote = {
+  _id: string
+  status?: string
+  acceptedAt?: string
+  sentAt?: string
+  _createdAt: string
+  lineItems?: Array<{ unitPrice?: number; quantity?: number }>
+  product?: { unitPrice?: number; quantity?: number }
+  shippingFee?: number
+  options?: Array<{ price?: number }>
+  tvaRate?: number
+}
+
 type RecentDoc = {
   _id: string
   _type: string
@@ -92,6 +115,22 @@ const COUNTS_QUERY = `{
 const RECENT_CONTACTS_QUERY = `*[_type == "contactMessage"] | order(receivedAt desc)[0...5] {
   _id, _type, _updatedAt, name,
   "status": select(handled == true => "handledContact", "pendingContact")
+}`
+
+// ─── Chiffre d'affaires ──────────────────────────────────────
+// Deux sources : les commandes Stripe (montant TTC en centimes) et les
+// devis acceptés + payés (montants HT, TVA à appliquer). Les totaux
+// sont calculés en JS pour rester lisibles et éviter les limites
+// arithmétiques de GROQ.
+const REVENUE_ORDERS_QUERY = `*[_type == "order" && status != "refunded"] {
+  _id, placedAt, _createdAt, amountTotalCents, status
+}`
+
+const REVENUE_QUOTES_QUERY = `*[_type == "quote"] {
+  _id, status, acceptedAt, sentAt, _createdAt,
+  lineItems[]{ unitPrice, quantity },
+  product{ unitPrice, quantity },
+  shippingFee, options[]{ price }, tvaRate
 }`
 
 const RECENT_ORDERS_QUERY = `*[_type == "order"] | order(placedAt desc)[0...5] {
@@ -139,6 +178,72 @@ const SEO_TIPS: { title: string; body: string }[] = [
   },
 ]
 
+// ─── Calculs financiers ────────────────────────────────────────
+
+/** Total TTC d'un devis : lignes + livraison + options, TVA appliquée. */
+function quoteTotalTtc(q: RevenueQuote): number {
+  const lines =
+    Array.isArray(q.lineItems) && q.lineItems.length > 0
+      ? q.lineItems.reduce(
+          (s, li) => s + (li?.unitPrice ?? 0) * (li?.quantity ?? 1),
+          0,
+        )
+      : (q.product?.unitPrice ?? 0) * (q.product?.quantity ?? 1)
+  const options = (q.options || []).reduce((s, o) => s + (o?.price ?? 0), 0)
+  const ht = lines + (q.shippingFee ?? 0) + options
+  return ht * (1 + (q.tvaRate ?? 20) / 100)
+}
+
+/** Date qui fait foi pour rattacher un encaissement à une période. */
+function orderDate(o: RevenueOrder): Date {
+  return new Date(o.placedAt || o._createdAt)
+}
+function quoteDate(q: RevenueQuote): Date {
+  return new Date(q.acceptedAt || q._createdAt)
+}
+
+type Revenue = {
+  ordersTtc: number
+  quotesTtc: number
+  total: number
+  count: number
+}
+
+function emptyRevenue(): Revenue {
+  return { ordersTtc: 0, quotesTtc: 0, total: 0, count: 0 }
+}
+
+/** Agrège le CA encaissé sur une période (since = null → depuis toujours). */
+function computeRevenue(
+  orders: RevenueOrder[],
+  quotes: RevenueQuote[],
+  since: Date | null,
+): Revenue {
+  const r = emptyRevenue()
+  for (const o of orders) {
+    if (since && orderDate(o) < since) continue
+    r.ordersTtc += (o.amountTotalCents ?? 0) / 100
+    r.count++
+  }
+  for (const q of quotes) {
+    if (q.status !== 'accepted') continue
+    if (since && quoteDate(q) < since) continue
+    r.quotesTtc += quoteTotalTtc(q)
+    r.count++
+  }
+  r.total = r.ordersTtc + r.quotesTtc
+  return r
+}
+
+function eur(v: number): string {
+  return (
+    v.toLocaleString('fr-FR', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }) + ' €'
+  )
+}
+
 // ─── Formatage ─────────────────────────────────────────────────
 function formatRelativeDate(iso: string): string {
   const d = new Date(iso)
@@ -171,6 +276,50 @@ const STATUS_BADGES: Record<string, { tone: 'primary' | 'positive' | 'caution' |
 }
 
 // ─── Sous-composants ───────────────────────────────────────────
+
+/** Carte de chiffre d'affaires avec la répartition site / devis. */
+function RevenueCard({
+  label,
+  value,
+  ordersTtc,
+  quotesTtc,
+  count,
+  highlight = false,
+}: {
+  label: string
+  value: number
+  ordersTtc: number
+  quotesTtc: number
+  count: number
+  highlight?: boolean
+}) {
+  return (
+    <Card
+      padding={4}
+      radius={2}
+      shadow={1}
+      style={{ borderTop: `3px solid ${highlight ? '#2b915d' : '#c8a25b'}` }}
+    >
+      <Stack space={3}>
+        <Text size={1} weight="medium" muted>
+          {label}
+        </Text>
+        <Heading size={4} style={{ lineHeight: 1 }}>
+          {eur(value)}
+        </Heading>
+        <Text size={0} muted>
+          {count} vente{count > 1 ? 's' : ''}
+          {value > 0 && (
+            <>
+              {' · '}
+              {eur(ordersTtc)} site · {eur(quotesTtc)} devis
+            </>
+          )}
+        </Text>
+      </Stack>
+    </Card>
+  )
+}
 
 function KpiCard({
   icon,
@@ -315,6 +464,8 @@ export function Dashboard() {
   const [recentProducts, setRecentProducts] = useState<RecentDoc[]>([])
   const [recentBlog, setRecentBlog] = useState<RecentDoc[]>([])
   const [recentContacts, setRecentContacts] = useState<RecentDoc[]>([])
+  const [revOrders, setRevOrders] = useState<RevenueOrder[]>([])
+  const [revQuotes, setRevQuotes] = useState<RevenueQuote[]>([])
   const [tipIndex, setTipIndex] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -327,14 +478,18 @@ export function Dashboard() {
       client.fetch<RecentDoc[]>(RECENT_PRODUCTS_QUERY),
       client.fetch<RecentDoc[]>(RECENT_BLOG_QUERY),
       client.fetch<RecentDoc[]>(RECENT_CONTACTS_QUERY),
+      client.fetch<RevenueOrder[]>(REVENUE_ORDERS_QUERY),
+      client.fetch<RevenueQuote[]>(REVENUE_QUOTES_QUERY),
     ])
-      .then(([c, orders, products, blog, contacts]) => {
+      .then(([c, orders, products, blog, contacts, revO, revQ]) => {
         if (cancelled) return
         setCounts(c)
         setRecentOrders(orders)
         setRecentProducts(products)
         setRecentBlog(blog)
         setRecentContacts(contacts)
+        setRevOrders(revO)
+        setRevQuotes(revQ)
       })
       .catch((err) => console.warn('[dashboard] fetch error', err))
       .finally(() => {
@@ -360,6 +515,28 @@ export function Dashboard() {
     router.navigateIntent('create', { type })
   }
 
+  // ── Chiffre d'affaires encaissé ──
+  const now = new Date()
+  const since30 = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+  const startOfYear = new Date(now.getFullYear(), 0, 1)
+  const rev30 = computeRevenue(revOrders, revQuotes, since30)
+  const revYear = computeRevenue(revOrders, revQuotes, startOfYear)
+  const revAll = computeRevenue(revOrders, revQuotes, null)
+  const avgBasket = revAll.count > 0 ? revAll.total / revAll.count : 0
+
+  // Pipeline : devis envoyés en attente de réponse du client
+  const pendingQuotes = revQuotes.filter(
+    (q) => q.status === 'sent' || q.status === 'pending' || q.status === 'draft',
+  )
+  const pipelineTtc = pendingQuotes.reduce((s, q) => s + quoteTotalTtc(q), 0)
+
+  // Taux d'acceptation : accepté / (accepté + refusé + expiré)
+  const accepted = revQuotes.filter((q) => q.status === 'accepted').length
+  const closed = revQuotes.filter((q) =>
+    ['accepted', 'refused', 'expired'].includes(q.status || ''),
+  ).length
+  const acceptRate = closed > 0 ? Math.round((accepted / closed) * 100) : null
+
   const tip = SEO_TIPS[tipIndex]
 
   return (
@@ -380,6 +557,94 @@ export function Dashboard() {
           </Flex>
         ) : (
           <>
+            {/* ─── CHIFFRE D'AFFAIRES ─── */}
+            <Box>
+              <Heading size={2} style={{ marginBottom: 4 }}>
+                Chiffre d&apos;affaires encaissé
+              </Heading>
+              <Text size={1} muted style={{ marginBottom: 12, display: 'block' }}>
+                Commandes payées sur le site + devis acceptés et réglés. Montants TTC,
+                remboursements exclus.
+              </Text>
+              <Grid columns={[1, 2, 4]} gap={3}>
+                <RevenueCard
+                  label="30 derniers jours"
+                  value={rev30.total}
+                  ordersTtc={rev30.ordersTtc}
+                  quotesTtc={rev30.quotesTtc}
+                  count={rev30.count}
+                  highlight
+                />
+                <RevenueCard
+                  label={`Année ${now.getFullYear()}`}
+                  value={revYear.total}
+                  ordersTtc={revYear.ordersTtc}
+                  quotesTtc={revYear.quotesTtc}
+                  count={revYear.count}
+                />
+                <RevenueCard
+                  label="Depuis le lancement"
+                  value={revAll.total}
+                  ordersTtc={revAll.ordersTtc}
+                  quotesTtc={revAll.quotesTtc}
+                  count={revAll.count}
+                />
+                <Card padding={4} radius={2} shadow={1} style={{ borderTop: '3px solid #6b6b6b' }}>
+                  <Stack space={3}>
+                    <Text size={1} weight="medium" muted>
+                      💶 Panier moyen
+                    </Text>
+                    <Heading size={3} style={{ lineHeight: 1 }}>
+                      {eur(avgBasket)}
+                    </Heading>
+                    <Text size={0} muted>
+                      Sur {revAll.count} vente{revAll.count > 1 ? 's' : ''}
+                    </Text>
+                  </Stack>
+                </Card>
+              </Grid>
+
+              <Grid columns={[1, 2, 2]} gap={3} style={{ marginTop: 12 }}>
+                <Card
+                  padding={4}
+                  radius={2}
+                  shadow={1}
+                  style={{ borderTop: '3px solid #c58720', cursor: 'pointer' }}
+                  onClick={() =>
+                    router.navigateUrl({ path: '/studio/structure/devisLivraison' })
+                  }
+                >
+                  <Stack space={3}>
+                    <Text size={1} weight="medium" muted>
+                      📋 En attente de réponse client
+                    </Text>
+                    <Heading size={3} style={{ lineHeight: 1 }}>
+                      {eur(pipelineTtc)}
+                    </Heading>
+                    <Text size={0} muted>
+                      {pendingQuotes.length} devis non conclu
+                      {pendingQuotes.length > 1 ? 's' : ''} — chiffre potentiel, pas encore encaissé
+                    </Text>
+                  </Stack>
+                </Card>
+                <Card padding={4} radius={2} shadow={1} style={{ borderTop: '3px solid #2b915d' }}>
+                  <Stack space={3}>
+                    <Text size={1} weight="medium" muted>
+                      ✅ Taux d&apos;acceptation des devis
+                    </Text>
+                    <Heading size={3} style={{ lineHeight: 1 }}>
+                      {acceptRate !== null ? `${acceptRate} %` : '—'}
+                    </Heading>
+                    <Text size={0} muted>
+                      {acceptRate !== null
+                        ? `${accepted} accepté${accepted > 1 ? 's' : ''} sur ${closed} devis clos`
+                        : 'Aucun devis clos pour l\'instant'}
+                    </Text>
+                  </Stack>
+                </Card>
+              </Grid>
+            </Box>
+
             {/* ─── KPI GRID ─── */}
             <Box>
               <Heading size={2} style={{ marginBottom: 12 }}>
