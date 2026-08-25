@@ -57,6 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Landing pages nationales — Phase 1
     { url: `${siteUrl}/fauteuil-ergonomique`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${siteUrl}/bureau-professionnel-occasion`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${siteUrl}/marques`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${siteUrl}/marques/steelcase`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     // Landing pages nationales — Phase 2 (V2)
     { url: `${siteUrl}/mobilier-de-bureau-occasion`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
