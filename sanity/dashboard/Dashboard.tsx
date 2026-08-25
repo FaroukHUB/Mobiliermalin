@@ -64,6 +64,8 @@ type RevenueOrder = {
   _createdAt: string
   amountTotalCents?: number
   status?: string
+  numero?: string
+  customerName?: string
 }
 
 /** Devis : montants stockés HT, TVA à appliquer pour obtenir le TTC. */
@@ -78,6 +80,9 @@ type RevenueQuote = {
   shippingFee?: number
   options?: Array<{ price?: number }>
   tvaRate?: number
+  numero?: string
+  customerName?: string
+  depositPercent?: number
 }
 
 type RecentDoc = {
@@ -123,11 +128,13 @@ const RECENT_CONTACTS_QUERY = `*[_type == "contactMessage"] | order(receivedAt d
 // sont calculés en JS pour rester lisibles et éviter les limites
 // arithmétiques de GROQ.
 const REVENUE_ORDERS_QUERY = `*[_type == "order" && status != "refunded"] {
-  _id, placedAt, _createdAt, amountTotalCents, status
+  _id, placedAt, _createdAt, amountTotalCents, status, numero,
+  "customerName": customer.name
 }`
 
 const REVENUE_QUOTES_QUERY = `*[_type == "quote"] {
-  _id, status, acceptedAt, sentAt, _createdAt,
+  _id, status, acceptedAt, sentAt, _createdAt, numero, depositPercent,
+  "customerName": customer.name,
   lineItems[]{ unitPrice, quantity },
   product{ unitPrice, quantity },
   shippingFee, options[]{ price }, tvaRate
@@ -235,6 +242,59 @@ function computeRevenue(
   return r
 }
 
+/** Une ligne du détail : une vente, quelle que soit sa source. */
+type SaleRow = {
+  id: string
+  type: 'order' | 'quote'
+  date: Date
+  numero: string
+  customer: string
+  amount: number
+  note?: string
+}
+
+/** Détail des ventes d'une période, plus récentes d'abord. */
+function listSales(
+  orders: RevenueOrder[],
+  quotes: RevenueQuote[],
+  since: Date | null,
+): SaleRow[] {
+  const rows: SaleRow[] = []
+  for (const o of orders) {
+    const d = orderDate(o)
+    if (since && d < since) continue
+    rows.push({
+      id: o._id,
+      type: 'order',
+      date: d,
+      numero: o.numero || '(sans numéro)',
+      customer: o.customerName || '?',
+      amount: (o.amountTotalCents ?? 0) / 100,
+    })
+  }
+  for (const q of quotes) {
+    if (q.status !== 'accepted') continue
+    const d = quoteDate(q)
+    if (since && d < since) continue
+    const hasDeposit =
+      typeof q.depositPercent === 'number' &&
+      q.depositPercent >= 1 &&
+      q.depositPercent <= 99
+    rows.push({
+      id: q._id,
+      type: 'quote',
+      date: d,
+      numero: q.numero || '(sans numéro)',
+      customer: q.customerName || '?',
+      amount: quoteTotalTtc(q),
+      note: hasDeposit
+        ? `acompte ${q.depositPercent} % encaissé en ligne`
+        : undefined,
+    })
+  }
+  return rows.sort((a, b) => b.date.getTime() - a.date.getTime())
+}
+
 function eur(v: number): string {
   return (
     v.toLocaleString('fr-FR', {
@@ -285,6 +345,8 @@ function RevenueCard({
   quotesTtc,
   count,
   highlight = false,
+  active = false,
+  onClick,
 }: {
   label: string
   value: number
@@ -292,13 +354,20 @@ function RevenueCard({
   quotesTtc: number
   count: number
   highlight?: boolean
+  active?: boolean
+  onClick?: () => void
 }) {
   return (
     <Card
       padding={4}
       radius={2}
-      shadow={1}
-      style={{ borderTop: `3px solid ${highlight ? '#2b915d' : '#c8a25b'}` }}
+      shadow={active ? 3 : 1}
+      onClick={onClick}
+      style={{
+        borderTop: `3px solid ${highlight ? '#2b915d' : '#c8a25b'}`,
+        cursor: onClick ? 'pointer' : 'default',
+        outline: active ? '2px solid #c8a25b' : 'none',
+      }}
     >
       <Stack space={3}>
         <Text size={1} weight="medium" muted>
@@ -316,6 +385,11 @@ function RevenueCard({
             </>
           )}
         </Text>
+        {onClick && (
+          <Text size={0} style={{ color: '#8a7340' }}>
+            {active ? '▲ Masquer le détail' : '▼ Voir le détail'}
+          </Text>
+        )}
       </Stack>
     </Card>
   )
@@ -466,6 +540,7 @@ export function Dashboard() {
   const [recentContacts, setRecentContacts] = useState<RecentDoc[]>([])
   const [revOrders, setRevOrders] = useState<RevenueOrder[]>([])
   const [revQuotes, setRevQuotes] = useState<RevenueQuote[]>([])
+  const [detailPeriod, setDetailPeriod] = useState<'30d' | 'year' | 'all' | null>(null)
   const [tipIndex, setTipIndex] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -537,6 +612,19 @@ export function Dashboard() {
   ).length
   const acceptRate = closed > 0 ? Math.round((accepted / closed) * 100) : null
 
+  // Détail de la période dépliée au clic sur une carte
+  const detailSince =
+    detailPeriod === '30d' ? since30 : detailPeriod === 'year' ? startOfYear : null
+  const detailRows = detailPeriod
+    ? listSales(revOrders, revQuotes, detailSince)
+    : []
+  const detailLabel =
+    detailPeriod === '30d'
+      ? '30 derniers jours'
+      : detailPeriod === 'year'
+        ? `année ${now.getFullYear()}`
+        : 'depuis le lancement'
+
   const tip = SEO_TIPS[tipIndex]
 
   return (
@@ -574,6 +662,10 @@ export function Dashboard() {
                   quotesTtc={rev30.quotesTtc}
                   count={rev30.count}
                   highlight
+                  active={detailPeriod === '30d'}
+                  onClick={() =>
+                    setDetailPeriod(detailPeriod === '30d' ? null : '30d')
+                  }
                 />
                 <RevenueCard
                   label={`Année ${now.getFullYear()}`}
@@ -581,6 +673,10 @@ export function Dashboard() {
                   ordersTtc={revYear.ordersTtc}
                   quotesTtc={revYear.quotesTtc}
                   count={revYear.count}
+                  active={detailPeriod === 'year'}
+                  onClick={() =>
+                    setDetailPeriod(detailPeriod === 'year' ? null : 'year')
+                  }
                 />
                 <RevenueCard
                   label="Depuis le lancement"
@@ -588,6 +684,10 @@ export function Dashboard() {
                   ordersTtc={revAll.ordersTtc}
                   quotesTtc={revAll.quotesTtc}
                   count={revAll.count}
+                  active={detailPeriod === 'all'}
+                  onClick={() =>
+                    setDetailPeriod(detailPeriod === 'all' ? null : 'all')
+                  }
                 />
                 <Card padding={4} radius={2} shadow={1} style={{ borderTop: '3px solid #6b6b6b' }}>
                   <Stack space={3}>
@@ -643,6 +743,103 @@ export function Dashboard() {
                   </Stack>
                 </Card>
               </Grid>
+
+              {/* Détail des ventes de la période sélectionnée */}
+              {detailPeriod && (
+                <Card padding={4} radius={2} shadow={1} style={{ marginTop: 12 }}>
+                  <Stack space={4}>
+                    <Flex align="center" justify="space-between">
+                      <Heading size={1}>
+                        Détail des ventes — {detailLabel}
+                      </Heading>
+                      <Button
+                        text="Fermer"
+                        mode="bleed"
+                        onClick={() => setDetailPeriod(null)}
+                      />
+                    </Flex>
+                    {detailRows.length === 0 ? (
+                      <Text size={1} muted>
+                        Aucune vente sur cette période.
+                      </Text>
+                    ) : (
+                      <Stack space={0}>
+                        {detailRows.map((row) => (
+                          <Card
+                            key={`${row.type}-${row.id}`}
+                            padding={3}
+                            radius={2}
+                            tone="transparent"
+                            style={{
+                              cursor: 'pointer',
+                              borderBottom: '1px solid #f0f0ec',
+                            }}
+                            onClick={() =>
+                              openDoc(row.id, row.type === 'order' ? 'order' : 'quote')
+                            }
+                          >
+                            <Flex align="center" justify="space-between" gap={3}>
+                              <Box style={{ minWidth: 92 }}>
+                                <Text size={0} muted>
+                                  {row.date.toLocaleDateString('fr-FR', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: '2-digit',
+                                  })}
+                                </Text>
+                              </Box>
+                              <Box style={{ minWidth: 68 }}>
+                                <Badge tone={row.type === 'order' ? 'primary' : 'positive'}>
+                                  {row.type === 'order' ? 'Site' : 'Devis'}
+                                </Badge>
+                              </Box>
+                              <Box flex={1} style={{ minWidth: 0 }}>
+                                <Text
+                                  size={1}
+                                  weight="medium"
+                                  style={{
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  {row.customer}
+                                </Text>
+                                <Text size={0} muted style={{ marginTop: 2 }}>
+                                  {row.numero}
+                                  {row.note ? ` · ${row.note}` : ''}
+                                </Text>
+                              </Box>
+                              <Text size={1} weight="semibold">
+                                {row.amount.toLocaleString('fr-FR', {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}{' '}
+                                €
+                              </Text>
+                            </Flex>
+                          </Card>
+                        ))}
+                        <Flex justify="space-between" padding={3} style={{ marginTop: 4 }}>
+                          <Text size={1} weight="semibold">
+                            Total {detailLabel} — {detailRows.length} vente
+                            {detailRows.length > 1 ? 's' : ''}
+                          </Text>
+                          <Text size={1} weight="semibold">
+                            {detailRows
+                              .reduce((sum, r) => sum + r.amount, 0)
+                              .toLocaleString('fr-FR', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}{' '}
+                            €
+                          </Text>
+                        </Flex>
+                      </Stack>
+                    )}
+                  </Stack>
+                </Card>
+              )}
             </Box>
 
             {/* ─── KPI GRID ─── */}
