@@ -34,6 +34,8 @@
 import { NextResponse } from 'next/server'
 import { getWriteClient, isSanityWriteConfigured } from '@/lib/sanity-write'
 import { sendEmail } from '@/lib/brevo'
+import { renderToBuffer } from '@react-pdf/renderer'
+import { QuotePdf } from '@/components/pdf/QuotePdf'
 import { LEGAL } from '@/lib/legal'
 
 export const runtime = 'nodejs'
@@ -52,8 +54,22 @@ type OptionIn = {
   price?: number
 }
 
+/**
+ * Ce qui part au client au moment de la création :
+ *   'payment-link'    — email avec bouton de paiement en ligne (défaut)
+ *   'no-payment-link' — email + facture PDF jointe, sans bouton
+ *                       (règlement hors ligne : virement, espèces…)
+ *   'none'            — aucun email, le document est seulement créé
+ *
+ * Dans les trois cas, les actions Studio restent disponibles ensuite :
+ * "📤 Envoyer au client" (avec lien de paiement) et "🧾 Envoyer la
+ * facture (sans lien de paiement)".
+ */
+type SendMode = 'payment-link' | 'no-payment-link' | 'none'
+
 type Payload = {
   documentType?: 'quote' | 'invoice'
+  sendMode?: SendMode
   customer?: {
     name?: string
     email?: string
@@ -76,6 +92,51 @@ type Payload = {
   validUntilDays?: number
   pdfNotes?: string
   internalNotes?: string
+}
+
+/**
+ * Email "règlement hors ligne" : la facture est en pièce jointe, aucun
+ * bouton ni lien de paiement. Même contenu que l'action Studio
+ * "🧾 Envoyer la facture (sans lien de paiement)".
+ */
+function buildNoPaymentEmailHtml(args: {
+  numero: string
+  customerName: string
+  total: number
+}): string {
+  const firstName = args.customerName.split(' ')[0] || args.customerName
+  const totalStr = args.total.toLocaleString('fr-FR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+  return `<!DOCTYPE html>
+<html lang="fr"><body style="margin:0;padding:0;background:#F0EBE3;font-family:Georgia,serif;color:#1a1a1a;">
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:32px 16px;">
+<tr><td align="center">
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background:#FAF7F2;border:1px solid #e5e1d9;">
+<tr><td style="background:#1a1a1a;color:#FAF7F2;padding:32px;text-align:center;">
+<div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#B89A5B;font-family:'Helvetica Neue',Arial,sans-serif;">Mobilier Malin</div>
+<h1 style="margin:8px 0 0;font-size:26px;font-weight:normal;">Votre facture</h1>
+<div style="margin-top:8px;font-size:14px;opacity:0.8;">${args.numero}</div>
+</td></tr>
+<tr><td style="padding:32px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:#3D3D3D;">
+<p style="margin:0 0 16px;">Bonjour ${firstName},</p>
+<p style="margin:0 0 16px;">Veuillez trouver votre facture en pièce jointe.</p>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#F0EBE3;border-left:3px solid #B89A5B;margin:24px 0;">
+<tr><td style="padding:20px 24px;">
+<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#6B6B6B;margin-bottom:4px;">Montant total TTC</div>
+<div style="font-size:28px;color:#1a1a1a;font-family:Georgia,serif;">${totalStr} €</div>
+</td></tr>
+</table>
+<p style="margin:0 0 16px;font-size:13px;color:#6B6B6B;">Le règlement s'effectue selon les modalités convenues avec notre équipe. Conservez cette facture pour votre comptabilité.</p>
+<hr style="border:none;border-top:1px solid #e5e1d9;margin:24px 0;">
+<p style="margin:0 0 8px;font-size:13px;color:#6B6B6B;">Une question sur cette facture ?</p>
+<p style="margin:0;font-size:14px;">📞 <a href="tel:${LEGAL.telephoneTel}" style="color:#1a1a1a;">${LEGAL.telephone}</a> · ✉️ <a href="mailto:${LEGAL.email}" style="color:#1a1a1a;">${LEGAL.email}</a></p>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body></html>`
 }
 
 async function generateNumero(documentType: 'quote' | 'invoice'): Promise<string> {
@@ -244,6 +305,13 @@ export async function POST(req: Request) {
   const documentType: 'quote' | 'invoice' =
     body.documentType === 'invoice' ? 'invoice' : 'quote'
 
+  // Mode d'envoi. Défaut 'payment-link' : comportement historique
+  // inchangé pour tous les appels qui ne précisent rien.
+  const sendMode: SendMode =
+    body.sendMode === 'none' || body.sendMode === 'no-payment-link'
+      ? body.sendMode
+      : 'payment-link'
+
   // Génère le numéro et la date de validité
   const numero = await generateNumero(documentType)
   const validUntilDays = body.validUntilDays || 30
@@ -256,7 +324,9 @@ export async function POST(req: Request) {
     _type: 'quote',
     documentType,
     numero,
-    status: 'sent',
+    // Rien n'est parti au client → le document reste "en préparation",
+    // prêt à être envoyé plus tard depuis Studio.
+    status: sendMode === 'none' ? 'draft' : 'sent',
     validUntil: validUntilISO,
     customer: {
       name: body.customer!.name!.trim(),
@@ -279,7 +349,10 @@ export async function POST(req: Request) {
     ...(depositPercent && { depositPercent }),
     options: optionsClean,
     tvaRate,
-    sentAt: now,
+    ...(sendMode !== 'none' && { sentAt: now }),
+    // Tracé de l'envoi sans lien de paiement, comme le fait l'action
+    // Studio équivalente.
+    ...(sendMode === 'no-payment-link' && { invoiceSentAt: now }),
     ...(body.internalNotes && { internalNotes: body.internalNotes.trim() }),
     ...(body.pdfNotes && { pdfNotes: body.pdfNotes.trim() }),
   }
@@ -295,12 +368,152 @@ export async function POST(req: Request) {
     )
   }
 
-  // Envoie l'email au client (adapté selon le type de doc)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
   const viewUrl = `${siteUrl}/devis/${created._id}`
+  const customerName = body.customer!.name!.trim()
+  const customerEmail = body.customer!.email!.trim()
+
+  // ─── Mode 'none' : rien n'est envoyé ───
+  if (sendMode === 'none') {
+    return NextResponse.json({
+      ok: true,
+      uid: created._id,
+      numero,
+      url: viewUrl,
+      sendMode,
+      emailSent: false,
+      totalTtc,
+    })
+  }
+
+  // ─── Mode 'no-payment-link' : facture PDF jointe, aucun lien ───
+  if (sendMode === 'no-payment-link') {
+    let pdfBase64: string
+    try {
+      const buffer = await renderToBuffer(
+        QuotePdf({
+          numero,
+          docKind: 'facture',
+          emittedAt: new Date(now),
+          validUntil: validUntilDate,
+          customer: {
+            name: customerName,
+            email: customerEmail,
+            ...(body.customer!.phone && { phone: body.customer!.phone.trim() }),
+            ...(body.customer!.company && { company: body.customer!.company.trim() }),
+          },
+          shippingAddress: {
+            street: body.shippingAddress!.street!.trim(),
+            postalCode: body.shippingAddress!.postalCode!.trim(),
+            city: body.shippingAddress!.city!.trim(),
+            ...(body.shippingAddress!.floor && { floor: body.shippingAddress!.floor.trim() }),
+            elevator: body.shippingAddress!.elevator || 'unknown',
+          },
+          items: lineItemsClean.map((li) => ({
+            name: li.name,
+            unitPrice: li.unitPrice,
+            quantity: li.quantity,
+          })),
+          shippingFee,
+          options: optionsClean,
+          tvaRate,
+          ...(depositPercent && { depositPercent }),
+          ...(body.pdfNotes && { pdfNotes: body.pdfNotes.trim() }),
+        }),
+      )
+      pdfBase64 = buffer.toString('base64')
+    } catch (err) {
+      console.error('[quotes/create] PDF render error:', err)
+      // Le document existe déjà : on ne perd rien, l'envoi se refait
+      // depuis Studio.
+      return NextResponse.json({
+        ok: true,
+        uid: created._id,
+        numero,
+        url: viewUrl,
+        sendMode,
+        emailSent: false,
+        emailError:
+          'Facture créée, mais le PDF n\'a pas pu être généré. Renvoie-la depuis Studio (action "Envoyer la facture").',
+        totalTtc,
+      })
+    }
+
+    const brevoKey = process.env.BREVO_API_KEY
+    const brevoSender = process.env.BREVO_SENDER_EMAIL
+    if (!brevoKey || !brevoSender) {
+      return NextResponse.json({
+        ok: true,
+        uid: created._id,
+        numero,
+        url: viewUrl,
+        sendMode,
+        emailSent: false,
+        emailError: 'Brevo non configuré : facture créée mais non envoyée.',
+        totalTtc,
+      })
+    }
+
+    let emailSent = false
+    let emailError: string | undefined
+    try {
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': brevoKey,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          sender: {
+            name: process.env.BREVO_SENDER_NAME || 'Mobilier Malin',
+            email: brevoSender,
+          },
+          to: [{ email: customerEmail, name: customerName }],
+          ...(process.env.DEVIS_ADMIN_BCC_EMAIL || LEGAL.email
+            ? {
+                bcc: [
+                  {
+                    email: process.env.DEVIS_ADMIN_BCC_EMAIL || LEGAL.email,
+                    name: 'Mobilier Malin (copie admin)',
+                  },
+                ],
+              }
+            : {}),
+          subject: `Votre facture Mobilier Malin — ${numero}`,
+          htmlContent: buildNoPaymentEmailHtml({
+            numero,
+            customerName,
+            total: totalTtc,
+          }),
+          tags: ['invoice-sent', 'manual'],
+          attachment: [{ name: `${numero}.pdf`, content: pdfBase64 }],
+        }),
+      })
+      emailSent = res.ok
+      if (!res.ok) {
+        emailError = `Brevo a refusé l'envoi (status ${res.status}).`
+      }
+    } catch (err) {
+      emailError = err instanceof Error ? err.message : 'Erreur réseau Brevo'
+    }
+
+    return NextResponse.json({
+      ok: true,
+      uid: created._id,
+      numero,
+      url: viewUrl,
+      sendMode,
+      emailSent,
+      emailError,
+      totalTtc,
+    })
+  }
+
+  // ─── Mode 'payment-link' (défaut) : email avec bouton de paiement ───
   const html = buildClientEmailHtml({
     documentType,
-    customerName: body.customer!.name!.trim(),
+    customerName,
     numero,
     total: totalTtc,
     validUntil: validUntilDate.toLocaleDateString('fr-FR'),
@@ -313,7 +526,7 @@ export async function POST(req: Request) {
       : `Votre devis Mobilier Malin ${numero}`
 
   const emailResult = await sendEmail({
-    to: { email: body.customer!.email!.trim(), name: body.customer!.name!.trim() },
+    to: { email: customerEmail, name: customerName },
     subject: emailSubject,
     htmlContent: html,
     tags: [documentType === 'invoice' ? 'invoice' : 'quote', 'manual'],
@@ -324,6 +537,7 @@ export async function POST(req: Request) {
     uid: created._id,
     numero,
     url: viewUrl,
+    sendMode,
     emailSent: emailResult.ok,
     emailError: emailResult.error,
     totalTtc,

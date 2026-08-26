@@ -36,6 +36,9 @@ type Product = {
   condition?: string
 }
 
+/** Ce qui part au client au moment de la création. */
+type SendMode = 'payment-link' | 'no-payment-link' | 'none'
+
 type Result =
   | {
       ok: true
@@ -44,6 +47,7 @@ type Result =
       url: string
       emailSent: boolean
       emailError?: string
+      sendMode?: SendMode
       totalTtc: number
     }
   | { ok: false; error: string }
@@ -78,6 +82,7 @@ export default function NouvelleFacturePage() {
 
   const [tvaRate, setTvaRate] = useState(20)
   const [depositPercent, setDepositPercent] = useState(0)
+  const [sendMode, setSendMode] = useState<SendMode>('payment-link')
   const [pdfNotes, setPdfNotes] = useState('')
   const [internalNotes, setInternalNotes] = useState('')
 
@@ -202,6 +207,7 @@ export default function NouvelleFacturePage() {
         },
         body: JSON.stringify({
           documentType: 'invoice',
+          sendMode,
           customer: { name, email, phone, company },
           shippingAddress: { street, postalCode, city, elevator: 'unknown' },
           lineItems: payloadLineItems,
@@ -237,6 +243,7 @@ export default function NouvelleFacturePage() {
     setAmountTTC(0)
     setLineItems([{ id: rid(), name: '', unitPrice: 0, quantity: 1 }])
     setDepositPercent(0)
+    setSendMode('payment-link')
     setPdfNotes('')
     setInternalNotes('')
     setResult(null)
@@ -590,6 +597,92 @@ export default function NouvelleFacturePage() {
         </Field>
       </Section>
 
+      {/* Mode d'envoi */}
+      <div
+        style={{
+          border: '1px solid #e0ddd6',
+          borderRadius: 6,
+          padding: 20,
+          marginBottom: 24,
+          background: '#faf9f6',
+        }}
+      >
+        <p
+          style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: 18,
+            margin: '0 0 4px',
+          }}
+        >
+          Que veux-tu envoyer maintenant ?
+        </p>
+        <p style={{ fontSize: 13, color: '#6b6b6b', margin: '0 0 16px' }}>
+          Dans tous les cas, la facture reste dans Studio : tu pourras
+          l&apos;envoyer (ou la renvoyer) plus tard, avec ou sans lien de
+          paiement.
+        </p>
+
+        {(
+          [
+            {
+              value: 'payment-link' as const,
+              title: '💳 Email avec lien de paiement',
+              desc: 'Le client reçoit la facture et peut régler en ligne par carte bancaire. Le statut passera automatiquement à « Accepté + payé » après paiement.',
+            },
+            {
+              value: 'no-payment-link' as const,
+              title: '🧾 Email sans lien de paiement',
+              desc: 'Le client reçoit la facture en PDF joint, sans bouton de paiement. Pour un règlement par virement, en espèces ou au showroom.',
+            },
+            {
+              value: 'none' as const,
+              title: '📄 Aucun email — créer seulement',
+              desc: 'La facture est créée en préparation dans Studio, rien ne part au client. Pour l\'imprimer ou l\'envoyer plus tard.',
+            },
+          ]
+        ).map((opt) => {
+          const active = sendMode === opt.value
+          return (
+            <label
+              key={opt.value}
+              style={{
+                display: 'block',
+                border: `1px solid ${active ? '#c8a25b' : '#e0ddd6'}`,
+                background: active ? '#fdf8ee' : 'white',
+                borderRadius: 6,
+                padding: 14,
+                marginBottom: 10,
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                <input
+                  type="radio"
+                  name="sendMode"
+                  value={opt.value}
+                  checked={active}
+                  onChange={() => setSendMode(opt.value)}
+                  style={{ marginTop: 3 }}
+                />
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 15 }}>{opt.title}</div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      color: '#6b6b6b',
+                      lineHeight: 1.5,
+                      marginTop: 3,
+                    }}
+                  >
+                    {opt.desc}
+                  </div>
+                </div>
+              </div>
+            </label>
+          )
+        })}
+      </div>
+
       {/* Récap */}
       <div
         style={{
@@ -673,7 +766,11 @@ export default function NouvelleFacturePage() {
       >
         {submitting
           ? '⏳ Création en cours…'
-          : '💳 Créer la facture et envoyer le lien de paiement'}
+          : sendMode === 'none'
+            ? '📄 Créer la facture sans envoyer d\'email'
+            : sendMode === 'no-payment-link'
+              ? '🧾 Créer et envoyer la facture (sans lien de paiement)'
+              : '💳 Créer la facture et envoyer le lien de paiement'}
       </button>
 
       {result && (
@@ -704,7 +801,9 @@ export default function NouvelleFacturePage() {
                   textAlign: 'center',
                 }}
               >
-                Facture envoyée au client !
+                {result.sendMode === 'none'
+                  ? 'Facture créée !'
+                  : 'Facture envoyée au client !'}
               </h2>
               <p
                 style={{
@@ -729,8 +828,15 @@ export default function NouvelleFacturePage() {
               >
                 <div>
                   📧 Email :{' '}
-                  {result.emailSent ? (
-                    <strong>✅ envoyé à {email}</strong>
+                  {result.sendMode === 'none' ? (
+                    <strong>aucun envoi (facture en préparation)</strong>
+                  ) : result.emailSent ? (
+                    <strong>
+                      ✅ envoyé à {email}
+                      {result.sendMode === 'no-payment-link'
+                        ? ' (sans lien de paiement)'
+                        : ' (avec lien de paiement)'}
+                    </strong>
                   ) : (
                     <strong style={{ color: '#ffb0b0' }}>
                       ⚠️ échec ({result.emailError})
@@ -738,7 +844,9 @@ export default function NouvelleFacturePage() {
                   )}
                 </div>
                 <div>
-                  🔗 Lien de paiement :{' '}
+                  {result.sendMode === 'payment-link'
+                    ? '🔗 Lien de paiement : '
+                    : '🔗 Page de la facture : '}
                   <a
                     href={result.url}
                     target="_blank"
@@ -748,6 +856,23 @@ export default function NouvelleFacturePage() {
                     Ouvrir
                   </a>
                 </div>
+                <div>
+                  📄 PDF :{' '}
+                  <a
+                    href={`/api/devis/${result.uid}/pdf?type=facture`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#ffe0a0', textDecoration: 'underline' }}
+                  >
+                    Télécharger / imprimer
+                  </a>
+                </div>
+                {result.sendMode !== 'payment-link' && (
+                  <div style={{ fontSize: 13, opacity: 0.9, lineHeight: 1.5 }}>
+                    💡 Pour envoyer le lien de paiement plus tard : ouvre la
+                    facture dans Studio et clique « 📤 Envoyer au client ».
+                  </div>
+                )}
               </div>
               <button
                 onClick={resetForm}
