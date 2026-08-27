@@ -9,6 +9,7 @@ import {
 import { getWriteClient, isSanityWriteConfigured } from '@/lib/sanity-write'
 import { LEGAL } from '@/lib/legal'
 import { upsertOrderFromStripeSession } from '@/lib/order'
+import { decrementStockForItems } from '@/lib/stock'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs' // crypto-subtle nécessite Node, pas Edge
@@ -204,6 +205,28 @@ export async function POST(req: NextRequest) {
         console.log(
           `[stripe-webhook] order ${orderResult.created ? 'created' : 'already existed'}: ${orderResult.id}`,
         )
+        // Décrémente le stock UNE SEULE FOIS, à la première réception
+        // de la commande : Stripe peut rejouer un webhook, et la
+        // commande existante signifie que le stock a déjà été retiré.
+        if (orderResult.created && orderResult.id && isSanityWriteConfigured()) {
+          try {
+            const order = await getWriteClient()!.fetch<{
+              items?: Array<{ slug?: string; quantity?: number }>
+            } | null>(`*[_id == $id][0]{ items[]{ slug, quantity } }`, {
+              id: orderResult.id,
+            })
+            const stock = await decrementStockForItems(order?.items || [])
+            if (stock.updated.length > 0) {
+              console.log('[stripe-webhook] stock décrémenté', stock.updated)
+            }
+            if (stock.skipped.length > 0) {
+              console.warn('[stripe-webhook] stock non décrémenté', stock.skipped)
+            }
+          } catch (err) {
+            // Le stock ne doit jamais bloquer une commande payée.
+            console.error('[stripe-webhook] stock update failed', err)
+          }
+        }
       } else {
         console.warn('[stripe-webhook] order upsert failed', orderResult.error)
       }

@@ -10,6 +10,7 @@ import { schemaTypes } from './sanity/schemas'
 import { sendQuoteAction } from './sanity/actions/sendQuoteAction'
 import { sendInvoiceAction } from './sanity/actions/sendInvoiceAction'
 import { downloadInvoiceAction } from './sanity/actions/downloadInvoiceAction'
+import { sellInStoreAction } from './sanity/actions/sellInStoreAction'
 import { downloadDeliveryNoteAction } from './sanity/actions/downloadDeliveryNoteAction'
 import {
   downloadQuotePdfAction,
@@ -94,6 +95,10 @@ export default defineConfig({
           downloadInvoicePdfAction,
           downloadDeliveryNoteAction,
         ]
+      }
+      // Sur les produits : ajoute l'action "Vente au magasin"
+      if (context.schemaType === 'product') {
+        return [...input, sellInStoreAction]
       }
       // Sur les commandes : ajoute l'action "Télécharger la facture"
       if (context.schemaType === 'order') {
