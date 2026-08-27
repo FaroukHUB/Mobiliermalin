@@ -11,6 +11,8 @@ interface AcceptQuoteButtonProps {
   documentType?: 'quote' | 'invoice'
   /** Acompte en % (1-99) : le bouton affiche et prélève ce montant seulement. */
   depositPercent?: number
+  /** Index de la formule de livraison choisie, transmis à l'acceptation. */
+  deliveryChoiceIndex?: number
 }
 
 export function AcceptQuoteButton({
@@ -20,6 +22,7 @@ export function AcceptQuoteButton({
   customerEmail,
   documentType = 'quote',
   depositPercent,
+  deliveryChoiceIndex,
 }: AcceptQuoteButtonProps) {
   const isInvoice = documentType === 'invoice'
   const hasDeposit =
@@ -48,7 +51,9 @@ export function AcceptQuoteButton({
       const res = await fetch(`/api/devis/${encodeURIComponent(quoteUid)}/accepter`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify(
+          typeof deliveryChoiceIndex === 'number' ? { deliveryChoiceIndex } : {},
+        ),
       })
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { error?: string }

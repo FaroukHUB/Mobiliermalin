@@ -67,6 +67,8 @@ export type QuotePdfInput = {
     quantity: number
   }>
   shippingFee: number
+  /** Libellé de la ligne livraison (formule retenue par le client). */
+  shippingLabel?: string
   options: QuoteOption[]
   tvaRate: number
   /**
@@ -395,6 +397,7 @@ export function QuotePdf({
   product,
   items,
   shippingFee,
+  shippingLabel,
   options,
   tvaRate,
   tvaExemptionText,
@@ -563,9 +566,11 @@ export function QuotePdf({
         {shippingFee > 0 && (
           <View style={styles.tableRow}>
             <Text style={styles.colDesc}>
-              {shippingAddress?.city
-                ? `Livraison à ${shippingAddress.city}${shippingAddress.postalCode ? ` (${shippingAddress.postalCode})` : ''}`
-                : 'Livraison'}
+              {shippingLabel
+                ? `${shippingLabel}${shippingAddress?.city ? ` — ${shippingAddress.city}` : ''}`
+                : shippingAddress?.city
+                  ? `Livraison à ${shippingAddress.city}${shippingAddress.postalCode ? ` (${shippingAddress.postalCode})` : ''}`
+                  : 'Livraison'}
             </Text>
             <Text style={styles.colQty}>1</Text>
             <Text style={styles.colPrice}>{eur(shippingFee)}</Text>

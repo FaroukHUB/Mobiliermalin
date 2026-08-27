@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
+import { getWriteClient, isSanityWriteConfigured } from '@/lib/sanity-write'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,6 +22,7 @@ type QuoteDoc = {
   options?: { label: string; price: number }[]
   tvaRate?: number
   depositPercent?: number
+  deliveryChoices?: Array<{ label?: string; description?: string; price?: number }>
 }
 
 /**
@@ -35,6 +37,9 @@ export async function POST(
   { params }: { params: Promise<{ uid: string }> },
 ) {
   const { uid } = await params
+  const body = (await _req.json().catch(() => ({}))) as {
+    deliveryChoiceIndex?: number
+  }
 
   const stripeKey = process.env.STRIPE_SECRET_KEY
   if (!stripeKey) {
@@ -50,7 +55,8 @@ export async function POST(
       _id, numero, status, validUntil,
       customer, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate, depositPercent
+      shippingFee, options, tvaRate, depositPercent,
+      deliveryChoices[]{ label, description, price }
     }`,
     { id: uid },
   )
@@ -76,7 +82,28 @@ export async function POST(
   // 3) Calcul du total TTC en centimes
   // Priorité : lineItems (devis manuel multi-produits) > product (devis legacy)
   const tvaRate = quote.tvaRate ?? 20
-  const shippingFee = quote.shippingFee ?? 0
+
+  // Formules de livraison au choix : la formule retenue par le client
+  // remplace le tarif unique shippingFee.
+  const choices = Array.isArray(quote.deliveryChoices) ? quote.deliveryChoices : []
+  let selectedDelivery: { label: string; price: number } | null = null
+  if (choices.length > 0) {
+    const idx =
+      typeof body.deliveryChoiceIndex === 'number' &&
+      body.deliveryChoiceIndex >= 0 &&
+      body.deliveryChoiceIndex < choices.length
+        ? body.deliveryChoiceIndex
+        : -1
+    if (idx === -1) {
+      return NextResponse.json(
+        { error: 'Merci de choisir une formule de livraison avant de régler.' },
+        { status: 400 },
+      )
+    }
+    const c = choices[idx]
+    selectedDelivery = { label: c.label || 'Livraison', price: c.price ?? 0 }
+  }
+  const shippingFee = selectedDelivery ? selectedDelivery.price : (quote.shippingFee ?? 0)
   const options = quote.options ?? []
   const linesTotal =
     Array.isArray(quote.lineItems) && quote.lineItems.length > 0
@@ -105,6 +132,27 @@ export async function POST(
   const amountToCharge = depositPercent
     ? Math.round((totalTtc * depositPercent) / 100)
     : totalTtc
+
+  // 3 bis) Enregistre le choix du client sur le devis : il doit
+  // apparaître sur la facture et le bon de livraison, même si le
+  // paiement est abandonné en cours de route.
+  if (selectedDelivery && isSanityWriteConfigured()) {
+    try {
+      await getWriteClient()!
+        .patch(uid)
+        .set({
+          selectedDelivery: {
+            label: selectedDelivery.label,
+            price: selectedDelivery.price,
+            chosenAt: new Date().toISOString(),
+          },
+        })
+        .commit()
+    } catch (err) {
+      // Non bloquant : le montant Stripe est déjà correct.
+      console.error('[devis/accepter] selectedDelivery patch failed', err)
+    }
+  }
 
   // 4) Construire la session Stripe Checkout
   const siteUrl =
@@ -144,7 +192,9 @@ export async function POST(
     'line_items[0][price_data][product_data][description]',
     depositPercent
       ? `Acompte de ${depositPercent} % sur un total de ${(totalTtc / 100).toFixed(2)} € TTC — solde à régler selon les modalités convenues`
-      : `Mobilier + livraison + options (TTC incluant ${tvaRate}% TVA)`,
+      : selectedDelivery
+        ? `Mobilier + ${selectedDelivery.label} + options (TTC incluant ${tvaRate}% TVA)`
+        : `Mobilier + livraison + options (TTC incluant ${tvaRate}% TVA)`,
   )
   stripeParams.append('line_items[0][price_data][unit_amount]', String(amountToCharge))
   stripeParams.append('line_items[0][quantity]', '1')

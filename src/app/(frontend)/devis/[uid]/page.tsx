@@ -5,6 +5,7 @@ import { ShieldCheck, FileText, Clock, AlertCircle, Download } from 'lucide-reac
 import { sanityClient } from '@/lib/sanity'
 import { LEGAL } from '@/lib/legal'
 import { AcceptQuoteButton } from '@/components/quote/AcceptQuoteButton'
+import { DeliveryChoiceSelector } from '@/components/quote/DeliveryChoiceSelector'
 
 export const metadata: Metadata = {
   title: 'Accepter votre devis',
@@ -37,6 +38,8 @@ type QuoteDoc = {
   tvaRate?: number
   tvaExemptionText?: string
   depositPercent?: number
+  deliveryChoices?: Array<{ label: string; description?: string; price: number }>
+  selectedDelivery?: { label?: string; price?: number; chosenAt?: string }
   pdfNotes?: string
 }
 
@@ -60,7 +63,9 @@ export default async function QuoteAcceptPage({
       _id, numero, status, documentType, validUntil, _createdAt,
       customer, shippingAddress, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate, tvaExemptionText, depositPercent, pdfNotes
+      shippingFee, options, tvaRate, tvaExemptionText, depositPercent,
+      deliveryChoices[]{ label, description, price }, selectedDelivery,
+      pdfNotes
     }`,
     { id: uid },
   )
@@ -68,8 +73,18 @@ export default async function QuoteAcceptPage({
   if (!quote) notFound()
 
   const tvaRate = quote.tvaRate ?? 20
-  const shippingFee = quote.shippingFee ?? 0
   const options = quote.options ?? []
+
+  // Formules de livraison au choix : le client sélectionne la sienne
+  // plus bas, les totaux sont alors calculés côté client.
+  const deliveryChoices = quote.deliveryChoices ?? []
+  const hasDeliveryChoices = deliveryChoices.length > 0
+  const chosenIndex = quote.selectedDelivery?.label
+    ? deliveryChoices.findIndex((c) => c.label === quote.selectedDelivery?.label)
+    : -1
+  const shippingFee = hasDeliveryChoices
+    ? (quote.selectedDelivery?.price ?? 0)
+    : (quote.shippingFee ?? 0)
 
   // Unifie legacy 'product' (1 ligne) et nouveau 'lineItems' (N lignes)
   // en une seule liste pour l'affichage tableau.
@@ -223,16 +238,28 @@ export default async function QuoteAcceptPage({
             ))}
             <tr className="bg-ivory-dark/40">
               <td className="px-6 py-3 text-ink">
-                {shippingFee > 0
-                  ? `Livraison à ${quote.shippingAddress.city}`
-                  : `Retrait au showroom — La Penne-sur-Huveaune (gratuit)`}
+                {hasDeliveryChoices
+                  ? quote.selectedDelivery?.label
+                    ? `${quote.selectedDelivery.label} — ${quote.shippingAddress.city}`
+                    : 'Livraison — formule à choisir ci-dessous'
+                  : shippingFee > 0
+                    ? `Livraison à ${quote.shippingAddress.city}`
+                    : `Retrait au showroom — La Penne-sur-Huveaune (gratuit)`}
               </td>
               <td className="px-3 py-3 text-center text-ink">1</td>
               <td className="px-3 py-3 text-right text-ink">
-                {shippingFee > 0 ? eur(shippingFee) : '—'}
+                {hasDeliveryChoices && !quote.selectedDelivery?.label
+                  ? '—'
+                  : shippingFee > 0
+                    ? eur(shippingFee)
+                    : '—'}
               </td>
               <td className="px-6 py-3 text-right text-ink font-medium">
-                {shippingFee > 0 ? eur(shippingFee) : 'Offert'}
+                {hasDeliveryChoices && !quote.selectedDelivery?.label
+                  ? 'Selon formule'
+                  : shippingFee > 0
+                    ? eur(shippingFee)
+                    : 'Offert'}
               </td>
             </tr>
             {options.map((opt, i) => (
@@ -244,6 +271,9 @@ export default async function QuoteAcceptPage({
               </tr>
             ))}
           </tbody>
+          {/* Totaux : calculés dans le sélecteur quand le client doit
+              encore choisir sa formule de livraison. */}
+          {hasDeliveryChoices && !quote.selectedDelivery?.label ? null : (
           <tfoot className="border-t border-line text-sm">
             {tvaRate !== 0 && (
               <>
@@ -289,6 +319,7 @@ export default async function QuoteAcceptPage({
               </>
             )}
           </tfoot>
+          )}
         </table>
       </div>
 
@@ -314,22 +345,40 @@ export default async function QuoteAcceptPage({
         </a>
       </div>
 
-      {/* CTA accepter / payer */}
-      {!isAccepted && !isRefused && !isExpired && (
-        <div className="mt-10">
-          <AcceptQuoteButton
-            quoteUid={quote._id}
-            numero={quote.numero}
-            totalTtc={totalTtc}
-            customerEmail={quote.customer.email}
-            documentType={quote.documentType}
-            depositPercent={depositPercent ?? undefined}
-          />
-          <p className="mt-4 text-center text-xs text-ink-mute leading-relaxed">
-            Paiement sécurisé via Stripe. En cliquant, vous acceptez les CGV jointes
-            au devis PDF. Aucune signature manuscrite requise (loi PACTE).
-          </p>
-        </div>
+      {/* Formules de livraison au choix + totaux + paiement */}
+      {hasDeliveryChoices ? (
+        <DeliveryChoiceSelector
+          quoteUid={quote._id}
+          numero={quote.numero}
+          customerEmail={quote.customer.email}
+          documentType={quote.documentType}
+          depositPercent={depositPercent ?? undefined}
+          tvaRate={tvaRate}
+          baseHt={linesTotal + optionsTotal}
+          choices={deliveryChoices}
+          initialIndex={chosenIndex >= 0 ? chosenIndex : undefined}
+          payable={!isAccepted && !isRefused && !isExpired}
+        />
+      ) : (
+        /* CTA accepter / payer — tarif de livraison unique */
+        !isAccepted &&
+        !isRefused &&
+        !isExpired && (
+          <div className="mt-10">
+            <AcceptQuoteButton
+              quoteUid={quote._id}
+              numero={quote.numero}
+              totalTtc={totalTtc}
+              customerEmail={quote.customer.email}
+              documentType={quote.documentType}
+              depositPercent={depositPercent ?? undefined}
+            />
+            <p className="mt-4 text-center text-xs text-ink-mute leading-relaxed">
+              Paiement sécurisé via Stripe. En cliquant, vous acceptez les CGV jointes
+              au devis PDF. Aucune signature manuscrite requise (loi PACTE).
+            </p>
+          </div>
+        )
       )}
 
       {/* Footer infos */}

@@ -45,6 +45,7 @@ type SanityQuote = {
   options?: Array<{ label?: string; price?: number }>
   tvaRate?: number
   tvaExemptionText?: string
+  selectedDelivery?: { label?: string; price?: number }
   blDate?: string
   blShowPrices?: boolean
   blCarrier?: string
@@ -167,10 +168,25 @@ export async function GET(
     },
     shippingAddress: quote.shippingAddress,
     items,
-    options: (quote.options || [])
-      .filter((o) => o?.label)
-      .map((o) => ({ label: o.label as string, price: o.price ?? 0 })),
-    shippingFee: quote.shippingFee ?? 0,
+    options: [
+      // Formule de livraison retenue par le client : visible sur le bon
+      // pour que le livreur sache ce qui a été payé (portage, étage,
+      // montage...).
+      ...(quote.selectedDelivery?.label
+        ? [
+            {
+              label: quote.selectedDelivery.label,
+              price: quote.selectedDelivery.price ?? 0,
+            },
+          ]
+        : []),
+      ...(quote.options || [])
+        .filter((o) => o?.label)
+        .map((o) => ({ label: o.label as string, price: o.price ?? 0 })),
+    ],
+    // La formule choisie est déjà listée en prestation ci-dessus : on
+    // ne la recompte pas dans les frais de livraison.
+    shippingFee: quote.selectedDelivery?.label ? 0 : (quote.shippingFee ?? 0),
     tvaRate: quote.tvaRate ?? 20,
     tvaExemptionText: quote.tvaExemptionText,
     mapsQrDataUrl,

@@ -244,9 +244,71 @@ export const quote = {
       title: 'Frais de livraison HT (€)',
       type: 'number',
       group: 'fees',
-      description: 'À renseigner selon l\'adresse de livraison du client.',
+      description:
+        'Tarif unique de livraison. Ignoré si tu proposes plusieurs formules au choix ci-dessous.',
       initialValue: 0,
       validation: (R: Rule) => R.min(0),
+    },
+    {
+      name: 'deliveryChoices',
+      title: 'Formules de livraison au choix du client',
+      type: 'array',
+      group: 'fees',
+      description:
+        'Laisse vide pour un tarif unique (champ ci-dessus). Sinon, propose 2 à 4 formules : le client choisit la sienne sur sa page de devis, et le prix correspondant s\'ajoute au total avant paiement.',
+      of: [
+        {
+          type: 'object',
+          name: 'deliveryChoice',
+          fields: [
+            {
+              name: 'label',
+              title: 'Formule',
+              type: 'string',
+              validation: (R: Rule) => R.required(),
+              description: 'Ex : Livraison au pied de l\'immeuble',
+            },
+            {
+              name: 'description',
+              title: 'Précision (facultatif)',
+              type: 'string',
+              description:
+                'Ce que comprend la formule. Ex : Déchargement devant l\'entrée, portage non inclus.',
+            },
+            {
+              name: 'price',
+              title: 'Prix HT (€)',
+              type: 'number',
+              validation: (R: Rule) => R.required().min(0),
+            },
+          ],
+          preview: {
+            select: { title: 'label', subtitle: 'price' },
+            prepare({ title, subtitle }: { title?: string; subtitle?: number }) {
+              return {
+                title: title || '(formule)',
+                subtitle: `${subtitle ?? 0} € HT`,
+              }
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'selectedDelivery',
+      title: 'Formule choisie par le client',
+      type: 'object',
+      group: 'fees',
+      readOnly: true,
+      description:
+        'Renseigné automatiquement quand le client valide son choix sur la page du devis.',
+      hidden: ({ document }: { document?: { selectedDelivery?: { label?: string } } }) =>
+        !document?.selectedDelivery?.label,
+      fields: [
+        { name: 'label', title: 'Formule', type: 'string' },
+        { name: 'price', title: 'Prix HT (€)', type: 'number' },
+        { name: 'chosenAt', title: 'Choisie le', type: 'datetime' },
+      ],
     },
     {
       name: 'options',
