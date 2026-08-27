@@ -17,6 +17,7 @@ import {
   downloadInvoicePdfAction,
 } from './sanity/actions/downloadQuotePdfActions'
 import { Dashboard } from './sanity/dashboard/Dashboard'
+import { ClientsDatabase } from './sanity/dashboard/ClientsDatabase'
 import {
   ProductGridView,
   CategoryGridView,
@@ -132,6 +133,16 @@ export default defineConfig({
                 S.component(Dashboard)
                   .id('dashboard')
                   .title('Tableau de bord — Mobilier Malin'),
+              ),
+            // Base clients — vue consolidée (commandes + devis + contacts)
+            S.listItem()
+              .id('clients')
+              .title('Base clients')
+              .icon(() => '👥')
+              .child(
+                S.component(ClientsDatabase)
+                  .id('clients')
+                  .title('Base clients — Mobilier Malin'),
               ),
             S.divider(),
             // Singleton : Réglages du site
