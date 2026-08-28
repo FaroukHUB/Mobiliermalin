@@ -141,3 +141,19 @@
   .ticker-track { animation: none; }
   .ticker-bar { overflow-x: auto; }
 }
+
+/* ─── Emblème planète du bloc "Notre engagement" ─────────────
+   Rotation très lente du cycle de réemploi : présence discrète,
+   jamais distrayante. Immobile si les animations sont réduites. */
+@keyframes planet-cycle-spin {
+  to { transform: rotate(360deg); }
+}
+
+.planet-cycle {
+  transform-origin: 130px 130px;
+  animation: planet-cycle-spin 52s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planet-cycle { animation: none; }
+}
