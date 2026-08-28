@@ -117,3 +117,27 @@
            placeholder:text-ink-mute/60 transition;
   }
 }
+
+/* ─── Bandeau défilant (AnnouncementTicker) ─────────────────
+   La piste contient deux fois la même séquence de messages ;
+   la translater de -50 % ramène exactement au point de départ,
+   d'où une boucle continue sans saut. */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  animation-name: ticker-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.ticker-bar:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+  .ticker-bar { overflow-x: auto; }
+}

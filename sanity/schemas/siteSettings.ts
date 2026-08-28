@@ -11,8 +11,62 @@ export const siteSettings = {
     { name: 'pagesHero', title: 'Hero des pages internes' },
     { name: 'navigation', title: 'Navigation (menu)' },
     { name: 'promo', title: '🎉 Popup promo' },
+    { name: 'ticker', title: '📢 Bandeau défilant' },
   ],
   fields: [
+    // ─────────── Bandeau défilant (haut de toutes les pages) ───────────
+    {
+      name: 'tickerEnabled',
+      title: 'Afficher le bandeau défilant',
+      type: 'boolean',
+      group: 'ticker',
+      initialValue: true,
+      description:
+        'Bandeau noir en haut de toutes les pages, qui fait défiler vos engagements sur une seule ligne. Il s\'arrête quand le visiteur passe la souris dessus.',
+    },
+    {
+      name: 'tickerItems',
+      title: 'Messages du bandeau',
+      type: 'array',
+      group: 'ticker',
+      description:
+        'Un message par ligne. Ajoute, retire ou réordonne librement : le défilement s\'adapte. Sans message, le bandeau ne s\'affiche pas.',
+      of: [
+        {
+          type: 'object',
+          name: 'tickerItem',
+          fields: [
+            {
+              name: 'label',
+              title: 'Message',
+              type: 'string',
+              validation: (R: Rule) => R.required(),
+              description: 'Ex : Atelier local',
+            },
+            {
+              name: 'detail',
+              title: 'Précision (facultatif)',
+              type: 'string',
+              description:
+                'Affichée en gris à la suite du message. Ex : La Penne-sur-Huveaune',
+            },
+          ],
+          preview: {
+            select: { title: 'label', subtitle: 'detail' },
+          },
+        },
+      ],
+    },
+    {
+      name: 'tickerSpeed',
+      title: 'Durée d\'un tour (secondes)',
+      type: 'number',
+      group: 'ticker',
+      initialValue: 38,
+      validation: (R: Rule) => R.min(10).max(180),
+      description:
+        'Plus le nombre est grand, plus le défilement est lent. 38 secondes par défaut.',
+    },
     // ─────────── Popup promo (page d'accueil) ───────────
     {
       name: 'promoPopupEnabled',

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import { Header } from '@/components/layout/Header'
+import { AnnouncementTicker } from '@/components/layout/AnnouncementTicker'
 import { Footer } from '@/components/layout/Footer'
 import { OrganizationSchema } from '@/components/seo/OrganizationSchema'
 import { CookieConsent } from '@/components/analytics/CookieConsent'
@@ -187,6 +188,14 @@ export default async function RootLayout({
           Aller au contenu
         </a>
         <CartProvider>
+          {/* Bandeau défilant — Réglages du site → 📢 Bandeau défilant */}
+          {settings.tickerEnabled !== false &&
+            (settings.tickerItems?.length ?? 0) > 0 && (
+              <AnnouncementTicker
+                items={settings.tickerItems!}
+                speed={settings.tickerSpeed ?? 38}
+              />
+            )}
           <Header logo={logoLight} categories={menuCategories} showcase={menuShowcase} />
           <main id="main">{children}</main>
           <Footer logo={logoDark} />

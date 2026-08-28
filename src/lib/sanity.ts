@@ -663,6 +663,10 @@ export type SanitySiteSettings = {
   promoPopupLink?: string
   promoPopupButtonLabel?: string
   promoPopupCampaignId?: string
+  // Bandeau défilant (haut de toutes les pages)
+  tickerEnabled?: boolean
+  tickerItems?: Array<{ label: string; detail?: string }>
+  tickerSpeed?: number
 }
 
 /**
@@ -677,7 +681,8 @@ export async function getSiteSettings(): Promise<SanitySiteSettings> {
       manifesteImage, lldSectionImage, showroomImage,
       lldHeroImage, rseHeroImage,
       promoPopupEnabled, promoPopupImage, promoPopupLink,
-      promoPopupButtonLabel, promoPopupCampaignId
+      promoPopupButtonLabel, promoPopupCampaignId,
+      tickerEnabled, tickerItems[]{ label, detail }, tickerSpeed
     }`,
     {},
     null,
