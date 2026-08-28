@@ -17,6 +17,10 @@ export type ProductCardData = {
   imageUrl?: string
   imageAlt?: string
   status?: string
+  /** Quantité restante — alimente « Plus qu'un exemplaire ». */
+  stock?: number
+  /** Date d'ajout ISO — alimente le badge « Nouveau ». */
+  createdAt?: string
 }
 
 const CONDITION_LABELS: Record<string, string> = {
@@ -48,6 +52,15 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   const discountPercent = discountReference
     ? Math.round((1 - displayPrice / discountReference) * 100)
     : 0
+
+  // Badges calculés sur des données réelles, jamais sur une urgence
+  // fabriquée : une seule pièce restante, ou un ajout de moins de
+  // 30 jours. Sans l'information, aucun badge ne s'affiche.
+  const isLastOne = isAvailable && product.stock === 1
+  const isNew =
+    isAvailable &&
+    !!product.createdAt &&
+    Date.now() - new Date(product.createdAt).getTime() < 30 * 24 * 60 * 60 * 1000
 
   return (
     <Link
@@ -82,6 +95,21 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         {discountPercent > 0 && (
           <div className="absolute top-3.5 right-3.5 bg-promo text-ivory text-[0.65rem] uppercase tracking-widest px-2.5 py-1 font-medium">
             −{discountPercent} %
+          </div>
+        )}
+
+        {(isLastOne || isNew) && (
+          <div className="absolute top-12 left-3.5 flex flex-col items-start gap-1.5">
+            {isLastOne && (
+              <span className="bg-gold-dark text-ivory text-[0.6rem] uppercase tracking-widest px-2 py-1 font-medium">
+                Dernière pièce
+              </span>
+            )}
+            {isNew && !isLastOne && (
+              <span className="bg-[#35805A] text-ivory text-[0.6rem] uppercase tracking-widest px-2 py-1 font-medium">
+                Nouveau
+              </span>
+            )}
           </div>
         )}
 
@@ -144,6 +172,19 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             </span>
           )}
         </div>
+        {isAvailable && typeof product.stock === 'number' && (
+          <p
+            className={`mt-2 text-xs ${
+              product.stock === 1 ? 'text-promo font-medium' : 'text-ink-mute'
+            }`}
+          >
+            {product.stock === 0
+              ? 'Sur commande'
+              : product.stock === 1
+                ? 'Plus qu\'un exemplaire'
+                : `${product.stock} en stock`}
+          </p>
+        )}
       </div>
     </Link>
   )

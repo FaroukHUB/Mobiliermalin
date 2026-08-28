@@ -127,6 +127,8 @@ function sanityToCard(p: SanityProduct): ProductCardData {
     imageUrl,
     imageAlt: firstImage?.alt || p.name,
     status: 'published',
+    stock: p.stock,
+    createdAt: p._createdAt,
   }
 }
 
