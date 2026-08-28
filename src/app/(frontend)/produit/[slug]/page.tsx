@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { type PortableTextBlock } from 'next-sanity'
 import { Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
-import { getProductBySlug, getAllProductSlugs, getRelatedProducts, urlFor } from '@/lib/sanity'
+import { getProductBySlugIncludingSold, getAllProductSlugs, getRelatedProducts, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
 import { buildProductSchema } from '@/lib/product-schema'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
@@ -41,7 +41,7 @@ export async function generateMetadata({
   params: Promise<Params>
 }): Promise<Metadata> {
   const { slug } = await params
-  const product = await getProductBySlug(slug)
+  const product = await getProductBySlugIncludingSold(slug)
   if (!product) return { title: 'Produit introuvable' }
 
   const firstImage = product.images?.[0]
@@ -78,7 +78,7 @@ export default async function ProductPage({
   params: Promise<Params>
 }) {
   const { slug } = await params
-  const product = await getProductBySlug(slug)
+  const product = await getProductBySlugIncludingSold(slug)
   if (!product) notFound()
 
   // primaryCategory (O3) prioritaire pour breadcrumb & URL canonique — évite
@@ -112,7 +112,10 @@ export default async function ProductPage({
   // BreadcrumbList schema : émis par le composant <Breadcrumbs> ci-dessous
   // via lib/breadcrumbs.productBreadcrumb() — source unique de vérité.
 
-  const isInStock = product.stock > 0
+  // Pièce vendue : la fiche reste en ligne (le stock tourne, le modèle
+  // peut revenir) mais on remplace l'achat par une mise en relation.
+  const isSold = product.status === 'sold'
+  const isInStock = !isSold && product.stock > 0
   const hasSale = !!product.salePrice && product.salePrice < product.price
   const displayPrice = hasSale ? product.salePrice! : product.price
   const discountReference =
@@ -236,8 +239,35 @@ export default async function ProductPage({
               )}
             </div>
             <p className="mt-1 text-xs text-ink-mute uppercase tracking-widest">
-              {isInStock ? `${product.stock} en stock` : 'Sur commande'}
+              {isSold
+                ? 'Cette pièce a trouvé preneur'
+                : isInStock
+                  ? `${product.stock} en stock`
+                  : 'Sur commande'}
             </p>
+
+            {isSold && (
+              <div className="mt-6 bg-ivory-dark border-l-4 border-gold p-5">
+                <p className="font-serif text-lg text-ink">
+                  Cette pièce est partie, mais notre stock tourne
+                </p>
+                <p className="mt-2 text-sm text-ink-soft leading-relaxed">
+                  Nous récupérons régulièrement du mobilier professionnel du
+                  même type. Dites-nous ce que vous cherchez : nous vous
+                  prévenons dès qu&apos;un modèle équivalent entre à
+                  l&apos;atelier, ou nous vous proposons une pièce comparable
+                  déjà disponible.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link href="/contact" className="btn-gold">
+                    Demander un modèle équivalent
+                  </Link>
+                  <a href="tel:+33676617053" className="btn-outline">
+                    06 76 61 70 53
+                  </a>
+                </div>
+              </div>
+            )}
 
             {product.shortDescription && (
               <p className="mt-6 text-ink-soft leading-relaxed">{product.shortDescription}</p>
@@ -267,7 +297,7 @@ export default async function ProductPage({
                   price={displayPrice}
                 />
               </>
-            ) : (
+            ) : isSold ? null : (
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link href="/contact" className="btn-gold">Demander la disponibilité</Link>
                 <Link href="/contact" className="btn-outline">Poser une question</Link>

@@ -41,6 +41,10 @@ export const CONDITION_TO_GMC: Record<string, 'new' | 'refurbished' | 'used'> = 
  * le stock (>0 = InStock, sinon OutOfStock).
  */
 export function resolveSchemaOrgAvailability(product: SanityProduct): string {
+  // Pièce vendue : la fiche reste en ligne, mais Google doit savoir
+  // qu'elle n'est plus achetable en l'état (évite un extrait enrichi
+  // trompeur et un signal négatif).
+  if (product.status === 'sold') return 'https://schema.org/SoldOut'
   const status = product.availabilityStatus
   switch (status) {
     case 'inStock':

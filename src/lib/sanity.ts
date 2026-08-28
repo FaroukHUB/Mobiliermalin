@@ -244,6 +244,27 @@ export async function getProductBySlug(slug: string): Promise<SanityProduct | nu
 }
 
 /**
+ * Produit par slug, en incluant les pièces VENDUES.
+ *
+ * Le stock tourne : une pièce vendue peut revenir, et un visiteur venu
+ * de Google sur une fiche vendue doit trouver une page utile (pièces
+ * similaires, demande d'équivalent) plutôt qu'une erreur 404 qui fait
+ * perdre le positionnement acquis.
+ *
+ * Les produits `archived` restent volontairement exclus : c'est le
+ * statut à utiliser pour retirer définitivement une fiche du site.
+ */
+export async function getProductBySlugIncludingSold(
+  slug: string,
+): Promise<SanityProduct | null> {
+  return safeFetch<SanityProduct | null>(
+    `*[_type == "product" && status in ["published", "sold"] && defined(slug.current) && slug.current == $slug][0] { ${PRODUCT_FIELDS} }`,
+    { slug },
+    null,
+  )
+}
+
+/**
  * Produits liés (cross-sell) — 4 pièces de la même catégorie,
  * en excluant le produit courant. Utilisé sur la fiche produit
  * pour renforcer le maillage interne et la profondeur de session.
@@ -416,8 +437,11 @@ export async function getLocalPage(pageKey: string): Promise<SanityLocalPage> {
  * Tous les slugs (pour generateStaticParams).
  */
 export async function getAllProductSlugs(): Promise<string[]> {
+  // Inclut les pièces vendues : leur fiche reste en ligne (voir
+  // getProductBySlugIncludingSold), elle doit donc être pré-rendue et
+  // présente dans le sitemap pour conserver son référencement.
   return safeFetch<{ slug: { current: string } }[]>(
-    `*[_type == "product" && status == "published" && defined(slug.current)]{ slug }`,
+    `*[_type == "product" && status in ["published", "sold"] && defined(slug.current)]{ slug }`,
     {},
     [],
   ).then((docs) => docs.map((d) => d.slug.current).filter(Boolean))

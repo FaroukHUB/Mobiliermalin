@@ -109,7 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Récupère aussi les _updatedAt pour avoir des lastModified justes
     const productUpdates = await sanityClient
       .fetch<{ slug: { current: string }; _updatedAt: string }[]>(
-        `*[_type == "product" && status == "published"] { slug, _updatedAt }`,
+        `*[_type == "product" && status in ["published", "sold"]] { slug, _updatedAt }`,
       )
       .catch(() => [] as { slug: { current: string }; _updatedAt: string }[])
 
