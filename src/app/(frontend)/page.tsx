@@ -17,8 +17,9 @@ import { BlogSection } from '@/components/sections/BlogSection'
 import { GuidesSection } from '@/components/sections/GuidesSection'
 import { NewsletterSection } from '@/components/sections/NewsletterSection'
 import { HomePromoPopup } from '@/components/promo/HomePromoPopup'
+import { LatestArrivals } from '@/components/sections/LatestArrivals'
 import { SHOP_URL } from '@/lib/config'
-import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProducts, getExceptionProducts, urlFor, type SanityImage } from '@/lib/sanity'
+import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProducts, getExceptionProducts, getLatestProducts, urlFor, type SanityImage } from '@/lib/sanity'
 
 export const revalidate = 60
 
@@ -100,12 +101,20 @@ function sanityImageToMedia(image?: SanityImage, alt?: string): { url: string; a
 }
 
 export default async function HomePage() {
-  const [sanitySlides, settings, sanityCategories, featuredProducts, exceptionProducts] = await Promise.all([
+  const [
+    sanitySlides,
+    settings,
+    sanityCategories,
+    featuredProducts,
+    exceptionProducts,
+    latestProducts,
+  ] = await Promise.all([
     getHeroSlides(),
     getSiteSettings(),
     getTopLevelCategories(),
     getFeaturedProducts(8),
     getExceptionProducts(3),
+    getLatestProducts(4),
   ])
 
   const slides: HeroSlide[] = sanitySlides.length
@@ -199,19 +208,31 @@ export default async function HomePage() {
         autoplayDelay={(settings.heroAutoplayDelay ?? 5) * 1000}
         stopOnHover={settings.heroStopOnHover ?? false}
       />
-      <FeaturedProducts products={featuredProducts} />
+      {/* ─────────── VENDRE ───────────
+          Les blocs commerce passent avant le récit : catégories,
+          coups de cœur, arrivages. Aucune section n'est retirée,
+          seul l'ordre change. */}
       <ReassuranceBar />
-      <ManifesteSection image={sanityImageToMedia(settings.manifesteImage, 'Notre manifeste')} />
+      <CategoriesGrid categories={sanityCategories} />
+      <FeaturedProducts products={featuredProducts} />
+      <LatestArrivals products={latestProducts} />
       <BrandsSection />
       <ExceptionPieces products={exceptionProducts} />
-      <CategoriesGrid categories={sanityCategories} />
-      <LLDSection image={sanityImageToMedia(settings.lldSectionImage, 'Location longue durée')} />
-      <RSESection />
-      <ServicesSection />
+
+      {/* ─────────── RASSURER ───────────
+          Le savoir-faire atelier et l'engagement écologique, juste
+          après les produits, là où le doute se lève. */}
       <ProcessSection />
-      <ShowroomSection image={sanityImageToMedia(settings.showroomImage, 'Showroom Aubagne')} />
       <ImpactSection />
       <TestimonialsSection />
+      <ShowroomSection image={sanityImageToMedia(settings.showroomImage, 'Showroom Aubagne')} />
+
+      {/* ─────────── APPROFONDIR ───────────
+          Le récit de marque, les services et l'éditorial. */}
+      <RSESection />
+      <ManifesteSection image={sanityImageToMedia(settings.manifesteImage, 'Notre manifeste')} />
+      <ServicesSection />
+      <LLDSection image={sanityImageToMedia(settings.lldSectionImage, 'Location longue durée')} />
       <GuidesSection />
       <BlogSection />
       <NewsletterSection />
