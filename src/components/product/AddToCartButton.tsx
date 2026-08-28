@@ -7,7 +7,12 @@ import { useCart, type CartItem } from '@/lib/cart-context'
 
 type Props = {
   product: Omit<CartItem, 'quantity'>
-  variant?: 'primary' | 'inline' // primary : gros bouton fiche produit ; inline : discret dans une carte
+  /**
+   * primary : gros bouton + quantité sur la fiche produit
+   * card    : bouton pleine largeur, permanent, sous le prix d'une carte
+   * inline  : pastille discrète en surimpression sur une image
+   */
+  variant?: 'primary' | 'card' | 'inline'
   className?: string
 }
 
@@ -35,6 +40,35 @@ export function AddToCartButton({
     setJustAdded(true)
     // Reset l'état après 2s pour que le bouton redevienne cliquable normalement
     setTimeout(() => setJustAdded(false), 2000)
+  }
+
+  if (variant === 'card') {
+    return (
+      <button
+        type="button"
+        onClick={handleAdd}
+        aria-label={alreadyInCart ? 'Déjà au panier' : 'Ajouter au panier'}
+        className={`w-full inline-flex items-center justify-center gap-2 py-2.5 text-[0.7rem] uppercase tracking-widest font-semibold transition-colors ${
+          justAdded || alreadyInCart
+            ? 'bg-ink text-ivory'
+            : 'bg-gold text-ivory hover:bg-gold-dark'
+        } ${className}`}
+      >
+        {justAdded ? (
+          <>
+            <Check className="h-4 w-4" strokeWidth={2} /> Ajouté au panier
+          </>
+        ) : alreadyInCart ? (
+          <>
+            <Check className="h-4 w-4" strokeWidth={1.5} /> Déjà au panier
+          </>
+        ) : (
+          <>
+            <ShoppingBag className="h-4 w-4" strokeWidth={1.5} /> Ajouter au panier
+          </>
+        )}
+      </button>
+    )
   }
 
   if (variant === 'inline') {

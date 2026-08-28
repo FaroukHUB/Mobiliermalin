@@ -113,27 +113,12 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </div>
         )}
 
-        {/* Actions au hover : ajouter au panier + voir produit */}
+        {/* Au survol : accès rapide à la fiche. L'ajout au panier est
+            un bouton permanent plus bas — invisible au survol, il
+            restait inaccessible sur mobile. */}
         {isAvailable && product.slug && (
-          <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-            <AddToCartButton
-              variant="inline"
-              product={{
-                id: String(product.id),
-                slug: product.slug,
-                name: product.title,
-                price: product.salePrice && product.salePrice < product.price
-                  ? product.salePrice
-                  : product.price,
-                imageUrl: product.imageUrl,
-                imageAlt: product.imageAlt || product.title,
-                brand: product.brandName,
-                conditionLabel: conditionLabel || undefined,
-              }}
-            />
-            <div className="h-8 w-8 bg-ivory shadow-soft flex items-center justify-center">
-              <ArrowUpRight className="h-4 w-4 text-ink" strokeWidth={1.5} />
-            </div>
+          <div className="absolute bottom-3.5 right-3.5 h-9 w-9 translate-y-2 items-center justify-center bg-ivory opacity-0 shadow-soft transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hidden md:flex">
+            <ArrowUpRight className="h-4 w-4 text-ink" strokeWidth={1.5} />
           </div>
         )}
       </div>
@@ -184,6 +169,28 @@ export function ProductCard({ product }: { product: ProductCardData }) {
                 ? 'Plus qu\'un exemplaire'
                 : `${product.stock} en stock`}
           </p>
+        )}
+
+        {isAvailable && product.slug && (
+          <div className="mt-4">
+            <AddToCartButton
+              variant="card"
+              product={{
+                id: String(product.id),
+                slug: product.slug,
+                name: product.title,
+                price:
+                  product.salePrice && product.salePrice < product.price
+                    ? product.salePrice
+                    : product.price,
+                imageUrl: product.imageUrl,
+                imageAlt: product.imageAlt || product.title,
+                maxStock: product.stock,
+                brand: product.brandName,
+                conditionLabel: conditionLabel || undefined,
+              }}
+            />
+          </div>
         )}
       </div>
     </Link>
