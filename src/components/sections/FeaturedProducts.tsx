@@ -53,7 +53,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
 
   return (
     <section className="bg-ivory border-b border-line">
-      <div className="container py-20 md:py-28">
+      <div className="container pt-10 md:pt-14 pb-20 md:pb-28">
         <Reveal>
           <div className="text-center max-w-2xl mx-auto mb-12">
             <p className="eyebrow">Coups de cœur</p>

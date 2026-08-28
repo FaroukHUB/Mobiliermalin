@@ -60,7 +60,7 @@ export function CategoriesGrid({ categories = [] }: CategoriesGridProps = {}) {
       : STATIC_CATEGORIES.map(staticToDisplay)
 
   return (
-    <section className="container py-20 md:py-28">
+    <section className="container pt-20 md:pt-28 pb-10 md:pb-14">
       <Reveal>
         <div className="text-center max-w-2xl mx-auto mb-14">
           <p className="eyebrow">Catalogue</p>
