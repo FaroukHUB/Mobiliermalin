@@ -15,6 +15,13 @@ import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-reac
  *
  * L'accroche par point (scroll-snap) aligne toujours une carte sur le
  * bord gauche : pas de vignette coupée en début de piste.
+ *
+ * Avance seule d'une carte toutes les 4 secondes, en boucle. Elle se
+ * met en pause au survol, et s'arrête définitivement dès que le
+ * visiteur prend la main (flèche, glissement, molette, tabulation) :
+ * on ne lui reprend jamais le contrôle de ce qu'il regarde. Aucune
+ * animation pour qui a réduit les animations, et rien ne tourne quand
+ * l'onglet est en arrière-plan.
  */
 
 export type SliderCategory = {
@@ -30,6 +37,11 @@ export function CategoriesSlider({ items }: { items: SliderCategory[] }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [atStart, setAtStart] = useState(true)
   const [atEnd, setAtEnd] = useState(false)
+  // Le défilement automatique s'arrête définitivement dès que le
+  // visiteur prend la main : il sait ce qu'il regarde, on ne lui
+  // reprend pas le contrôle.
+  const [autoStopped, setAutoStopped] = useState(false)
+  const [hovered, setHovered] = useState(false)
 
   const updateEdges = useCallback(() => {
     const el = trackRef.current
@@ -50,7 +62,32 @@ export function CategoriesSlider({ items }: { items: SliderCategory[] }) {
     }
   }, [updateEdges])
 
+  // Avance d'une carte toutes les 4 secondes, revient au début en
+  // douceur une fois la dernière atteinte.
+  useEffect(() => {
+    if (autoStopped || hovered) return
+    if (typeof window !== 'undefined') {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+      if (reduced.matches) return
+    }
+    const timer = setInterval(() => {
+      const el = trackRef.current
+      if (!el) return
+      // Onglet en arrière-plan : inutile de faire tourner le carrousel
+      if (document.hidden) return
+      const card = el.firstElementChild as HTMLElement | null
+      const step = card ? card.offsetWidth + 16 : el.clientWidth * 0.3
+      const reachedEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8
+      el.scrollTo({
+        left: reachedEnd ? 0 : el.scrollLeft + step,
+        behavior: 'smooth',
+      })
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [autoStopped, hovered])
+
   const scrollBy = (direction: 1 | -1) => {
+    setAutoStopped(true)
     const el = trackRef.current
     if (!el) return
     // Un peu moins que la largeur visible : on garde une carte de repère.
@@ -58,7 +95,12 @@ export function CategoriesSlider({ items }: { items: SliderCategory[] }) {
   }
 
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocusCapture={() => setAutoStopped(true)}
+    >
       {/* Flèches — écrans larges uniquement, le tactile suffit ailleurs */}
       <div className="absolute -top-14 right-0 hidden items-center gap-2 md:flex">
         <button
@@ -94,6 +136,8 @@ export function CategoriesSlider({ items }: { items: SliderCategory[] }) {
 
       <div
         ref={trackRef}
+        onPointerDown={() => setAutoStopped(true)}
+        onWheel={() => setAutoStopped(true)}
         className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-1 md:gap-4"
       >
         {items.map((c) => (
