@@ -7,6 +7,7 @@ import { Store, Menu, X, ChevronDown, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SHOP_URL } from '@/lib/config'
 import { CartIcon } from './CartIcon'
+import { SiteSearch } from './SiteSearch'
 
 export type MenuCategory = {
   id: string
@@ -99,7 +100,7 @@ export function Header({ logo, categories = [], showcase = null }: HeaderProps =
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-40 w-full bg-ivory/90 backdrop-blur supports-[backdrop-filter]:bg-ivory/75 border-b border-line"
+      className="sticky top-0 z-40 w-full bg-ivory/90 backdrop-blur supports-[backdrop-filter]:bg-ivory/75 border-b border-line relative"
     >
       <div className="container flex items-center justify-between h-24 md:h-28">
         {/* Logo */}
@@ -225,6 +226,7 @@ export function Header({ logo, categories = [], showcase = null }: HeaderProps =
           >
             <Store className="h-5 w-5" strokeWidth={1.5} />
           </Link>
+          <SiteSearch />
           <CartIcon />
           <button
             type="button"

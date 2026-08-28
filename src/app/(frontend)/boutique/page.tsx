@@ -73,11 +73,83 @@ function groupByParent(categories: SanityCategory[]): FilterGroup[] {
   }))
 }
 
-export default async function BoutiquePage() {
-  const [products, sanityCategories] = await Promise.all([
+type SortKey = 'recent' | 'price-asc' | 'price-desc'
+
+/** Prix effectivement payé : le soldé s'il est actif, sinon le prix. */
+function effectivePrice(p: SanityProduct): number {
+  return p.salePrice && p.salePrice < p.price ? p.salePrice : p.price
+}
+
+export default async function BoutiquePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; tri?: string; marque?: string; budget?: string }>
+}) {
+  const params = await searchParams
+  const [allProducts, sanityCategories] = await Promise.all([
     getAllProducts(),
     getAllCategories(),
   ])
+
+  // ── Filtres appliqués sur le catalogue ──
+  const search = (params.q || '').trim().toLowerCase()
+  const brandFilter = (params.marque || '').trim()
+  const budget = (params.budget || '').trim()
+  const sort: SortKey =
+    params.tri === 'price-asc' || params.tri === 'price-desc'
+      ? params.tri
+      : 'recent'
+
+  // Marques réellement présentes au catalogue, pour ne proposer que
+  // des filtres qui donnent des résultats.
+  const availableBrands = [
+    ...new Set(allProducts.map((p) => p.brand).filter(Boolean) as string[]),
+  ].sort((a, b) => a.localeCompare(b, 'fr'))
+
+  let products = allProducts
+  if (search) {
+    products = products.filter((p) =>
+      [p.name, p.brand, p.shortDescription]
+        .filter(Boolean)
+        .some((v) => (v as string).toLowerCase().includes(search)),
+    )
+  }
+  if (brandFilter) {
+    products = products.filter((p) => p.brand === brandFilter)
+  }
+  if (budget === '-100') {
+    products = products.filter((p) => effectivePrice(p) < 100)
+  } else if (budget === '100-200') {
+    const inRange = (v: number) => v >= 100 && v <= 200
+    products = products.filter((p) => inRange(effectivePrice(p)))
+  } else if (budget === '200+') {
+    products = products.filter((p) => effectivePrice(p) > 200)
+  }
+
+  if (sort === 'price-asc') {
+    products = [...products].sort((a, b) => effectivePrice(a) - effectivePrice(b))
+  } else if (sort === 'price-desc') {
+    products = [...products].sort((a, b) => effectivePrice(b) - effectivePrice(a))
+  }
+
+  // Conserve les filtres actifs quand on change un seul critère
+  const buildHref = (patch: Record<string, string | undefined>) => {
+    const next = new URLSearchParams()
+    const merged = {
+      q: params.q,
+      tri: params.tri,
+      marque: params.marque,
+      budget: params.budget,
+      ...patch,
+    }
+    for (const [k, v] of Object.entries(merged)) {
+      if (v) next.set(k, v)
+    }
+    const qs = next.toString()
+    return qs ? `/boutique?${qs}` : '/boutique'
+  }
+
+  const hasActiveFilter = !!(search || brandFilter || budget || params.tri)
 
   // Si on a des catégories Sanity, on les groupe par parent.
   // Sinon, on fallback à plat sur les 7 catégories hardcodées.
@@ -147,16 +219,141 @@ export default async function BoutiquePage() {
       </section>
 
       {/* Produits */}
+      {/* Tri, budget et marque — l'état est dans l'URL, donc partageable
+          et indexable proprement */}
+      <section className="border-b border-line bg-ivory">
+        <div className="container py-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[0.65rem] uppercase tracking-widest text-ink-mute mr-1">
+              Trier
+            </span>
+            {(
+              [
+                { key: 'recent', label: 'Nouveautés' },
+                { key: 'price-asc', label: 'Prix croissant' },
+                { key: 'price-desc', label: 'Prix décroissant' },
+              ] as const
+            ).map((opt) => {
+              const active = sort === opt.key
+              return (
+                <Link
+                  key={opt.key}
+                  href={buildHref({ tri: opt.key === 'recent' ? undefined : opt.key })}
+                  className={`border px-3 py-1.5 text-xs transition-colors ${
+                    active
+                      ? 'border-ink bg-ink text-ivory'
+                      : 'border-line bg-ivory-light text-ink-soft hover:border-gold'
+                  }`}
+                >
+                  {opt.label}
+                </Link>
+              )
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[0.65rem] uppercase tracking-widest text-ink-mute mr-1">
+              Budget
+            </span>
+            {(
+              [
+                { key: '-100', label: 'Moins de 100 €' },
+                { key: '100-200', label: '100 à 200 €' },
+                { key: '200+', label: 'Plus de 200 €' },
+              ] as const
+            ).map((opt) => {
+              const active = budget === opt.key
+              return (
+                <Link
+                  key={opt.key}
+                  href={buildHref({ budget: active ? undefined : opt.key })}
+                  className={`border px-3 py-1.5 text-xs transition-colors ${
+                    active
+                      ? 'border-gold bg-gold/10 text-gold-dark font-medium'
+                      : 'border-line bg-ivory-light text-ink-soft hover:border-gold'
+                  }`}
+                >
+                  {opt.label}
+                </Link>
+              )
+            })}
+          </div>
+
+          {availableBrands.length > 1 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[0.65rem] uppercase tracking-widest text-ink-mute mr-1">
+                Marque
+              </span>
+              {availableBrands.slice(0, 8).map((b) => {
+                const active = brandFilter === b
+                return (
+                  <Link
+                    key={b}
+                    href={buildHref({ marque: active ? undefined : b })}
+                    className={`border px-3 py-1.5 text-xs transition-colors ${
+                      active
+                        ? 'border-gold bg-gold/10 text-gold-dark font-medium'
+                        : 'border-line bg-ivory-light text-ink-soft hover:border-gold'
+                    }`}
+                  >
+                    {b}
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+
+          {hasActiveFilter && (
+            <Link
+              href="/boutique"
+              className="ml-auto text-xs uppercase tracking-widest text-gold-dark underline underline-offset-4"
+            >
+              Tout effacer
+            </Link>
+          )}
+        </div>
+      </section>
+
       <section className="container py-16 md:py-20">
         <Reveal>
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
             <p className="text-sm text-ink-mute">
+              {search && (
+                <>
+                  Résultats pour «&nbsp;<strong className="text-ink">{search}</strong>&nbsp;» ·{' '}
+                </>
+              )}
               {products.length > 0
                 ? `${products.length} produit${products.length > 1 ? 's' : ''} disponible${products.length > 1 ? 's' : ''}`
-                : 'Catalogue en cours d\'enrichissement'}
+                : hasActiveFilter
+                  ? 'Aucun produit ne correspond'
+                  : 'Catalogue en cours d\'enrichissement'}
             </p>
           </div>
         </Reveal>
+
+        {products.length === 0 && hasActiveFilter && (
+          <Reveal>
+            <div className="bg-ivory-light border border-line p-10 text-center max-w-2xl mx-auto">
+              <p className="font-serif text-2xl text-ink">
+                Rien ne correspond à cette recherche
+              </p>
+              <p className="text-ink-mute mt-3 leading-relaxed">
+                Notre stock se renouvelle chaque semaine et tout n&apos;est pas
+                toujours en ligne. Dites-nous ce que vous cherchez, nous vous
+                répondons sous 24 h.
+              </p>
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/contact" className="btn-primary">
+                  Décrire ma recherche
+                </Link>
+                <Link href="/boutique" className="btn-outline">
+                  Voir tout le catalogue
+                </Link>
+              </div>
+            </div>
+          </Reveal>
+        )}
 
         {products.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
@@ -166,7 +363,7 @@ export default async function BoutiquePage() {
               </Reveal>
             ))}
           </div>
-        ) : (
+        ) : hasActiveFilter ? null : (
           <Reveal>
             <div className="bg-ivory-light border border-line p-10 md:p-16 text-center max-w-3xl mx-auto">
               <p className="eyebrow">Stock en constante évolution</p>
