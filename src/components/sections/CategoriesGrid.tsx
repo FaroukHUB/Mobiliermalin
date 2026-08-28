@@ -1,7 +1,5 @@
-import Link from 'next/link'
-import Image from 'next/image'
-import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/animations/Reveal'
+import { CategoriesSlider } from '@/components/sections/CategoriesSlider'
 import {
   CATEGORIES as STATIC_CATEGORIES,
   getCategoryBySlug,
@@ -11,7 +9,6 @@ import { urlFor, type SanityCategory } from '@/lib/sanity'
 type DisplayCategory = {
   slug: string
   label: string
-  description: string
   href: string
   fromPrice: string
   image: string
@@ -33,7 +30,6 @@ function sanityToDisplay(c: SanityCategory): DisplayCategory {
   return {
     slug,
     label: c.name,
-    description: c.description || staticData?.shortTagline || '',
     href: `/categorie/${slug}`,
     fromPrice: staticData?.fromPriceLabel || 'Découvrir',
     image: c.image
@@ -48,7 +44,6 @@ function staticToDisplay(c: (typeof STATIC_CATEGORIES)[number]): DisplayCategory
   return {
     slug: c.slug,
     label: c.name,
-    description: c.shortTagline,
     href: `/categorie/${c.slug}`,
     fromPrice: c.fromPriceLabel,
     image: c.fallbackImage,
@@ -82,63 +77,8 @@ export function CategoriesGrid({ categories = [] }: CategoriesGridProps = {}) {
         </div>
       </Reveal>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-        {displayed.map((c, i) => (
-          <Reveal key={c.slug} delay={i * 60}>
-            <Link
-              href={c.href}
-              className="group block bg-ivory-light border border-line hover:border-gold transition-colors duration-300"
-            >
-              <div className="relative aspect-square overflow-hidden bg-ivory-dark">
-                <Image
-                  src={c.image}
-                  alt={c.imageAlt}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
-                />
-                <div className="absolute bottom-3 right-3 h-10 w-10 bg-ivory translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-                  <ArrowUpRight className="h-4 w-4 text-ink" strokeWidth={1.5} />
-                </div>
-              </div>
-              <div className="p-5">
-                <p className="text-[0.7rem] uppercase tracking-widest text-gold-dark font-medium">
-                  {c.fromPrice}
-                </p>
-                <h3 className="font-serif text-lg md:text-xl text-ink mt-1.5 leading-tight">
-                  {c.label}
-                </h3>
-              </div>
-            </Link>
-          </Reveal>
-        ))}
+      <CategoriesSlider items={displayed} />
 
-        {/* Card "Voir tout" */}
-        <Reveal delay={displayed.length * 60}>
-          <Link
-            href="/boutique"
-            className="group flex flex-col bg-ink text-ivory border border-ink hover:bg-gold-dark hover:border-gold-dark transition-colors duration-300 h-full"
-          >
-            <div className="aspect-square flex items-center justify-center">
-              <ArrowRight
-                className="h-10 w-10 text-gold group-hover:text-ivory group-hover:translate-x-1 transition"
-                strokeWidth={1.25}
-              />
-            </div>
-            <div className="p-5 mt-auto">
-              <p className="text-[0.7rem] uppercase tracking-widest text-gold font-medium group-hover:text-ivory">
-                Catalogue complet
-              </p>
-              <h3 className="font-serif text-lg md:text-xl mt-1.5 leading-tight text-ivory">
-                Voir tous nos produits
-              </h3>
-              <p className="text-xs text-ivory/70 mt-1.5 leading-relaxed">
-                Recherche, filtres, panier
-              </p>
-            </div>
-          </Link>
-        </Reveal>
-      </div>
     </section>
   )
 }

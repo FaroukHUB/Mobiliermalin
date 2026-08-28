@@ -157,3 +157,17 @@
 @media (prefers-reduced-motion: reduce) {
   .planet-cycle { animation: none; }
 }
+
+/* ─── Piste de carrousel : on masque la barre de défilement mais on
+   garde le défilement natif (molette, trackpad, glissement tactile). */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .no-scrollbar { scroll-behavior: auto; }
+}
