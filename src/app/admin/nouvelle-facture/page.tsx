@@ -16,6 +16,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { PriceHtTtcInput } from '@/components/admin/PriceHtTtcInput'
 
 type LineItem = {
   id: string
@@ -396,6 +397,12 @@ export default function NouvelleFacturePage() {
                 style={{ ...inputStyle, fontSize: 20, fontWeight: 600 }}
                 placeholder="0"
               />
+              {amountTTC > 0 && (
+                <p style={{ fontSize: 13, color: '#8a7340', margin: '6px 0 0' }}>
+                  ⇄ soit {fmt(amountTTC / (1 + tvaRate / 100))} € HT
+                  {tvaRate > 0 && ` + ${fmt(amountTTC - amountTTC / (1 + tvaRate / 100))} € de TVA`}
+                </p>
+              )}
             </Field>
           </>
         ) : (
@@ -483,20 +490,17 @@ export default function NouvelleFacturePage() {
                         </div>
                       )}
                     </div>
-                    <Field label="Prix HT (€)" flex={1}>
-                      <input
-                        type="number"
-                        min={0}
-                        step={0.01}
-                        value={li.unitPrice || ''}
-                        onChange={(e) =>
-                          updateLine(li.id, {
-                            unitPrice: parseFloat(e.target.value) || 0,
-                          })
-                        }
-                        style={inputStyle}
+                    <div style={{ flex: 2, marginBottom: 12, display: 'flex' }}>
+                      <PriceHtTtcInput
+                        valueHt={li.unitPrice}
+                        onChangeHt={(ht) => updateLine(li.id, { unitPrice: ht })}
+                        tvaRate={tvaRate}
+                        labelHt="P.U. HT (€)"
+                        labelTtc="P.U. TTC (€)"
+                        inputStyle={inputStyle}
+                        labelStyle={labelStyle}
                       />
-                    </Field>
+                    </div>
                     <Field label="Qté" flex={0.5}>
                       <input
                         type="number"

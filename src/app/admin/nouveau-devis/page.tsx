@@ -20,6 +20,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { PriceHtTtcInput } from '@/components/admin/PriceHtTtcInput'
 
 type Product = {
   id: string
@@ -470,20 +471,17 @@ export default function NouveauDevisPage() {
                     </div>
                   )}
                 </div>
-                <Field label="Prix unitaire HT (€)" flex={1}>
-                  <input
-                    type="number"
-                    min={0}
-                    step={0.01}
-                    value={li.unitPrice || ''}
-                    onChange={(e) =>
-                      updateLine(li.id, {
-                        unitPrice: parseFloat(e.target.value) || 0,
-                      })
-                    }
-                    style={inputStyle}
+                <div style={{ flex: 2, marginBottom: 12, display: 'flex' }}>
+                  <PriceHtTtcInput
+                    valueHt={li.unitPrice}
+                    onChangeHt={(ht) => updateLine(li.id, { unitPrice: ht })}
+                    tvaRate={tvaRate}
+                    labelHt="P.U. HT (€)"
+                    labelTtc="P.U. TTC (€)"
+                    inputStyle={inputStyle}
+                    labelStyle={labelStyle}
                   />
-                </Field>
+                </div>
                 <Field label="Quantité" flex={0.5}>
                   <input
                     type="number"
@@ -525,17 +523,18 @@ export default function NouveauDevisPage() {
       </Section>
 
       <Section title="4. Livraison & options">
-        <Field label="Frais de livraison TTC (€)">
-          <input
-            type="number"
-            min={0}
-            step={0.01}
-            value={shippingFeeTTC || ''}
-            onChange={(e) => setShippingFeeTTC(parseFloat(e.target.value) || 0)}
-            style={inputStyle}
-            placeholder="0 pour un retrait gratuit — TTC (le prix annoncé au client)"
+        <div style={{ display: 'flex', marginBottom: 12 }}>
+          <PriceHtTtcInput
+            valueHt={shippingFeeHt}
+            onChangeHt={(ht) => setShippingFeeTTC(ht * (1 + tvaRate / 100))}
+            tvaRate={tvaRate}
+            labelHt="Frais de livraison HT (€)"
+            labelTtc="Frais de livraison TTC (€)"
+            inputStyle={inputStyle}
+            labelStyle={labelStyle}
+            placeholder="0 pour un retrait gratuit"
           />
-        </Field>
+        </div>
         {options.map((o) => (
           <Row key={o.id}>
             <Field label="Libellé de l'option" flex={2}>
@@ -546,18 +545,15 @@ export default function NouveauDevisPage() {
                 placeholder="Ex : Montage sur place, Reprise ancien mobilier…"
               />
             </Field>
-            <Field label="Prix HT (€)" flex={1}>
-              <input
-                type="number"
-                min={0}
-                step={0.01}
-                value={o.price || ''}
-                onChange={(e) =>
-                  updateOption(o.id, { price: parseFloat(e.target.value) || 0 })
-                }
-                style={inputStyle}
+            <div style={{ flex: 2, marginBottom: 12, display: 'flex' }}>
+              <PriceHtTtcInput
+                valueHt={o.price}
+                onChangeHt={(ht) => updateOption(o.id, { price: ht })}
+                tvaRate={tvaRate}
+                inputStyle={inputStyle}
+                labelStyle={labelStyle}
               />
-            </Field>
+            </div>
             <button
               onClick={() => removeOption(o.id)}
               style={{ ...btnGhost, color: '#c33', marginBottom: 4 }}
