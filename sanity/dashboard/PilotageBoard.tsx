@@ -107,6 +107,7 @@ const CHANNEL_LABELS: Record<string, string> = {
   leboncoin: '🟠 Bon Coin',
   telephone: '📞 Téléphone',
   autre: '• Autre',
+  report: '📄 Report mensuel (origine non détaillée)',
 }
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -117,6 +118,7 @@ const PAYMENT_LABELS: Record<string, string> = {
   cheque: '🖊️ Chèque',
   leboncoin: '🟠 Bon Coin',
   autre: '• Autre',
+  report: '📄 Report mensuel (mode inconnu)',
 }
 
 const SALE_TYPE_LABELS: Record<string, string> = {
@@ -138,6 +140,15 @@ const pct = (v: number) =>
 
 const monthOf = (iso?: string) => (iso ? Number(iso.slice(5, 7)) - 1 : -1)
 const yearOf = (iso?: string) => (iso ? Number(iso.slice(0, 4)) : 0)
+
+/**
+ * Écriture de report : le total d'un mois saisi en une ligne, faute de
+ * détail vente par vente. Son montant compte dans les encaissements,
+ * mais elle ne représente pas une vente : la sortir du décompte évite
+ * un panier moyen absurde.
+ */
+const isCarryOver = (s: Sale) =>
+  (s.designation || '').startsWith("Report d'encaissements")
 
 /** Le mois est-il déjà écoulé, ou en cours ? */
 function isPastMonth(year: number, month: number): boolean {
@@ -415,7 +426,7 @@ export function PilotageBoard() {
         variable,
         fixed,
         result: income - variable - fixed,
-        salesCount: ms.length,
+        salesCount: ms.filter((s) => !isCarryOver(s)).length,
         unreported,
         sales: ms,
         expenses: me,
@@ -434,12 +445,17 @@ export function PilotageBoard() {
     const variable = counted.reduce((t, x) => t + x.variable, 0)
     const fixed = counted.reduce((t, x) => t + x.fixed, 0)
     const activeMonths = counted.length
+    // Le panier moyen ne se calcule que sur les ventes détaillées :
+    // les reports mensuels n'ont ni client ni nombre de ventes.
+    const detailed = counted.flatMap((x) => x.sales.filter((s) => !isCarryOver(s)))
+    const detailedIncome = detailed.reduce((t, s) => t + (s.amountCollected || 0), 0)
     return {
       income,
       variable,
       fixed,
       result: income - variable - fixed,
-      salesCount: counted.reduce((t, x) => t + x.salesCount, 0),
+      salesCount: detailed.length,
+      basket: detailed.length > 0 ? detailedIncome / detailed.length : 0,
       activeMonths,
       average: activeMonths > 0 ? income / activeMonths : 0,
     }
@@ -471,7 +487,7 @@ export function PilotageBoard() {
   const byChannel = useMemo(() => {
     const map = new Map<string, { amount: number; count: number }>()
     for (const s of yearSales) {
-      const k = s.channel || 'autre'
+      const k = isCarryOver(s) ? 'report' : s.channel || 'autre'
       const prev = map.get(k) || { amount: 0, count: 0 }
       map.set(k, { amount: prev.amount + (s.amountCollected || 0), count: prev.count + 1 })
     }
@@ -481,7 +497,7 @@ export function PilotageBoard() {
   const byPayment = useMemo(() => {
     const map = new Map<string, { amount: number; count: number }>()
     for (const s of yearSales) {
-      const k = s.paymentMethod || 'autre'
+      const k = isCarryOver(s) ? 'report' : s.paymentMethod || 'autre'
       const prev = map.get(k) || { amount: 0, count: 0 }
       map.set(k, { amount: prev.amount + (s.amountCollected || 0), count: prev.count + 1 })
     }
@@ -630,8 +646,8 @@ export function PilotageBoard() {
               />
               <Kpi
                 label="Panier moyen"
-                value={totals.salesCount > 0 ? eur2(totals.income / totals.salesCount) : '—'}
-                hint="Encaissement moyen par vente"
+                value={totals.salesCount > 0 ? eur2(totals.basket) : '—'}
+                hint="Sur les ventes détaillées, hors reports mensuels"
                 tone="neutral"
               />
               <Kpi
