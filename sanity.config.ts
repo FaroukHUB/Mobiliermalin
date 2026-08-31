@@ -18,6 +18,7 @@ import {
 } from './sanity/actions/downloadQuotePdfActions'
 import { Dashboard } from './sanity/dashboard/Dashboard'
 import { ClientsDatabase } from './sanity/dashboard/ClientsDatabase'
+import { PilotageBoard } from './sanity/dashboard/PilotageBoard'
 import {
   ProductGridView,
   CategoryGridView,
@@ -143,6 +144,15 @@ export default defineConfig({
                 S.list()
                   .title('Gestion — ventes et dépenses')
                   .items([
+                    S.listItem()
+                      .id('pilotage')
+                      .title('📈 Pilotage')
+                      .child(
+                        S.component(PilotageBoard)
+                          .id('pilotage')
+                          .title('Pilotage — Mobilier Malin'),
+                      ),
+                    S.divider(),
                     S.listItem()
                       .title('💰 Ventes')
                       .child(
