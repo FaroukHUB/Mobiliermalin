@@ -139,8 +139,13 @@ const AUGUST_SALES: RawSale[] = [
   { date: '25/08/2026', client: 'Matthieu Foltyn', designation: '1 armoire metalique', amount: 40, shipping: 0, payment: 'stripe', type: 'Sur place' },
   { date: '25/08/2026', client: 'jarrar nassim', designation: 'canapé adamo', amount: 550, shipping: 0, payment: 'Espèces', type: 'Sur place', note: 'lavage 60 euros lydie' },
   { date: '26/08/2026', client: 'alexandre', designation: '1 vestiaire metalique 2 portes', amount: 50, shipping: 0, payment: 'Espèces', type: 'Sur place' },
-  { date: '27/08/2026', client: 'ballester', designation: 'Armoire basse + 1 armoire mi haute', amount: 206, shipping: 50, payment: 'stripe', type: 'Autre livraison', note: 'livraison a aix prevue lundi 31/08 facturé 50€' },
-  { date: '27/08/2026', client: 'Rebbecca', designation: '2 bureau assis debout', amount: 396, shipping: 96, payment: 'stripe', type: 'Autre livraison', note: 'livraison a aix prevue lundi 31/08 facturé 96€' },
+  // Les 50 € et 96 € sont cités dans le commentaire mais la colonne
+  // « frais de livraison » du suivi les laisse à 0 : impossible de
+  // savoir s'ils sont compris dans le montant encaissé ou facturés à
+  // part. On reprend la colonne telle quelle, le commentaire garde
+  // l'information pour trancher plus tard.
+  { date: '27/08/2026', client: 'ballester', designation: 'Armoire basse + 1 armoire mi haute', amount: 206, shipping: 0, payment: 'stripe', type: 'Autre livraison', note: 'livraison a aix prevue lundi 31/08 facturé 50€' },
+  { date: '27/08/2026', client: 'Rebbecca', designation: '2 bureau assis debout', amount: 396, shipping: 0, payment: 'stripe', type: 'Autre livraison', note: 'livraison a aix prevue lundi 31/08 facturé 96€' },
   { date: '28/08/2026', client: 'client leboncoin', designation: '1 armoire basse', amount: 60, shipping: 0, payment: 'Espèces', type: 'Sur place' },
   { date: '28/08/2026', client: 'oriaderm medical', designation: 'bureaux', amount: 733.2, shipping: 0, payment: 'stripe', type: 'Autre livraison' },
   { date: '30/08/2026', client: 'Melanie bassette', designation: '1 bureau + 1 chaise', amount: 112, shipping: 0, payment: 'stripe', type: 'Sur place' },
