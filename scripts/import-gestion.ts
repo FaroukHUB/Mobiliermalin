@@ -72,7 +72,10 @@ const FIXED_CHARGES = [
   { key: 'loyer', label: 'Loyer', category: 'loyer', amountTtc: 5000 },
   { key: 'salaires', label: 'Salaires / charges', category: 'salaires', amountTtc: 4000 },
   { key: 'telecom', label: 'Téléphone / Internet', category: 'web', amountTtc: 150 },
-  { key: 'logiciels', label: 'Logiciels / abonnements', category: 'web', amountTtc: 460 },
+  // Les 460 € de l'onglet « Frais fixes » sont l'abonnement Bon Coin.
+  // Ils apparaissaient aussi en dépense variable dans le tableau de
+  // bord du classeur : ils ne sont comptés qu'une fois ici.
+  { key: 'leboncoin', label: 'Abonnement Bon Coin', category: 'publicite', amountTtc: 460 },
 ]
 
 // ─── 2. Encaissements mensuels de report ─────────────────────
@@ -122,14 +125,14 @@ const AUGUST_SALES: RawSale[] = [
   { date: '14/08/2026', client: 'volpi gael', designation: '8 bureau + 1 bench', amount: 1458, shipping: 0, payment: 'Carte bancaire', type: 'Autre livraison', note: 'livraison prévu mardi' },
   { date: '14/08/2026', client: 'famille en action', designation: '1 bureau alcoves + 1 fauteuil + 1 armoire metalique', amount: 416, shipping: 0, payment: 'Carte bancaire', type: 'Sur place' },
   { date: '17/08/2026', client: 'ADRIAN POSTEA', designation: '2 bureau 140x80 + 1 fauteuil ergonomique klober + 4 chaises lucil + 1 table ronde', amount: 708, shipping: 0, payment: 'Carte bancaire', type: 'Sur place' },
-  { date: '17/08/2026', client: 'INGRID LOUISE', designation: '2 Bureau Alcôve + 4 Fauteuil ergonomique KLOBER + 7 Bureau professionnel droit 140 x 80 cm chêne clair', amount: 831, shipping: 0, payment: 'Carte bancaire', type: 'Autre livraison' },
+  { date: '17/08/2026', client: 'INGRID LOUISE', designation: '2 Bureau Alcôve + 4 Fauteuil ergonomique KLOBER + 7 Bureau professionnel droit 140 x 80 cm chêne clair', amount: 831, shipping: 0, payment: 'Carte bancaire', type: 'Autre livraison', note: 'Acompte de 50 % sur une commande de 1 662 € TTC. Solde encaissé le 24/08/2026.' },
   { date: '22/08/2026', client: 'Varun Sohanda', designation: '1 chaise klober', amount: 60, shipping: 0, payment: 'Carte bancaire', type: 'Sur place' },
   { date: '22/08/2026', client: 'achour tani', designation: '1 chaise sedus', amount: 20, shipping: 0, payment: 'Carte bancaire', type: 'Sur place' },
   { date: '22/08/2026', client: 'Robin Andreani', designation: '1 bureau', amount: 116, shipping: 0, payment: 'Carte bancaire', type: 'Autre livraison' },
   { date: '23/08/2026', client: 'mustapha', designation: '11 chaises de formation', amount: 600, shipping: 0, payment: 'Espèces', type: 'Autre livraison' },
   { date: '23/08/2026', client: 'RP concierge', designation: '1 chaise steelcase reply air', amount: 120, shipping: 0, payment: 'leboncoin', type: 'Autre livraison' },
   { date: '23/08/2026', client: 'hanan sitbon', designation: '1 chaise klober', amount: 60, shipping: 0, payment: 'Carte bancaire', type: 'Sur place' },
-  { date: '24/08/2026', client: 'INGRID LOUISE', designation: '2 Bureau Alcôve + 4 Fauteuil ergonomique KLOBER + 7 Bureau professionnel droit 140 x 80 cm chêne clair', amount: 831, shipping: 0, payment: 'Carte bancaire', type: 'Autre livraison' },
+  { date: '24/08/2026', client: 'INGRID LOUISE', designation: '2 Bureau Alcôve + 4 Fauteuil ergonomique KLOBER + 7 Bureau professionnel droit 140 x 80 cm chêne clair', amount: 831, shipping: 0, payment: 'Carte bancaire', type: 'Autre livraison', note: 'Solde de la commande de 1 662 € TTC. Acompte de 50 % encaissé le 17/08/2026.' },
   { date: '24/08/2026', client: 'DURIVEAU', designation: '1 armoire', amount: 72, shipping: 0, payment: 'Carte bancaire', type: 'Sur place' },
   { date: '24/08/2026', client: 'GARNIER EMILE', designation: '1 bureau 140x80', amount: 96, shipping: 0, payment: 'stripe', type: 'Sur place' },
   { date: '25/08/2026', client: 'EMMANUEL MENGES', designation: '2 chaise steelcase reply air', amount: 240, shipping: 0, payment: 'stripe', type: 'Sur place' },
@@ -254,7 +257,8 @@ async function main() {
     console.log(`💰 Ventes d'août : ${AUGUST_SALES.length} lignes, ${eur(total)}`)
     console.log(`   dont frais de livraison facturés : ${eur(ship)}\n`)
 
-    // Points à vérifier, signalés sans rien corriger d'office
+    // Montants répétés : ce ne sont pas des doublons de saisie mais des
+    // règlements en deux fois. La note de chaque ligne le précise.
     const seen = new Map<string, string[]>()
     for (const s of AUGUST_SALES) {
       const k = `${s.client.toLowerCase()}|${s.amount}`
@@ -264,10 +268,7 @@ async function main() {
       if (dates.length > 1) {
         const [name, amt] = k.split('|')
         console.log(
-          `⚠️  ${name} — ${eur(Number(amt))} apparaît ${dates.length} fois (${dates.join(', ')}).`,
-        )
-        console.log(
-          '    Acompte puis solde, ou doublon de saisie ? Les deux lignes sont importées telles quelles.',
+          `ℹ️  ${name} — ${eur(Number(amt))} × ${dates.length} (${dates.join(', ')}) : acompte puis solde.`,
         )
       }
     }
