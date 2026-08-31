@@ -139,6 +139,18 @@ const pct = (v: number) =>
 const monthOf = (iso?: string) => (iso ? Number(iso.slice(5, 7)) - 1 : -1)
 const yearOf = (iso?: string) => (iso ? Number(iso.slice(0, 4)) : 0)
 
+/** Le mois est-il déjà écoulé, ou en cours ? */
+function isPastMonth(year: number, month: number): boolean {
+  const now = new Date()
+  return year < now.getFullYear() || (year === now.getFullYear() && month <= now.getMonth())
+}
+
+/** Dernier jour du mois, au format ISO. */
+function lastDayOf(year: number, month: number): string {
+  const d = new Date(year, month + 1, 0)
+  return `${year}-${String(month + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 // ─── Charges fixes : mois couverts ───────────────────────────
 
 /**
@@ -334,6 +346,7 @@ export function PilotageBoard() {
   const [charges, setCharges] = useState<FixedCharge[]>([])
   const [year, setYear] = useState<number>(new Date().getFullYear())
   const [openMonth, setOpenMonth] = useState<number | null>(null)
+  const [filling, setFilling] = useState<number | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -375,7 +388,16 @@ export function PilotageBoard() {
     [expenses, year],
   )
 
-  /** Une ligne par mois : encaissements, dépenses, frais fixes, résultat. */
+  /**
+   * Une ligne par mois : encaissements, dépenses, frais fixes, résultat.
+   *
+   * Un mois sans la moindre vente ni dépense saisie est marqué « non
+   * renseigné ». C'est le cas des mois à venir, et des mois anciens dont
+   * le chiffre n'a pas été retrouvé. Leurs charges fixes existent
+   * pourtant dans la liste : les compter donnerait une perte inventée de
+   * plusieurs milliers d'euros. Ces mois sont donc affichés à part et
+   * sortis des totaux de l'année.
+   */
   const months = useMemo(() => {
     return MONTHS.map((name, m) => {
       const ms = yearSales.filter((s) => monthOf(s.date) === m)
@@ -385,6 +407,7 @@ export function PilotageBoard() {
       const fixed = charges
         .filter((c) => chargeAppliesTo(c, year, m))
         .reduce((t, c) => t + (c.amountTtc || 0), 0)
+      const unreported = ms.length === 0 && me.length === 0
       return {
         m,
         name,
@@ -393,27 +416,34 @@ export function PilotageBoard() {
         fixed,
         result: income - variable - fixed,
         salesCount: ms.length,
+        unreported,
         sales: ms,
         expenses: me,
       }
     })
   }, [yearSales, yearExpenses, charges, year])
 
+  const counted = useMemo(() => months.filter((x) => !x.unreported), [months])
+  const unreportedMonths = useMemo(
+    () => months.filter((x) => x.unreported && x.fixed > 0),
+    [months],
+  )
+
   const totals = useMemo(() => {
-    const income = months.reduce((t, x) => t + x.income, 0)
-    const variable = months.reduce((t, x) => t + x.variable, 0)
-    const fixed = months.reduce((t, x) => t + x.fixed, 0)
-    const activeMonths = months.filter((x) => x.income > 0).length
+    const income = counted.reduce((t, x) => t + x.income, 0)
+    const variable = counted.reduce((t, x) => t + x.variable, 0)
+    const fixed = counted.reduce((t, x) => t + x.fixed, 0)
+    const activeMonths = counted.length
     return {
       income,
       variable,
       fixed,
       result: income - variable - fixed,
-      salesCount: months.reduce((t, x) => t + x.salesCount, 0),
+      salesCount: counted.reduce((t, x) => t + x.salesCount, 0),
       activeMonths,
       average: activeMonths > 0 ? income / activeMonths : 0,
     }
-  }, [months])
+  }, [counted])
 
   // TVA de l'année : collectée sur les ventes (montants TTC),
   // récupérable sur les dépenses au taux saisi sur chaque ligne.
@@ -427,16 +457,16 @@ export function PilotageBoard() {
       const ttc = e.amountTtc || 0
       return t + (rate > 0 ? ttc - ttc / (1 + rate / 100) : 0)
     }, 0)
-    const onCharges = charges
-      .filter((c) => MONTHS.some((_, m) => chargeAppliesTo(c, year, m)))
-      .reduce((t, c) => {
-        const rate = c.tvaRate ?? 20
-        const monthsCovered = MONTHS.filter((_, m) => chargeAppliesTo(c, year, m)).length
-        const ttc = (c.amountTtc || 0) * monthsCovered
-        return t + (rate > 0 ? ttc - ttc / (1 + rate / 100) : 0)
-      }, 0)
+    // Les charges fixes ne sont comptées que sur les mois renseignés,
+    // comme dans le tableau mois par mois.
+    const onCharges = charges.reduce((t, c) => {
+      const rate = c.tvaRate ?? 20
+      const monthsCovered = counted.filter((x) => chargeAppliesTo(c, year, x.m)).length
+      const ttc = (c.amountTtc || 0) * monthsCovered
+      return t + (rate > 0 ? ttc - ttc / (1 + rate / 100) : 0)
+    }, 0)
     return { collected, deductible: deductible + onCharges }
-  }, [yearSales, yearExpenses, charges, year])
+  }, [yearSales, yearExpenses, charges, counted, year])
 
   const byChannel = useMemo(() => {
     const map = new Map<string, { amount: number; count: number }>()
@@ -466,7 +496,7 @@ export function PilotageBoard() {
       map.set(k, { amount: prev.amount + (e.amountTtc || 0), count: prev.count + 1 })
     }
     for (const c of charges) {
-      const monthsCovered = MONTHS.filter((_, m) => chargeAppliesTo(c, year, m)).length
+      const monthsCovered = counted.filter((x) => chargeAppliesTo(c, year, x.m)).length
       if (monthsCovered === 0) continue
       const k = c.category || 'autre'
       const prev = map.get(k) || { amount: 0, count: 0 }
@@ -476,13 +506,48 @@ export function PilotageBoard() {
       })
     }
     return [...map.entries()].sort((a, b) => b[1].amount - a[1].amount)
-  }, [yearExpenses, charges, year])
+  }, [yearExpenses, charges, counted, year])
 
   const monthlyFixed = charges
     .filter((c) => chargeAppliesTo(c, new Date().getFullYear(), new Date().getMonth()))
     .reduce((t, c) => t + (c.amountTtc || 0), 0)
 
   const open = (id: string, type: string) => router.navigateIntent('edit', { id, type })
+
+  /**
+   * Prépare l'écriture de report d'un mois resté vide, puis ouvre le
+   * document pour saisir le montant. Sert aux mois dont le détail n'a
+   * pas été retrouvé : on inscrit le total, le mois recommence à
+   * compter dans l'année. createIfNotExists évite d'écraser une
+   * écriture déjà saisie.
+   */
+  const fillMonth = async (m: number) => {
+    const id = `sale-report-${year}-${String(m + 1).padStart(2, '0')}`
+    setFilling(m)
+    try {
+      await client.createIfNotExists({
+        _id: id,
+        _type: 'sale',
+        date: lastDayOf(year, m),
+        customerName: 'Report tableur',
+        designation: `Report d'encaissements — ${MONTHS[m]} ${year}`,
+        amountCollected: 0,
+        shippingFee: 0,
+        paymentMethod: 'autre',
+        saleType: 'sur-place',
+        channel: 'autre',
+        notes:
+          'Total du mois saisi à la main, faute de détail vente par vente. ' +
+          'Renseigne le montant encaissé puis publie : le mois repasse dans les totaux de l\'année.',
+        autoCreated: false,
+      } as never)
+      open(id, 'sale')
+    } catch (err) {
+      console.warn('[pilotage] création du report échouée', err)
+    } finally {
+      setFilling(null)
+    }
+  }
 
   const detail = openMonth !== null ? months[openMonth] : null
   const maxChannel = Math.max(1, ...byChannel.map(([, v]) => v.amount))
@@ -635,15 +700,40 @@ export function PilotageBoard() {
                     </thead>
                     <tbody>
                       {months.map((row) => {
-                        const empty = row.income === 0 && row.variable === 0 && row.fixed === 0
                         const isOpen = openMonth === row.m
+                        // Mois non renseigné : ni vente ni dépense saisie.
+                        // On l'affiche en retrait, sans résultat, et on
+                        // propose de le compléter s'il est déjà passé.
+                        if (row.unreported) {
+                          const fillable = isPastMonth(year, row.m)
+                          return (
+                            <tr key={row.m} style={{ opacity: 0.45 }}>
+                              <td style={cell('left')}>{row.name}</td>
+                              <td colSpan={5} style={{ ...cell(), whiteSpace: 'normal' }}>
+                                {fillable ? (
+                                  <Button
+                                    mode="bleed"
+                                    fontSize={1}
+                                    padding={2}
+                                    text="Rien de saisi · compléter ce mois"
+                                    disabled={filling === row.m}
+                                    onClick={() => fillMonth(row.m)}
+                                  />
+                                ) : (
+                                  <Text size={1} muted>
+                                    À venir
+                                  </Text>
+                                )}
+                              </td>
+                            </tr>
+                          )
+                        }
                         return (
                           <tr
                             key={row.m}
-                            onClick={() => !empty && setOpenMonth(isOpen ? null : row.m)}
+                            onClick={() => setOpenMonth(isOpen ? null : row.m)}
                             style={{
-                              cursor: empty ? 'default' : 'pointer',
-                              opacity: empty ? 0.4 : 1,
+                              cursor: 'pointer',
                               background: isOpen ? 'rgba(200,162,91,0.12)' : undefined,
                             }}
                           >
@@ -663,14 +753,10 @@ export function PilotageBoard() {
                               style={{
                                 ...cell(),
                                 fontWeight: 600,
-                                color: empty
-                                  ? undefined
-                                  : row.result >= 0
-                                    ? '#2c7050'
-                                    : '#b8362d',
+                                color: row.result >= 0 ? '#2c7050' : '#b8362d',
                               }}
                             >
-                              {empty ? '—' : eur(row.result)}
+                              {eur(row.result)}
                             </td>
                             <td style={cell()}>
                               {row.income > 0 ? pct(row.result / row.income) : '—'}
@@ -703,6 +789,21 @@ export function PilotageBoard() {
                 <Text size={0} muted>
                   Clique sur un mois pour voir le détail des ventes et des dépenses.
                 </Text>
+
+                {unreportedMonths.length > 0 ? (
+                  <Card padding={3} radius={2} tone="caution">
+                    <Text size={1}>
+                      {unreportedMonths.map((x) => x.name).join(', ')}
+                      {unreportedMonths.length > 1 ? ' ne sont' : " n'est"} pas
+                      renseigné{unreportedMonths.length > 1 ? 's' : ''} : aucune vente
+                      ni dépense saisie. Ces mois sont sortis du total de l&apos;année,
+                      sinon leurs charges fixes ({eur(monthlyFixed)} par mois)
+                      creuseraient une perte qui n&apos;existe pas. Le jour où le
+                      chiffre est retrouvé, « compléter ce mois » le remet dans le
+                      calcul.
+                    </Text>
+                  </Card>
+                ) : null}
               </Stack>
             </Card>
 

@@ -230,7 +230,10 @@ async function main() {
     const total = MONTHLY_CARRY.reduce((s, m) => s + m.amount, 0)
     console.log(`📅 Reports mensuels : ${MONTHLY_CARRY.length} mois, ${eur(total)}`)
     for (const m of MONTHLY_CARRY) console.log(`   · ${m.label.padEnd(12)} ${eur(m.amount)}`)
-    console.log('   · Juillet      non chiffré dans le fichier, à saisir à la main')
+    console.log(
+      "   · Juillet      non chiffré dans le fichier : le mois reste marqué non\n" +
+        '                  renseigné dans Pilotage, et se complète depuis le tableau',
+    )
     console.log('')
   }
 
