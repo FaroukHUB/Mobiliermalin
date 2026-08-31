@@ -37,7 +37,7 @@ type ProductHit = {
   stock: number
   brand?: string
   condition?: string
-  images?: SanityImage[]
+  firstImage?: SanityImage
 }
 
 type CategoryHit = {
@@ -69,9 +69,9 @@ export async function GET(req: Request) {
       sanityClient.fetch<ProductHit[]>(
         `*[_type == "product" && status == "published" && defined(slug.current)
            && (name match $words || brand match $words || shortDescription match $words)]
-         | order(stock > 0 desc, _createdAt desc) [0...6] {
+         | order(_createdAt desc) [0...12] {
           _id, name, slug, price, salePrice, stock, brand, condition,
-          images[0]{ asset, alt }
+          "firstImage": images[0]{ asset, alt }
         }`,
         { words },
       ),
@@ -82,10 +82,16 @@ export async function GET(req: Request) {
       ),
     ])
 
+    // Disponibles d'abord, puis les plus récents : GROQ n'accepte pas
+    // d'expression booléenne dans order(), le tri se fait donc ici.
+    const ranked = [...products]
+      .sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0))
+      .slice(0, 6)
+
     return NextResponse.json({
       ok: true,
-      products: products.map((p) => {
-        const img = p.images?.[0]
+      products: ranked.map((p) => {
+        const img = p.firstImage
         return {
           id: p._id,
           name: p.name,
