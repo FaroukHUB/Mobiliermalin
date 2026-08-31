@@ -134,6 +134,38 @@ export default defineConfig({
                   .id('dashboard')
                   .title('Tableau de bord — Mobilier Malin'),
               ),
+            // Gestion — registre des ventes, dépenses et charges fixes
+            S.listItem()
+              .id('gestion')
+              .title('Gestion')
+              .icon(() => '📊')
+              .child(
+                S.list()
+                  .title('Gestion — ventes et dépenses')
+                  .items([
+                    S.listItem()
+                      .title('💰 Ventes')
+                      .child(
+                        S.documentTypeList('sale')
+                          .title('Toutes les ventes')
+                          .defaultOrdering([{ field: 'date', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('🧾 Dépenses')
+                      .child(
+                        S.documentTypeList('expense')
+                          .title('Toutes les dépenses')
+                          .defaultOrdering([{ field: 'date', direction: 'desc' }]),
+                      ),
+                    S.listItem()
+                      .title('🔁 Charges fixes mensuelles')
+                      .child(
+                        S.documentTypeList('fixedCharge')
+                          .title('Charges fixes')
+                          .defaultOrdering([{ field: 'amountTtc', direction: 'desc' }]),
+                      ),
+                  ]),
+              ),
             // Base clients — vue consolidée (commandes + devis + contacts)
             S.listItem()
               .id('clients')

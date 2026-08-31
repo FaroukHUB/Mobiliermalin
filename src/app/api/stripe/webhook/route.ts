@@ -10,6 +10,10 @@ import { getWriteClient, isSanityWriteConfigured } from '@/lib/sanity-write'
 import { LEGAL } from '@/lib/legal'
 import { upsertOrderFromStripeSession } from '@/lib/order'
 import { decrementStockForItems } from '@/lib/stock'
+import {
+  registerSaleFromOrder,
+  registerSaleFromQuote,
+} from '@/lib/sale-register'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs' // crypto-subtle nécessite Node, pas Edge
@@ -157,6 +161,8 @@ export async function POST(req: NextRequest) {
       } catch (err) {
         console.error('[stripe-webhook] failed to update quote status', err)
       }
+      // Registre des ventes : recopie le devis ligne par ligne
+      await registerSaleFromQuote(quoteId)
     }
     // Email confirmation client
     if (customerEmail && quoteNumero) {
@@ -215,6 +221,7 @@ export async function POST(req: NextRequest) {
             } | null>(`*[_id == $id][0]{ items[]{ slug, quantity } }`, {
               id: orderResult.id,
             })
+            await registerSaleFromOrder(orderResult.id)
             const stock = await decrementStockForItems(order?.items || [])
             if (stock.updated.length > 0) {
               console.log('[stripe-webhook] stock décrémenté', stock.updated)

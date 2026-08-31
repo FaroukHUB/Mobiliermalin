@@ -12,6 +12,9 @@ import { guideCluster } from './guideCluster'
 import { guideArticle } from './guideArticle'
 import { nationalLandingPage } from './nationalLandingPage'
 import { contactMessage } from './contactMessage'
+import { sale } from './sale'
+import { expense } from './expense'
+import { fixedCharge } from './fixedCharge'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   product as unknown as SchemaTypeDefinition,
@@ -27,4 +30,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   guideArticle as unknown as SchemaTypeDefinition,
   nationalLandingPage as unknown as SchemaTypeDefinition,
   contactMessage as unknown as SchemaTypeDefinition,
+  sale as unknown as SchemaTypeDefinition,
+  expense as unknown as SchemaTypeDefinition,
+  fixedCharge as unknown as SchemaTypeDefinition,
 ]
