@@ -546,15 +546,7 @@ export function ClientsDatabase() {
                           <Flex align="center" justify="space-between" gap={3}>
                             <Box flex={1} style={{ minWidth: 0 }}>
                               <Flex align="center" gap={2}>
-                                <Text
-                                  size={1}
-                                  weight="semibold"
-                                  style={{
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                  }}
-                                >
+                                <Text size={1} weight="semibold" textOverflow="ellipsis">
                                   {c.name}
                                 </Text>
                                 {c.company && <Badge tone="primary">{c.company}</Badge>}

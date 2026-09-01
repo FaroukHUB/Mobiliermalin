@@ -241,20 +241,27 @@ function DocCard({
               {[doc.brand, conditionLabel].filter(Boolean).join(' · ')}
             </Text>
           )}
-          <Text
-            size={1}
-            weight="medium"
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              lineHeight: 1.3,
-              minHeight: '2.6em',
-            }}
-          >
-            {name}
+          {/*
+            Le rognage sur deux lignes se pose sur un span interne, pas
+            sur le Text : Text cale ses lignes avec des pseudo-éléments
+            à marge négative, et un overflow:hidden posé dessus coupe le
+            haut des majuscules et des accents. La marge verticale rend
+            au clamp la place des jambages.
+          */}
+          <Text size={1} weight="medium">
+            <span
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                lineHeight: 1.45,
+                padding: '2px 0',
+                minHeight: '2.9em',
+              }}
+            >
+              {name}
+            </span>
           </Text>
           <Flex align="center" justify="space-between" gap={2}>
             {typeof displayPrice === 'number' ? (

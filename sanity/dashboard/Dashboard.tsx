@@ -504,15 +504,7 @@ function RecentItem({
     >
       <Flex align="center" justify="space-between" gap={2}>
         <Box flex={1} style={{ minWidth: 0 }}>
-          <Text
-            size={1}
-            weight="medium"
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
+          <Text size={1} weight="medium" textOverflow="ellipsis">
             {label}
           </Text>
           <Text size={0} muted style={{ marginTop: 4 }}>
@@ -794,15 +786,7 @@ export function Dashboard() {
                                 </Badge>
                               </Box>
                               <Box flex={1} style={{ minWidth: 0 }}>
-                                <Text
-                                  size={1}
-                                  weight="medium"
-                                  style={{
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                  }}
-                                >
+                                <Text size={1} weight="medium" textOverflow="ellipsis">
                                   {row.customer}
                                 </Text>
                                 <Text size={0} muted style={{ marginTop: 2 }}>
