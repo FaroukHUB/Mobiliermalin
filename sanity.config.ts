@@ -19,6 +19,7 @@ import {
 import { Dashboard } from './sanity/dashboard/Dashboard'
 import { ClientsDatabase } from './sanity/dashboard/ClientsDatabase'
 import { PilotageBoard } from './sanity/dashboard/PilotageBoard'
+import { SalesTableView, ExpensesTableView } from './sanity/dashboard/LedgerTable'
 import {
   ProductGridView,
   CategoryGridView,
@@ -153,15 +154,36 @@ export default defineConfig({
                           .title('Pilotage — Mobilier Malin'),
                       ),
                     S.divider(),
+                    // Vue tableau : toutes les colonnes du suivi côte à
+                    // côte, triables, avec totaux et export.
                     S.listItem()
+                      .id('salesTable')
                       .title('💰 Ventes')
+                      .child(
+                        S.component(SalesTableView)
+                          .id('salesTable')
+                          .title('Toutes les ventes'),
+                      ),
+                    S.listItem()
+                      .id('expensesTable')
+                      .title('🧾 Dépenses')
+                      .child(
+                        S.component(ExpensesTableView)
+                          .id('expensesTable')
+                          .title('Toutes les dépenses'),
+                      ),
+                    S.divider(),
+                    // La liste classique reste accessible : c'est elle
+                    // qui donne les brouillons et la recherche du Studio.
+                    S.listItem()
+                      .title('Ventes — liste classique')
                       .child(
                         S.documentTypeList('sale')
                           .title('Toutes les ventes')
                           .defaultOrdering([{ field: 'date', direction: 'desc' }]),
                       ),
                     S.listItem()
-                      .title('🧾 Dépenses')
+                      .title('Dépenses — liste classique')
                       .child(
                         S.documentTypeList('expense')
                           .title('Toutes les dépenses')
