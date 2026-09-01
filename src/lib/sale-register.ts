@@ -50,7 +50,7 @@ async function alreadyRegistered(
 
 // ─── Depuis un devis accepté ────────────────────────────────
 
-type QuoteForSale = {
+export type QuoteForSale = {
   _id: string
   numero?: string
   customer?: { name?: string; company?: string }
@@ -62,6 +62,118 @@ type QuoteForSale = {
   options?: Array<{ label?: string; price?: number }>
   tvaRate?: number
   depositPercent?: number
+}
+
+/** Champs à récupérer pour construire une vente à partir d'un devis. */
+export const QUOTE_FOR_SALE_PROJECTION = `{
+  _id, numero, customer, shippingAddress,
+  lineItems[]{ name, unitPrice, quantity },
+  product{ name, unitPrice, quantity },
+  shippingFee, selectedDelivery, options[]{ label, price },
+  tvaRate, depositPercent
+}`
+
+/**
+ * Construit le document de vente correspondant à un devis, sans rien
+ * écrire. Partagé par le webhook Stripe et l'action Studio « enregistrer
+ * dans les ventes » : les deux chemins produisent exactement la même
+ * ligne, avec le même détail et les mêmes conversions.
+ *
+ * `paymentMethod` et `date` se surchargent pour un règlement hors ligne,
+ * qui n'a ni la date ni le moyen de paiement d'un encaissement Stripe.
+ */
+export function buildSaleFromQuote(
+  q: QuoteForSale,
+  opts: { paymentMethod?: string; date?: string; channel?: string } = {},
+): Record<string, unknown> {
+  const tvaFactor = 1 + (q.tvaRate ?? 20) / 100
+  const ttc = (ht: number) => round2(ht * tvaFactor)
+
+  // 1) Les produits — lineItems prioritaire sur le champ legacy
+  const rawLines =
+    Array.isArray(q.lineItems) && q.lineItems.length > 0
+      ? q.lineItems
+      : q.product?.name
+        ? [q.product]
+        : []
+  const lines: SaleLine[] = rawLines
+    .filter((l) => l?.name)
+    .map((l) => ({
+      _key: nextKey(),
+      _type: 'saleLine' as const,
+      name: l.name as string,
+      quantity: l.quantity ?? 1,
+      unitPrice: ttc(l.unitPrice ?? 0),
+      kind: 'product' as const,
+    }))
+
+  // 2) La livraison — formule choisie par le client, sinon tarif unique
+  const shippingHt = q.selectedDelivery?.label
+    ? (q.selectedDelivery.price ?? 0)
+    : (q.shippingFee ?? 0)
+  const shippingTtc = ttc(shippingHt)
+  if (shippingTtc > 0) {
+    lines.push({
+      _key: nextKey(),
+      _type: 'saleLine',
+      name:
+        q.selectedDelivery?.label ||
+        (q.shippingAddress?.city ? `Livraison à ${q.shippingAddress.city}` : 'Livraison'),
+      quantity: 1,
+      unitPrice: shippingTtc,
+      kind: 'shipping',
+    })
+  }
+
+  // 3) Les prestations ajoutées (montage, évacuation…)
+  for (const o of q.options || []) {
+    if (!o?.label) continue
+    lines.push({
+      _key: nextKey(),
+      _type: 'saleLine',
+      name: o.label,
+      quantity: 1,
+      unitPrice: ttc(o.price ?? 0),
+      kind: 'option',
+    })
+  }
+
+  const totalTtc = round2(lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0))
+
+  // Acompte : seul l'acompte est réellement encaissé. Le solde fera
+  // une seconde vente le jour où il rentre.
+  const hasDeposit =
+    typeof q.depositPercent === 'number' &&
+    q.depositPercent >= 1 &&
+    q.depositPercent <= 99
+  const collected = hasDeposit
+    ? round2(totalTtc * (q.depositPercent! / 100))
+    : totalTtc
+
+  const designation = lines
+    .filter((l) => l.kind === 'product')
+    .map((l) => (l.quantity > 1 ? `${l.quantity}× ${l.name}` : l.name))
+    .join(' + ')
+
+  return {
+    _type: 'sale',
+    date: opts.date || new Date().toISOString().slice(0, 10),
+    customerName: q.customer?.company || q.customer?.name || 'Client',
+    designation: designation || `Devis ${q.numero || ''}`.trim(),
+    amountCollected: collected,
+    shippingFee: shippingTtc,
+    paymentMethod: opts.paymentMethod || 'stripe',
+    saleType: shippingTtc > 0 ? 'autre-livraison' : 'sur-place',
+    channel: opts.channel || 'devis',
+    lines,
+    sourceQuote: { _type: 'reference', _ref: q._id, _weak: true },
+    autoCreated: true,
+    ...(hasDeposit && {
+      notes: `Acompte de ${q.depositPercent} % encaissé. Solde restant : ${round2(
+        totalTtc - collected,
+      )} € TTC.`,
+    }),
+  }
 }
 
 /**
@@ -76,107 +188,12 @@ export async function registerSaleFromQuote(quoteId: string): Promise<void> {
     if (await alreadyRegistered('sourceQuote', quoteId)) return
 
     const q = await client.fetch<QuoteForSale | null>(
-      `*[_type == "quote" && _id == $id][0]{
-        _id, numero, customer, shippingAddress,
-        lineItems[]{ name, unitPrice, quantity },
-        product{ name, unitPrice, quantity },
-        shippingFee, selectedDelivery, options[]{ label, price },
-        tvaRate, depositPercent
-      }`,
+      `*[_type == "quote" && _id == $id][0]${QUOTE_FOR_SALE_PROJECTION}`,
       { id: quoteId },
     )
     if (!q) return
 
-    const tvaFactor = 1 + (q.tvaRate ?? 20) / 100
-    const ttc = (ht: number) => round2(ht * tvaFactor)
-
-    // 1) Les produits — lineItems prioritaire sur le champ legacy
-    const rawLines =
-      Array.isArray(q.lineItems) && q.lineItems.length > 0
-        ? q.lineItems
-        : q.product?.name
-          ? [q.product]
-          : []
-    const lines: SaleLine[] = rawLines
-      .filter((l) => l?.name)
-      .map((l) => ({
-        _key: nextKey(),
-        _type: 'saleLine' as const,
-        name: l.name as string,
-        quantity: l.quantity ?? 1,
-        unitPrice: ttc(l.unitPrice ?? 0),
-        kind: 'product' as const,
-      }))
-
-    // 2) La livraison — formule choisie par le client, sinon tarif unique
-    const shippingHt = q.selectedDelivery?.label
-      ? (q.selectedDelivery.price ?? 0)
-      : (q.shippingFee ?? 0)
-    const shippingTtc = ttc(shippingHt)
-    if (shippingTtc > 0) {
-      lines.push({
-        _key: nextKey(),
-        _type: 'saleLine',
-        name:
-          q.selectedDelivery?.label ||
-          (q.shippingAddress?.city ? `Livraison à ${q.shippingAddress.city}` : 'Livraison'),
-        quantity: 1,
-        unitPrice: shippingTtc,
-        kind: 'shipping',
-      })
-    }
-
-    // 3) Les prestations ajoutées (montage, évacuation…)
-    for (const o of q.options || []) {
-      if (!o?.label) continue
-      lines.push({
-        _key: nextKey(),
-        _type: 'saleLine',
-        name: o.label,
-        quantity: 1,
-        unitPrice: ttc(o.price ?? 0),
-        kind: 'option',
-      })
-    }
-
-    const totalTtc = round2(
-      lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0),
-    )
-
-    // Acompte : seul l'acompte est réellement encaissé. Le solde fera
-    // une seconde vente le jour où il rentre.
-    const hasDeposit =
-      typeof q.depositPercent === 'number' &&
-      q.depositPercent >= 1 &&
-      q.depositPercent <= 99
-    const collected = hasDeposit
-      ? round2(totalTtc * (q.depositPercent! / 100))
-      : totalTtc
-
-    const designation = lines
-      .filter((l) => l.kind === 'product')
-      .map((l) => (l.quantity > 1 ? `${l.quantity}× ${l.name}` : l.name))
-      .join(' + ')
-
-    await client.create({
-      _type: 'sale',
-      date: new Date().toISOString().slice(0, 10),
-      customerName: q.customer?.company || q.customer?.name || 'Client',
-      designation: designation || `Devis ${q.numero || ''}`.trim(),
-      amountCollected: collected,
-      shippingFee: shippingTtc,
-      paymentMethod: 'stripe',
-      saleType: shippingTtc > 0 ? 'autre-livraison' : 'sur-place',
-      channel: 'devis',
-      lines,
-      sourceQuote: { _type: 'reference', _ref: quoteId, _weak: true },
-      autoCreated: true,
-      ...(hasDeposit && {
-        notes: `Acompte de ${q.depositPercent} % encaissé. Solde restant : ${round2(
-          totalTtc - collected,
-        )} € TTC.`,
-      }),
-    } as never)
+    await client.create(buildSaleFromQuote(q) as never)
   } catch (err) {
     console.error('[sale-register] devis → vente échoué', err)
   }
