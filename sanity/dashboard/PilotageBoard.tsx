@@ -34,10 +34,20 @@ import {
   Stack,
   Text,
 } from '@sanity/ui'
+import { useRootTheme } from '@sanity/ui'
 import { useClient } from 'sanity'
 import { useRouter } from 'sanity/router'
 import { apiVersion } from '../env'
 import { EXPENSE_CATEGORIES } from '../schemas/expense'
+import {
+  ColumnChart,
+  DivergingColumnChart,
+  DonutChart,
+  DARK_PALETTE,
+  LIGHT_PALETTE,
+  foldTail,
+  type ColumnPoint,
+} from './charts'
 
 // ─── Types ───────────────────────────────────────────────────
 
@@ -528,6 +538,75 @@ export function PilotageBoard() {
     .filter((c) => chargeAppliesTo(c, new Date().getFullYear(), new Date().getMonth()))
     .reduce((t, c) => t + (c.amountTtc || 0), 0)
 
+  // Le Studio a ses deux thèmes : la palette suit, elle n'est pas
+  // inversée mécaniquement (chaque teinte a son pas propre en sombre).
+  const rootTheme = useRootTheme()
+  const palette = rootTheme?.scheme === 'dark' ? DARK_PALETTE : LIGHT_PALETTE
+
+  const SHORT_MONTHS = [
+    'jan', 'fév', 'mar', 'avr', 'mai', 'jun',
+    'jui', 'aoû', 'sep', 'oct', 'nov', 'déc',
+  ]
+
+  const incomeSeries: ColumnPoint[] = months.map((x) => ({
+    label: SHORT_MONTHS[x.m],
+    value: x.income,
+    absent: x.unreported,
+    absentNote: isPastMonth(year, x.m) ? 'Rien de saisi' : 'À venir',
+  }))
+
+  const resultSeries: ColumnPoint[] = months.map((x) => ({
+    label: SHORT_MONTHS[x.m],
+    value: x.result,
+    absent: x.unreported,
+    absentNote: isPastMonth(year, x.m) ? 'Rien de saisi' : 'À venir',
+  }))
+
+  const channelSlices = useMemo(
+    () =>
+      foldTail(
+        byChannel.map(([k, v]) => [CHANNEL_LABELS[k] || k, v.amount] as [string, number]),
+        'Autres canaux',
+      ),
+    [byChannel],
+  )
+
+  const expenseSlices = useMemo(
+    () =>
+      foldTail(
+        byExpenseCategory.map(
+          ([k, v]) =>
+            [
+              EXPENSE_CATEGORIES.find((c) => c.value === k)?.title || k,
+              v.amount,
+            ] as [string, number],
+        ),
+        'Autres postes',
+      ),
+    [byExpenseCategory],
+  )
+
+  /** Jour par jour à l'intérieur du mois ouvert. */
+  const dailySeries: ColumnPoint[] = useMemo(() => {
+    if (openMonth === null) return []
+    const days = new Date(year, openMonth + 1, 0).getDate()
+    const rows: ColumnPoint[] = []
+    for (let d = 1; d <= days; d++) {
+      const iso = `${year}-${String(openMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+      const total = (months[openMonth]?.sales || [])
+        .filter((s) => s.date === iso)
+        .reduce((t, s) => t + (s.amountCollected || 0), 0)
+      // Une étiquette d'axe tous les cinq jours, sinon elles se
+      // chevauchent. L'infobulle, elle, garde la date complète.
+      rows.push({
+        label: `${d} ${MONTHS[openMonth].toLowerCase()}`,
+        tick: d === 1 || d % 5 === 0 ? String(d) : '',
+        value: total,
+      })
+    }
+    return rows
+  }, [openMonth, months, year])
+
   const open = (id: string, type: string) => router.navigateIntent('edit', { id, type })
 
   /**
@@ -656,6 +735,82 @@ export function PilotageBoard() {
                 hint={`${eur(tva.collected)} collectée − ${eur(tva.deductible)} récupérable`}
                 tone="neutral"
               />
+            </Grid>
+
+            {/* Évolution sur l'année */}
+            <Card padding={4} radius={2} shadow={1}>
+              <Stack space={4}>
+                <Box>
+                  <Heading size={2}>Encaissements mois par mois</Heading>
+                  <Text size={0} muted style={{ marginTop: 6 }}>
+                    Survole une colonne pour le détail. Les mois en pointillés
+                    n&apos;ont rien de saisi.
+                  </Text>
+                </Box>
+                <ColumnChart data={incomeSeries} palette={palette} />
+              </Stack>
+            </Card>
+
+            <Card padding={4} radius={2} shadow={1}>
+              <Stack space={4}>
+                <Box>
+                  <Heading size={2}>Résultat mois par mois</Heading>
+                  <Text size={0} muted style={{ marginTop: 6 }}>
+                    Encaissements moins dépenses et charges fixes. Au-dessus de la
+                    ligne le mois est bénéficiaire, en dessous il est déficitaire.
+                  </Text>
+                </Box>
+                <DivergingColumnChart data={resultSeries} palette={palette} />
+              </Stack>
+            </Card>
+
+            {/* Camemberts */}
+            <Grid columns={[1, 1, 2]} gap={3}>
+              <Card padding={4} radius={2} shadow={1}>
+                <Stack space={4}>
+                  <Box>
+                    <Heading size={2}>D&apos;où vient l&apos;argent</Heading>
+                    <Text size={0} muted style={{ marginTop: 6 }}>
+                      Répartition des encaissements {year} par canal.
+                    </Text>
+                  </Box>
+                  {channelSlices.length === 0 ? (
+                    <Text size={1} muted>
+                      Aucune vente enregistrée sur cette année.
+                    </Text>
+                  ) : (
+                    <DonutChart
+                      slices={channelSlices}
+                      palette={palette}
+                      total={totals.income}
+                      centerLabel="Encaissé"
+                    />
+                  )}
+                </Stack>
+              </Card>
+
+              <Card padding={4} radius={2} shadow={1}>
+                <Stack space={4}>
+                  <Box>
+                    <Heading size={2}>Où part l&apos;argent</Heading>
+                    <Text size={0} muted style={{ marginTop: 6 }}>
+                      Dépenses et charges fixes {year} par catégorie.
+                    </Text>
+                  </Box>
+                  {expenseSlices.length === 0 ? (
+                    <Text size={1} muted>
+                      Aucune dépense saisie et aucune charge fixe déclarée.
+                    </Text>
+                  ) : (
+                    <DonutChart
+                      slices={expenseSlices}
+                      palette={palette}
+                      total={totals.variable + totals.fixed}
+                      centerLabel="Dépensé"
+                    />
+                  )}
+                </Stack>
+              </Card>
             </Grid>
 
             {/* Mois par mois */}
@@ -854,6 +1009,19 @@ export function PilotageBoard() {
                       />
                     </Flex>
                   </Flex>
+
+                  {detail.salesCount > 0 ? (
+                    <Stack space={3}>
+                      <Text size={1} weight="semibold">
+                        Jour par jour
+                      </Text>
+                      <ColumnChart
+                        data={dailySeries}
+                        palette={palette}
+                        height={150}
+                      />
+                    </Stack>
+                  ) : null}
 
                   {detail.sales.length > 0 ? (
                     <Stack space={2}>
