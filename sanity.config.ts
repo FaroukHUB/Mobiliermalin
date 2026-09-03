@@ -13,6 +13,7 @@ import { downloadInvoiceAction } from './sanity/actions/downloadInvoiceAction'
 import { sellInStoreAction } from './sanity/actions/sellInStoreAction'
 import { downloadDeliveryNoteAction } from './sanity/actions/downloadDeliveryNoteAction'
 import { registerSaleAction } from './sanity/actions/registerSaleAction'
+import { withSaleOnAccept } from './sanity/actions/publishWithSaleAction'
 import {
   downloadQuotePdfAction,
   downloadInvoicePdfAction,
@@ -91,8 +92,13 @@ export default defineConfig({
       }
       // Sur les devis : ajoute l'action "Envoyer au client"
       if (context.schemaType === 'quote') {
+        // « Publier » un devis au statut « Accepté + payé » inscrit la
+        // vente dans Gestion : on enveloppe l'action d'origine.
+        const withSale = input.map((a) =>
+          a.action === 'publish' ? withSaleOnAccept(a) : a,
+        )
         return [
-          ...input,
+          ...withSale,
           sendQuoteAction,
           sendInvoiceAction,
           downloadQuotePdfAction,

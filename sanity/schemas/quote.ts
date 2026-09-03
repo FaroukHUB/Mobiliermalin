@@ -69,6 +69,27 @@ export const quote = {
       validation: (R: Rule) => R.required(),
     },
     {
+      name: 'paymentMethod',
+      title: 'Comment le client a payé',
+      type: 'string',
+      group: 'identity',
+      options: {
+        list: [
+          { value: 'stripe', title: '🔒 Lien de paiement (Stripe)' },
+          { value: 'cb', title: '💳 Carte bancaire (TPE)' },
+          { value: 'especes', title: '💵 Espèces' },
+          { value: 'virement', title: '🏦 Virement' },
+          { value: 'cheque', title: '🖊️ Chèque' },
+          { value: 'autre', title: 'Autre' },
+        ],
+        layout: 'radio',
+      },
+      hidden: ({ document }: { document?: { status?: string } }) =>
+        document?.status !== 'accepted',
+      description:
+        'Renseigné tout seul pour un paiement par lien. Pour un règlement au showroom, au TPE, en espèces ou par virement, indique-le ici : la vente s\'inscrit dans Gestion au moment où tu publies.',
+    },
+    {
       name: 'validUntil',
       title: 'Valide jusqu\'au',
       type: 'date',

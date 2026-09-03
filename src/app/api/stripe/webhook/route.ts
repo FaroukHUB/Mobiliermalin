@@ -156,6 +156,7 @@ export async function POST(req: NextRequest) {
             status: 'accepted',
             acceptedAt: new Date().toISOString(),
             stripeSessionId: session?.id,
+            paymentMethod: 'stripe',
           })
           .commit()
       } catch (err) {
