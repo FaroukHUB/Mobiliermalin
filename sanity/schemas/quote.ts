@@ -398,7 +398,7 @@ export const quote = {
           options: {
             list: [
               { value: 'percent', title: 'Pourcentage (%)' },
-              { value: 'amount', title: 'Montant (€ HT)' },
+              { value: 'amount', title: 'Montant (€ TTC)' },
             ],
             layout: 'radio',
           },
@@ -415,7 +415,7 @@ export const quote = {
               if (parent?.type === 'percent' && value > 100) return 'Un pourcentage ne dépasse pas 100.'
               return true
             }),
-          description: 'Ex : 10 pour 10 %, ou 50 pour 50 € HT.',
+          description: 'Ex : 10 pour 10 %, ou 50 pour 50 € TTC. Un montant se saisit toujours TTC, comme les prix du site.',
         },
         {
           name: 'label',

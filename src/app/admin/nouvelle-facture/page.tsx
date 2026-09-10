@@ -582,10 +582,10 @@ export default function NouvelleFacturePage() {
                 style={inputStyle}
               >
                 <option value="percent">Pourcentage (%)</option>
-                <option value="amount">Montant (€ HT)</option>
+                <option value="amount">Montant (€ TTC)</option>
               </select>
             </Field>
-            <Field label={discountType === 'percent' ? 'Valeur (%)' : 'Valeur (€ HT)'} flex={1}>
+            <Field label={discountType === 'percent' ? 'Valeur (%)' : 'Valeur (€ TTC)'} flex={1}>
               <input
                 type="number"
                 min={0}
@@ -608,7 +608,7 @@ export default function NouvelleFacturePage() {
           </Row>
           {discountHt > 0 && (
             <p style={{ fontSize: 13, color: '#6b6b6b', margin: 0 }}>
-              Soit −{fmt(discountHt)} € HT sur les produits. Elle apparaît en clair sur le document.
+              Soit −{fmt(discountHt)} € HT, −{fmt(discountHt * (1 + tvaRate / 100))} € TTC sur les produits. Elle apparaît en clair sur le document.
             </p>
           )}
         </div>

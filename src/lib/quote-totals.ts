@@ -11,9 +11,10 @@
  *  - la remise porte sur les PRODUITS uniquement, jamais sur la
  *    livraison ni sur les prestations : on fait un geste sur le
  *    mobilier, pas sur le transport
- *  - en pourcentage (0 à 100) ou en euros HT ; en euros, elle est
- *    plafonnée au montant des produits, un total ne peut pas devenir
- *    négatif
+ *  - en pourcentage (0 à 100) ou en euros TTC, parce qu'on raisonne
+ *    en TTC au comptoir ; le montant est converti en HT avec le taux
+ *    de TVA du devis, et plafonné au montant des produits : un total
+ *    ne peut pas devenir négatif
  *  - l'acompte se calcule sur le total net TTC
  */
 
@@ -58,19 +59,30 @@ export function hasDiscount(d?: QuoteDiscount | null): d is Required<Pick<QuoteD
   return !!d && (d.type === 'percent' || d.type === 'amount') && typeof d.value === 'number' && d.value > 0
 }
 
-/** Montant HT de la remise pour un total produits donné. */
-export function computeDiscountHt(productsHt: number, d?: QuoteDiscount | null): number {
+/**
+ * Montant HT de la remise pour un total produits donné.
+ * Une remise en euros est saisie TTC : on la ramène en HT avec le taux
+ * de TVA du devis avant de la retrancher des produits.
+ */
+export function computeDiscountHt(
+  productsHt: number,
+  d?: QuoteDiscount | null,
+  tvaRate: number = 20,
+): number {
   if (!hasDiscount(d) || productsHt <= 0) return 0
   if (d.type === 'percent') {
     const pct = Math.min(100, d.value)
     return round2(productsHt * (pct / 100))
   }
-  return round2(Math.min(productsHt, d.value))
+  const amountHt = d.value / (1 + tvaRate / 100)
+  return round2(Math.min(productsHt, amountHt))
 }
 
 /**
  * Libellé de la ligne de remise sur les documents.
- * Ex : « Remise fidélité (10 %) », « Geste commercial », « Remise ».
+ * Ex : « Remise fidélité (10 %) », « Geste commercial (50,00 € TTC) ».
+ * Le tableau des documents est en HT : rappeler le montant TTC dans le
+ * libellé évite au client de chercher pourquoi la ligne ne dit pas 50.
  */
 export function discountLineLabel(d?: QuoteDiscount | null): string {
   if (!hasDiscount(d)) return ''
@@ -80,7 +92,11 @@ export function discountLineLabel(d?: QuoteDiscount | null): string {
     const pctStr = pct.toLocaleString('fr-FR', { maximumFractionDigits: 2 })
     return `${base} (${pctStr} %)`
   }
-  return base
+  const ttcStr = d.value.toLocaleString('fr-FR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+  return `${base} (${ttcStr} € TTC)`
 }
 
 export function computeQuoteTotals(input: QuoteTotalsInput): QuoteTotals {
@@ -88,12 +104,12 @@ export function computeQuoteTotals(input: QuoteTotalsInput): QuoteTotals {
     (s, l) => s + (l?.unitPrice ?? 0) * (l?.quantity ?? 1),
     0,
   )
-  const discountHt = computeDiscountHt(productsHt, input.discount)
+  const tvaRate = input.tvaRate ?? 20
+  const discountHt = computeDiscountHt(productsHt, input.discount, tvaRate)
   const productsNetHt = productsHt - discountHt
   const shippingHt = input.shippingFee ?? 0
   const optionsHt = (input.options || []).reduce((s, o) => s + (o?.price ?? 0), 0)
   const subtotalHt = productsNetHt + shippingHt + optionsHt
-  const tvaRate = input.tvaRate ?? 20
   const tvaAmount = subtotalHt * (tvaRate / 100)
   const totalTtc = subtotalHt + tvaAmount
 

@@ -133,7 +133,7 @@ export async function POST(
   // dans son descriptif pour figurer sur le reçu.
   const discountNote =
     totals.discountHt > 0
-      ? ` · ${discountLineLabel(quote.discount)} déduite : -${totals.discountHt.toFixed(2)} € HT`
+      ? ` · ${discountLineLabel(quote.discount)} déduite : -${(totals.discountHt * (1 + tvaRate / 100)).toFixed(2)} € TTC`
       : ''
 
   if (totalTtc <= 0) {

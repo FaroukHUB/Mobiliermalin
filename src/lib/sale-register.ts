@@ -145,7 +145,7 @@ export function buildSaleFromQuote(
   const productsHt = rawLines
     .filter((l) => l?.name)
     .reduce((s, l) => s + (l.unitPrice ?? 0) * (l.quantity ?? 1), 0)
-  const discountTtc = ttc(computeDiscountHt(productsHt, q.discount))
+  const discountTtc = ttc(computeDiscountHt(productsHt, q.discount, q.tvaRate ?? 20))
   const totalTtc = round2(
     lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0) - discountTtc,
   )

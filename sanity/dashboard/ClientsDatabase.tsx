@@ -148,7 +148,7 @@ function quoteTotalTtc(q: SrcQuote): number {
       : (q.product?.unitPrice ?? 0) * (q.product?.quantity ?? 1)
   const options = (q.options || []).reduce((s, o) => s + (o?.price ?? 0), 0)
   // Remise sur les produits : le chiffre d'affaires est net
-  const ht = lines - computeDiscountHt(lines, q.discount) + (q.shippingFee ?? 0) + options
+  const ht = lines - computeDiscountHt(lines, q.discount, q.tvaRate ?? 20) + (q.shippingFee ?? 0) + options
   return ht * (1 + (q.tvaRate ?? 20) / 100)
 }
 
