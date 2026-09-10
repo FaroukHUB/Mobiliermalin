@@ -1,3 +1,4 @@
+import type { QuoteDiscount } from '@/lib/quote-totals'
 /**
  * GET /api/devis/[uid]/pdf
  * GET /api/devis/[uid]/pdf?type=facture
@@ -44,6 +45,7 @@ type QuoteDoc = {
   tvaRate?: number
   tvaExemptionText?: string
   depositPercent?: number
+  discount?: QuoteDiscount
   selectedDelivery?: { label?: string; price?: number }
   pdfNotes?: string
 }
@@ -65,7 +67,7 @@ export async function GET(
         _id, numero, validUntil, _createdAt,
         customer, shippingAddress, billingAddress, product,
         lineItems[]{ name, unitPrice, quantity },
-        shippingFee, options, tvaRate, tvaExemptionText, depositPercent, selectedDelivery, pdfNotes
+        shippingFee, options, tvaRate, tvaExemptionText, depositPercent, discount, selectedDelivery, pdfNotes
       }`,
       { id: uid },
     )
@@ -159,6 +161,7 @@ export async function GET(
     tvaRate: quote.tvaRate ?? 20,
     tvaExemptionText: quote.tvaExemptionText,
     depositPercent: quote.depositPercent,
+    discount: quote.discount,
     pdfNotes: quote.pdfNotes,
   }
 

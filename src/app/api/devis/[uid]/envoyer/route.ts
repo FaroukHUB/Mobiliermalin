@@ -1,3 +1,4 @@
+import { computeQuoteTotals, type QuoteDiscount } from '@/lib/quote-totals'
 import { NextResponse, type NextRequest } from 'next/server'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { QuotePdf, type QuotePdfInput } from '@/components/pdf/QuotePdf'
@@ -43,6 +44,7 @@ type QuoteDoc = {
   tvaRate?: number
   tvaExemptionText?: string
   depositPercent?: number
+  discount?: QuoteDiscount
   selectedDelivery?: { label?: string; price?: number }
   pdfNotes?: string
 }
@@ -87,7 +89,7 @@ export async function POST(
       _id, numero, status, validUntil, _createdAt,
       customer, shippingAddress, billingAddress, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate, tvaExemptionText, depositPercent, selectedDelivery, pdfNotes
+      shippingFee, options, tvaRate, tvaExemptionText, depositPercent, discount, selectedDelivery, pdfNotes
     }`,
     { id: uid },
   )
@@ -180,6 +182,7 @@ export async function POST(
     tvaRate: quote.tvaRate ?? 20,
     tvaExemptionText: quote.tvaExemptionText,
     depositPercent: quote.depositPercent,
+    discount: quote.discount,
     pdfNotes: quote.pdfNotes,
   }
 
@@ -330,14 +333,13 @@ export async function POST(
 }
 
 function computeTotalTtc(input: QuotePdfInput): number {
-  const productTotal = (input.items || []).reduce(
-    (sum, it) => sum + it.unitPrice * it.quantity,
-    0,
-  )
-  const optionsTotal = input.options.reduce((sum, o) => sum + o.price, 0)
-  const subtotalHt = productTotal + input.shippingFee + optionsTotal
-  const tvaAmount = subtotalHt * (input.tvaRate / 100)
-  return subtotalHt + tvaAmount
+  return computeQuoteTotals({
+    lines: input.items || [],
+    shippingFee: input.shippingFee,
+    options: input.options,
+    tvaRate: input.tvaRate,
+    discount: input.discount,
+  }).totalTtc
 }
 
 function renderClientEmailHtml(input: {

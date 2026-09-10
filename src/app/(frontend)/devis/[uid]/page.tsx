@@ -1,3 +1,4 @@
+import { computeQuoteTotals, discountLineLabel, type QuoteDiscount } from '@/lib/quote-totals'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -38,6 +39,7 @@ type QuoteDoc = {
   tvaRate?: number
   tvaExemptionText?: string
   depositPercent?: number
+  discount?: QuoteDiscount
   deliveryChoices?: Array<{ label: string; description?: string; price: number }>
   selectedDelivery?: { label?: string; price?: number; chosenAt?: string }
   pdfNotes?: string
@@ -63,7 +65,7 @@ export default async function QuoteAcceptPage({
       _id, numero, status, documentType, validUntil, _createdAt,
       customer, shippingAddress, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate, tvaExemptionText, depositPercent,
+      shippingFee, options, tvaRate, tvaExemptionText, depositPercent, discount,
       deliveryChoices[]{ label, description, price }, selectedDelivery,
       pdfNotes
     }`,
@@ -95,14 +97,18 @@ export default async function QuoteAcceptPage({
         ? [quote.product]
         : []
 
-  const linesTotal = displayLines.reduce(
-    (s, li) => s + li.unitPrice * li.quantity,
-    0,
-  )
-  const optionsTotal = options.reduce((sum, o) => sum + o.price, 0)
-  const subtotalHt = linesTotal + shippingFee + optionsTotal
-  const tvaAmount = subtotalHt * (tvaRate / 100)
-  const totalTtc = subtotalHt + tvaAmount
+  // Même calcul que le PDF, Stripe et le registre : la remise porte sur
+  // les produits, linesTotal est donc déjà net pour la suite.
+  const totals = computeQuoteTotals({
+    lines: displayLines,
+    shippingFee,
+    options,
+    tvaRate,
+    discount: quote.discount,
+  })
+  const { subtotalHt, tvaAmount, totalTtc, discountHt } = totals
+  const linesTotal = totals.productsNetHt
+  const optionsTotal = totals.optionsHt
 
   // Acompte : le client ne règle en ligne que ce pourcentage du total
   const depositPercent =
@@ -249,6 +255,14 @@ export default async function QuoteAcceptPage({
                 </td>
               </tr>
             ))}
+            {discountHt > 0 && (
+              <tr>
+                <td className="px-6 py-3 text-gold-dark">{discountLineLabel(quote.discount)}</td>
+                <td className="px-3 py-3 text-center text-ink">1</td>
+                <td className="px-3 py-3 text-right text-gold-dark">−{eur(discountHt)}</td>
+                <td className="px-6 py-3 text-right text-gold-dark font-medium">−{eur(discountHt)}</td>
+              </tr>
+            )}
             <tr className="bg-ivory-dark/40">
               <td className="px-6 py-3 text-ink">
                 {hasDeliveryChoices

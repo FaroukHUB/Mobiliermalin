@@ -1,3 +1,4 @@
+import { computeDiscountHt, type QuoteDiscount } from '../../src/lib/quote-totals'
 /**
  * Base de données clients — vue consolidée dans Sanity Studio.
  *
@@ -67,6 +68,7 @@ type SrcQuote = {
   shippingFee?: number
   options?: Array<{ price?: number }>
   tvaRate?: number
+  discount?: QuoteDiscount
 }
 
 type SrcContact = {
@@ -90,7 +92,7 @@ const QUOTES_QUERY = `*[_type == "quote"]{
   _id, numero, status, documentType, acceptedAt, sentAt, _createdAt,
   customer, shippingAddress, billingAddress,
   lineItems[]{ unitPrice, quantity }, product{ unitPrice, quantity },
-  shippingFee, options[]{ price }, tvaRate
+  shippingFee, options[]{ price }, tvaRate, discount
 }`
 
 const CONTACTS_QUERY = `*[_type == "contactMessage"]{
@@ -145,7 +147,8 @@ function quoteTotalTtc(q: SrcQuote): number {
         )
       : (q.product?.unitPrice ?? 0) * (q.product?.quantity ?? 1)
   const options = (q.options || []).reduce((s, o) => s + (o?.price ?? 0), 0)
-  const ht = lines + (q.shippingFee ?? 0) + options
+  // Remise sur les produits : le chiffre d'affaires est net
+  const ht = lines - computeDiscountHt(lines, q.discount) + (q.shippingFee ?? 0) + options
   return ht * (1 + (q.tvaRate ?? 20) / 100)
 }
 

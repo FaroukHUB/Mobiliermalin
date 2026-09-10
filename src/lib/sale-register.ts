@@ -1,3 +1,4 @@
+import { computeDiscountHt, discountLineLabel, type QuoteDiscount } from './quote-totals'
 /**
  * Enregistrement automatique des ventes.
  *
@@ -62,6 +63,7 @@ export type QuoteForSale = {
   options?: Array<{ label?: string; price?: number }>
   tvaRate?: number
   depositPercent?: number
+  discount?: QuoteDiscount
 }
 
 /** Champs à récupérer pour construire une vente à partir d'un devis. */
@@ -70,7 +72,7 @@ export const QUOTE_FOR_SALE_PROJECTION = `{
   lineItems[]{ name, unitPrice, quantity },
   product{ name, unitPrice, quantity },
   shippingFee, selectedDelivery, options[]{ label, price },
-  tvaRate, depositPercent
+  tvaRate, depositPercent, discount
 }`
 
 /**
@@ -138,7 +140,15 @@ export function buildSaleFromQuote(
     })
   }
 
-  const totalTtc = round2(lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0))
+  // Remise sur les produits : le registre garde le net encaissé, et la
+  // remise à part pour savoir ce qu'on a consenti sur l'année.
+  const productsHt = rawLines
+    .filter((l) => l?.name)
+    .reduce((s, l) => s + (l.unitPrice ?? 0) * (l.quantity ?? 1), 0)
+  const discountTtc = ttc(computeDiscountHt(productsHt, q.discount))
+  const totalTtc = round2(
+    lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0) - discountTtc,
+  )
 
   // Acompte : seul l'acompte est réellement encaissé. Le solde fera
   // une seconde vente le jour où il rentre.
@@ -155,6 +165,18 @@ export function buildSaleFromQuote(
     .map((l) => (l.quantity > 1 ? `${l.quantity}× ${l.name}` : l.name))
     .join(' + ')
 
+  const notes: string[] = []
+  if (discountTtc > 0) {
+    notes.push(`${discountLineLabel(q.discount)} : -${discountTtc} € TTC.`)
+  }
+  if (hasDeposit) {
+    notes.push(
+      `Acompte de ${q.depositPercent} % encaissé. Solde restant : ${round2(
+        totalTtc - collected,
+      )} € TTC.`,
+    )
+  }
+
   return {
     _type: 'sale',
     date: opts.date || new Date().toISOString().slice(0, 10),
@@ -166,13 +188,10 @@ export function buildSaleFromQuote(
     saleType: shippingTtc > 0 ? 'autre-livraison' : 'sur-place',
     channel: opts.channel || 'devis',
     lines,
+    discountTtc,
     sourceQuote: { _type: 'reference', _ref: q._id, _weak: true },
     autoCreated: true,
-    ...(hasDeposit && {
-      notes: `Acompte de ${q.depositPercent} % encaissé. Solde restant : ${round2(
-        totalTtc - collected,
-      )} € TTC.`,
-    }),
+    ...(notes.length > 0 && { notes: notes.join(' ') }),
   }
 }
 

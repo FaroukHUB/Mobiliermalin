@@ -1,3 +1,4 @@
+import { computeQuoteTotals, discountLineLabel, type QuoteDiscount } from '@/lib/quote-totals'
 import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer'
 import { LEGAL } from '@/lib/legal'
 
@@ -82,6 +83,7 @@ export type QuotePdfInput = {
    * modalités de paiement s'adaptent.
    */
   depositPercent?: number
+  discount?: QuoteDiscount
   /** Logo (URL PNG) affiché dans le bandeau d'en-tête. */
   logoUrl?: string
   pdfNotes?: string
@@ -402,6 +404,7 @@ export function QuotePdf({
   tvaRate,
   tvaExemptionText,
   depositPercent,
+  discount,
   logoUrl,
   pdfNotes,
 }: QuotePdfInput) {
@@ -415,14 +418,9 @@ export function QuotePdf({
   // Unifie lignes multiples (items) et ligne unique legacy (product)
   const lines =
     items && items.length > 0 ? items : product ? [product] : []
-  const productTotal = lines.reduce(
-    (sum, l) => sum + l.unitPrice * l.quantity,
-    0,
-  )
-  const optionsTotal = options.reduce((sum, o) => sum + o.price, 0)
-  const subtotalHt = productTotal + shippingFee + optionsTotal
-  const tvaAmount = subtotalHt * (tvaRate / 100)
-  const totalTtc = subtotalHt + tvaAmount
+  // Même calcul que la page client, Stripe et le registre des ventes.
+  const totals = computeQuoteTotals({ lines, shippingFee, options, tvaRate, discount })
+  const { subtotalHt, tvaAmount, totalTtc, discountHt } = totals
 
   const hasAddress = !!(shippingAddress?.street || shippingAddress?.city)
   const hasBilling = !!(billingAddress?.street || billingAddress?.city)
@@ -561,6 +559,16 @@ export function QuotePdf({
             <Text style={styles.colTotal}>{eur(line.unitPrice * line.quantity)}</Text>
           </View>
         ))}
+
+        {/* Remise sur les produits, en clair : obligatoire sur une facture */}
+        {discountHt > 0 && (
+          <View style={styles.tableRow}>
+            <Text style={styles.colDesc}>{discountLineLabel(discount)}</Text>
+            <Text style={styles.colQty}>1</Text>
+            <Text style={styles.colPrice}>-{eur(discountHt)}</Text>
+            <Text style={styles.colTotal}>-{eur(discountHt)}</Text>
+          </View>
+        )}
 
         {/* Livraison */}
         {shippingFee > 0 && (

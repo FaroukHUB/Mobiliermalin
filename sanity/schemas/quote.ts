@@ -384,6 +384,48 @@ export const quote = {
     },
 
     {
+      name: 'discount',
+      title: 'Remise',
+      type: 'object',
+      group: 'fees',
+      description:
+        'Geste commercial sur les produits, hors livraison et options. Apparaît en clair sur le devis et la facture, et se retrouve dans Gestion.',
+      fields: [
+        {
+          name: 'type',
+          title: 'Type',
+          type: 'string',
+          options: {
+            list: [
+              { value: 'percent', title: 'Pourcentage (%)' },
+              { value: 'amount', title: 'Montant (€ HT)' },
+            ],
+            layout: 'radio',
+          },
+          initialValue: 'percent',
+        },
+        {
+          name: 'value',
+          title: 'Valeur',
+          type: 'number',
+          validation: (R: Rule) =>
+            R.min(0).custom((value: number | undefined, ctx) => {
+              if (typeof value !== 'number') return true
+              const parent = ctx.parent as { type?: string } | undefined
+              if (parent?.type === 'percent' && value > 100) return 'Un pourcentage ne dépasse pas 100.'
+              return true
+            }),
+          description: 'Ex : 10 pour 10 %, ou 50 pour 50 € HT.',
+        },
+        {
+          name: 'label',
+          title: 'Libellé sur le document',
+          type: 'string',
+          description: 'Ex : Remise fidélité, Geste commercial, Remise lot de 10. Vide = « Remise ».',
+        },
+      ],
+    },
+    {
       name: 'depositPercent',
       title: 'Acompte demandé (%)',
       type: 'number',

@@ -1,3 +1,4 @@
+import { computeQuoteTotals, discountLineLabel, type QuoteDiscount } from '@/lib/quote-totals'
 import { NextResponse, type NextRequest } from 'next/server'
 import { sanityClient } from '@/lib/sanity'
 import { getWriteClient, isSanityWriteConfigured } from '@/lib/sanity-write'
@@ -22,6 +23,7 @@ type QuoteDoc = {
   options?: { label: string; price: number }[]
   tvaRate?: number
   depositPercent?: number
+  discount?: QuoteDiscount
   deliveryChoices?: Array<{ label?: string; description?: string; price?: number }>
 }
 
@@ -55,7 +57,7 @@ export async function POST(
       _id, numero, status, validUntil,
       customer, product,
       lineItems[]{ name, unitPrice, quantity },
-      shippingFee, options, tvaRate, depositPercent,
+      shippingFee, options, tvaRate, depositPercent, discount,
       deliveryChoices[]{ label, description, price }
     }`,
     { id: uid },
@@ -117,10 +119,22 @@ export async function POST(
       : quote.product
         ? quote.product.unitPrice * quote.product.quantity
         : 0
-  const optionsTotal = options.reduce((sum, o) => sum + o.price, 0)
-  const subtotalHt = linesTotal + shippingFee + optionsTotal
-  const tvaAmount = subtotalHt * (tvaRate / 100)
-  const totalTtc = Math.round((subtotalHt + tvaAmount) * 100) // en centimes
+  // Même calcul que le PDF et la page client : ce que le client a lu est
+  // ce qu'il paie, remise comprise.
+  const totals = computeQuoteTotals({
+    lines: [{ unitPrice: linesTotal, quantity: 1 }],
+    shippingFee,
+    options,
+    tvaRate,
+    discount: quote.discount,
+  })
+  const totalTtc = Math.round(totals.totalTtc * 100) // en centimes
+  // Stripe ne reçoit qu'une ligne au montant net : la remise est dite
+  // dans son descriptif pour figurer sur le reçu.
+  const discountNote =
+    totals.discountHt > 0
+      ? ` · ${discountLineLabel(quote.discount)} déduite : -${totals.discountHt.toFixed(2)} € HT`
+      : ''
 
   if (totalTtc <= 0) {
     return NextResponse.json({ error: 'Montant du devis invalide' }, { status: 400 })
@@ -197,10 +211,10 @@ export async function POST(
   stripeParams.append(
     'line_items[0][price_data][product_data][description]',
     depositPercent
-      ? `Acompte de ${depositPercent} % sur un total de ${(totalTtc / 100).toFixed(2)} € TTC — solde à régler selon les modalités convenues`
+      ? `Acompte de ${depositPercent} % sur un total de ${(totalTtc / 100).toFixed(2)} € TTC — solde à régler selon les modalités convenues${discountNote}`
       : selectedDelivery
-        ? `Mobilier + ${selectedDelivery.label} + options (TTC incluant ${tvaRate}% TVA)`
-        : `Mobilier + livraison + options (TTC incluant ${tvaRate}% TVA)`,
+        ? `Mobilier + ${selectedDelivery.label} + options (TTC incluant ${tvaRate}% TVA)${discountNote}`
+        : `Mobilier + livraison + options (TTC incluant ${tvaRate}% TVA)${discountNote}`,
   )
   stripeParams.append('line_items[0][price_data][unit_amount]', String(amountToCharge))
   stripeParams.append('line_items[0][quantity]', '1')

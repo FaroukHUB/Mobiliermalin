@@ -1,3 +1,4 @@
+import { computeQuoteTotals, discountLineLabel, type QuoteDiscount } from '@/lib/quote-totals'
 import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer'
 import { LEGAL } from '@/lib/legal'
 
@@ -38,6 +39,8 @@ export type DeliveryNotePdfInput = {
   shippingFee: number
   tvaRate: number
   showPrices: boolean
+  /** Remise sur les produits, affichée seulement si les prix le sont. */
+  discount?: QuoteDiscount
   carrier?: string
   notes?: string
   /** Mention légale affichée quand tvaRate vaut 0 (hors TVA). */
@@ -367,6 +370,7 @@ export function DeliveryNotePdf({
   shippingFee,
   tvaRate,
   showPrices,
+  discount,
   carrier,
   notes,
   tvaExemptionText,
@@ -377,11 +381,8 @@ export function DeliveryNotePdf({
   amountDue,
 }: DeliveryNotePdfInput) {
   const noTva = tvaRate === 0
-  const productTotal = items.reduce((s, l) => s + l.unitPrice * l.quantity, 0)
-  const optionsTotal = options.reduce((s, o) => s + o.price, 0)
-  const subtotalHt = productTotal + shippingFee + optionsTotal
-  const tvaAmount = subtotalHt * (tvaRate / 100)
-  const totalTtc = subtotalHt + tvaAmount
+  const totals = computeQuoteTotals({ lines: items, shippingFee, options, tvaRate, discount })
+  const { subtotalHt, tvaAmount, totalTtc, discountHt } = totals
   const totalPieces = items.reduce((s, l) => s + l.quantity, 0)
 
   const hasAddress = !!(shippingAddress?.street || shippingAddress?.city)
@@ -541,6 +542,15 @@ export function DeliveryNotePdf({
             )}
           </View>
         ))}
+
+        {showPrices && discountHt > 0 ? (
+          <View style={styles.tableRow}>
+            <Text style={styles.colDesc}>{discountLineLabel(discount)}</Text>
+            <Text style={styles.colQty}>1</Text>
+            <Text style={styles.colPrice}>-{eur(discountHt)}</Text>
+            <Text style={styles.colTotal}>-{eur(discountHt)}</Text>
+          </View>
+        ) : null}
 
         {showPrices && shippingFee > 0 ? (
           <View style={styles.tableRow}>

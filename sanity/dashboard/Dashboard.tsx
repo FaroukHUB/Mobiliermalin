@@ -1,3 +1,4 @@
+import { computeDiscountHt, type QuoteDiscount } from '../../src/lib/quote-totals'
 /**
  * Tableau de bord Sanity Studio — Mobilier Malin.
  *
@@ -80,6 +81,7 @@ type RevenueQuote = {
   shippingFee?: number
   options?: Array<{ price?: number }>
   tvaRate?: number
+  discount?: QuoteDiscount
   numero?: string
   customerName?: string
   depositPercent?: number
@@ -137,7 +139,7 @@ const REVENUE_QUOTES_QUERY = `*[_type == "quote"] {
   "customerName": customer.name,
   lineItems[]{ unitPrice, quantity },
   product{ unitPrice, quantity },
-  shippingFee, options[]{ price }, tvaRate
+  shippingFee, options[]{ price }, tvaRate, discount
 }`
 
 const RECENT_ORDERS_QUERY = `*[_type == "order"] | order(placedAt desc)[0...5] {
@@ -197,7 +199,8 @@ function quoteTotalTtc(q: RevenueQuote): number {
         )
       : (q.product?.unitPrice ?? 0) * (q.product?.quantity ?? 1)
   const options = (q.options || []).reduce((s, o) => s + (o?.price ?? 0), 0)
-  const ht = lines + (q.shippingFee ?? 0) + options
+  // Remise sur les produits : le chiffre d'affaires est net
+  const ht = lines - computeDiscountHt(lines, q.discount) + (q.shippingFee ?? 0) + options
   return ht * (1 + (q.tvaRate ?? 20) / 100)
 }
 

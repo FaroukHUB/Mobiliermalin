@@ -1,3 +1,4 @@
+import { computeQuoteTotals } from '@/lib/quote-totals'
 /**
  * POST /api/admin/quotes/create
  *
@@ -87,6 +88,7 @@ type Payload = {
   lineItems?: LineItemIn[]
   shippingFee?: number
   depositPercent?: number
+  discount?: { type?: string; value?: number; label?: string }
   options?: OptionIn[]
   tvaRate?: number
   validUntilDays?: number
@@ -295,11 +297,30 @@ export async function POST(req: Request) {
       : null
   const tvaRate = typeof body.tvaRate === 'number' ? body.tvaRate : 20
 
-  const subtotalHt =
-    lineItemsClean.reduce((s, li) => s + li.unitPrice * li.quantity, 0) +
-    optionsClean.reduce((s, o) => s + o.price, 0) +
-    shippingFee
-  const totalTtc = subtotalHt * (1 + tvaRate / 100)
+  // Remise : % plafonné à 100, ou montant en € HT. Rien d'autre n'est
+  // accepté, et une remise vide n'est pas enregistrée.
+  const discountClean =
+    body.discount &&
+    (body.discount.type === 'percent' || body.discount.type === 'amount') &&
+    typeof body.discount.value === 'number' &&
+    body.discount.value > 0
+      ? {
+          type: body.discount.type as 'percent' | 'amount',
+          value:
+            body.discount.type === 'percent'
+              ? Math.min(100, body.discount.value)
+              : body.discount.value,
+          ...(body.discount.label?.trim() && { label: body.discount.label.trim() }),
+        }
+      : null
+
+  const { subtotalHt, totalTtc } = computeQuoteTotals({
+    lines: lineItemsClean,
+    shippingFee,
+    options: optionsClean,
+    tvaRate,
+    discount: discountClean,
+  })
 
   // Détermine le type de doc (devis vs facture)
   const documentType: 'quote' | 'invoice' =
@@ -328,6 +349,7 @@ export async function POST(req: Request) {
     // prêt à être envoyé plus tard depuis Studio.
     status: sendMode === 'none' ? 'draft' : 'sent',
     validUntil: validUntilISO,
+    ...(discountClean && { discount: discountClean }),
     customer: {
       name: body.customer!.name!.trim(),
       email: body.customer!.email!.trim(),

@@ -97,6 +97,16 @@ export const sale = {
         'Part du montant encaissé qui correspond au transport. Sert à calculer le restant après frais.',
     },
     {
+      name: 'discountTtc',
+      title: 'Remise consentie (€ TTC)',
+      type: 'number',
+      group: 'main',
+      initialValue: 0,
+      validation: (R: Rule) => R.min(0),
+      description:
+        'Geste commercial accordé sur cette vente. Le montant encaissé est déjà net : ce champ sert à savoir, en fin d\'année, combien on a donné en remises.',
+    },
+    {
       name: 'paymentMethod',
       title: 'Mode de paiement',
       type: 'string',

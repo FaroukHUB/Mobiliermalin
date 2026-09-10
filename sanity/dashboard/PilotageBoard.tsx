@@ -58,6 +58,7 @@ type Sale = {
   designation?: string
   amountCollected?: number
   shippingFee?: number
+  discountTtc?: number
   paymentMethod?: string
   saleType?: string
   channel?: string
@@ -91,7 +92,7 @@ type FixedCharge = {
 // côté composant.
 
 const SALES_QUERY = `*[_type == "sale"] | order(date desc)[0...3000]{
-  _id, date, customerName, designation, amountCollected, shippingFee,
+  _id, date, customerName, designation, amountCollected, shippingFee, discountTtc,
   paymentMethod, saleType, channel, notes
 }`
 
@@ -206,6 +207,7 @@ function salesCsv(sales: Sale[]): string {
     'Montant encaissé',
     'Frais de livraison',
     'Restant après frais',
+    'Remise consentie',
     'Mode de paiement',
     'Type de vente',
     'Canal',
@@ -221,6 +223,7 @@ function salesCsv(sales: Sale[]): string {
       num(amount),
       num(ship),
       num(amount - ship),
+      num(s.discountTtc || 0),
       PAYMENT_LABELS[s.paymentMethod || '']?.replace(/^\S+\s/, '') || s.paymentMethod || '',
       SALE_TYPE_LABELS[s.saleType || ''] || s.saleType || '',
       CHANNEL_LABELS[s.channel || '']?.replace(/^\S+\s/, '') || s.channel || '',

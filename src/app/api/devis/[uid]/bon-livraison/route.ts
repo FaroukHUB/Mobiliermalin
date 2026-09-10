@@ -1,3 +1,4 @@
+import type { QuoteDiscount } from '@/lib/quote-totals'
 /**
  * GET /api/devis/[uid]/bon-livraison
  *
@@ -44,6 +45,7 @@ type SanityQuote = {
   shippingFee?: number
   options?: Array<{ label?: string; price?: number }>
   tvaRate?: number
+  discount?: QuoteDiscount
   tvaExemptionText?: string
   selectedDelivery?: { label?: string; price?: number }
   blDate?: string
@@ -189,6 +191,7 @@ export async function GET(
     shippingFee: quote.selectedDelivery?.label ? 0 : (quote.shippingFee ?? 0),
     tvaRate: quote.tvaRate ?? 20,
     tvaExemptionText: quote.tvaExemptionText,
+    discount: quote.discount,
     mapsQrDataUrl,
     showPrices: quote.blShowPrices === true,
     carrier: quote.blCarrier,

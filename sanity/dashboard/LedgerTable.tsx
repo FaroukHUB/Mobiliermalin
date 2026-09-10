@@ -48,6 +48,7 @@ type Row = {
   designation?: string
   amountCollected?: number
   shippingFee?: number
+  discountTtc?: number
   saleType?: string
   channel?: string
   // Dépenses
@@ -62,7 +63,7 @@ type Row = {
 }
 
 const SALES_QUERY = `*[_type == "sale"] | order(date desc)[0...3000]{
-  _id, date, customerName, designation, amountCollected, shippingFee,
+  _id, date, customerName, designation, amountCollected, shippingFee, discountTtc,
   paymentMethod, saleType, channel, notes
 }`
 
@@ -131,7 +132,7 @@ function toCsv(kind: Kind, rows: Row[]): string {
     kind === 'sale'
       ? [
           'Date', 'Client', 'Désignation(s)', 'Montant encaissé',
-          'Frais de livraison', 'Restant après frais', 'Mode de paiement',
+          'Frais de livraison', 'Restant après frais', 'Remise consentie', 'Mode de paiement',
           'Type de vente', 'Canal', 'Commentaire',
         ]
       : [
@@ -145,7 +146,7 @@ function toCsv(kind: Kind, rows: Row[]): string {
       const s = r.shippingFee || 0
       return [
         frDate(r.date), r.customerName || '', clean(r.designation),
-        num(a), num(s), num(a - s),
+        num(a), num(s), num(a - s), num(r.discountTtc || 0),
         PAYMENT_LABELS[r.paymentMethod || ''] || r.paymentMethod || '',
         SALE_TYPE_LABELS[r.saleType || ''] || r.saleType || '',
         CHANNEL_LABELS[r.channel || ''] || r.channel || '',
@@ -223,6 +224,12 @@ const SALE_COLUMNS: Column[] = [
     render: (r) => ((r.shippingFee || 0) > 0 ? eur(r.shippingFee || 0) : '—'),
     sortBy: (r) => r.shippingFee || 0,
     total: (r) => r.shippingFee || 0,
+  },
+  {
+    key: 'discount', title: 'Remise', align: 'right', width: 96,
+    render: (r) => ((r.discountTtc || 0) > 0 ? eur(r.discountTtc || 0) : '—'),
+    sortBy: (r) => r.discountTtc || 0,
+    total: (r) => r.discountTtc || 0,
   },
   {
     key: 'net', title: 'Restant', align: 'right', width: 104,

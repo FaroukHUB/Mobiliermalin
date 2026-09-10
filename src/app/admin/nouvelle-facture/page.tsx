@@ -14,6 +14,7 @@
  */
 
 'use client'
+import { computeQuoteTotals, discountLineLabel } from '@/lib/quote-totals'
 
 import { useEffect, useRef, useState } from 'react'
 import { PriceHtTtcInput } from '@/components/admin/PriceHtTtcInput'
@@ -83,6 +84,10 @@ export default function NouvelleFacturePage() {
 
   const [tvaRate, setTvaRate] = useState(20)
   const [depositPercent, setDepositPercent] = useState(0)
+  // Remise sur les produits (hors livraison et options), % ou € HT
+  const [discountType, setDiscountType] = useState<'percent' | 'amount'>('percent')
+  const [discountValue, setDiscountValue] = useState(0)
+  const [discountLabel, setDiscountLabel] = useState('')
   const [sendMode, setSendMode] = useState<SendMode>('payment-link')
   const [pdfNotes, setPdfNotes] = useState('')
   const [internalNotes, setInternalNotes] = useState('')
@@ -153,8 +158,13 @@ export default function NouvelleFacturePage() {
       )
     : (amountTTC || 0) / (1 + tvaRate / 100)
 
-  const tvaAmount = linesTotalHt * (tvaRate / 100)
-  const totalTtc = linesTotalHt + tvaAmount
+  const discount = { type: discountType, value: discountValue, label: discountLabel }
+  const totals = computeQuoteTotals({
+    lines: [{ unitPrice: linesTotalHt, quantity: 1 }],
+    tvaRate,
+    discount,
+  })
+  const { subtotalHt, tvaAmount, totalTtc, discountHt } = totals
 
   const addLine = () =>
     setLineItems([...lineItems, { id: rid(), name: '', unitPrice: 0, quantity: 1 }])
@@ -215,6 +225,13 @@ export default function NouvelleFacturePage() {
           shippingFee: 0,
           options: [],
           tvaRate,
+          ...(discountValue > 0 && {
+            discount: {
+              type: discountType,
+              value: discountValue,
+              ...(discountLabel.trim() && { label: discountLabel.trim() }),
+            },
+          }),
           ...(depositPercent >= 1 && depositPercent <= 99 && { depositPercent }),
           pdfNotes,
           internalNotes,
@@ -553,6 +570,48 @@ export default function NouvelleFacturePage() {
           </>
         )}
 
+        <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid #e5e3de' }}>
+          <p style={{ ...{ fontSize: 12, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' as const, color: '#6b6b6b' }, marginBottom: 8 }}>
+            Remise (sur les produits, hors livraison et options)
+          </p>
+          <Row>
+            <Field label="Type" flex={1}>
+              <select
+                value={discountType}
+                onChange={(e) => setDiscountType(e.target.value as 'percent' | 'amount')}
+                style={inputStyle}
+              >
+                <option value="percent">Pourcentage (%)</option>
+                <option value="amount">Montant (€ HT)</option>
+              </select>
+            </Field>
+            <Field label={discountType === 'percent' ? 'Valeur (%)' : 'Valeur (€ HT)'} flex={1}>
+              <input
+                type="number"
+                min={0}
+                max={discountType === 'percent' ? 100 : undefined}
+                step="0.01"
+                value={discountValue || ''}
+                onChange={(e) => setDiscountValue(parseFloat(e.target.value) || 0)}
+                style={inputStyle}
+                placeholder="0 = pas de remise"
+              />
+            </Field>
+            <Field label="Libellé sur le document" flex={2}>
+              <input
+                value={discountLabel}
+                onChange={(e) => setDiscountLabel(e.target.value)}
+                style={inputStyle}
+                placeholder="Ex : Remise fidélité, Geste commercial"
+              />
+            </Field>
+          </Row>
+          {discountHt > 0 && (
+            <p style={{ fontSize: 13, color: '#6b6b6b', margin: 0 }}>
+              Soit −{fmt(discountHt)} € HT sur les produits. Elle apparaît en clair sur le document.
+            </p>
+          )}
+        </div>
         <div style={{ marginTop: 20 }}>
           <Row>
             <Field label="Taux de TVA (%)" flex={1}>
@@ -717,8 +776,16 @@ export default function NouvelleFacturePage() {
             lineHeight: 1.6,
           }}
         >
+          {discountHt > 0 && (
+            <>
+              <span>Produits HT</span>
+              <strong style={{ textAlign: 'right' }}>{fmt(totals.productsHt)} €</strong>
+              <span style={{ color: '#c8a25b' }}>{discountLineLabel(discount)}</span>
+              <strong style={{ textAlign: 'right', color: '#c8a25b' }}>−{fmt(discountHt)} €</strong>
+            </>
+          )}
           <span>Sous-total HT</span>
-          <strong style={{ textAlign: 'right' }}>{fmt(linesTotalHt)} €</strong>
+          <strong style={{ textAlign: 'right' }}>{fmt(subtotalHt)} €</strong>
           <span>TVA ({tvaRate} %)</span>
           <strong style={{ textAlign: 'right' }}>{fmt(tvaAmount)} €</strong>
           <span
