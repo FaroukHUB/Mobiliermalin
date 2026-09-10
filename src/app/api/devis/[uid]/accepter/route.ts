@@ -72,6 +72,12 @@ export async function POST(
   if (quote.status === 'refused') {
     return NextResponse.json({ error: 'Ce devis a été refusé.' }, { status: 409 })
   }
+  if (quote.status === 'declined') {
+    return NextResponse.json(
+      { error: 'Cette demande a été close. Contactez-nous pour en discuter.' },
+      { status: 409 },
+    )
+  }
   if (quote.validUntil) {
     const expiresAt = new Date(quote.validUntil)
     if (expiresAt.getTime() < Date.now()) {

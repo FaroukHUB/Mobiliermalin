@@ -61,6 +61,7 @@ export const quote = {
           { value: 'sent', title: '📤 Envoyé au client' },
           { value: 'accepted', title: '✅ Accepté + payé' },
           { value: 'refused', title: '❌ Refusé par le client' },
+          { value: 'declined', title: '🚫 Sans suite (déclinée par nous)' },
           { value: 'expired', title: '⏰ Expiré (validité dépassée)' },
         ],
         layout: 'radio',
@@ -520,6 +521,37 @@ export const quote = {
       readOnly: true,
     },
     {
+      name: 'declinedAt',
+      title: 'Déclinée le',
+      type: 'datetime',
+      group: 'tracking',
+      readOnly: true,
+      description: 'Rempli par l\'action « Décliner et prévenir le client ».',
+    },
+    {
+      name: 'declineReason',
+      title: 'Motif',
+      type: 'string',
+      group: 'tracking',
+      readOnly: true,
+      options: {
+        list: [
+          { value: 'no-model', title: 'Modèle indisponible' },
+          { value: 'too-far', title: 'Trop loin pour livrer' },
+          { value: 'partner', title: 'Orienté vers le confrère' },
+          { value: 'other', title: 'Autre' },
+        ],
+      },
+    },
+    {
+      name: 'declineMessage',
+      title: 'Message envoyé au client',
+      type: 'text',
+      rows: 8,
+      group: 'tracking',
+      readOnly: true,
+    },
+    {
       name: 'stripeSessionId',
       title: 'ID session Stripe',
       type: 'string',
@@ -564,6 +596,7 @@ export const quote = {
         sent: '📤',
         accepted: '✅',
         refused: '❌',
+        declined: '🚫',
         expired: '⏰',
       }
       // Libellé produit : lineItems (nouveau format) prioritaire sur

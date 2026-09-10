@@ -14,6 +14,7 @@ import { sellInStoreAction } from './sanity/actions/sellInStoreAction'
 import { downloadDeliveryNoteAction } from './sanity/actions/downloadDeliveryNoteAction'
 import { registerSaleAction } from './sanity/actions/registerSaleAction'
 import { withSaleOnAccept } from './sanity/actions/publishWithSaleAction'
+import { declineQuoteAction } from './sanity/actions/declineQuoteAction'
 import {
   downloadQuotePdfAction,
   downloadInvoicePdfAction,
@@ -105,6 +106,7 @@ export default defineConfig({
           downloadInvoicePdfAction,
           downloadDeliveryNoteAction,
           registerSaleAction,
+          declineQuoteAction,
         ]
       }
       // Sur les produits : ajoute l'action "Vente au magasin"

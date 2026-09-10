@@ -119,6 +119,7 @@ export default async function QuoteAcceptPage({
   const isExpired = validUntil ? validUntil.getTime() < Date.now() : false
   const isAccepted = quote.status === 'accepted'
   const isRefused = quote.status === 'refused'
+  const isDeclined = quote.status === 'declined'
   const isInvoice = quote.documentType === 'invoice'
   const docLabel = isInvoice ? 'Facture' : 'Devis'
 
@@ -164,7 +165,19 @@ export default async function QuoteAcceptPage({
         </div>
       )}
 
-      {isExpired && !isAccepted && !isRefused && (
+      {isDeclined && (
+        <div className="mt-8 bg-ivory-dark border border-line p-5 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-ink-mute shrink-0 mt-0.5" strokeWidth={1.5} />
+          <div>
+            <p className="text-ink font-medium">Nous n&apos;avons pas pu donner suite à cette demande</p>
+            <p className="text-sm text-ink-soft mt-1">
+              Vous avez reçu un message de notre part à ce sujet. Pour en discuter, écrivez-nous à {LEGAL.email}.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {isExpired && !isAccepted && !isRefused && !isDeclined && (
         <div className="mt-8 bg-amber-50 border border-amber-200 p-5 flex items-start gap-3">
           <Clock className="h-5 w-5 text-amber-700 shrink-0 mt-0.5" strokeWidth={1.5} />
           <div>
@@ -357,12 +370,13 @@ export default async function QuoteAcceptPage({
           baseHt={linesTotal + optionsTotal}
           choices={deliveryChoices}
           initialIndex={chosenIndex >= 0 ? chosenIndex : undefined}
-          payable={!isAccepted && !isRefused && !isExpired}
+          payable={!isAccepted && !isRefused && !isDeclined && !isExpired}
         />
       ) : (
         /* CTA accepter / payer — tarif de livraison unique */
         !isAccepted &&
         !isRefused &&
+        !isDeclined &&
         !isExpired && (
           <div className="mt-10">
             <AcceptQuoteButton

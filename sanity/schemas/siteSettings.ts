@@ -12,8 +12,32 @@ export const siteSettings = {
     { name: 'navigation', title: 'Navigation (menu)' },
     { name: 'promo', title: '🎉 Popup promo' },
     { name: 'ticker', title: '📢 Bandeau défilant' },
+    { name: 'partner', title: '🤝 Confrère' },
   ],
   fields: [
+    // ─────────── Confrère vers qui orienter les demandes hors zone ───────────
+    {
+      name: 'partnerName',
+      title: 'Nom du confrère',
+      type: 'string',
+      group: 'partner',
+      description: 'Ex : le nom de sa société. Apparaît dans le message envoyé au client.',
+    },
+    {
+      name: 'partnerPhone',
+      title: 'Téléphone du confrère',
+      type: 'string',
+      group: 'partner',
+      description: 'Ex : 07 61 00 43 44. Copié tel quel dans le message.',
+    },
+    {
+      name: 'partnerCity',
+      title: 'Ville du confrère',
+      type: 'string',
+      group: 'partner',
+      description: 'Ex : Paris.',
+    },
+
     // ─────────── Bandeau défilant (haut de toutes les pages) ───────────
     {
       name: 'tickerEnabled',
