@@ -18,6 +18,16 @@ interface SlotPickerProps {
   errorMessage?: string | null
   /** Incrémenté à chaque erreur côté parent → force un refetch de la dispo */
   refreshKey?: number
+  /**
+   * 'checkout' (fiche produit) : on choisit puis on paie.
+   * 'after-payment' (page de confirmation) : la commande est déjà payée,
+   * il ne reste que le créneau. Le bouton ne doit plus parler de paiement.
+   */
+  mode?: 'checkout' | 'after-payment'
+  /** Coordonnées déjà connues (Stripe les a collectées) : préremplies. */
+  defaultName?: string
+  defaultEmail?: string
+  defaultPhone?: string
 }
 
 const TIME_SLOTS_MORNING = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30']
@@ -100,14 +110,35 @@ function isoToLocalKey(iso: string): string {
   return `${get('year')}-${get('month')}-${get('day')}|${get('hour')}:${get('minute')}`
 }
 
-export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage, refreshKey }: SlotPickerProps) {
+export function SlotPicker({
+  open,
+  onClose,
+  onConfirm,
+  loading,
+  errorMessage,
+  refreshKey,
+  mode = 'checkout',
+  defaultName,
+  defaultEmail,
+  defaultPhone,
+}: SlotPickerProps) {
   const dates = useMemo(generateDates, [])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [availability, setAvailability] = useState<AvailabilityState>({ status: 'idle' })
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
+  const [name, setName] = useState(defaultName || '')
+  const [email, setEmail] = useState(defaultEmail || '')
+  const [phone, setPhone] = useState(defaultPhone || '')
+  const afterPayment = mode === 'after-payment'
+
+  // Si les coordonnées arrivent après le premier rendu, on remplit les
+  // champs encore vides, sans écraser ce que le client a déjà tapé.
+  useEffect(() => {
+    if (defaultName && !name) setName(defaultName)
+    if (defaultEmail && !email) setEmail(defaultEmail)
+    if (defaultPhone && !phone) setPhone(defaultPhone)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultName, defaultEmail, defaultPhone])
 
   // Sélectionne le premier jour par défaut
   useEffect(() => {
@@ -445,19 +476,20 @@ export function SlotPicker({ open, onClose, onConfirm, loading, errorMessage, re
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Confirmation et redirection…
+                {afterPayment ? 'Enregistrement…' : 'Confirmation et redirection…'}
               </>
             ) : (
               <>
-                Confirmer et payer
+                {afterPayment ? 'Confirmer mon créneau' : 'Confirmer et payer'}
                 <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
               </>
             )}
           </button>
 
           <p className="text-xs text-ink-mute text-center leading-relaxed">
-            Votre créneau est réservé puis vous êtes redirigé vers le paiement sécurisé Stripe.
-            Un email de confirmation vous sera envoyé.
+            {afterPayment
+              ? 'Votre commande est déjà payée. Un email de confirmation vous sera envoyé avec le créneau choisi.'
+              : 'Votre créneau est réservé puis vous êtes redirigé vers le paiement sécurisé Stripe. Un email de confirmation vous sera envoyé.'}
           </p>
         </div>
       </div>

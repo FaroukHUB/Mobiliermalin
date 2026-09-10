@@ -248,7 +248,14 @@ export async function POST(req: NextRequest) {
     const distinctProducts = meta.distinct_products
     // Label affiché — soit le créneau réel, soit un fallback explicite
     const effectivePickupLabel =
-      pickupLabel || 'Créneau à convenir — vous serez recontacté par téléphone'
+      pickupLabel || 'Créneau à choisir par le client (lien envoyé par e-mail)'
+    // Sans créneau (commande panier), le client doit le choisir sur la
+    // page de confirmation : on lui redonne ce lien, valable à tout moment.
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
+    const slotUrl =
+      !pickupLabel && session?.id
+        ? `${siteUrl}/commande/succes?session_id=${encodeURIComponent(session.id)}`
+        : undefined
     // Titre commande : nom produit unique, ou résumé panier multi-articles
     const orderTitle = distinctProducts && Number(distinctProducts) > 1
       ? `Panier ${totalItems || '?'} article${Number(totalItems) > 1 ? 's' : ''} · ${distinctProducts} référence${Number(distinctProducts) > 1 ? 's' : ''}`
@@ -286,13 +293,14 @@ export async function POST(req: NextRequest) {
       to: { email: customerEmail, name: customerName || undefined },
       subject: pickupLabel
         ? `Confirmation de votre retrait — ${pickupLabel}`
-        : `Confirmation de votre commande — Mobilier Malin`,
+        : `Votre commande est confirmée : choisissez votre créneau de retrait`,
       htmlContent: renderPickupConfirmationHtml({
         customerName: customerName || 'Cher client',
         customerEmail,
         productName: orderTitle,
         amountCents: session?.amount_total,
         pickupLabel: effectivePickupLabel,
+        slotUrl,
       }),
       tags: ['pickup-confirmation'],
     })
@@ -319,6 +327,7 @@ export async function POST(req: NextRequest) {
         amountCents: session?.amount_total,
         stripeSessionId: session?.id,
         calBookingRef: calBookingRef ? String(calBookingRef) : undefined,
+        slotPending: !pickupLabel,
       }),
       tags: ['pickup-admin-notification'],
     })

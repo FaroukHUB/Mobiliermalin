@@ -200,10 +200,14 @@ export async function POST(req: NextRequest) {
       errMsg.includes('unavailable') ||
       errMsg.includes('slot') ||
       errMsg.includes('booking')
+    // Un vrai conflit se dit comme tel. Tout autre échec (clé, réseau,
+    // panne) ne doit pas faire croire au client que le créneau est pris :
+    // il en essaierait un autre, puis un autre, pour rien.
     return NextResponse.json(
       {
-        error:
-          'Ce créneau vient d\'être pris. Merci d\'en choisir un autre.',
+        error: isSlotConflict
+          ? 'Ce créneau vient d\'être pris. Merci d\'en choisir un autre.'
+          : `Nous n'avons pas pu enregistrer votre créneau. Appelez-nous au ${LEGAL.telephone} : nous le fixons ensemble en une minute.`,
         details: calResult.error,
       },
       { status: isSlotConflict ? 409 : 502 },

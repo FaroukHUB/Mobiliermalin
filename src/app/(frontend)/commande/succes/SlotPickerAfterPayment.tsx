@@ -135,8 +135,9 @@ export function SlotPickerAfterPayment({
           )}
 
           <p className="mt-4 text-xs text-ink-mute">
-            Si vous préférez fixer votre créneau plus tard, un lien vous a été
-            envoyé par email pour revenir sur cette page à tout moment.
+            Si vous préférez fixer votre créneau plus tard, le lien pour revenir
+            sur cette page est dans l&apos;email de confirmation que vous venez
+            de recevoir.
           </p>
         </div>
       </div>
@@ -148,6 +149,10 @@ export function SlotPickerAfterPayment({
         loading={loading}
         errorMessage={error}
         refreshKey={refreshKey}
+        mode="after-payment"
+        defaultName={defaultName}
+        defaultEmail={defaultEmail}
+        defaultPhone={defaultPhone}
       />
     </div>
   )

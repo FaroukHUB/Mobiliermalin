@@ -116,19 +116,27 @@ export type PickupConfirmationInput = {
   productName: string
   amountCents?: number
   pickupLabel: string // ex: "jeudi 21 mai à 14:30"
+  /**
+   * Renseigné quand le client n'a PAS encore choisi son créneau
+   * (commande depuis le panier). L'e-mail dit alors la vérité, « il
+   * vous reste à choisir », et donne le lien pour le faire, valable à
+   * tout moment.
+   */
+  slotUrl?: string
 }
 
 export function renderPickupConfirmationHtml(input: PickupConfirmationInput): string {
-  const { customerName, productName, amountCents, pickupLabel } = input
+  const { customerName, productName, amountCents, pickupLabel, slotUrl } = input
   const price = formatPrice(amountCents)
   const firstName = customerName.split(' ')[0] || customerName
+  const slotPending = !!slotUrl
 
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Confirmation de votre retrait</title>
+<title>${slotPending ? 'Votre commande est confirmée' : 'Confirmation de votre retrait'}</title>
 </head>
 <body style="margin:0;padding:0;background:${COLORS.ivoryDark};font-family:Georgia,'Times New Roman',serif;color:${COLORS.ink};">
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${COLORS.ivoryDark};padding:32px 16px;">
@@ -138,7 +146,7 @@ export function renderPickupConfirmationHtml(input: PickupConfirmationInput): st
         <!-- Header noir -->
         <tr><td style="background:${COLORS.ink};color:${COLORS.ivory};padding:32px 32px 28px;text-align:center;">
           <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${COLORS.gold};margin-bottom:8px;font-family:'Helvetica Neue',Arial,sans-serif;">Mobilier Malin</div>
-          <h1 style="margin:0;font-size:26px;line-height:1.2;font-weight:normal;letter-spacing:-0.5px;">Votre retrait est confirmé</h1>
+          <h1 style="margin:0;font-size:26px;line-height:1.2;font-weight:normal;letter-spacing:-0.5px;">${slotPending ? 'Votre commande est confirmée' : 'Votre retrait est confirmé'}</h1>
         </td></tr>
 
         <!-- Body -->
@@ -147,17 +155,32 @@ export function renderPickupConfirmationHtml(input: PickupConfirmationInput): st
             Bonjour ${escapeHtml(firstName)},
           </p>
           <p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:${COLORS.inkSoft};font-family:'Helvetica Neue',Arial,sans-serif;">
-            Merci pour votre confiance. Votre paiement${price ? ` de <strong style="color:${COLORS.ink}">${price}</strong>` : ''} a bien été reçu et votre créneau de retrait est réservé.
+            Merci pour votre confiance. Votre paiement${price ? ` de <strong style="color:${COLORS.ink}">${price}</strong>` : ''} a bien été reçu${slotPending ? '. <strong style="color:' + COLORS.ink + '">Il vous reste à choisir votre créneau de retrait.</strong>' : ' et votre créneau de retrait est réservé.'}
           </p>
 
-          <!-- Carte créneau -->
+          ${
+            slotPending
+              ? `<!-- Créneau à choisir -->
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${COLORS.ivoryDark};border-left:3px solid ${COLORS.gold};margin:0 0 24px;">
+            <tr><td style="padding:20px 24px;">
+              <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${COLORS.inkMute};margin-bottom:6px;font-family:'Helvetica Neue',Arial,sans-serif;">Votre créneau</div>
+              <div style="font-size:15px;color:${COLORS.inkSoft};line-height:1.5;font-family:'Helvetica Neue',Arial,sans-serif;">Choisissez le jour et l'heure de votre retrait au showroom, du lundi au samedi entre 10 h et 18 h. Cela prend une minute.</div>
+              <div style="margin-top:14px;">
+                <a href="${slotUrl}" style="display:inline-block;background:${COLORS.gold};color:${COLORS.ivory};padding:12px 22px;text-decoration:none;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;letter-spacing:1px;">Choisir mon créneau</a>
+              </div>
+              <div style="font-size:12px;color:${COLORS.inkMute};margin-top:10px;font-family:'Helvetica Neue',Arial,sans-serif;">Ce lien reste valable : vous pouvez y revenir plus tard. Si vous préférez, appelez-nous et nous le fixons ensemble.</div>
+              <div style="font-size:13px;color:${COLORS.inkMute};margin-top:12px;font-family:'Helvetica Neue',Arial,sans-serif;">Produit : ${escapeHtml(productName)}</div>
+            </td></tr>
+          </table>`
+              : `<!-- Carte créneau -->
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${COLORS.ivoryDark};border-left:3px solid ${COLORS.gold};margin:0 0 24px;">
             <tr><td style="padding:20px 24px;">
               <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${COLORS.inkMute};margin-bottom:6px;font-family:'Helvetica Neue',Arial,sans-serif;">Votre créneau</div>
               <div style="font-size:20px;color:${COLORS.ink};text-transform:capitalize;line-height:1.3;">${escapeHtml(pickupLabel)}</div>
               <div style="font-size:13px;color:${COLORS.inkMute};margin-top:8px;font-family:'Helvetica Neue',Arial,sans-serif;">Produit : ${escapeHtml(productName)}</div>
             </td></tr>
-          </table>
+          </table>`
+          }
 
           <!-- Adresse -->
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 24px;">
@@ -226,6 +249,11 @@ export type PickupAdminNotificationInput = {
   amountCents?: number
   stripeSessionId?: string
   calBookingRef?: string
+  /**
+   * Vrai quand le client n'a pas encore choisi de créneau : aucun
+   * rendez-vous n'a été tenté, il ne faut donc pas parler d'échec.
+   */
+  slotPending?: boolean
 }
 
 /**
@@ -243,6 +271,7 @@ export function renderPickupAdminNotificationHtml(input: PickupAdminNotification
     amountCents,
     stripeSessionId,
     calBookingRef,
+    slotPending,
   } = input
   const price = formatPrice(amountCents)
   const stripeUrl = stripeSessionId
@@ -288,7 +317,9 @@ export function renderPickupAdminNotificationHtml(input: PickupAdminNotification
   ${
     calBookingRef
       ? `<p style="margin:20px 0 0;font-size:12px;color:${COLORS.inkMute};font-family:'Helvetica Neue',Arial,sans-serif;">📅 RDV ajouté à l'agenda Cal.eu (réf. ${escapeHtml(calBookingRef)})</p>`
-      : `<div style="margin:20px 0 0;padding:12px;background:#FFF4E5;border-left:3px solid #B8721C;font-size:13px;color:#7A4A0F;font-family:'Helvetica Neue',Arial,sans-serif;">⚠️ Échec création RDV Cal.eu — à créer manuellement dans Google Calendar.</div>`
+      : slotPending
+        ? `<p style="margin:20px 0 0;font-size:13px;color:${COLORS.inkMute};font-family:'Helvetica Neue',Arial,sans-serif;">🕐 Créneau à choisir par le client : le lien lui a été envoyé par e-mail. Vous recevrez un second e-mail dès qu'il l'aura fixé.</p>`
+        : `<div style="margin:20px 0 0;padding:12px;background:#FFF4E5;border-left:3px solid #B8721C;font-size:13px;color:#7A4A0F;font-family:'Helvetica Neue',Arial,sans-serif;">⚠️ Échec création RDV Cal.eu — à créer manuellement dans Google Calendar.</div>`
   }
 
   ${
