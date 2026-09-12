@@ -49,6 +49,7 @@ type Row = {
   amountCollected?: number
   shippingFee?: number
   discountTtc?: number
+  refunded?: boolean
   saleType?: string
   channel?: string
   // Dépenses
@@ -64,7 +65,7 @@ type Row = {
 
 const SALES_QUERY = `*[_type == "sale"] | order(date desc)[0...3000]{
   _id, date, customerName, designation, amountCollected, shippingFee, discountTtc,
-  paymentMethod, saleType, channel, notes
+  refunded, paymentMethod, saleType, channel, notes
 }`
 
 const EXPENSES_QUERY = `*[_type == "expense"] | order(date desc)[0...3000]{
@@ -205,7 +206,7 @@ const SALE_COLUMNS: Column[] = [
   },
   {
     key: 'customer', title: 'Client', width: 160,
-    render: (r) => r.customerName || '',
+    render: (r) => `${r.refunded ? '↩︎ ' : ''}${r.customerName || ''}`,
     sortBy: (r) => (r.customerName || '').toLowerCase(),
   },
   {
@@ -404,8 +405,11 @@ function LedgerTable({
   const pageRows = visible.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
   const pages = Math.ceil(visible.length / PAGE_SIZE)
 
+  // Une vente remboursée reste listée, barrée, mais ne compte pas.
   const totalOf = (col: Column) =>
-    col.total ? visible.reduce((t, r) => t + (col.total as (r: Row) => number)(r), 0) : null
+    col.total
+      ? visible.reduce((t, r) => (r.refunded ? t : t + (col.total as (r: Row) => number)(r)), 0)
+      : null
 
   const sortOn = (key: string) => {
     if (sortKey === key) {
@@ -548,7 +552,7 @@ function LedgerTable({
               {visible.length} ligne{visible.length > 1 ? 's' : ''} sur{' '}
               {rows.length}
               {kind === 'sale' && visible.length > 0
-                ? ` · ${eur0(visible.reduce((t, r) => t + (r.amountCollected || 0), 0))} encaissés`
+                ? ` · ${eur0(visible.reduce((t, r) => (r.refunded ? t : t + (r.amountCollected || 0)), 0))} encaissés`
                 : ''}
               {kind === 'expense' && visible.length > 0
                 ? ` · ${eur0(visible.reduce((t, r) => t + (r.amountTtc || 0), 0))} dépensés`
@@ -586,7 +590,12 @@ function LedgerTable({
                       <tr
                         key={r._id}
                         onClick={() => router.navigateIntent('edit', { id: r._id, type: kind })}
-                        style={{ cursor: 'pointer' }}
+                        style={{
+                          cursor: 'pointer',
+                          opacity: r.refunded ? 0.55 : 1,
+                          textDecoration: r.refunded ? 'line-through' : undefined,
+                        }}
+                        title={r.refunded ? 'Vente remboursée : ne compte pas dans les totaux' : undefined}
                       >
                         {columns.map((c) => (
                           <td

@@ -59,6 +59,7 @@ type Sale = {
   amountCollected?: number
   shippingFee?: number
   discountTtc?: number
+  refunded?: boolean
   paymentMethod?: string
   saleType?: string
   channel?: string
@@ -93,7 +94,7 @@ type FixedCharge = {
 
 const SALES_QUERY = `*[_type == "sale"] | order(date desc)[0...3000]{
   _id, date, customerName, designation, amountCollected, shippingFee, discountTtc,
-  paymentMethod, saleType, channel, notes
+  refunded, paymentMethod, saleType, channel, notes
 }`
 
 const EXPENSES_QUERY = `*[_type == "expense"] | order(date desc)[0...3000]{
@@ -407,6 +408,13 @@ export function PilotageBoard() {
     () => sales.filter((s) => yearOf(s.date) === year),
     [sales, year],
   )
+  // Une vente remboursée reste visible dans le détail du mois, barrée,
+  // mais ne compte dans aucun total : ni encaissements, ni panier,
+  // ni répartitions, ni export.
+  const activeYearSales = useMemo(
+    () => yearSales.filter((s) => !s.refunded),
+    [yearSales],
+  )
   const yearExpenses = useMemo(
     () => expenses.filter((e) => yearOf(e.date) === year),
     [expenses, year],
@@ -426,7 +434,9 @@ export function PilotageBoard() {
     return MONTHS.map((name, m) => {
       const ms = yearSales.filter((s) => monthOf(s.date) === m)
       const me = yearExpenses.filter((e) => monthOf(e.date) === m)
-      const income = ms.reduce((t, s) => t + (s.amountCollected || 0), 0)
+      const income = ms
+        .filter((s) => !s.refunded)
+        .reduce((t, s) => t + (s.amountCollected || 0), 0)
       const variable = me.reduce((t, e) => t + (e.amountTtc || 0), 0)
       const fixed = charges
         .filter((c) => chargeAppliesTo(c, year, m))
@@ -439,7 +449,7 @@ export function PilotageBoard() {
         variable,
         fixed,
         result: income - variable - fixed,
-        salesCount: ms.filter((s) => !isCarryOver(s)).length,
+        salesCount: ms.filter((s) => !isCarryOver(s) && !s.refunded).length,
         unreported,
         sales: ms,
         expenses: me,
@@ -460,7 +470,7 @@ export function PilotageBoard() {
     const activeMonths = counted.length
     // Le panier moyen ne se calcule que sur les ventes détaillées :
     // les reports mensuels n'ont ni client ni nombre de ventes.
-    const detailed = counted.flatMap((x) => x.sales.filter((s) => !isCarryOver(s)))
+    const detailed = counted.flatMap((x) => x.sales.filter((s) => !isCarryOver(s) && !s.refunded))
     const detailedIncome = detailed.reduce((t, s) => t + (s.amountCollected || 0), 0)
     return {
       income,
@@ -477,7 +487,7 @@ export function PilotageBoard() {
   // TVA de l'année : collectée sur les ventes (montants TTC),
   // récupérable sur les dépenses au taux saisi sur chaque ligne.
   const tva = useMemo(() => {
-    const collected = yearSales.reduce(
+    const collected = activeYearSales.reduce(
       (t, s) => t + ((s.amountCollected || 0) - (s.amountCollected || 0) / 1.2),
       0,
     )
@@ -499,7 +509,7 @@ export function PilotageBoard() {
 
   const byChannel = useMemo(() => {
     const map = new Map<string, { amount: number; count: number }>()
-    for (const s of yearSales) {
+    for (const s of activeYearSales) {
       const k = isCarryOver(s) ? 'report' : s.channel || 'autre'
       const prev = map.get(k) || { amount: 0, count: 0 }
       map.set(k, { amount: prev.amount + (s.amountCollected || 0), count: prev.count + 1 })
@@ -509,7 +519,7 @@ export function PilotageBoard() {
 
   const byPayment = useMemo(() => {
     const map = new Map<string, { amount: number; count: number }>()
-    for (const s of yearSales) {
+    for (const s of activeYearSales) {
       const k = isCarryOver(s) ? 'report' : s.paymentMethod || 'autre'
       const prev = map.get(k) || { amount: 0, count: 0 }
       map.set(k, { amount: prev.amount + (s.amountCollected || 0), count: prev.count + 1 })
@@ -597,7 +607,7 @@ export function PilotageBoard() {
     for (let d = 1; d <= days; d++) {
       const iso = `${year}-${String(openMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
       const total = (months[openMonth]?.sales || [])
-        .filter((s) => s.date === iso)
+        .filter((s) => s.date === iso && !s.refunded)
         .reduce((t, s) => t + (s.amountCollected || 0), 0)
       // Une étiquette d'axe tous les cinq jours, sinon elles se
       // chevauchent. L'infobulle, elle, garde la date complète.
@@ -611,6 +621,52 @@ export function PilotageBoard() {
   }, [openMonth, months, year])
 
   const open = (id: string, type: string) => router.navigateIntent('edit', { id, type })
+
+  /**
+   * Marque une vente remboursée, ou annule ce marquage. La vente reste
+   * dans le registre : c'est la trace qu'il y a eu une vente puis un
+   * remboursement. Les totaux, eux, l'ignorent aussitôt.
+   */
+  const setRefunded = async (s: Sale, refunded: boolean) => {
+    const label = `${s.customerName || 'Client'} · ${eur2(s.amountCollected || 0)}`
+    const ok = window.confirm(
+      refunded
+        ? `Marquer cette vente comme remboursée ?\n\n${label}\n\nElle restera visible, barrée, et sortira de tous les totaux.`
+        : `Annuler le remboursement de cette vente ?\n\n${label}\n\nElle sera de nouveau comptée.`,
+    )
+    if (!ok) return
+    try {
+      const today = new Date().toISOString().slice(0, 10)
+      const patch = client.patch(s._id)
+      await (refunded
+        ? patch.set({ refunded: true, refundedAt: today })
+        : patch.set({ refunded: false }).unset(['refundedAt'])
+      ).commit()
+      setSales((prev) => prev.map((x) => (x._id === s._id ? { ...x, refunded } : x)))
+    } catch (err) {
+      window.alert(`Impossible de modifier la vente : ${err instanceof Error ? err.message : err}`)
+    }
+  }
+
+  /**
+   * Suppression définitive, pour une erreur de saisie (doublon, mauvais
+   * client). Pour un remboursement, préférer « Remboursée » : une vente
+   * venue d'un devis serait recréée si ce devis est republié.
+   */
+  const deleteSale = async (s: Sale) => {
+    const label = `${s.customerName || 'Client'} · ${eur2(s.amountCollected || 0)}`
+    const ok = window.confirm(
+      `Supprimer définitivement cette vente ?\n\n${label}\n\nPour un client remboursé, utilise plutôt « Remboursée » : la trace est conservée. La suppression est réservée aux erreurs de saisie.`,
+    )
+    if (!ok) return
+    try {
+      // Le brouillon éventuel part avec le document publié.
+      await client.transaction().delete(s._id).delete(`drafts.${s._id}`).commit()
+      setSales((prev) => prev.filter((x) => x._id !== s._id))
+    } catch (err) {
+      window.alert(`Impossible de supprimer la vente : ${err instanceof Error ? err.message : err}`)
+    }
+  }
 
   /**
    * Prépare l'écriture de report d'un mois resté vide, puis ouvre le
@@ -828,9 +884,9 @@ export function PilotageBoard() {
                       fontSize={1}
                       padding={3}
                       text="⬇️ Ventes en CSV"
-                      disabled={yearSales.length === 0}
+                      disabled={activeYearSales.length === 0}
                       onClick={() =>
-                        download(salesCsv(yearSales), `ventes-mobilier-malin-${year}.csv`)
+                        download(salesCsv(activeYearSales), `ventes-mobilier-malin-${year}.csv`)
                       }
                     />
                     <Button
@@ -998,7 +1054,7 @@ export function PilotageBoard() {
                         disabled={detail.sales.length === 0}
                         onClick={() =>
                           download(
-                            salesCsv(detail.sales),
+                            salesCsv(detail.sales.filter((s) => !s.refunded)),
                             `ventes-${year}-${String(detail.m + 1).padStart(2, '0')}.csv`,
                           )
                         }
@@ -1038,12 +1094,17 @@ export function PilotageBoard() {
                           radius={2}
                           tone="default"
                           shadow={1}
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', opacity: s.refunded ? 0.55 : 1 }}
                           onClick={() => open(s._id, 'sale')}
                         >
                           <Flex justify="space-between" gap={3} align="flex-start">
                             <Box style={{ minWidth: 0 }}>
-                              <Text size={1} weight="medium">
+                              <Text
+                                size={1}
+                                weight="medium"
+                                style={{ textDecoration: s.refunded ? 'line-through' : undefined }}
+                              >
+                                {s.refunded ? '↩︎ Remboursée · ' : ''}
                                 {s.customerName || 'Client'}
                               </Text>
                               <Text
@@ -1057,12 +1118,40 @@ export function PilotageBoard() {
                               </Text>
                             </Box>
                             <Box style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                              <Text size={1} weight="semibold">
+                              <Text
+                                size={1}
+                                weight="semibold"
+                                style={{ textDecoration: s.refunded ? 'line-through' : undefined }}
+                              >
                                 {eur2(s.amountCollected || 0)}
                               </Text>
                               <Text size={0} muted style={{ marginTop: 4 }}>
                                 {CHANNEL_LABELS[s.channel || 'autre'] || s.channel}
                               </Text>
+                              {/* Actions : on arrête le clic pour ne pas ouvrir le document */}
+                              <Flex gap={1} justify="flex-end" style={{ marginTop: 6 }}>
+                                <Button
+                                  mode="bleed"
+                                  fontSize={0}
+                                  padding={2}
+                                  text={s.refunded ? 'Annuler le remboursement' : '↩︎ Remboursée'}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    void setRefunded(s, !s.refunded)
+                                  }}
+                                />
+                                <Button
+                                  mode="bleed"
+                                  tone="critical"
+                                  fontSize={0}
+                                  padding={2}
+                                  text="Supprimer"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    void deleteSale(s)
+                                  }}
+                                />
+                              </Flex>
                             </Box>
                           </Flex>
                         </Card>

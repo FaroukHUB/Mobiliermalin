@@ -139,6 +139,23 @@ export const sale = {
       group: 'main',
       description: 'Ex : livraison prévue mardi, lavage 60 € Lydie…',
     },
+    {
+      name: 'refunded',
+      title: 'Remboursée',
+      type: 'boolean',
+      group: 'main',
+      initialValue: false,
+      description:
+        'Client remboursé : la vente reste dans le registre, barrée, mais ne compte plus dans aucun total. Préférable à la suppression, qui efface la trace.',
+    },
+    {
+      name: 'refundedAt',
+      title: 'Remboursée le',
+      type: 'date',
+      group: 'main',
+      options: { dateFormat: 'DD/MM/YYYY' },
+      hidden: ({ document }: { document?: { refunded?: boolean } }) => !document?.refunded,
+    },
 
     // ───── Détail des lignes ─────
     {
@@ -252,6 +269,7 @@ export const sale = {
       designation: 'designation',
       amount: 'amountCollected',
       channel: 'channel',
+      refunded: 'refunded',
     },
     prepare({
       date,
@@ -259,12 +277,14 @@ export const sale = {
       designation,
       amount,
       channel,
+      refunded,
     }: {
       date?: string
       customerName?: string
       designation?: string
       amount?: number
       channel?: string
+      refunded?: boolean
     }) {
       const icons: Record<string, string> = {
         site: '🌐',
@@ -288,7 +308,7 @@ export const sale = {
             }) + ' €'
           : ''
       return {
-        title: `${icons[channel || ''] || '•'} ${d} · ${customerName || '?'} — ${amt}`,
+        title: `${refunded ? '↩︎ REMBOURSÉE · ' : ''}${icons[channel || ''] || '•'} ${d} · ${customerName || '?'} — ${amt}`,
         subtitle: designation || undefined,
       }
     },
