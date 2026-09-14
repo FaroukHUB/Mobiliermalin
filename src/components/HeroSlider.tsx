@@ -12,8 +12,8 @@ export type HeroSlide = {
   id: string | number
   title: string
   subtitle?: string
-  image: { url: string; alt?: string; width?: number; height?: number }
-  imageMobile?: { url: string; alt?: string; width?: number; height?: number }
+  image: { url: string; alt?: string; width?: number; height?: number; focal?: string }
+  imageMobile?: { url: string; alt?: string; width?: number; height?: number; focal?: string }
   ctaPrimaryLabel?: string
   ctaPrimaryHref?: string
   ctaSecondaryLabel?: string
@@ -22,13 +22,21 @@ export type HeroSlide = {
   textColor?: 'light' | 'dark'
   overlayOpacity?: number
   /**
-   * Mode "bannière complète" : quand true, l'image est affichée entière
-   * (object-contain), sans voile ni textes du site superposés, et la
-   * bannière entière est cliquable vers ctaPrimaryHref. À utiliser pour
-   * les bannières Canva / Photoshop dont le texte est déjà intégré.
+   * Mode "bannière complète" : quand true, aucun voile ni texte du site
+   * n'est superposé, et la bannière entière est cliquable vers
+   * ctaPrimaryHref. À utiliser pour les bannières Canva / Photoshop dont
+   * le texte est déjà intégré. L'image est recadrée à la hauteur du
+   * hero autour de son point focal.
    */
   fullBanner?: boolean
 }
+
+/**
+ * Hauteur du hero, identique dans les deux modes : lisible, sans
+ * occuper tout l'écran. 520 px au plus sur PC, 58 % de l'écran sur
+ * mobile, jamais moins de 380 px pour garder les textes à l'aise.
+ */
+const HERO_HEIGHT = 'h-[58vh] min-h-[380px] max-h-[520px]'
 
 interface HeroSliderProps {
   slides: HeroSlide[]
@@ -145,54 +153,47 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
 
   // ─── MODE BANNIÈRE COMPLÈTE ────────────────────────────────────
   // L'image contient déjà tout le contenu marketing (texte, CTA
-  // visuel, prix). On l'affiche ENTIÈRE, à sa proportion réelle,
-  // sans coupure ni bandes vides. Aucun voile ni texte du site
-  // superposé. La bannière entière est cliquable vers ctaPrimaryHref.
+  // visuel, prix). Aucun voile ni texte du site superposé, la bannière
+  // entière est cliquable vers ctaPrimaryHref.
+  //
+  // Elle occupe la même hauteur que le hero classique : affichée à son
+  // ratio natif, une bannière carrée ou peu allongée prenait tout
+  // l'écran d'un PC. Elle est donc recadrée haut et bas, autour du
+  // point focal choisi dans Sanity, pour que la zone importante reste
+  // toujours visible.
   if (slide.fullBanner) {
-    // Utilise l'image mobile dédiée si présente, sinon on affiche
-    // la desktop des deux côtés. Chaque image est rendue avec ses
-    // dimensions natives → le container s'auto-adapte au ratio.
-    const desktopW = slide.image.width || 2560
-    const desktopH = slide.image.height || 1000
-    const mobileW = slide.imageMobile?.width || 1000
-    const mobileH = slide.imageMobile?.height || 1000
-
     const bannerContent = (
-      <div className="relative flex-[0_0_100%] min-w-0 bg-ivory-dark">
+      <div className={cn('relative flex-[0_0_100%] min-w-0 bg-ivory-dark', HERO_HEIGHT)}>
         {slide.imageMobile ? (
           <>
-            {/* Mobile : image dédiée à son ratio natif */}
             <Image
               src={slide.imageMobile.url}
               alt={slide.imageMobile.alt || slide.title}
-              width={mobileW}
-              height={mobileH}
+              fill
               priority={isFirst}
               sizes="100vw"
-              className="block md:hidden w-full h-auto"
+              className="object-cover md:hidden"
+              style={{ objectPosition: slide.imageMobile.focal || '50% 50%' }}
             />
-            {/* Desktop : image dédiée à son ratio natif */}
             <Image
               src={slide.image.url}
               alt={slide.image.alt || slide.title}
-              width={desktopW}
-              height={desktopH}
+              fill
               priority={isFirst}
               sizes="100vw"
-              className="hidden md:block w-full h-auto"
+              className="object-cover hidden md:block"
+              style={{ objectPosition: slide.image.focal || '50% 50%' }}
             />
           </>
         ) : (
-          // Une seule image utilisée sur mobile ET desktop, à son
-          // ratio natif → aucune coupure, aucune bande vide.
           <Image
             src={slide.image.url}
             alt={slide.image.alt || slide.title}
-            width={desktopW}
-            height={desktopH}
+            fill
             priority={isFirst}
             sizes="100vw"
-            className="w-full h-auto"
+            className="object-cover"
+            style={{ objectPosition: slide.image.focal || '50% 50%' }}
           />
         )}
       </div>
@@ -228,7 +229,7 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
 
   return (
     <div className="relative flex-[0_0_100%] min-w-0">
-      <div className="relative h-[68vh] min-h-[480px] max-h-[820px] w-full">
+      <div className={cn('relative w-full', HERO_HEIGHT)}>
         {slide.imageMobile && (
           <Image
             src={slide.imageMobile.url}

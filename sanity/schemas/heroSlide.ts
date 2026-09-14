@@ -94,7 +94,7 @@ export const heroSlide = {
       type: 'boolean',
       initialValue: false,
       description:
-        "COCHER SI votre image contient déjà tout le contenu marketing (texte, prix, CTA visuel). Dans ce cas : l'image est affichée entière (aucune coupure), le voile sombre et les textes du site sont cachés, et le clic sur toute la bannière déclenche le lien du bouton principal ci-dessous. À utiliser pour les bannières Canva / Photoshop toutes prêtes.",
+        "COCHER SI votre image contient déjà tout le contenu marketing (texte, prix, CTA visuel). Le voile sombre et les textes du site sont cachés, et le clic sur toute la bannière déclenche le lien du bouton principal ci-dessous. La bannière garde la hauteur normale du hero : elle est recadrée en haut et en bas autour du point focal. Placez ce point focal (outil de recadrage de l'image ci-dessus) sur la zone à garder visible, le prix par exemple. Format conseillé : plus large que haut, 2560 × 800.",
     },
     {
       name: 'order',

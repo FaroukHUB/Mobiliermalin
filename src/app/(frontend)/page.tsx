@@ -117,6 +117,13 @@ export default async function HomePage() {
     getLatestProducts(4),
   ])
 
+  // Point focal Sanity → position CSS de l'image dans son cadre. C'est
+  // ce qui décide quelle zone reste visible quand le hero recadre.
+  const focalOf = (img?: { hotspot?: { x?: number; y?: number } }) =>
+    img?.hotspot && typeof img.hotspot.x === 'number' && typeof img.hotspot.y === 'number'
+      ? `${Math.round(img.hotspot.x * 100)}% ${Math.round(img.hotspot.y * 100)}%`
+      : undefined
+
   const slides: HeroSlide[] = sanitySlides.length
     ? sanitySlides.map((s) => {
         // Dimensions natives des assets (si récupérées via metadata)
@@ -138,6 +145,7 @@ export default async function HomePage() {
               alt: s.image.alt || s.title,
               width: desktopDim?.width,
               height: desktopDim?.height,
+              focal: focalOf(s.image as { hotspot?: { x?: number; y?: number } }),
             },
             imageMobile: s.imageMobile
               ? {
@@ -145,6 +153,7 @@ export default async function HomePage() {
                   alt: s.imageMobile.alt || s.title,
                   width: mobileDim?.width,
                   height: mobileDim?.height,
+                  focal: focalOf(s.imageMobile as { hotspot?: { x?: number; y?: number } }),
                 }
               : undefined,
             ctaPrimaryLabel: s.ctaPrimaryLabel,
