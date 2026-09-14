@@ -25,18 +25,18 @@ export type HeroSlide = {
    * Mode "bannière complète" : quand true, aucun voile ni texte du site
    * n'est superposé, et la bannière entière est cliquable vers
    * ctaPrimaryHref. À utiliser pour les bannières Canva / Photoshop dont
-   * le texte est déjà intégré. L'image est recadrée à la hauteur du
-   * hero autour de son point focal.
+   * le texte est déjà intégré. L'image est affichée entière dans la
+   * hauteur du hero, sur un fond flouté d'elle-même.
    */
   fullBanner?: boolean
 }
 
 /**
  * Hauteur du hero, identique dans les deux modes : lisible, sans
- * occuper tout l'écran. 520 px au plus sur PC, 58 % de l'écran sur
+ * occuper tout l'écran. 560 px au plus sur PC, 60 % de l'écran sur
  * mobile, jamais moins de 380 px pour garder les textes à l'aise.
  */
-const HERO_HEIGHT = 'h-[58vh] min-h-[380px] max-h-[520px]'
+const HERO_HEIGHT = 'h-[60vh] min-h-[380px] max-h-[560px]'
 
 interface HeroSliderProps {
   slides: HeroSlide[]
@@ -156,45 +156,52 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
   // visuel, prix). Aucun voile ni texte du site superposé, la bannière
   // entière est cliquable vers ctaPrimaryHref.
   //
-  // Elle occupe la même hauteur que le hero classique : affichée à son
-  // ratio natif, une bannière carrée ou peu allongée prenait tout
-  // l'écran d'un PC. Elle est donc recadrée haut et bas, autour du
-  // point focal choisi dans Sanity, pour que la zone importante reste
-  // toujours visible.
+  // Le juste milieu entre « énorme » et « coupée » : le hero garde sa
+  // hauteur normale, et l'image y est affichée ENTIÈRE, réduite pour
+  // tenir en hauteur, jamais recadrée. Pour ne pas laisser de bandes
+  // vides de part et d'autre, la même image, floutée et agrandie,
+  // sert de fond. C'est la technique des sites qui affichent des
+  // visuels qui ne sont pas au format de l'écran.
   if (slide.fullBanner) {
+    const bannerImage = (img: NonNullable<HeroSlide['imageMobile']>, extra: string) => (
+      <>
+        {/* Fond : la même image, floutée, qui remplit tout le cadre */}
+        <Image
+          src={img.url}
+          alt=""
+          aria-hidden
+          fill
+          priority={isFirst}
+          sizes="100vw"
+          className={cn('object-cover scale-110 blur-2xl opacity-70', extra)}
+          style={{ objectPosition: img.focal || '50% 50%' }}
+        />
+        {/* Devant : l'image entière, centrée, sans aucune coupure */}
+        <Image
+          src={img.url}
+          alt={img.alt || slide.title}
+          fill
+          priority={isFirst}
+          sizes="100vw"
+          className={cn('object-contain', extra)}
+        />
+      </>
+    )
+
     const bannerContent = (
-      <div className={cn('relative flex-[0_0_100%] min-w-0 bg-ivory-dark', HERO_HEIGHT)}>
+      <div
+        className={cn(
+          'relative flex-[0_0_100%] min-w-0 overflow-hidden bg-ivory-dark',
+          HERO_HEIGHT,
+        )}
+      >
         {slide.imageMobile ? (
           <>
-            <Image
-              src={slide.imageMobile.url}
-              alt={slide.imageMobile.alt || slide.title}
-              fill
-              priority={isFirst}
-              sizes="100vw"
-              className="object-cover md:hidden"
-              style={{ objectPosition: slide.imageMobile.focal || '50% 50%' }}
-            />
-            <Image
-              src={slide.image.url}
-              alt={slide.image.alt || slide.title}
-              fill
-              priority={isFirst}
-              sizes="100vw"
-              className="object-cover hidden md:block"
-              style={{ objectPosition: slide.image.focal || '50% 50%' }}
-            />
+            {bannerImage(slide.imageMobile, 'md:hidden')}
+            {bannerImage(slide.image, 'hidden md:block')}
           </>
         ) : (
-          <Image
-            src={slide.image.url}
-            alt={slide.image.alt || slide.title}
-            fill
-            priority={isFirst}
-            sizes="100vw"
-            className="object-cover"
-            style={{ objectPosition: slide.image.focal || '50% 50%' }}
-          />
+          bannerImage(slide.image, '')
         )}
       </div>
     )
