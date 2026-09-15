@@ -33,6 +33,8 @@ export type SendEmailInput = {
   htmlContent: string
   replyTo?: { email: string; name?: string }
   tags?: string[]
+  /** Copie cachée, ex. la boîte admin pour garder une trace de l'envoi. */
+  bcc?: Array<{ email: string; name?: string }>
 }
 
 export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; error?: string }> {
@@ -63,6 +65,7 @@ export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; e
       body: JSON.stringify({
         sender: { name: config.senderName, email: config.senderEmail },
         to: [input.to],
+        ...(input.bcc && input.bcc.length > 0 && { bcc: input.bcc }),
         subject: input.subject,
         htmlContent: input.htmlContent,
         replyTo,

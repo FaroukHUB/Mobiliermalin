@@ -547,8 +547,13 @@ export async function POST(req: Request) {
       ? `Votre facture Mobilier Malin ${numero}`
       : `Votre devis Mobilier Malin ${numero}`
 
+  // Copie admin, comme pour l'envoi depuis Studio : la même adresse
+  // (DEVIS_ADMIN_BCC_EMAIL, sinon la boîte du site) reçoit ce que le
+  // client reçoit.
+  const adminBccEmail = process.env.DEVIS_ADMIN_BCC_EMAIL || LEGAL.email
   const emailResult = await sendEmail({
     to: { email: customerEmail, name: customerName },
+    bcc: [{ email: adminBccEmail, name: 'Mobilier Malin (copie admin)' }],
     subject: emailSubject,
     htmlContent: html,
     tags: [documentType === 'invoice' ? 'invoice' : 'quote', 'manual'],
