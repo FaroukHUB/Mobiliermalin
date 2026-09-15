@@ -600,7 +600,7 @@ export default async function AixEnProvencePage() {
                         35 minutes par l&apos;A8 puis l&apos;A52, sortie La
                         Penne-sur-Huveaune. Notre showroom de 200 m² réunit
                         en permanence une centaine de pièces. Café offert,
-                        visite sur rendez-vous, lundi-samedi 10 h-18 h.
+                        ouvert du lundi au samedi de 9 h à 18 h, dimanche sur rendez-vous.
                       </p>
                     </div>
                   </div>

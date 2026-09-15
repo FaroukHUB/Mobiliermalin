@@ -149,7 +149,7 @@ const FAQ = [
   },
   {
     q: 'Faut-il prendre rendez-vous ?',
-    a: 'Oui, la visite se fait sur rendez-vous, du lundi au samedi entre 10 h et 18 h. Ça nous permet de vous accueillir personnellement, de préparer le mobilier qui correspond à votre besoin, et d\'avoir le temps de répondre à vos questions sans précipitation.',
+    a: 'Pas en semaine : le showroom est ouvert du lundi au samedi de 9 h à 18 h, vous venez quand vous voulez. Le dimanche, nous ouvrons sur rendez-vous, au 06 76 61 70 53. Un appel avant de venir reste utile si vous cherchez une pièce précise : nous préparons le mobilier qui correspond à votre besoin.',
   },
   {
     q: 'Que peut-on tester sur place ?',
@@ -212,7 +212,7 @@ export default async function AubagneBureauPage() {
     '@id': `${siteUrl}/#localbusiness-aubagne`,
     name: 'Mobilier Malin — Showroom de bureaux d\'occasion (Aubagne)',
     description:
-      'Showroom et atelier de reconditionnement de bureaux d\'occasion à La Penne-sur-Huveaune, à 5 minutes d\'Aubagne. 200 pièces en moyenne, visite sur rendez-vous.',
+      'Showroom et atelier de reconditionnement de bureaux d\'occasion à La Penne-sur-Huveaune, à 5 minutes d\'Aubagne. 200 pièces en moyenne, ouvert du lundi au samedi, dimanche sur rendez-vous.',
     url: `${siteUrl}/bureau-occasion-aubagne`,
     telephone: LEGAL.telephoneTel,
     email: LEGAL.email,
@@ -237,7 +237,7 @@ export default async function AubagneBureauPage() {
       {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        opens: '10:00',
+        opens: '09:00',
         closes: '18:00',
       },
     ],
@@ -314,8 +314,8 @@ export default async function AubagneBureauPage() {
               <strong className="text-ivory"> 5 minutes du centre d&apos;Aubagne</strong>,
               à La Penne-sur-Huveaune. Environ 200 pièces en stock, en vente
               directe : bureaux droits, en angle, bench et assis-debout
-              reconditionnés. Lundi au samedi sur rendez-vous, café offert,
-              conseils sans pression.
+              reconditionnés. Ouvert du lundi au samedi de 9 h à 18 h, le
+              dimanche sur rendez-vous, café offert, conseils sans pression.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -372,7 +372,7 @@ export default async function AubagneBureauPage() {
                 <Clock className="h-7 w-7 text-gold mx-auto" strokeWidth={1.25} />
                 <p className="font-serif text-xl text-ink mt-4">Lun-Sam</p>
                 <p className="text-xs uppercase tracking-widest text-ink-mute mt-2">
-                  10 h — 18 h
+                  9 h à 18 h · dimanche sur rendez-vous
                 </p>
               </div>
               <div className="bg-ivory-light border border-line p-6 text-center">
@@ -652,8 +652,8 @@ export default async function AubagneBureauPage() {
                     <Clock className="h-5 w-5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
                     <div>
                       <dt className="text-[0.65rem] uppercase tracking-widest text-ivory/50 mb-1">Horaires</dt>
-                      <dd className="text-ivory">Lundi — Samedi, 10 h — 18 h
-                        <span className="block text-ivory/50 text-xs mt-0.5">(sur rendez-vous)</span>
+                      <dd className="text-ivory">Lundi au samedi, 9 h à 18 h
+                        <span className="block text-ivory/50 text-xs mt-0.5">Dimanche sur rendez-vous : <a href="tel:+33676617053" className="underline underline-offset-2">06 76 61 70 53</a></span>
                       </dd>
                     </div>
                   </div>

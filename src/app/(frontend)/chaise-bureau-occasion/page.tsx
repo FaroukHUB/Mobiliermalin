@@ -61,7 +61,7 @@ const FALLBACK_FAQ = [
   {
     question: "Livrez-vous à un particulier en télétravail ?",
     answer:
-      "Oui, sans restriction. Livraison en région PACA et sur devis pour le reste de la France. Retrait au showroom possible sans rendez-vous obligatoire pour un seul modèle.",
+      "Oui, sans restriction. Livraison en région PACA et sur devis pour le reste de la France. Retrait au showroom possible du lundi au samedi de 9 h à 18 h, et le dimanche sur rendez-vous.",
   },
 ]
 

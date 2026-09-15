@@ -116,7 +116,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
         ],
         callout: {
           title: 'Notre conseil',
-          body: 'Ne choisissez pas un fauteuil sans l\'essayer 10-15 minutes. Notre showroom à La Penne-sur-Huveaune permet de tester les 4 marques sur rendez-vous — sans engagement.',
+          body: 'Ne choisissez pas un fauteuil sans l\'essayer 10-15 minutes. Notre showroom à La Penne-sur-Huveaune permet de tester les 4 marques du lundi au samedi de 9 h à 18 h, et le dimanche sur rendez-vous — sans engagement.',
           href: '/contact',
           hrefLabel: 'Prendre rendez-vous',
         },

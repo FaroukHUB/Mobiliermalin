@@ -363,8 +363,8 @@ export default async function OrangePage() {
             <p className="mt-10 text-sm text-ink-mute text-center max-w-2xl mx-auto">
               Si vous préférez venir chercher votre commande, notre showroom
               est à La Penne-sur-Huveaune, à 1 h 30 d&apos;Orange par
-              l&apos;A7. Visite sur rendez-vous, du lundi au samedi de
-              10 h à 18 h.
+              l&apos;A7. Ouvert du lundi au samedi de 9 h à 18 h, et le
+              dimanche sur rendez-vous.
             </p>
           </Reveal>
         </div>

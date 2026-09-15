@@ -142,8 +142,8 @@ export default function CGVPage() {
 
         <Section title="Article 7 — Livraison & retrait">
           <p>
-            Le retrait au showroom est gratuit, sur rendez-vous, du lundi au
-            samedi de 10 h à 18 h, à l&apos;adresse {LEGAL.showroom.ligne1},{' '}
+            Le retrait au showroom est gratuit, du lundi au samedi de 9 h à
+            18 h et le dimanche sur rendez-vous, à l&apos;adresse {LEGAL.showroom.ligne1},{' '}
             {LEGAL.showroom.codePostal} {LEGAL.showroom.ville}.
           </p>
           <p className="mt-4">

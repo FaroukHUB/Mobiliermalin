@@ -188,8 +188,8 @@ export default async function OrderSuccessPage({
               </div>
               <div>
                 <p className="text-xs uppercase tracking-widest text-ink-mute">Horaires</p>
-                <p className="text-ink mt-1">Lundi — Samedi, 10 h — 18 h</p>
-                <p className="text-ink-mute text-sm mt-0.5">Dimanche : fermé</p>
+                <p className="text-ink mt-1">Lundi au samedi, 9 h à 18 h</p>
+                <p className="text-ink-mute text-sm mt-0.5">Dimanche : sur rendez-vous au <a href="tel:+33676617053" className="underline underline-offset-2">06 76 61 70 53</a></p>
               </div>
             </div>
 

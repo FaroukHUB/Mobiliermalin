@@ -91,7 +91,7 @@ export function buildDeclineMessage(reason: DeclineReason, ctx: DeclineContext):
       '',
       `Merci pour votre demande. Votre adresse de livraison${where} se situe malheureusement en dehors de la zone que nous desservons, et nous ne pouvons pas y donner suite.`,
       '',
-      'Le retrait sur place reste possible à notre atelier de La Penne-sur-Huveaune, sur rendez-vous, si cela vous convient.',
+      'Le retrait sur place reste possible à notre atelier de La Penne-sur-Huveaune, du lundi au samedi de 9 h à 18 h, si cela vous convient.',
       '',
       SIGNATURE,
     ].join('\n')

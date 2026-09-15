@@ -615,8 +615,8 @@ export default async function MobilierBureauProfessionnelPage() {
           <p className="mt-6 text-ivory/80 leading-relaxed">
             Un poste, un plateau, un siège social complet — nous vous
             préparons un devis détaillé sous 24 h ouvrées, avec
-            l&apos;attestation RSE incluse. Visite du showroom possible
-            à La Penne-sur-Huveaune sur rendez-vous.
+            l&apos;attestation RSE incluse. Showroom ouvert à
+            La Penne-sur-Huveaune du lundi au samedi de 9 h à 18 h, dimanche sur rendez-vous.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">

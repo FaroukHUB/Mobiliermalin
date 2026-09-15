@@ -99,7 +99,7 @@ const FAQ_MARSEILLE = [
   },
   {
     q: 'Peut-on venir essayer avant d\'acheter ?',
-    a: 'Bien sûr. Notre showroom se trouve à La Penne-sur-Huveaune (13821), à 5 min d\'Aubagne et 20-25 min de Marseille selon la zone. Nous accueillons sur rendez-vous du lundi au samedi, sans engagement. Vous pouvez essayer plusieurs modèles de fauteuils, tester la stabilité des bureaux, poser toutes vos questions à l\'équipe qui reconditionne.',
+    a: 'Bien sûr. Notre showroom se trouve à La Penne-sur-Huveaune (13821), à 5 min d\'Aubagne et 20-25 min de Marseille selon la zone. Nous sommes ouverts du lundi au samedi de 9 h à 18 h, et le dimanche sur rendez-vous au 06 76 61 70 53, sans engagement. Vous pouvez essayer plusieurs modèles de fauteuils, tester la stabilité des bureaux, poser toutes vos questions à l\'équipe qui reconditionne.',
   },
   {
     q: 'Vous équipez les grandes entreprises marseillaises ?',

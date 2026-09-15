@@ -30,7 +30,7 @@ interface SlotPickerProps {
   defaultPhone?: string
 }
 
-const TIME_SLOTS_MORNING = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30']
+const TIME_SLOTS_MORNING = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30']
 const TIME_SLOTS_AFTERNOON = ['14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30']
 
 type DateOption = {
@@ -274,7 +274,7 @@ export function SlotPicker({
                   18 chemin Noël Robion, 13821 La Penne-sur-Huveaune
                 </p>
                 <p className="text-ink-mute text-xs mt-1">
-                  Ouvert lundi — samedi, 10 h — 18 h (dimanche fermé)
+                  Ouvert du lundi au samedi, 9 h à 18 h. Dimanche sur rendez-vous au 06 76 61 70 53.
                 </p>
               </div>
             </div>

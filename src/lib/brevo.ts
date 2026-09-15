@@ -167,7 +167,7 @@ export function renderPickupConfirmationHtml(input: PickupConfirmationInput): st
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${COLORS.ivoryDark};border-left:3px solid ${COLORS.gold};margin:0 0 24px;">
             <tr><td style="padding:20px 24px;">
               <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${COLORS.inkMute};margin-bottom:6px;font-family:'Helvetica Neue',Arial,sans-serif;">Votre créneau</div>
-              <div style="font-size:15px;color:${COLORS.inkSoft};line-height:1.5;font-family:'Helvetica Neue',Arial,sans-serif;">Choisissez le jour et l'heure de votre retrait au showroom, du lundi au samedi entre 10 h et 18 h. Cela prend une minute.</div>
+              <div style="font-size:15px;color:${COLORS.inkSoft};line-height:1.5;font-family:'Helvetica Neue',Arial,sans-serif;">Choisissez le jour et l'heure de votre retrait au showroom, du lundi au samedi entre 9 h et 18 h. Cela prend une minute.</div>
               <div style="margin-top:14px;">
                 <a href="${slotUrl}" style="display:inline-block;background:${COLORS.gold};color:${COLORS.ivory};padding:12px 22px;text-decoration:none;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;letter-spacing:1px;">Choisir mon créneau</a>
               </div>
@@ -220,7 +220,7 @@ export function renderPickupConfirmationHtml(input: PickupConfirmationInput): st
               <td style="padding:4px 0;">✉️ <a href="mailto:${SHOWROOM_EMAIL}" style="color:${COLORS.ink};text-decoration:none;">${SHOWROOM_EMAIL}</a></td>
             </tr>
             <tr>
-              <td style="padding:4px 0;">🕐 Lundi — Samedi, 10 h — 18 h</td>
+              <td style="padding:4px 0;">🕐 Lundi au samedi, 9 h à 18 h · dimanche sur rendez-vous</td>
             </tr>
           </table>
         </td></tr>

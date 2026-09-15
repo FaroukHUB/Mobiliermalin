@@ -365,8 +365,8 @@ export default async function ToulonPage() {
             <p className="mt-10 text-sm text-ink-mute text-center max-w-2xl mx-auto">
               Si vous préférez venir chercher votre commande, notre showroom
               se trouve à La Penne-sur-Huveaune, à une heure de Toulon par
-              l&apos;A50. Visite sur rendez-vous, du lundi au samedi de
-              10 h à 18 h.
+              l&apos;A50. Ouvert du lundi au samedi de 9 h à 18 h, et le
+              dimanche sur rendez-vous.
             </p>
           </Reveal>
         </div>

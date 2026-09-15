@@ -338,7 +338,7 @@ export default async function FauteuilToulonPage() {
             <p className="mt-10 text-sm text-ink-mute max-w-3xl">
               Si vous préférez venir chercher vous-même, notre showroom est
               à La Penne-sur-Huveaune, à une heure de Toulon par l&apos;A50.
-              Visite sur rendez-vous, du lundi au samedi de 10 h à 18 h.
+              Ouvert du lundi au samedi de 9 h à 18 h, et le dimanche sur rendez-vous.
             </p>
           </Reveal>
         </div>

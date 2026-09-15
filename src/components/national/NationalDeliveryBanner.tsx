@@ -27,7 +27,7 @@ export function NationalDeliveryBanner() {
               d'Aubagne et 20 minutes de Marseille. Nous livrons dans toute
               la région PACA sur devis et intervenons au-delà pour les
               commandes volumineuses. Le retrait au showroom est possible
-              sur rendez-vous.
+              du lundi au samedi de 9 h à 18 h, et le dimanche sur rendez-vous.
             </p>
           </div>
           <div className="bg-ivory border border-line p-6 md:p-7">

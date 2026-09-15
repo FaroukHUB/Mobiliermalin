@@ -44,7 +44,7 @@ export default function ContactPage() {
                 label="Téléphone"
                 value="06 76 61 70 53"
                 href="tel:+33676617053"
-                hint="Du lundi au samedi, 10 h — 18 h"
+                hint="Lundi au samedi, 9 h à 18 h · dimanche sur rendez-vous"
               />
               <ContactItem
                 icon={Mail}
@@ -63,16 +63,16 @@ export default function ContactPage() {
                     13821 La Penne-sur-Huveaune
                   </>
                 }
-                hint="Sur rendez-vous uniquement"
+                hint="Ouvert du lundi au samedi, dimanche sur rendez-vous"
               />
               <ContactItem
                 icon={Clock}
                 label="Horaires"
                 value={
                   <>
-                    Lundi — Samedi : 10 h — 18 h
+                    Lundi au samedi : 9 h à 18 h
                     <br />
-                    Dimanche : fermé
+                    Dimanche : sur rendez-vous au <a href="tel:+33676617053" className="underline underline-offset-2">06 76 61 70 53</a>
                   </>
                 }
               />

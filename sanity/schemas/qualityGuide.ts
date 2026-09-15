@@ -317,7 +317,7 @@ export const qualityGuide = {
         {
           _key: 'faq-2',
           q: 'Puis-je essayer un produit avant de l\'acheter ?',
-          a: 'Oui. Le showroom de La Penne-sur-Huveaune est ouvert du lundi au samedi de 10 h à 18 h sur rendez-vous. Vous pouvez vous asseoir, ajuster, ressentir avant de décider.',
+          a: 'Oui. Le showroom de La Penne-sur-Huveaune est ouvert du lundi au samedi de 9 h à 18 h, et le dimanche sur rendez-vous. Vous pouvez vous asseoir, ajuster, ressentir avant de décider.',
         },
         {
           _key: 'faq-3',

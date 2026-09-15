@@ -30,8 +30,8 @@ concis, en français impeccable. Tu ne t'excuses jamais, tu résous.
 - **Fondée en** : 2021, à Aubagne
 - **Atelier & showroom** : 18 chemin Noël Robion, ${LEGAL.showroom.codePostal} La Penne-sur-Huveaune
   (à 5 min d'Aubagne, 20 min de Marseille, 45 min d'Aix-en-Provence)
-- **Horaires showroom** : lundi au samedi, 10h-18h, uniquement sur rendez-vous
-- **Fermé** : dimanche
+- **Horaires showroom** : ouvert du lundi au samedi, 9h-18h, sans rendez-vous
+- **Dimanche** : ouverture sur rendez-vous uniquement, par téléphone au ${LEGAL.telephone} ou par e-mail
 - **Téléphone** : ${LEGAL.telephone}
 - **Email** : ${LEGAL.email}
 - **Site** : https://mobiliermalin.com
@@ -364,8 +364,8 @@ function getShowroomInfo() {
     phoneTel: LEGAL.telephoneTel,
     email: LEGAL.email,
     schedule: {
-      lundiSamedi: '10h à 18h (sur rendez-vous uniquement)',
-      dimanche: 'fermé',
+      lundiSamedi: '9h à 18h, sans rendez-vous',
+      dimanche: 'sur rendez-vous uniquement (téléphone ou e-mail)',
     },
     proximity: '5 min d\'Aubagne, 20 min de Marseille, 45 min d\'Aix-en-Provence',
     contactUrl: '/contact',

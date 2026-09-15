@@ -441,7 +441,7 @@ export default async function MarseillePage() {
                       le fauteuil, vous repartez avec votre commande dans le
                       coffre. Notre équipe vous aide à charger — comme le
                       souligne Nono dans son avis, c&apos;est inclus.
-                      Ouvert lundi-samedi de 10 h à 18 h sur rendez-vous.
+                      Ouvert du lundi au samedi de 9 h à 18 h, le dimanche sur rendez-vous.
                     </p>
                   </div>
                 </div>
@@ -625,7 +625,7 @@ export default async function MarseillePage() {
                   <CalendarCheck className="h-4 w-4 text-gold-dark shrink-0 mt-1" strokeWidth={1.5} />
                   <p className="text-sm text-ink-soft leading-relaxed">
                     <strong className="text-ink">2.</strong> Vous sélectionnez votre créneau
-                    de retrait (lundi-samedi 10 h-18 h) dans notre calendrier connecté.
+                    de retrait (lundi-samedi 9 h-18 h) dans notre calendrier connecté.
                   </p>
                 </li>
                 <li className="flex gap-3">
@@ -745,8 +745,8 @@ export default async function MarseillePage() {
                     <Clock className="h-5 w-5 text-gold mt-0.5 shrink-0" strokeWidth={1.5} />
                     <div>
                       <dt className="text-xs uppercase tracking-widest text-ink-mute mb-1">Horaires</dt>
-                      <dd className="text-ink">Lundi — Samedi, 10 h — 18 h<br />
-                        <span className="text-ink-mute text-xs">(sur rendez-vous)</span>
+                      <dd className="text-ink">Lundi au samedi, 9 h à 18 h<br />
+                        <span className="text-ink-mute text-xs">Dimanche sur rendez-vous : <a href="tel:+33676617053" className="underline underline-offset-2">06 76 61 70 53</a></span>
                       </dd>
                     </div>
                   </div>

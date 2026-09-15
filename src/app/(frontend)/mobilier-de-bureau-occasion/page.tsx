@@ -62,7 +62,7 @@ const FALLBACK_FAQ = [
   {
     question: "Livrez-vous partout en France ?",
     answer:
-      "Livraison régulière en région PACA et sur devis pour le reste de la France métropolitaine. Retrait sur rendez-vous au showroom de La Penne-sur-Huveaune.",
+      "Livraison régulière en région PACA et sur devis pour le reste de la France métropolitaine. Retrait au showroom de La Penne-sur-Huveaune, du lundi au samedi de 9 h à 18 h et le dimanche sur rendez-vous.",
   },
 ]
 

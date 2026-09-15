@@ -73,7 +73,7 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
 
   qa.push({
     q: `Livrez-vous les ${lower} à Marseille et dans la région PACA ?`,
-    a: `Oui, nous livrons depuis notre atelier de La Penne-sur-Huveaune vers toute la région : Marseille, Aubagne, Aix-en-Provence, La Ciotat, Toulon, Avignon, Orange, Nice. Le retrait au showroom reste gratuit du lundi au samedi. Pour la livraison, le devis inclut la manutention et la mise en place — indiquez-nous simplement l'étage et la présence d'ascenseur.`,
+    a: `Oui, nous livrons depuis notre atelier de La Penne-sur-Huveaune vers toute la région : Marseille, Aubagne, Aix-en-Provence, La Ciotat, Toulon, Avignon, Orange, Nice. Le retrait au showroom reste gratuit, du lundi au samedi de 9 h à 18 h et le dimanche sur rendez-vous. Pour la livraison, le devis inclut la manutention et la mise en place — indiquez-nous simplement l'étage et la présence d'ascenseur.`,
     aHtml: (
       <>
         Oui, nous livrons depuis notre atelier de La Penne-sur-Huveaune vers

@@ -41,7 +41,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
 export const metadata: Metadata = {
   title: 'Magasin de meubles d\'occasion à Aubagne — Showroom à 5 min, retrait sur place',
   description:
-    'Magasin de meubles d\'occasion professionnels à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). 200 pièces en stock : bureaux, fauteuils, armoires, rangements. Marques pro reconditionnées dans notre atelier local. Lundi-samedi sur rendez-vous.',
+    'Magasin de meubles d\'occasion professionnels à 5 minutes d\'Aubagne (La Penne-sur-Huveaune). 200 pièces en stock : bureaux, fauteuils, armoires, rangements. Marques pro reconditionnées dans notre atelier local. Ouvert du lundi au samedi de 9 h à 18 h, dimanche sur rendez-vous.',
   keywords: [
     'magasin meuble aubagne',
     'magasin meuble bureau Aubagne',
@@ -202,7 +202,7 @@ export default async function MeubleOccasionAubagnePage() {
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      opens: '10:00',
+      opens: '09:00',
       closes: '18:00',
     },
     // aggregateRating + review[] retirés (Sprint 5) — voir bureau-nice.
@@ -259,8 +259,8 @@ export default async function MeubleOccasionAubagnePage() {
               professionnel reconditionné : bureaux, fauteuils ergonomiques,
               armoires, rangements, cloisons. Marques pro uniquement
               (Steelcase, Vitra, Haworth, Herman Miller), préparés dans
-              notre atelier local, accueil sur rendez-vous du lundi au
-              samedi.
+              notre atelier local, ouvert du lundi au samedi de 9 h à
+              18 h, dimanche sur rendez-vous.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -458,7 +458,7 @@ export default async function MeubleOccasionAubagnePage() {
         <div className="container py-16 md:py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <Reveal>
-              <p className="eyebrow text-gold">Visite sur rendez-vous</p>
+              <p className="eyebrow text-gold">Showroom ouvert du lundi au samedi</p>
               <h2 className="text-display mt-3 font-serif text-ivory">
                 Un showroom de 400 m² à cinq minutes d&apos;Aubagne
               </h2>
@@ -479,7 +479,7 @@ export default async function MeubleOccasionAubagnePage() {
                 </li>
                 <li className="flex items-start gap-3">
                   <Clock className="h-4 w-4 text-gold mt-1 shrink-0" strokeWidth={1.5} />
-                  <span>Lundi-samedi, 10 h - 18 h, sur rendez-vous</span>
+                  <span>Lundi au samedi, 9 h à 18 h · dimanche sur rendez-vous</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Truck className="h-4 w-4 text-gold mt-1 shrink-0" strokeWidth={1.5} />
@@ -711,7 +711,7 @@ export default async function MeubleOccasionAubagnePage() {
           </h2>
           <div className="h-px w-12 bg-gold mx-auto mt-6" />
           <p className="mt-6 text-ivory/80 leading-relaxed">
-            Visite sur rendez-vous, café offert, conseils sans pression.
+            Ouvert du lundi au samedi de 9 h à 18 h, dimanche sur rendez-vous. Café offert, conseils sans pression.
             Notre équipe est à votre disposition pour vous présenter le
             mobilier qui correspond à votre besoin — qu&apos;il
             s&apos;agisse d&apos;un poste isolé, d&apos;un cabinet

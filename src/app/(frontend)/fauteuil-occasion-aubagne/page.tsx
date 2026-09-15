@@ -186,7 +186,7 @@ export default async function FauteuilAubagnePage() {
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      opens: '10:00',
+      opens: '09:00',
       closes: '18:00',
     },
     // aggregateRating + review[] retirés (Sprint 5) — voir bureau-nice.
@@ -493,8 +493,8 @@ export default async function FauteuilAubagnePage() {
           </h2>
           <div className="h-px w-12 bg-gold mx-auto mt-6" />
           <p className="mt-6 text-ink-soft leading-relaxed">
-            Showroom ouvert du lundi au samedi, de 10 h à 18 h. Cinq minutes
-            d&apos;Aubagne par la D8. Un appel pour caler le créneau, et
+            Showroom ouvert du lundi au samedi de 9 h à 18 h, et le dimanche
+            sur rendez-vous. Cinq minutes d&apos;Aubagne par la D8. Un appel avant de venir, et
             nous préparons les modèles qui correspondent à votre profil
             avant votre arrivée.
           </p>

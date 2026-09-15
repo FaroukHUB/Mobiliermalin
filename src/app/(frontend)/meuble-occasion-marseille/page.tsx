@@ -194,7 +194,7 @@ export default async function MeubleOccasionMarseillePage() {
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      opens: '10:00',
+      opens: '09:00',
       closes: '18:00',
     },
     // aggregateRating + review[] retirés (Sprint 5) — voir bureau-nice.
@@ -445,7 +445,7 @@ export default async function MeubleOccasionMarseillePage() {
         <div className="container py-16 md:py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <Reveal>
-              <p className="eyebrow text-gold">Visite sur rendez-vous</p>
+              <p className="eyebrow text-gold">Showroom ouvert du lundi au samedi</p>
               <h2 className="text-display mt-3 font-serif text-ivory">
                 Un showroom de 400 m² à dix minutes de Marseille
               </h2>
@@ -465,7 +465,7 @@ export default async function MeubleOccasionMarseillePage() {
                 </li>
                 <li className="flex items-start gap-3">
                   <Store className="h-4 w-4 text-gold mt-1 shrink-0" strokeWidth={1.5} />
-                  <span>Lundi-samedi, 10 h - 18 h, sur rendez-vous</span>
+                  <span>Lundi au samedi, 9 h à 18 h · dimanche sur rendez-vous</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Truck className="h-4 w-4 text-gold mt-1 shrink-0" strokeWidth={1.5} />

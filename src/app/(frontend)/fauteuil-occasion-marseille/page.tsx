@@ -368,7 +368,7 @@ export default async function FauteuilMarseillePage() {
                 produit détaille la morphologie ciblée, les réglages
                 disponibles et l&apos;état précis du siège. Si vous
                 préférez essayer avant d&apos;acheter, notre showroom de
-                La Penne-sur-Huveaune est ouvert du lundi au samedi. Voici
+                La Penne-sur-Huveaune est ouvert du lundi au samedi de 9 h à 18 h. Voici
                 les trois points qui font la différence dans le choix.
               </p>
             </div>

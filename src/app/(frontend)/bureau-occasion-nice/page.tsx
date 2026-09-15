@@ -334,8 +334,8 @@ export default async function NicePage() {
             <p className="mt-10 text-sm text-ink-mute text-center max-w-2xl mx-auto">
               Si vous préférez venir chercher votre commande, notre showroom
               se trouve à La Penne-sur-Huveaune, à environ 2 h 30 par
-              l&apos;A8. Visite sur rendez-vous, du lundi au samedi de 10 h
-              à 18 h.
+              l&apos;A8. Ouvert du lundi au samedi de 9 h à 18 h, et le
+              dimanche sur rendez-vous.
             </p>
           </Reveal>
         </div>

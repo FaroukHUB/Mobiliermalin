@@ -50,7 +50,7 @@ const FAQS = [
     items: [
       {
         q: 'Où êtes-vous situés ?',
-        a: `${LEGAL.showroom.ligne1}, ${LEGAL.showroom.codePostal} ${LEGAL.showroom.ville}. À cinq minutes d'Aubagne, quinze minutes de Marseille-Joliette, trente-cinq minutes d'Aix-en-Provence. Ouvert du lundi au samedi de 10 h à 18 h sur rendez-vous.`,
+        a: `${LEGAL.showroom.ligne1}, ${LEGAL.showroom.codePostal} ${LEGAL.showroom.ville}. À cinq minutes d'Aubagne, quinze minutes de Marseille-Joliette, trente-cinq minutes d'Aix-en-Provence. Ouvert du lundi au samedi de 9 h à 18 h, et le dimanche sur rendez-vous au ${LEGAL.telephone}.`,
       },
       {
         q: 'Livrez-vous sur Nice et la Côte d\'Azur ?',
@@ -58,7 +58,7 @@ const FAQS = [
       },
       {
         q: 'Le retrait au showroom est-il gratuit ?',
-        a: "Oui, totalement. Vous prenez rendez-vous, vous venez chercher votre commande au créneau choisi, et nous vous aidons à charger dans votre véhicule. Café offert.",
+        a: "Oui, totalement. Vous choisissez votre créneau de retrait, vous venez chercher votre commande à l'heure choisie, et nous vous aidons à charger dans votre véhicule. Café offert.",
       },
       {
         q: 'Combien coûte la livraison à domicile ?',

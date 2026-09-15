@@ -556,7 +556,7 @@ export function CataloguePdf({
           <View style={styles.editoHighlight}>
             <Text style={styles.editoHighlightDot}>—</Text>
             <Text style={styles.editoHighlightText}>
-              Essai sur place à {LEGAL.showroom.ville} sur rendez-vous,
+              Essai sur place à {LEGAL.showroom.ville} du lundi au samedi de 9 h à 18 h,
               livraison dans toute la France, remises dégressives pour
               l&apos;équipement de plusieurs postes.
             </Text>

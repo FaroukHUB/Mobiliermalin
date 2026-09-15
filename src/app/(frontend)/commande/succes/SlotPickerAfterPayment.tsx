@@ -106,7 +106,7 @@ export function SlotPickerAfterPayment({
           <p className="text-ink-soft leading-relaxed">
             Votre commande est réservée. Sélectionnez maintenant le jour et
             l&apos;heure de votre retrait au showroom de La Penne-sur-Huveaune,
-            du lundi au samedi entre 10 h et 18 h.
+            du lundi au samedi entre 9 h et 18 h.
           </p>
 
           <button
