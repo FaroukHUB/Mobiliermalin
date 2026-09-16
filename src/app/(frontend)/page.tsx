@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { HeroSlider, type HeroSlide } from '@/components/HeroSlider'
+import { VisitSection } from '@/components/sections/VisitSection'
 import { ReassuranceBar } from '@/components/sections/ReassuranceBar'
 import { ManifesteSection } from '@/components/sections/ManifesteSection'
 import { BrandsSection } from '@/components/sections/BrandsSection'
@@ -217,6 +218,9 @@ export default async function HomePage() {
         autoplayDelay={(settings.heroAutoplayDelay ?? 5) * 1000}
         stopOnHover={settings.heroStopOnHover ?? false}
       />
+      {/* Venir au dépôt : adresse, horaires, itinéraire, juste sous le
+          hero, avant les produits. Lève la confusion sur la visite. */}
+      <VisitSection image={sanityImageToMedia(settings.showroomImage, 'Dépôt-showroom La Penne-sur-Huveaune')} />
       {/* ─────────── VENDRE ───────────
           Les blocs commerce passent avant le récit : catégories,
           coups de cœur, arrivages. Aucune section n'est retirée,
