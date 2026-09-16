@@ -156,45 +156,42 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
   // visuel, prix). Aucun voile ni texte du site superposé, la bannière
   // entière est cliquable vers ctaPrimaryHref.
   //
-  // Le juste milieu entre « énorme » et « coupée » : le hero garde sa
-  // hauteur normale, et l'image y est affichée ENTIÈRE, réduite pour
-  // tenir en hauteur, jamais recadrée. Pour ne pas laisser de bandes
-  // vides de part et d'autre, la même image, floutée et agrandie,
-  // sert de fond. C'est la technique des sites qui affichent des
-  // visuels qui ne sont pas au format de l'écran.
+  // Le hero prend la hauteur NATURELLE de la bannière affichée en pleine
+  // largeur, plafonnée à 560 px : une bannière large et peu haute donne
+  // un hero bas, sans cadre vide autour. Seule une image plus haute que
+  // le plafond est réduite pour y tenir, et alors la même image floutée
+  // comble les côtés. Sur mobile, l'image mobile dédiée (Réglages du
+  // slide) prend le relais si elle existe.
   if (slide.fullBanner) {
     const bannerImage = (img: NonNullable<HeroSlide['imageMobile']>, extra: string) => (
-      <>
-        {/* Fond : la même image, floutée, qui remplit tout le cadre */}
+      <div className={cn('relative w-full overflow-hidden bg-ivory-dark', extra)}>
+        {/* Fond : la même image, floutée, visible seulement si l'image
+            réduite ne couvre pas tout le cadre */}
         <Image
           src={img.url}
           alt=""
           aria-hidden
           fill
-          priority={isFirst}
           sizes="100vw"
-          className={cn('object-cover scale-110 blur-2xl opacity-70', extra)}
+          className="object-cover scale-110 blur-2xl opacity-70"
           style={{ objectPosition: img.focal || '50% 50%' }}
         />
-        {/* Devant : l'image entière, centrée, sans aucune coupure */}
+        {/* Devant : l'image entière, pleine largeur, hauteur naturelle,
+            jamais plus haute que le plafond */}
         <Image
           src={img.url}
           alt={img.alt || slide.title}
-          fill
+          width={img.width || 2560}
+          height={img.height || 1000}
           priority={isFirst}
           sizes="100vw"
-          className={cn('object-contain', extra)}
+          className="relative block w-full h-auto max-h-[560px] object-contain"
         />
-      </>
+      </div>
     )
 
     const bannerContent = (
-      <div
-        className={cn(
-          'relative flex-[0_0_100%] min-w-0 overflow-hidden bg-ivory-dark',
-          HERO_HEIGHT,
-        )}
-      >
+      <div className="relative flex-[0_0_100%] min-w-0">
         {slide.imageMobile ? (
           <>
             {bannerImage(slide.imageMobile, 'md:hidden')}

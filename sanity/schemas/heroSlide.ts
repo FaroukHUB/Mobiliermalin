@@ -30,7 +30,8 @@ export const heroSlide = {
       title: 'Image (mobile) — optionnel',
       type: 'image',
       options: { hotspot: true },
-      description: "Si remplie, utilisée sur mobile à la place de l'image desktop. Format portrait 800×1000 px.",
+      description:
+        "Fortement conseillée en mode bannière complète : une bannière au format PC, très large, devient une petite bande sur téléphone. Exportez une version verticale ou carrée, par exemple 1080 × 1350, avec les mêmes textes. Sans elle, la bannière PC est affichée entière, en petit.",
     },
     {
       name: 'ctaPrimaryLabel',
