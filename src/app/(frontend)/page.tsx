@@ -212,15 +212,15 @@ export default async function HomePage() {
           campaignId={settings.promoPopupCampaignId || 'promo'}
         />
       )}
+      {/* Venir au dépôt : encart magazine sous le bandeau, avant le hero.
+          Première chose lue, lève la confusion sur la visite. */}
+      <VisitSection />
       <HeroSlider
         slides={slides}
         autoplayEnabled={settings.heroAutoplayEnabled ?? true}
         autoplayDelay={(settings.heroAutoplayDelay ?? 5) * 1000}
         stopOnHover={settings.heroStopOnHover ?? false}
       />
-      {/* Venir au dépôt : adresse, horaires, itinéraire, juste sous le
-          hero, avant les produits. Lève la confusion sur la visite. */}
-      <VisitSection image={sanityImageToMedia(settings.showroomImage, 'Dépôt-showroom La Penne-sur-Huveaune')} />
       {/* ─────────── VENDRE ───────────
           Les blocs commerce passent avant le récit : catégories,
           coups de cœur, arrivages. Aucune section n'est retirée,
