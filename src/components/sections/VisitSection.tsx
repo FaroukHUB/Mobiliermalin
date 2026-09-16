@@ -4,12 +4,11 @@ import { MapPin, Clock, Phone, Car, Navigation } from 'lucide-react'
 /**
  * Encart « Venez nous rendre visite au dépôt », façon magazine.
  *
- * Placé sous le bandeau et le menu, avant le hero : c'est la première
- * chose qu'on lit. Il répond à une confusion réelle, beaucoup de
- * visiteurs ne savent pas qu'ils peuvent venir voir et essayer le
- * mobilier sur place.
+ * Placé sous le hero et la barre de rassurance, avant les catégories.
+ * Il répond à une confusion réelle, beaucoup de visiteurs ne savent pas
+ * qu'ils peuvent venir voir et essayer le mobilier sur place.
  *
- * Fond or plein, titre en grand, un tampon « Ouvert du lundi au samedi »
+ * Fond beige du site, titre en grand, un tampon « Ouvert du lundi au samedi »
  * posé de travers, et une vraie carte Google encadrée à la manière
  * d'une photo de magazine. Les textes reprennent ceux déjà en ligne
  * sur le site, sans chiffre de stock : on ne promet rien qu'on ne
@@ -25,7 +24,7 @@ const MAP_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(ADDRES
 export function VisitSection() {
   return (
     <section
-      className="relative overflow-hidden bg-gold text-ink"
+      className="relative overflow-hidden bg-ivory-dark text-ink border-b border-line"
       aria-labelledby="visite-titre"
     >
       {/* Filigrane typographique, purement décoratif */}
