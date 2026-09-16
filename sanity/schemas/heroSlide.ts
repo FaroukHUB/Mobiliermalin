@@ -34,6 +34,14 @@ export const heroSlide = {
         "Fortement conseillée en mode bannière complète : une bannière au format PC, très large, devient une petite bande sur téléphone. Exportez une version verticale ou carrée, par exemple 1080 × 1350, avec les mêmes textes. Sans elle, la bannière PC est affichée entière, en petit.",
     },
     {
+      name: 'video',
+      title: '🎬 Vidéo (mp4) — optionnel',
+      type: 'file',
+      options: { accept: 'video/mp4' },
+      description:
+        "Si remplie, la vidéo remplace l'image dans le hero : elle joue une fois, sans son, puis se fige sur sa dernière image. Le titre, le sous-titre et les boutons du slide apparaissent en rythme pendant la lecture, et un petit bouton permet d'activer le son. L'image ci-dessus sert d'affiche le temps du chargement. Format : mp4, idéalement moins de 5 Mo.",
+    },
+    {
       name: 'ctaPrimaryLabel',
       title: 'Bouton principal — texte',
       type: 'string',

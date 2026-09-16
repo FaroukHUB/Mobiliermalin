@@ -1,11 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export type HeroSlide = {
@@ -29,6 +29,12 @@ export type HeroSlide = {
    * proportion naturelle, sans recadrage.
    */
   fullBanner?: boolean
+  /**
+   * Vidéo mp4 : si présente, elle remplace l'image. Elle joue une fois,
+   * sans son, et se fige sur sa dernière image ; les textes du slide
+   * apparaissent en rythme pendant la lecture. L'image sert d'affiche.
+   */
+  videoUrl?: string
 }
 
 /**
@@ -56,7 +62,9 @@ export function HeroSlider({
     autoplayEnabled
       ? [
           Autoplay({
-            delay: autoplayDelay,
+            // Un slide vidéo a besoin de jouer sa scène : le carrousel
+            // attend au moins 15 s avant de passer au suivant.
+            delay: slides.some((s) => s.videoUrl) ? Math.max(autoplayDelay, 15000) : autoplayDelay,
             // L'autoplay reprend apres une interaction (clic / swipe).
             stopOnInteraction: false,
             // Configurable côté Sanity : sur desktop, laisser à false
@@ -139,7 +147,44 @@ export function HeroSlider({
   )
 }
 
+/**
+ * Bouton son du hero vidéo. La vidéo démarre muette, c'est la règle des
+ * navigateurs ; ce bouton rend le son, et relance la scène depuis le
+ * début si elle est déjà terminée.
+ */
+function SoundToggle({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | null> }) {
+  const [muted, setMuted] = useState(true)
+  const toggle = () => {
+    const v = videoRef.current
+    if (!v) return
+    const next = !v.muted
+    v.muted = next
+    setMuted(next)
+    if (!next && v.ended) {
+      v.currentTime = 0
+    }
+    if (!next && (v.paused || v.ended)) {
+      v.play().catch(() => {})
+    }
+  }
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={muted ? 'Activer le son' : 'Couper le son'}
+      className="absolute bottom-5 right-5 z-20 h-10 w-10 rounded-full bg-ink/55 text-ivory backdrop-blur-sm flex items-center justify-center hover:bg-ink/80 transition-colors"
+    >
+      {muted ? (
+        <VolumeX className="h-4 w-4" strokeWidth={1.75} />
+      ) : (
+        <Volume2 className="h-4 w-4" strokeWidth={1.75} />
+      )}
+    </button>
+  )
+}
+
 function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
+  const videoRef = useRef<HTMLVideoElement | null>(null)
   const position = slide.textPosition || 'left'
   const positionClass = {
     left: 'items-start text-left',
@@ -160,7 +205,7 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
   // proportion naturelle, jamais recadrée, jamais réduite. C'est la
   // bannière qui fixe la hauteur du hero. Sur mobile, l'image mobile
   // dédiée (Réglages du slide) prend le relais si elle existe.
-  if (slide.fullBanner) {
+  if (slide.fullBanner && !slide.videoUrl) {
     const bannerImage = (img: NonNullable<HeroSlide['imageMobile']>, extra: string) => (
       <Image
         src={img.url}
@@ -213,6 +258,75 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
       : position === 'center'
         ? `linear-gradient(to bottom, rgba(${overlayBase}, ${a3}) 0%, rgba(${overlayBase}, ${a1}) 100%)`
         : `linear-gradient(to right, rgba(${overlayBase}, ${a1}) 0%, rgba(${overlayBase}, ${a2}) 30%, rgba(${overlayBase}, ${a3}) 55%, rgba(${overlayBase}, 0) 75%)`
+
+  // ─── MODE VIDÉO ──────────────────────────────────────────────
+  // La vidéo joue une fois, muette, et se fige sur sa dernière image
+  // (pas de boucle : la scène se construit, repartir de la pièce vide
+  // casserait l'effet). Un très lent zoom continue dessus. Les textes du
+  // slide arrivent en rythme avec la scène : titre quand le mobilier se
+  // pose, sous-titre ensuite, boutons quand la scène est complète.
+  if (slide.videoUrl) {
+    const stage = (delayMs: number) => ({ animationDelay: `${delayMs}ms` })
+    return (
+      <div className="relative flex-[0_0_100%] min-w-0">
+        <div className="relative h-[72vh] min-h-[480px] max-h-[820px] w-full overflow-hidden bg-ivory-dark">
+          <video
+            ref={videoRef}
+            src={slide.videoUrl}
+            poster={slide.image.url}
+            autoPlay
+            muted
+            playsInline
+            preload={isFirst ? 'auto' : 'metadata'}
+            aria-label={slide.title}
+            className="hero-video absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0" style={{ background: overlayGradient }} aria-hidden />
+
+          <div className="relative z-10 h-full container">
+            <div className={cn('flex flex-col justify-center h-full max-w-2xl gap-6', positionClass, textColorClass)}>
+              <p
+                className={cn('eyebrow hero-rise', slide.textColor === 'dark' ? 'text-gold-dark' : 'text-gold')}
+                style={stage(3600)}
+              >
+                Mobilier Malin
+              </p>
+              <TitleTag className={cn('text-display-xl font-serif hero-rise', textColorClass)} style={stage(4200)}>
+                {slide.title}
+              </TitleTag>
+              {slide.subtitle && (
+                <p
+                  className={cn('text-base md:text-lg max-w-xl hero-rise', slide.textColor === 'dark' ? 'text-ink/80' : 'text-ivory/90')}
+                  style={stage(6200)}
+                >
+                  {slide.subtitle}
+                </p>
+              )}
+              {(slide.ctaPrimaryLabel || slide.ctaSecondaryLabel) && (
+                <div className="flex flex-wrap gap-3 pt-2 hero-rise" style={stage(9600)}>
+                  {slide.ctaPrimaryLabel && slide.ctaPrimaryHref && (
+                    <Link href={slide.ctaPrimaryHref} className="btn-gold">
+                      {slide.ctaPrimaryLabel}
+                    </Link>
+                  )}
+                  {slide.ctaSecondaryLabel && slide.ctaSecondaryHref && (
+                    <Link
+                      href={slide.ctaSecondaryHref}
+                      className={slide.textColor === 'dark' ? 'btn-outline' : 'btn-outline-light'}
+                    >
+                      {slide.ctaSecondaryLabel}
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <SoundToggle videoRef={videoRef} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="relative flex-[0_0_100%] min-w-0">

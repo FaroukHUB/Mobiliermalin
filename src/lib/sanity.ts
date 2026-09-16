@@ -783,6 +783,8 @@ export type SanityHeroSlide = {
   subtitle?: string
   image: SanityImage
   imageMobile?: SanityImage
+  /** Vidéo mp4 du slide : remplace l'image dans le hero si présente. */
+  video?: { asset?: { url?: string; mimeType?: string } }
   ctaPrimaryLabel?: string
   ctaPrimaryHref?: string
   ctaSecondaryLabel?: string
@@ -813,6 +815,7 @@ export async function getHeroSlides(): Promise<SanityHeroSlide[]> {
         ...,
         asset->{ _id, _type, metadata { dimensions { width, height, aspectRatio } } }
       },
+      video { asset->{ url, mimeType } },
       ctaPrimaryLabel, ctaPrimaryHref, ctaSecondaryLabel, ctaSecondaryHref,
       textPosition, textColor, overlayOpacity, fullBanner, order, status
     }`,

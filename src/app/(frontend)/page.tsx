@@ -165,6 +165,7 @@ export default async function HomePage() {
             textColor: s.textColor,
             overlayOpacity: s.overlayOpacity,
             fullBanner: true,
+            videoUrl: s.video?.asset?.url,
           }
         }
 
@@ -195,6 +196,7 @@ export default async function HomePage() {
           textColor: s.textColor,
           overlayOpacity: s.overlayOpacity,
           fullBanner: false,
+          videoUrl: s.video?.asset?.url,
         }
       })
     : FALLBACK_SLIDES
