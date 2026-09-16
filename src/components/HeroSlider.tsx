@@ -25,8 +25,8 @@ export type HeroSlide = {
    * Mode "bannière complète" : quand true, aucun voile ni texte du site
    * n'est superposé, et la bannière entière est cliquable vers
    * ctaPrimaryHref. À utiliser pour les bannières Canva / Photoshop dont
-   * le texte est déjà intégré. L'image est affichée entière dans la
-   * hauteur du hero, sur un fond flouté d'elle-même.
+   * le texte est déjà intégré. L'image occupe toute la largeur à sa
+   * proportion naturelle, sans recadrage.
    */
   fullBanner?: boolean
 }
@@ -156,42 +156,25 @@ function SlideItem({ slide, isFirst }: { slide: HeroSlide; isFirst: boolean }) {
   // visuel, prix). Aucun voile ni texte du site superposé, la bannière
   // entière est cliquable vers ctaPrimaryHref.
   //
-  // Le hero prend la hauteur NATURELLE de la bannière affichée en pleine
-  // largeur, plafonnée à 560 px : une bannière large et peu haute donne
-  // un hero bas, sans cadre vide autour. Seule une image plus haute que
-  // le plafond est réduite pour y tenir, et alors la même image floutée
-  // comble les côtés. Sur mobile, l'image mobile dédiée (Réglages du
-  // slide) prend le relais si elle existe.
+  // Plein écran en largeur : l'image occupe toute la largeur à sa
+  // proportion naturelle, jamais recadrée, jamais réduite. C'est la
+  // bannière qui fixe la hauteur du hero. Sur mobile, l'image mobile
+  // dédiée (Réglages du slide) prend le relais si elle existe.
   if (slide.fullBanner) {
     const bannerImage = (img: NonNullable<HeroSlide['imageMobile']>, extra: string) => (
-      <div className={cn('relative w-full overflow-hidden bg-ivory-dark', extra)}>
-        {/* Fond : la même image, floutée, visible seulement si l'image
-            réduite ne couvre pas tout le cadre */}
-        <Image
-          src={img.url}
-          alt=""
-          aria-hidden
-          fill
-          sizes="100vw"
-          className="object-cover scale-110 blur-2xl opacity-70"
-          style={{ objectPosition: img.focal || '50% 50%' }}
-        />
-        {/* Devant : l'image entière, pleine largeur, hauteur naturelle,
-            jamais plus haute que le plafond */}
-        <Image
-          src={img.url}
-          alt={img.alt || slide.title}
-          width={img.width || 2560}
-          height={img.height || 1000}
-          priority={isFirst}
-          sizes="100vw"
-          className="relative block w-full h-auto max-h-[560px] object-contain"
-        />
-      </div>
+      <Image
+        src={img.url}
+        alt={img.alt || slide.title}
+        width={img.width || 2560}
+        height={img.height || 1000}
+        priority={isFirst}
+        sizes="100vw"
+        className={cn('block w-full h-auto', extra)}
+      />
     )
 
     const bannerContent = (
-      <div className="relative flex-[0_0_100%] min-w-0">
+      <div className="relative flex-[0_0_100%] min-w-0 bg-ivory-dark">
         {slide.imageMobile ? (
           <>
             {bannerImage(slide.imageMobile, 'md:hidden')}

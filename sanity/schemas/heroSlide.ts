@@ -95,7 +95,7 @@ export const heroSlide = {
       type: 'boolean',
       initialValue: false,
       description:
-        "COCHER SI votre image contient déjà tout le contenu marketing (texte, prix, CTA visuel). Le voile sombre et les textes du site sont cachés, et le clic sur toute la bannière déclenche le lien du bouton principal ci-dessous. La bannière garde la hauteur normale du hero et s'affiche entière, jamais coupée : si elle est moins large que l'écran, un fond flouté de la même image comble les côtés. Format conseillé pour remplir toute la largeur : 2560 × 800.",
+        "COCHER SI votre image contient déjà tout le contenu marketing (texte, prix, CTA visuel). Le voile sombre et les textes du site sont cachés, et le clic sur toute la bannière déclenche le lien du bouton principal ci-dessous. La bannière occupe toute la largeur de l'écran à sa proportion, jamais coupée : c'est elle qui fixe la hauteur du hero. Format conseillé : 2560 × 800 pour un hero bas, 2560 × 1000 pour un hero plus présent.",
     },
     {
       name: 'order',
