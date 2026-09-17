@@ -290,7 +290,7 @@ export default async function GuideArticlePage({
                             fill
                             sizes="(min-width: 768px) 720px, 100vw"
                             className="object-cover"
-                            unoptimized
+                            unoptimized={!value.url.includes('cdn.sanity.io')}
                           />
                         </div>
                         {value.caption && (

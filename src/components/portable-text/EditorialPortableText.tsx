@@ -157,7 +157,9 @@ export function EditorialPortableText({ value }: { value: PortableTextBlock[] })
                     fill
                     sizes="(min-width: 768px) 720px, 100vw"
                     className="object-cover"
-                    unoptimized
+                    // Les images Sanity passent par le chargeur (WebP/AVIF
+                    // automatique) ; seules les URL externes sont laissées telles quelles.
+                    unoptimized={!value.url.includes('cdn.sanity.io')}
                   />
                 </div>
                 {value.caption && (

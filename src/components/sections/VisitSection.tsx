@@ -20,6 +20,9 @@ const ADDRESS = '18 chemin Noël Robion, 13821 La Penne-sur-Huveaune'
 // Carte Google sans clé ni script : une simple iframe, chargée en
 // différé pour ne pas peser sur l'arrivée sur la page.
 const MAP_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(ADDRESS)}&z=15&hl=fr&output=embed`
+// Itinéraire : directement dans Google Maps, qui ouvre l'application
+// sur téléphone et le site sur PC, sans page intermédiaire.
+const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS)}`
 
 export function VisitSection() {
   return (
@@ -88,13 +91,15 @@ export function VisitSection() {
           </ul>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="/itineraire"
+            <a
+              href={MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-ink text-ivory px-6 py-3.5 text-xs tracking-widest uppercase hover:bg-ink-soft transition-colors"
             >
               <Navigation className="h-4 w-4" strokeWidth={1.75} />
               Itinéraire
-            </Link>
+            </a>
             <a
               href="tel:+33676617053"
               className="inline-flex items-center gap-2 border border-ink text-ink px-6 py-3.5 text-xs tracking-widest uppercase hover:bg-ink hover:text-ivory transition-colors"
@@ -131,13 +136,15 @@ export function VisitSection() {
             />
           </div>
 
-          <Link
-            href="/itineraire"
+          <a
+            href={MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="mt-6 inline-flex items-center gap-2 text-sm font-medium underline underline-offset-4 decoration-ink/40 hover:decoration-ink"
           >
             <Navigation className="h-4 w-4" strokeWidth={1.75} />
-            Ouvrir dans Maps ou Waze
-          </Link>
+            Ouvrir dans Google Maps
+          </a>
         </div>
       </div>
     </section>
