@@ -67,14 +67,16 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       href={href}
       className="group block bg-ivory-light border border-line hover:border-gold hover:shadow-soft transition-all duration-300"
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-ivory-dark">
+      {/* Le produit entier, jamais recadré : les packshots sont sur fond
+          blanc, la carte aussi, le meuble semble simplement posé dedans. */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-ivory-light">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
             alt={product.imageAlt || product.title}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 80vw"
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            className="object-contain p-3 transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-ink-mute/40 text-xs uppercase tracking-widest">
