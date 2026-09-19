@@ -326,7 +326,7 @@ export default async function BoutiquePage({
                 </>
               )}
               {products.length > 0
-                ? `${products.length} produit${products.length > 1 ? 's' : ''} disponible${products.length > 1 ? 's' : ''}`
+                ? `${products.length} référence${products.length > 1 ? 's' : ''} disponible${products.length > 1 ? 's' : ''}`
                 : hasActiveFilter
                   ? 'Aucun produit ne correspond'
                   : 'Catalogue en cours d\'enrichissement'}

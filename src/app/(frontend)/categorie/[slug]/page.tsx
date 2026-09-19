@@ -260,11 +260,16 @@ export default async function CategoryPage({
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
             <div>
               <p className="eyebrow">Notre sélection</p>
-              <h2 className="font-serif text-h1 mt-2">
+              {/* Le titre reste le nom de la catégorie ; le compte, qui
+                  change tous les jours, passe en dessous, en petit. Une
+                  « référence » = un modèle, quel que soit son nombre
+                  d'exemplaires. */}
+              <h2 className="font-serif text-h1 mt-2">{name}</h2>
+              <p className="mt-2 text-sm text-ink-mute">
                 {products.length > 0
-                  ? `${products.length} ${products.length > 1 ? 'pièces disponibles' : 'pièce disponible'}`
-                  : 'Pièces disponibles sur demande'}
-              </h2>
+                  ? `${products.length} ${products.length > 1 ? 'références disponibles' : 'référence disponible'}`
+                  : 'Références disponibles sur demande'}
+              </p>
             </div>
             <Link href="/contact" className="btn-outline">
               Demander un devis personnalisé

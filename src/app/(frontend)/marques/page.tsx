@@ -187,7 +187,7 @@ export default async function MarquesPage() {
                   </p>
                   {count > 0 && (
                     <p className="mt-5 text-xs uppercase tracking-widest text-ink-mute">
-                      {count} pièce{count > 1 ? 's' : ''} disponible
+                      {count} référence{count > 1 ? 's' : ''} disponible
                       {count > 1 ? 's' : ''}
                     </p>
                   )}

@@ -130,7 +130,7 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
     q: `Combien de ${lower} avez-vous en stock ?`,
     a:
       productCount > 0
-        ? `Actuellement ${productCount} ${productCount > 1 ? 'pièces disponibles' : 'pièce disponible'} sur cette catégorie, mais notre stock évolue chaque semaine — nous recevons régulièrement de nouveaux lots issus de vidages de locaux professionnels dans la région. Si vous cherchez un modèle précis ou un volume important, contactez-nous : nous pouvons rechercher dans notre réseau.`
+        ? `Actuellement ${productCount} ${productCount > 1 ? 'références disponibles' : 'référence disponible'} sur cette catégorie, mais notre stock évolue chaque semaine — nous recevons régulièrement de nouveaux lots issus de vidages de locaux professionnels dans la région. Si vous cherchez un modèle précis ou un volume important, contactez-nous : nous pouvons rechercher dans notre réseau.`
         : `Notre stock évolue chaque semaine. Cette catégorie est momentanément vide, mais des lots issus de vidages de locaux arrivent régulièrement. Contactez-nous en indiquant vos besoins — nous vous préviendrons dès l'arrivée d'une pièce correspondante, souvent sous 2 à 4 semaines.`,
     aHtml: null,
   })
