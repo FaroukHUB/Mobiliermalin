@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Check, Truck } from 'lucide-react'
 import { AcceptQuoteButton } from './AcceptQuoteButton'
+import { computeQuoteTotals } from '@/lib/quote-totals'
 
 /**
  * Sélecteur de formule de livraison sur la page devis du client.
@@ -60,9 +61,13 @@ export function DeliveryChoiceSelector({
     typeof initialIndex === 'number' && choices[initialIndex] ? initialIndex : 0,
   )
   const selected = choices[index]
-  const subtotalHt = baseHt + (selected?.price ?? 0)
-  const tvaAmount = subtotalHt * (tvaRate / 100)
-  const totalTtc = subtotalHt + tvaAmount
+  // Même calcul que le PDF et Stripe, arrondi du total compris : le
+  // client lit ici le montant exact qui sera débité.
+  const { subtotalHt, tvaAmount, totalTtc } = computeQuoteTotals({
+    lines: [{ unitPrice: baseHt, quantity: 1 }],
+    shippingFee: selected?.price ?? 0,
+    tvaRate,
+  })
   const noTva = tvaRate === 0
 
   return (

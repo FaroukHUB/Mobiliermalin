@@ -1,4 +1,8 @@
-import { computeDiscountHt, discountLineLabel, type QuoteDiscount } from './quote-totals'
+import {
+  computeQuoteTotals,
+  discountLineLabel,
+  type QuoteDiscount,
+} from './quote-totals'
 /**
  * Enregistrement automatique des ventes.
  *
@@ -92,28 +96,40 @@ export function buildSaleFromQuote(
   const ttc = (ht: number) => round2(ht * tvaFactor)
 
   // 1) Les produits — lineItems prioritaire sur le champ legacy
-  const rawLines =
+  const rawLines = (
     Array.isArray(q.lineItems) && q.lineItems.length > 0
       ? q.lineItems
       : q.product?.name
         ? [q.product]
         : []
-  const lines: SaleLine[] = rawLines
-    .filter((l) => l?.name)
-    .map((l) => ({
-      _key: nextKey(),
-      _type: 'saleLine' as const,
-      name: l.name as string,
-      quantity: l.quantity ?? 1,
-      unitPrice: ttc(l.unitPrice ?? 0),
-      kind: 'product' as const,
-    }))
+  ).filter((l) => l?.name)
 
   // 2) La livraison — formule choisie par le client, sinon tarif unique
   const shippingHt = q.selectedDelivery?.label
     ? (q.selectedDelivery.price ?? 0)
     : (q.shippingFee ?? 0)
-  const shippingTtc = ttc(shippingHt)
+
+  // Mêmes totaux que le devis envoyé au client, arrondi à l'euro
+  // compris : le registre enregistre exactement ce qui a été encaissé.
+  const totals = computeQuoteTotals({
+    lines: rawLines,
+    shippingFee: shippingHt,
+    options: (q.options || []).map((o) => ({ price: o?.price ?? 0 })),
+    tvaRate: q.tvaRate ?? 20,
+    discount: q.discount,
+    depositPercent: q.depositPercent,
+  })
+
+  const lines: SaleLine[] = rawLines.map((l, i) => ({
+    _key: nextKey(),
+    _type: 'saleLine' as const,
+    name: l.name as string,
+    quantity: l.quantity ?? 1,
+    unitPrice: ttc(totals.lineUnitPricesHt[i] ?? l.unitPrice ?? 0),
+    kind: 'product' as const,
+  }))
+
+  const shippingTtc = ttc(totals.shippingHt)
   if (shippingTtc > 0) {
     lines.push({
       _key: nextKey(),
@@ -128,37 +144,27 @@ export function buildSaleFromQuote(
   }
 
   // 3) Les prestations ajoutées (montage, évacuation…)
-  for (const o of q.options || []) {
-    if (!o?.label) continue
+  ;(q.options || []).forEach((o, i) => {
+    if (!o?.label) return
     lines.push({
       _key: nextKey(),
       _type: 'saleLine',
       name: o.label,
       quantity: 1,
-      unitPrice: ttc(o.price ?? 0),
+      unitPrice: ttc(totals.optionTotalsHt[i] ?? o.price ?? 0),
       kind: 'option',
     })
-  }
+  })
 
   // Remise sur les produits : le registre garde le net encaissé, et la
   // remise à part pour savoir ce qu'on a consenti sur l'année.
-  const productsHt = rawLines
-    .filter((l) => l?.name)
-    .reduce((s, l) => s + (l.unitPrice ?? 0) * (l.quantity ?? 1), 0)
-  const discountTtc = ttc(computeDiscountHt(productsHt, q.discount, q.tvaRate ?? 20))
-  const totalTtc = round2(
-    lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0) - discountTtc,
-  )
+  const discountTtc = ttc(totals.discountHt)
+  const totalTtc = totals.totalTtc
 
   // Acompte : seul l'acompte est réellement encaissé. Le solde fera
   // une seconde vente le jour où il rentre.
-  const hasDeposit =
-    typeof q.depositPercent === 'number' &&
-    q.depositPercent >= 1 &&
-    q.depositPercent <= 99
-  const collected = hasDeposit
-    ? round2(totalTtc * (q.depositPercent! / 100))
-    : totalTtc
+  const hasDeposit = totals.depositTtc !== null
+  const collected = totals.depositTtc ?? totalTtc
 
   const designation = lines
     .filter((l) => l.kind === 'product')
@@ -171,9 +177,7 @@ export function buildSaleFromQuote(
   }
   if (hasDeposit) {
     notes.push(
-      `Acompte de ${q.depositPercent} % encaissé. Solde restant : ${round2(
-        totalTtc - collected,
-      )} € TTC.`,
+      `Acompte de ${q.depositPercent} % encaissé. Solde restant : ${totals.balanceTtc} € TTC.`,
     )
   }
 

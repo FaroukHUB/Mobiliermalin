@@ -163,6 +163,7 @@ export default function NouvelleFacturePage() {
     lines: [{ unitPrice: linesTotalHt, quantity: 1 }],
     tvaRate,
     discount,
+    depositPercent,
   })
   const { subtotalHt, tvaAmount, totalTtc, discountHt } = totals
 
@@ -808,11 +809,11 @@ export default function NouvelleFacturePage() {
             <>
               <span style={{ color: '#c8a25b' }}>Acompte en ligne ({depositPercent} %)</span>
               <strong style={{ textAlign: 'right', color: '#c8a25b' }}>
-                {fmt(totalTtc * (depositPercent / 100))} €
+                {fmt(totals.depositTtc ?? 0)} €
               </strong>
               <span style={{ opacity: 0.7 }}>Solde à encaisser ensuite</span>
               <strong style={{ textAlign: 'right', opacity: 0.7 }}>
-                {fmt(totalTtc * (1 - depositPercent / 100))} €
+                {fmt(totals.balanceTtc)} €
               </strong>
             </>
           )}

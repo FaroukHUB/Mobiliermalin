@@ -419,8 +419,18 @@ export function QuotePdf({
   const lines =
     items && items.length > 0 ? items : product ? [product] : []
   // Même calcul que la page client, Stripe et le registre des ventes.
-  const totals = computeQuoteTotals({ lines, shippingFee, options, tvaRate, discount })
+  const totals = computeQuoteTotals({
+    lines,
+    shippingFee,
+    options,
+    tvaRate,
+    discount,
+    depositPercent,
+  })
   const { subtotalHt, tvaAmount, totalTtc, discountHt } = totals
+  // Montants à afficher : ceux du calcul, arrondi de fin compris, pour
+  // que la colonne Total HT s'additionne exactement au sous-total.
+  const shippingHt = totals.shippingHt
 
   const hasAddress = !!(shippingAddress?.street || shippingAddress?.city)
   const hasBilling = !!(billingAddress?.street || billingAddress?.city)
@@ -555,8 +565,8 @@ export function QuotePdf({
           <View key={i} style={styles.tableRow}>
             <Text style={styles.colDesc}>{line.name}</Text>
             <Text style={styles.colQty}>{line.quantity}</Text>
-            <Text style={styles.colPrice}>{eur(line.unitPrice)}</Text>
-            <Text style={styles.colTotal}>{eur(line.unitPrice * line.quantity)}</Text>
+            <Text style={styles.colPrice}>{eur(totals.lineUnitPricesHt[i])}</Text>
+            <Text style={styles.colTotal}>{eur(totals.lineTotalsHt[i])}</Text>
           </View>
         ))}
 
@@ -581,8 +591,8 @@ export function QuotePdf({
                   : 'Livraison'}
             </Text>
             <Text style={styles.colQty}>1</Text>
-            <Text style={styles.colPrice}>{eur(shippingFee)}</Text>
-            <Text style={styles.colTotal}>{eur(shippingFee)}</Text>
+            <Text style={styles.colPrice}>{eur(shippingHt)}</Text>
+            <Text style={styles.colTotal}>{eur(shippingHt)}</Text>
           </View>
         )}
 
@@ -591,8 +601,8 @@ export function QuotePdf({
           <View key={i} style={styles.tableRow}>
             <Text style={styles.colDesc}>{opt.label}</Text>
             <Text style={styles.colQty}>1</Text>
-            <Text style={styles.colPrice}>{eur(opt.price)}</Text>
-            <Text style={styles.colTotal}>{eur(opt.price)}</Text>
+            <Text style={styles.colPrice}>{eur(totals.optionTotalsHt[i])}</Text>
+            <Text style={styles.colTotal}>{eur(totals.optionTotalsHt[i])}</Text>
           </View>
         ))}
 
@@ -640,15 +650,11 @@ export function QuotePdf({
                 <Text style={[styles.totalLabel, { color: COLORS.goldDark }]}>
                   Acompte à la commande ({depositPercent} %)
                 </Text>
-                <Text style={styles.totalValue}>
-                  {eur(Math.round(totalTtc * (depositPercent! / 100) * 100) / 100)}
-                </Text>
+                <Text style={styles.totalValue}>{eur(totals.depositTtc ?? 0)}</Text>
               </View>
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Solde restant</Text>
-                <Text style={styles.totalValue}>
-                  {eur(totalTtc - Math.round(totalTtc * (depositPercent! / 100) * 100) / 100)}
-                </Text>
+                <Text style={styles.totalValue}>{eur(totals.balanceTtc)}</Text>
               </View>
             </View>
           )}

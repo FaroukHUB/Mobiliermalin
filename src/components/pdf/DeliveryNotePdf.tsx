@@ -516,8 +516,8 @@ export function DeliveryNotePdf({
             <Text style={styles.colQty}>{line.quantity}</Text>
             {showPrices ? (
               <>
-                <Text style={styles.colPrice}>{eur(line.unitPrice)}</Text>
-                <Text style={styles.colTotal}>{eur(line.unitPrice * line.quantity)}</Text>
+                <Text style={styles.colPrice}>{eur(totals.lineUnitPricesHt[i])}</Text>
+                <Text style={styles.colTotal}>{eur(totals.lineTotalsHt[i])}</Text>
               </>
             ) : (
               <View style={styles.colCheck}>
@@ -534,8 +534,8 @@ export function DeliveryNotePdf({
             <Text style={styles.colQty}>1</Text>
             {showPrices ? (
               <>
-                <Text style={styles.colPrice}>{eur(opt.price)}</Text>
-                <Text style={styles.colTotal}>{eur(opt.price)}</Text>
+                <Text style={styles.colPrice}>{eur(totals.optionTotalsHt[i])}</Text>
+                <Text style={styles.colTotal}>{eur(totals.optionTotalsHt[i])}</Text>
               </>
             ) : (
               <Text style={styles.colCheck} />
@@ -556,8 +556,8 @@ export function DeliveryNotePdf({
           <View style={styles.tableRow}>
             <Text style={styles.colDesc}>Livraison</Text>
             <Text style={styles.colQty}>1</Text>
-            <Text style={styles.colPrice}>{eur(shippingFee)}</Text>
-            <Text style={styles.colTotal}>{eur(shippingFee)}</Text>
+            <Text style={styles.colPrice}>{eur(totals.shippingHt)}</Text>
+            <Text style={styles.colTotal}>{eur(totals.shippingHt)}</Text>
           </View>
         ) : null}
 

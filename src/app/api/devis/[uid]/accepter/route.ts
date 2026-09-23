@@ -121,12 +121,19 @@ export async function POST(
         : 0
   // Même calcul que le PDF et la page client : ce que le client a lu est
   // ce qu'il paie, remise comprise.
+  const depositPercent =
+    typeof quote.depositPercent === 'number' &&
+    quote.depositPercent >= 1 &&
+    quote.depositPercent <= 99
+      ? quote.depositPercent
+      : null
   const totals = computeQuoteTotals({
     lines: [{ unitPrice: linesTotal, quantity: 1 }],
     shippingFee,
     options,
     tvaRate,
     discount: quote.discount,
+    depositPercent,
   })
   const totalTtc = Math.round(totals.totalTtc * 100) // en centimes
   // Stripe ne reçoit qu'une ligne au montant net : la remise est dite
@@ -141,17 +148,13 @@ export async function POST(
   }
 
   // Acompte : si depositPercent est défini (1-99), le client ne règle
-  // en ligne que ce pourcentage du total. Le solde est encaissé plus
-  // tard selon les modalités convenues (hors Stripe).
-  const depositPercent =
-    typeof quote.depositPercent === 'number' &&
-    quote.depositPercent >= 1 &&
-    quote.depositPercent <= 99
-      ? quote.depositPercent
-      : null
-  const amountToCharge = depositPercent
-    ? Math.round((totalTtc * depositPercent) / 100)
-    : totalTtc
+  // en ligne que ce pourcentage du total, arrondi à l'euro comme sur le
+  // devis. Le solde est encaissé plus tard selon les modalités
+  // convenues (hors Stripe).
+  const amountToCharge =
+    depositPercent && totals.depositTtc !== null
+      ? Math.round(totals.depositTtc * 100)
+      : totalTtc
 
   // 3 bis) Enregistre le choix du client sur le devis : il doit
   // apparaître sur la facture et le bon de livraison, même si le

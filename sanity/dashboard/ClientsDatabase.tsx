@@ -1,4 +1,4 @@
-import { computeDiscountHt, type QuoteDiscount } from '../../src/lib/quote-totals'
+import { computeQuoteTotals, type QuoteDiscount } from '../../src/lib/quote-totals'
 /**
  * Base de données clients — vue consolidée dans Sanity Studio.
  *
@@ -141,15 +141,19 @@ const PROJECT_LABELS: Record<string, string> = {
 function quoteTotalTtc(q: SrcQuote): number {
   const lines =
     Array.isArray(q.lineItems) && q.lineItems.length > 0
-      ? q.lineItems.reduce(
-          (s, li) => s + (li?.unitPrice ?? 0) * (li?.quantity ?? 1),
-          0,
-        )
-      : (q.product?.unitPrice ?? 0) * (q.product?.quantity ?? 1)
-  const options = (q.options || []).reduce((s, o) => s + (o?.price ?? 0), 0)
-  // Remise sur les produits : le chiffre d'affaires est net
-  const ht = lines - computeDiscountHt(lines, q.discount, q.tvaRate ?? 20) + (q.shippingFee ?? 0) + options
-  return ht * (1 + (q.tvaRate ?? 20) / 100)
+      ? q.lineItems
+      : q.product
+        ? [q.product]
+        : []
+  // Même calcul que le devis lui-même : remise déduite et total arrondi
+  // à l'euro, pour que le tableau affiche ce qui a été encaissé.
+  return computeQuoteTotals({
+    lines,
+    shippingFee: q.shippingFee,
+    options: q.options,
+    tvaRate: q.tvaRate,
+    discount: q.discount,
+  }).totalTtc
 }
 
 /** Fusionne les trois sources en une fiche par email. */

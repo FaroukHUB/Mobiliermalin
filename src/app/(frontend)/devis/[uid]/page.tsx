@@ -105,6 +105,7 @@ export default async function QuoteAcceptPage({
     options,
     tvaRate,
     discount: quote.discount,
+    depositPercent: quote.depositPercent,
   })
   const { subtotalHt, tvaAmount, totalTtc, discountHt } = totals
   const linesTotal = totals.productsNetHt
@@ -117,9 +118,7 @@ export default async function QuoteAcceptPage({
     quote.depositPercent <= 99
       ? quote.depositPercent
       : null
-  const depositTtc = depositPercent
-    ? Math.round(totalTtc * (depositPercent / 100) * 100) / 100
-    : null
+  const depositTtc = totals.depositTtc
 
   const validUntil = quote.validUntil ? new Date(quote.validUntil) : null
   const isExpired = validUntil ? validUntil.getTime() < Date.now() : false
@@ -249,9 +248,11 @@ export default async function QuoteAcceptPage({
               <tr key={i}>
                 <td className="px-6 py-3 text-ink">{li.name}</td>
                 <td className="px-3 py-3 text-center text-ink">{li.quantity}</td>
-                <td className="px-3 py-3 text-right text-ink">{eur(li.unitPrice)}</td>
+                <td className="px-3 py-3 text-right text-ink">
+                  {eur(totals.lineUnitPricesHt[i])}
+                </td>
                 <td className="px-6 py-3 text-right text-ink font-medium">
-                  {eur(li.unitPrice * li.quantity)}
+                  {eur(totals.lineTotalsHt[i])}
                 </td>
               </tr>
             ))}
@@ -278,14 +279,14 @@ export default async function QuoteAcceptPage({
                 {hasDeliveryChoices && !quote.selectedDelivery?.label
                   ? '—'
                   : shippingFee > 0
-                    ? eur(shippingFee)
+                    ? eur(totals.shippingHt)
                     : '—'}
               </td>
               <td className="px-6 py-3 text-right text-ink font-medium">
                 {hasDeliveryChoices && !quote.selectedDelivery?.label
                   ? 'Selon formule'
                   : shippingFee > 0
-                    ? eur(shippingFee)
+                    ? eur(totals.shippingHt)
                     : 'Offert'}
               </td>
             </tr>
@@ -293,8 +294,12 @@ export default async function QuoteAcceptPage({
               <tr key={i}>
                 <td className="px-6 py-3 text-ink">{opt.label}</td>
                 <td className="px-3 py-3 text-center text-ink">1</td>
-                <td className="px-3 py-3 text-right text-ink">{eur(opt.price)}</td>
-                <td className="px-6 py-3 text-right text-ink font-medium">{eur(opt.price)}</td>
+                <td className="px-3 py-3 text-right text-ink">
+                  {eur(totals.optionTotalsHt[i])}
+                </td>
+                <td className="px-6 py-3 text-right text-ink font-medium">
+                  {eur(totals.optionTotalsHt[i])}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -341,7 +346,7 @@ export default async function QuoteAcceptPage({
                   <td colSpan={3} className="px-6 py-2 text-right text-ink-mute">
                     Solde restant (selon modalités convenues)
                   </td>
-                  <td className="px-6 py-2 text-right text-ink">{eur(totalTtc - depositTtc)}</td>
+                  <td className="px-6 py-2 text-right text-ink">{eur(totals.balanceTtc)}</td>
                 </tr>
               </>
             )}
