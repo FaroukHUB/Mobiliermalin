@@ -6,6 +6,7 @@ import { Phone, Mail, Truck, ShieldCheck, FileBadge2 } from 'lucide-react'
 import { getProductBySlugIncludingSold, getAllProductSlugs, getRelatedProducts, urlFor } from '@/lib/sanity'
 import { formatPrice } from '@/lib/utils'
 import { buildProductSchema } from '@/lib/product-schema'
+import { realBrand } from '@/lib/schema-mappings'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { productBreadcrumb } from '@/lib/breadcrumbs'
 import { DeliveryChoice } from '@/components/product/DeliveryChoice'
@@ -86,6 +87,9 @@ export default async function ProductPage({
   // Fallback sur `category` (comportement historique).
   const category = product.primaryCategory || product.category
   const conditionLabel = product.condition ? CONDITION_LABELS[product.condition] : null
+  // « Autre » n'est pas un nom de marque : on n'affiche rien plutôt que
+  // de faire lire « Autre » au client et à Google.
+  const brandLabel = realBrand(product.brand)
 
   // Cross-sell : 4 pièces de la même catégorie (fallback : derniers publiés)
   const relatedProducts = await getRelatedProducts(
@@ -150,9 +154,9 @@ export default async function ProductPage({
           </div>
 
           <div>
-            {(product.brand || conditionLabel) && (
+            {(brandLabel || conditionLabel) && (
               <p className="eyebrow inline-flex items-center gap-2 flex-wrap">
-                <span>{[product.brand, conditionLabel].filter(Boolean).join(' · ')}</span>
+                <span>{[brandLabel, conditionLabel].filter(Boolean).join(' · ')}</span>
                 {conditionLabel && (
                   <Link
                     href="/charte-qualite"
@@ -285,7 +289,7 @@ export default async function ProductPage({
                       imageUrl: galleryItems[0]?.thumbSrc,
                       imageAlt: product.name,
                       maxStock: product.stock,
-                      brand: product.brand,
+                      brand: brandLabel,
                       conditionLabel: conditionLabel || undefined,
                     }}
                   />
@@ -349,7 +353,7 @@ export default async function ProductPage({
           heightCm: product.heightCm,
           material: product.material,
           color: product.color,
-          brand: product.brand,
+          brand: brandLabel,
           condition: product.condition,
           sku: product.sku,
         }}
@@ -362,9 +366,8 @@ export default async function ProductPage({
 
       <ProductFAQ
         productName={product.name}
-        brand={product.brand}
+        brand={brandLabel}
         conditionLabel={conditionLabel}
-        categoryName={category?.name}
         stock={product.stock}
       />
 

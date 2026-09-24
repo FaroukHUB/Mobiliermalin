@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
+import { realBrand } from '@/lib/schema-mappings'
 import { AddToCartButton } from './AddToCartButton'
 
 export type ProductCardData = {
@@ -41,6 +42,7 @@ const STATUS_LABELS: Record<string, string> = {
 export function ProductCard({ product }: { product: ProductCardData }) {
   const href = product.slug ? `/produit/${product.slug}` : '#'
   const conditionLabel = product.condition ? CONDITION_LABELS[product.condition] : null
+  const brandLabel = realBrand(product.brandName)
   const statusLabel = product.status ? STATUS_LABELS[product.status] : 'Disponible'
   const isAvailable = product.status === 'published' || !product.status
 
@@ -126,9 +128,9 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       </div>
 
       <div className="p-6 md:p-7">
-        {(product.brandName || conditionLabel) && (
+        {(brandLabel || conditionLabel) && (
           <p className="text-[0.65rem] uppercase tracking-widest text-gold-dark font-medium">
-            {[product.brandName, conditionLabel].filter(Boolean).join(' · ')}
+            {[brandLabel, conditionLabel].filter(Boolean).join(' · ')}
           </p>
         )}
         <h3 className="font-serif text-xl md:text-[1.35rem] text-ink mt-2 leading-snug line-clamp-2">
@@ -188,7 +190,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
                 imageUrl: product.imageUrl,
                 imageAlt: product.imageAlt || product.title,
                 maxStock: product.stock,
-                brand: product.brandName,
+                brand: brandLabel,
                 conditionLabel: conditionLabel || undefined,
               }}
             />

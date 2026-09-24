@@ -23,14 +23,14 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
   const qa: QA[] = []
 
   qa.push({
-    q: `Pourquoi acheter un ${singular(lower)} reconditionné plutôt que neuf ?`,
-    a: `Le mobilier de bureau professionnel (Steelcase, Herman Miller, Haworth, Vitra…) est conçu pour 10 à 15 ans d'usage intensif. Un ${singular(lower)} reconditionné offre la qualité mécanique et le confort du haut de gamme à 40 à 70 % du prix neuf, avec une empreinte carbone divisée par 4 à 6. C'est le meilleur rapport qualité / durabilité / prix du marché, et un choix concret pour votre bilan RSE.`,
+    q: `Pourquoi acheter ses ${lower} en reconditionné plutôt qu'en neuf ?`,
+    a: `Le mobilier de bureau professionnel (Steelcase, Herman Miller, Haworth, Vitra…) est conçu pour 10 à 15 ans d'usage intensif. En reconditionné, vous avez la qualité mécanique et le confort du haut de gamme à 40 à 70 % du prix neuf, avec une empreinte carbone divisée par 4 à 6. C'est le meilleur rapport qualité / durabilité / prix du marché, et un choix concret pour votre bilan RSE.`,
     aHtml: (
       <>
         Le mobilier de bureau professionnel (Steelcase, Herman Miller, Haworth,
         Vitra…) est conçu pour <strong className="text-ink">10 à 15 ans</strong>{' '}
-        d&apos;usage intensif. Un {singular(lower)} reconditionné offre la
-        qualité mécanique et le confort du haut de gamme à{' '}
+        d&apos;usage intensif. En reconditionné, vous avez la qualité
+        mécanique et le confort du haut de gamme à{' '}
         <strong className="text-ink">40 à 70 % du prix neuf</strong>, avec une{' '}
         empreinte carbone divisée par 4 à 6. C&apos;est le meilleur rapport
         qualité / durabilité / prix du marché, et un choix concret pour votre{' '}
@@ -127,7 +127,7 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
   })
 
   qa.push({
-    q: `Combien de ${lower} avez-vous en stock ?`,
+    q: `Combien ${de(lower)}${lower} avez-vous en stock ?`,
     a:
       productCount > 0
         ? `Actuellement ${productCount} ${productCount > 1 ? 'références disponibles' : 'référence disponible'} sur cette catégorie, mais notre stock évolue chaque semaine — nous recevons régulièrement de nouveaux lots issus de vidages de locaux professionnels dans la région. Si vous cherchez un modèle précis ou un volume important, contactez-nous : nous pouvons rechercher dans notre réseau.`
@@ -191,7 +191,7 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
 
   if (fromPriceLabel) {
     qa.push({
-      q: `Quel budget prévoir pour un ${singular(lower)} reconditionné ?`,
+      q: `Quel budget prévoir pour vos ${lower} ?`,
       a: `${fromPriceLabel} pour cette catégorie chez Mobilier Malin. Les tarifs varient selon la marque, l'état (neuf / excellent / très bon), les options (accoudoirs, appuie-tête, mécanismes synchrones…) et parfois la couleur du revêtement. Tous nos prix sont affichés TTC, facture professionnelle avec TVA remise à chaque commande.`,
       aHtml: null,
     })
@@ -200,16 +200,17 @@ function buildFAQ({ categoryName, fromPriceLabel, productCount }: CategoryFAQPro
   return qa
 }
 
-function singular(name: string): string {
-  // "bureaux individuels" → "bureau individuel", "fauteuils ergonomiques" → "fauteuil ergonomique"
-  return name
-    .replace(/\baux\b/g, 'au')
-    .replace(/aux\s/g, 'au ')
-    .replace(/eaux\s/g, 'eau ')
-    .replace(/s\b/g, '')
-    .replace(/\bles\b/g, 'le')
-    .replace(/\bdes\b/g, 'de')
-    .trim()
+/**
+ * « de » ou « d' » selon l'initiale de la catégorie.
+ *
+ * Les questions restent au pluriel, exactement sous le nom de la
+ * catégorie : c'est la seule façon d'être correct sans connaître le
+ * genre de chaque nom. Une catégorie peut s'appeler « Armoires &
+ * rangements » comme « Bureaux individuels », et deviner l'article
+ * produisait « un bureaux » ou « un assise ».
+ */
+function de(name: string): string {
+  return /^[aeiouyâàäéèêëîïôöûüh]/i.test(name.trim()) ? "d'" : 'de '
 }
 
 export function CategoryFAQ(props: CategoryFAQProps) {

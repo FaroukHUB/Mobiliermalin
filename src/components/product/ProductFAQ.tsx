@@ -17,20 +17,21 @@ type ProductFAQProps = {
   productName: string
   brand?: string
   conditionLabel?: string | null
-  categoryName?: string
   stock: number
 }
 
 type QA = { q: string; a: string; aHtml?: React.ReactNode }
 
-function buildFAQ({ productName, brand, conditionLabel, categoryName, stock }: ProductFAQProps): QA[] {
+function buildFAQ({ productName, brand, conditionLabel, stock }: ProductFAQProps): QA[] {
   const qa: QA[] = []
 
   // 1. État
   qa.push({
+    // « ce modèle » plutôt que le nom de la catégorie : celui-ci est au
+    // pluriel dans le catalogue, et donnait « ce fauteuils ergonomiques ».
     q: conditionLabel
-      ? `Que signifie « ${conditionLabel.toLowerCase()} » pour ce ${categoryName?.toLowerCase() || 'produit'} ?`
-      : `Dans quel état est ce ${categoryName?.toLowerCase() || 'produit'} ?`,
+      ? `Que signifie « ${conditionLabel.toLowerCase()} » pour ce modèle ?`
+      : `Dans quel état est ce modèle ?`,
     a: `Chaque pièce est notée selon notre grille interne 5 niveaux (neuf, excellent, très bon, bon, correct). Un contrôle qualité en 7 points est réalisé avant la mise en vente : structure, mécanismes, revêtement, propreté, sécurité, esthétique et fonctionnalité. Le détail est consultable sur notre page charte qualité.`,
     aHtml: (
       <>
@@ -152,7 +153,7 @@ function buildFAQ({ productName, brand, conditionLabel, categoryName, stock }: P
   // 7. Marque (si connue) → renforce l'expertise
   if (brand) {
     qa.push({
-      q: `Pourquoi choisir un ${categoryName?.toLowerCase() || 'produit'} ${brand} d'occasion plutôt qu'un neuf premier prix ?`,
+      q: `Pourquoi choisir ${brand} d'occasion plutôt qu'un neuf premier prix ?`,
       a: `Les modèles ${brand} sont conçus pour un usage professionnel intensif (10 à 15 ans de vie en entreprise). Un ${brand} reconditionné offre une qualité mécanique et un confort largement supérieurs à un équivalent neuf d'entrée de gamme au même prix, avec une empreinte carbone divisée par 4 à 6. C'est le meilleur rapport qualité/durabilité/prix du marché.`,
       aHtml: null,
     })

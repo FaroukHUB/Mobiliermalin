@@ -15,15 +15,22 @@ const STATUSES = [
   { title: 'Archivé', value: 'archived' },
 ]
 
+// Toute marque absente de cette liste se retrouve rangée en « Autre »,
+// et « Autre » finit affiché au client comme nom de marque. On y ajoute
+// donc les marques réellement vendues au fur et à mesure.
 const BRANDS = [
   'Steelcase',
   'Herman Miller',
   'Haworth',
   'Vitra',
+  'Klöber',
   'Majencia',
   'HÅG',
   'Knoll',
   'USM Haller',
+  'ICF',
+  'Zuco',
+  'Actiu',
   'Autre',
 ].map((b) => ({ title: b, value: b }))
 

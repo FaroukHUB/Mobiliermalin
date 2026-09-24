@@ -17,6 +17,7 @@ import { urlFor } from './sanity'
 import {
   BRAND_OFFICIAL_URL,
   CONDITION_TO_SCHEMA_ORG,
+  realBrand,
   resolveSchemaOrgAvailability,
 } from './schema-mappings'
 
@@ -91,11 +92,14 @@ export function buildVideoSchema(
 export function buildBrandSchema(
   product: SanityProduct,
 ): Record<string, unknown> | undefined {
-  if (!product.brand) return undefined
-  const sameAs = BRAND_OFFICIAL_URL[product.brand]
+  // « Autre » n'est pas une marque : mieux vaut ne rien déclarer que
+  // de déclarer à Google une entité qui s'appelle Autre.
+  const name = realBrand(product.brand)
+  if (!name) return undefined
+  const sameAs = BRAND_OFFICIAL_URL[name]
   return {
     '@type': 'Brand',
-    name: product.brand,
+    name,
     ...(sameAs && { sameAs }),
   }
 }
@@ -253,7 +257,7 @@ export function buildProductSchema(
     ...(product.mpn && { mpn: product.mpn }),
     ...(brand && {
       brand,
-      manufacturer: { '@type': 'Organization', name: product.brand },
+      manufacturer: { '@type': 'Organization', name: brand.name },
     }),
     ...(product.color && { color: product.color }),
     ...(product.material && { material: product.material }),

@@ -93,6 +93,7 @@ export const BRAND_OFFICIAL_URL: Record<string, string> = {
   'Herman Miller': 'https://www.hermanmiller.com/fr_fr/',
   Haworth: 'https://www.haworth.com/fr/fr.html',
   Vitra: 'https://www.vitra.com/fr-fr/home',
+  'Klöber': 'https://www.kloeber.com',
   Majencia: 'https://www.majencia.com',
   HÅG: 'https://www.flokk.com/fr/marques/hag',
   Knoll: 'https://www.knoll.com',
@@ -100,6 +101,19 @@ export const BRAND_OFFICIAL_URL: Record<string, string> = {
   ICF: 'https://www.icfoffice.it/en',
   Zuco: 'https://www.zuco.ch/en',
   Actiu: 'https://www.actiu.com/fr/',
+}
+
+/**
+ * Valeur fourre-tout du catalogue quand la marque n'est pas dans la
+ * liste. Ce n'est pas un nom de marque : ni le client ni Google ne
+ * doivent le lire comme tel.
+ */
+export const GENERIC_BRAND = 'Autre'
+
+/** La marque, ou rien du tout si le produit est rangé en « Autre ». */
+export function realBrand(brand?: string | null): string | undefined {
+  const b = brand?.trim()
+  return b && b !== GENERIC_BRAND ? b : undefined
 }
 
 /**

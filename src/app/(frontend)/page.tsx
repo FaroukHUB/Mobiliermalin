@@ -214,6 +214,13 @@ export default async function HomePage() {
           campaignId={settings.promoPopupCampaignId || 'promo'}
         />
       )}
+      {/* Titre principal de la page. En mode bannière, l'image porte tout
+          le message et la page n'a plus aucun titre lisible par Google :
+          on lui en donne un, réservé aux moteurs et aux lecteurs d'écran.
+          Dans les autres modes, le premier slide porte déjà son H1. */}
+      {slides[0]?.fullBanner && !slides[0]?.videoUrl && (
+        <h1 className="sr-only">Mobilier de bureau d&apos;occasion reconditionné</h1>
+      )}
       <HeroSlider
         slides={slides}
         autoplayEnabled={settings.heroAutoplayEnabled ?? true}
