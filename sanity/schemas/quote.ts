@@ -1,4 +1,5 @@
 import type { Rule } from 'sanity'
+import { HtTtcNumberInput } from '../components/HtTtcNumberInput'
 
 /**
  * Schema "Devis" (quote) — demande de devis de livraison émise par un client.
@@ -267,9 +268,10 @@ export const quote = {
       type: 'number',
       group: 'fees',
       description:
-        'Tarif unique de livraison. Ignoré si tu proposes plusieurs formules au choix ci-dessous.',
+        'Tarif unique de livraison. Ignoré si tu proposes plusieurs formules au choix ci-dessous. Si tu raisonnes en TTC, saisis le montant dans la case TTC juste en dessous.',
       initialValue: 0,
       validation: (R: Rule) => R.min(0),
+      components: { input: HtTtcNumberInput },
     },
     {
       name: 'deliveryChoices',
@@ -301,7 +303,10 @@ export const quote = {
               name: 'price',
               title: 'Prix HT (€)',
               type: 'number',
+              description:
+                'Si tu raisonnes en TTC, saisis le montant dans la case TTC juste en dessous.',
               validation: (R: Rule) => R.required().min(0),
+              components: { input: HtTtcNumberInput },
             },
           ],
           preview: {
