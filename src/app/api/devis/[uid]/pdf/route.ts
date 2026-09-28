@@ -23,6 +23,8 @@ import { sanityClient, getSiteSettings, urlFor } from '@/lib/sanity'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs' // react-pdf a besoin de Node
+// Le rendu d'un PDF chargé en images dépasse la durée par défaut.
+export const maxDuration = 60
 
 type QuoteDoc = {
   _id: string

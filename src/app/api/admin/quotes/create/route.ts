@@ -41,6 +41,10 @@ import { LEGAL } from '@/lib/legal'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+// Création du document, rendu du PDF et envoi de l'email dans la même
+// requête : la durée par défaut de Vercel (une dizaine de secondes) est
+// trop courte, la fonction se faisait tuer avant de répondre.
+export const maxDuration = 60
 
 type LineItemIn = {
   name?: string

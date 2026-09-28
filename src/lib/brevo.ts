@@ -55,8 +55,13 @@ export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; e
   const replyTo = input.replyTo || defaultReplyTo
 
   try {
+    // Sans limite de temps, un Brevo lent bloque la route jusqu'à ce que
+    // Vercel tue la fonction : le navigateur reçoit alors une réponse
+    // vide, et l'admin ne sait même pas si son document a été créé.
+    // Mieux vaut renoncer à l'envoi et le dire.
     const res = await fetch(BREVO_API, {
       method: 'POST',
+      signal: AbortSignal.timeout(20_000),
       headers: {
         'api-key': config.apiKey,
         'Content-Type': 'application/json',
@@ -81,7 +86,13 @@ export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; e
     return { ok: true }
   } catch (err) {
     console.warn('[brevo] send error', err)
-    return { ok: false, error: 'Erreur réseau Brevo' }
+    const timedOut = err instanceof Error && err.name === 'TimeoutError'
+    return {
+      ok: false,
+      error: timedOut
+        ? "Brevo n'a pas répondu en 20 secondes, l'email n'est pas parti. Le document est créé, renvoie-le depuis Studio."
+        : 'Erreur réseau Brevo',
+    }
   }
 }
 

@@ -8,6 +8,10 @@ import { LEGAL } from '@/lib/legal'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
+// Rendu du PDF puis envoi Brevo dans la même requête : la durée par
+// défaut de Vercel est trop courte et la fonction se faisait tuer,
+// d'où des devis partis une fois sur deux.
+export const maxDuration = 60
 
 type QuoteDoc = {
   _id: string
