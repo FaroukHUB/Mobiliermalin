@@ -54,7 +54,7 @@ async function safeFetch<T>(
   if (!projectId) return fallback
   try {
     return await sanityClient.fetch<T>(query, params, {
-      next: { revalidate: 60, tags: ['sanity-blog'] },
+      next: { revalidate: 900, tags: ['sanity-blog'] },
     })
   } catch (err) {
     console.warn('[sanity-blog] fetch error:', err)

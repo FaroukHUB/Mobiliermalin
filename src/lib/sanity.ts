@@ -15,16 +15,19 @@ import { projectId, dataset, apiVersion, useCdn } from '../../sanity/env'
 //
 // SANITY_READ_TOKEN (facultatif) : token en lecture seule ("Viewer"),
 // stocké en env var Vercel. Résout les cas où certains types ne sont
-// pas visibles anonymement (nouveau type non propagé au CDN Sanity,
-// restrictions par type, etc.). Sans token, fallback sur l'accès public.
-const readToken = process.env.SANITY_READ_TOKEN
+// pas visibles anonymement (restrictions par type). Sans token,
+// fallback sur l'accès public, qui suffit pour un dataset public.
+//
+// Le CDN n'accepte pas l'authentification par token : les deux sont
+// exclusifs. Le CDN passe donc en premier, parce que c'est lui qui
+// tient le volume du site, et le token ne sert que si on a coupé le
+// CDN (NEXT_PUBLIC_SANITY_USE_CDN=false).
+const readToken = useCdn ? undefined : process.env.SANITY_READ_TOKEN
 export const sanityClient: SanityClient = createClient({
   projectId: projectId || 'placeholder',
   dataset,
   apiVersion,
-  // Si on a un token, on force useCdn:false (le CDN ne supporte pas
-  // l'auth par token). Sinon on garde useCdn selon config env.
-  useCdn: readToken ? false : useCdn,
+  useCdn,
   perspective: 'published',
   ...(readToken && { token: readToken }),
 })
@@ -202,7 +205,7 @@ async function safeFetch<T>(query: string, params: Record<string, unknown> = {},
   if (!projectId) return fallback
   try {
     return await sanityClient.fetch<T>(query, params, {
-      next: { revalidate: 60, tags: ['sanity-products'] },
+      next: { revalidate: 900, tags: ['sanity-products'] },
     })
   } catch (err) {
     console.warn('[sanity] fetch error, returning fallback:', err)

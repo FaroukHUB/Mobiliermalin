@@ -22,7 +22,11 @@ import { LatestArrivals } from '@/components/sections/LatestArrivals'
 import { SHOP_URL } from '@/lib/config'
 import { getHeroSlides, getSiteSettings, getTopLevelCategories, getFeaturedProducts, getExceptionProducts, getLatestProducts, urlFor, type SanityImage } from '@/lib/sanity'
 
-export const revalidate = 60
+// Rafraîchissement : 15 minutes au lieu d'une minute. La publication
+// dans Studio déclenche /api/revalidate via un webhook, donc le
+// contenu se met à jour tout de suite sans que le site ait besoin
+// d'interroger Sanity en boucle.
+export const revalidate = 900
 
 // Pas de `title` local ici → Next utilise `title.default` du layout racine,
 // qui n'est PAS soumis au template. Évite « … — Mobilier Malin | Mobilier

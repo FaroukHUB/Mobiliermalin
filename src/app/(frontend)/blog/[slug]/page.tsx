@@ -22,7 +22,11 @@ import { BlogPortableText } from '@/components/blog/BlogPortableText'
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs'
 import { blogArticleBreadcrumb } from '@/lib/breadcrumbs'
 
-export const revalidate = 60
+// Rafraîchissement : 15 minutes au lieu d'une minute. La publication
+// dans Studio déclenche /api/revalidate via un webhook, donc le
+// contenu se met à jour tout de suite sans que le site ait besoin
+// d'interroger Sanity en boucle.
+export const revalidate = 900
 export const dynamicParams = true
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mobiliermalin.com'
