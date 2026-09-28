@@ -253,6 +253,9 @@ export async function POST(
   try {
     const fullRes = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
+      // Un Brevo qui traîne bloquait la route jusqu'à ce que Vercel tue
+      // la fonction : Studio n'affichait alors aucune erreur exploitable.
+      signal: AbortSignal.timeout(25_000),
       headers: {
         'api-key': brevoKey,
         'Content-Type': 'application/json',
@@ -295,8 +298,15 @@ export async function POST(
     }
   } catch (err) {
     console.error('[devis/envoyer] brevo network error', err)
+    const timedOut = err instanceof Error && err.name === 'TimeoutError'
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Erreur réseau Brevo' },
+      {
+        error: timedOut
+          ? "Brevo n'a pas répondu en 25 secondes. Le devis n'est pas parti, réessaie dans un instant."
+          : err instanceof Error
+            ? err.message
+            : 'Erreur réseau Brevo',
+      },
       { status: 502 },
     )
   }

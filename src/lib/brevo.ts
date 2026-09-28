@@ -39,7 +39,17 @@ export type SendEmailInput = {
 
 export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; error?: string }> {
   const config = getBrevoConfig()
-  if (!config) return { ok: true } // pas configuré → on ne plante pas
+  if (!config) {
+    // Avant, on renvoyait un succès : l'écran annonçait « envoyé » alors
+    // que rien ne partait, et le client attendait un email qui
+    // n'existait pas. Mieux vaut dire la vérité.
+    console.error('[brevo] BREVO_API_KEY ou BREVO_SENDER_EMAIL manquant, aucun email envoyé')
+    return {
+      ok: false,
+      error:
+        "Brevo n'est pas configuré (BREVO_API_KEY ou BREVO_SENDER_EMAIL manquant dans Vercel). Aucun email n'est parti.",
+    }
+  }
 
   // Reply-to par défaut = boîte de réception réelle (mobiliermalin@gmail.com)
   // Comme ça les emails envoyés depuis contact@mobiliermalin.com (alias DKIM
