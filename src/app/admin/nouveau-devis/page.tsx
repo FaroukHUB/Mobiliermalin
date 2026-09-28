@@ -233,7 +233,21 @@ export default function NouveauDevisPage() {
           internalNotes,
         }),
       })
-      const data: Result = await res.json()
+      // Le serveur peut renvoyer un corps vide (fonction interrompue,
+      // délai dépassé). Lire le texte d'abord évite le « Unexpected end
+      // of JSON input » qui masquait la vraie cause.
+      const rawBody = await res.text()
+      let data: Result
+      try {
+        data = JSON.parse(rawBody) as Result
+      } catch {
+        data = {
+          ok: false,
+          error: rawBody.trim()
+            ? `Réponse illisible du serveur (HTTP ${res.status}) : ${rawBody.slice(0, 300)}`
+            : `Le serveur n'a rien renvoyé (HTTP ${res.status}). Regarde les logs Vercel, route /api/admin/quotes/create.`,
+        }
+      }
       setResult(data)
       // Auto-scroll vers la bannière de résultat après envoi
       setTimeout(() => {

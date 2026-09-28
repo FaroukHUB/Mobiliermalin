@@ -141,6 +141,29 @@ function buildNoPaymentEmailHtml(args: {
 </body></html>`
 }
 
+/**
+ * Traduit une erreur Sanity en phrase exploitable.
+ *
+ * Sans ça, un refus de Sanity fait mourir la route avant qu'elle
+ * réponde : le navigateur reçoit une page vide et affiche « Unexpected
+ * end of JSON input », ce qui n'apprend rien à personne.
+ */
+function describeSanityError(err: unknown): string {
+  const e = err as { statusCode?: number; message?: string }
+  const status = typeof e?.statusCode === 'number' ? e.statusCode : undefined
+  const raw = e?.message || 'erreur inconnue'
+  if (status === 402) {
+    return "Sanity refuse d'écrire : quota de requêtes dépassé (402). Relève le quota sur sanity.io/manage, projet MobilierMalin, onglet Usage, bouton « Increase usage quotas »."
+  }
+  if (status === 401 || status === 403) {
+    return `Sanity refuse le token d'écriture (${status}). Vérifie SANITY_WRITE_TOKEN dans les variables d'environnement Vercel, puis redéploie.`
+  }
+  if (status === 429) {
+    return 'Sanity limite temporairement les requêtes (429). Réessaie dans une minute.'
+  }
+  return `Sanity a refusé la requête${status ? ` (${status})` : ''} : ${raw}`
+}
+
 async function generateNumero(documentType: 'quote' | 'invoice'): Promise<string> {
   const year = new Date().getFullYear()
   const prefix = documentType === 'invoice' ? 'FAC' : 'DEV'
@@ -333,8 +356,19 @@ export async function POST(req: Request) {
       ? body.sendMode
       : 'payment-link'
 
-  // Génère le numéro et la date de validité
-  const numero = await generateNumero(documentType)
+  // Génère le numéro et la date de validité. Cette lecture passe par
+  // le client d'écriture, donc par l'API directe : c'est le premier
+  // endroit qui casse quand Sanity refuse, il doit parler.
+  let numero: string
+  try {
+    numero = await generateNumero(documentType)
+  } catch (err) {
+    console.error('[quotes/create] numérotation impossible:', err)
+    return NextResponse.json(
+      { ok: false, error: describeSanityError(err) },
+      { status: 502 },
+    )
+  }
   const validUntilDays = body.validUntilDays || 30
   const validUntilDate = new Date(Date.now() + validUntilDays * 86400_000)
   const validUntilISO = validUntilDate.toISOString().split('T')[0]
@@ -385,8 +419,8 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error('[quotes/create] Sanity error:', err)
     return NextResponse.json(
-      { ok: false, error: 'Erreur Sanity : ' + (err instanceof Error ? err.message : 'inconnue') },
-      { status: 500 },
+      { ok: false, error: describeSanityError(err) },
+      { status: 502 },
     )
   }
 
